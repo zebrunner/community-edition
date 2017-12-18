@@ -288,3 +288,182 @@ ORDER BY TEST_CASES.CREATED_AT::date ASC;',
 		INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, POSITION, SIZE, LOCATION) VALUES (general_dashboard_id, top_widget_id, 1, 4, '{"x": 0, "y": 11, "height": 11, "width": 4}');
 		INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, POSITION, SIZE, LOCATION) VALUES (general_dashboard_id, progress_widget_id, 3, 8, '{"x": 4, "y": 11, "height": 11, "width": 8}');
 END$$;
+
+DO $$
+
+DECLARE general_dashboard_id zafira.DASHBOARDS.id%TYPE;
+
+DECLARE total_tests_count_id zafira.WIDGETS.id%TYPE;
+DECLARE total_tests_count_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_tests_count_model zafira.WIDGETS.model%TYPE;
+
+DECLARE weekly_test_impl_progress_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_test_impl_progress_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_test_impl_progress_model zafira.WIDGETS.model%TYPE;
+
+DECLARE total_jira_tickets_id zafira.WIDGETS.id%TYPE;
+DECLARE total_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_jira_tickets_model zafira.WIDGETS.model%TYPE;
+
+DECLARE total_tests_man_hours_id zafira.WIDGETS.id%TYPE;
+DECLARE total_tests_man_hours_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_tests_man_hours_model zafira.WIDGETS.model%TYPE;
+
+BEGIN
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('GeneralTest', FALSE) RETURNING id INTO general_dashboard_id;
+
+    total_tests_count_sql :=
+    'set schema ''zafira'';
+     SELECT
+     	PROJECT AS "PROJECT",
+     	sum(PASSED) AS "PASS",
+     	sum(FAILED) AS "FAIL",
+     	sum(KNOWN_ISSUE) AS "ISSUE",
+     	sum(SKIPPED) AS "SKIP",
+     	round (100.0 * sum( passed ) / (sum( total )), 2) as "Pass Rate"
+     FROM TOTAL_VIEW
+     WHERE PROJECT LIKE ''#{project}%''
+     GROUP BY PROJECT
+     UNION
+     SELECT  ''<B><I>TOTAL</I></B>'' AS "PROJECT",
+     	sum(PASSED) AS "PASS",
+     	sum(FAILED) AS "FAIL",
+     	sum(KNOWN_ISSUE) AS "ISSUE",
+     	sum(SKIPPED) AS "SKIP",
+     	round (100.0 * sum( passed ) / (sum( total )), 2) as "Pass Rate"
+     FROM TOTAL_VIEW
+     WHERE PROJECT LIKE ''#{project}%''
+     ORDER BY "PASS" DESC';
+
+    total_tests_count_model := '
+    {
+        "columns": [
+            "PROJECT",
+            "PASS",
+            "FAIL",
+            "ISSUE",
+            "SKIP",
+            "Pass Rate"
+        ]
+    }';
+
+    weekly_test_impl_progress_sql :=
+    'set schema ''zafira'';
+     SELECT
+     date_trunc(''week'', TEST_CASES.CREATED_AT)::date AS "CREATED_AT" ,
+     count(*) AS "AMOUNT"
+     FROM TEST_CASES INNER JOIN
+     PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+     INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID=USERS.ID
+     WHERE PROJECTS.NAME LIKE ''#{project}%''
+     GROUP BY 1
+     ORDER BY 1;';
+
+    weekly_test_impl_progress_model :=
+    '{
+      "series": [
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "AMOUNT",
+          "label": "INTERPOLATED AMOUNT",
+          "interpolation": {"mode": "bundle", "tension": 0.8},
+          "color": "#f0ad4e",
+          "type": [
+            "line"
+          ],
+          "id": "AMOUNT"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "AMOUNT",
+          "label": "AMOUNT",
+          "color": "#3a87ad",
+          "type": [
+            "column"
+          ],
+          "id": "AMOUNT"
+        }
+      ],
+      "axes": {
+        "x": {
+          "key": "CREATED_AT",
+          "type": "date"
+        }
+      }
+    }';
+
+    total_jira_tickets_sql :=
+    'set schema ''zafira'';
+     SELECT PROJECTS.NAME AS "PROJECT",
+     	COUNT(*) AS "COUNT"
+     FROM WORK_ITEMS INNER JOIN
+     	TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID INNER JOIN
+     	PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+     WHERE WORK_ITEMS.TYPE=''BUG''
+         AND PROJECTS.NAME LIKE ''#{project}%''
+     GROUP BY "PROJECT"
+     ORDER BY "COUNT" DESC';
+
+    total_jira_tickets_model := '{"columns" : ["PROJECT", "COUNT"]}';
+
+    total_tests_man_hours_sql :=
+    'set schema ''zafira'';
+     SELECT SUM(TOTAL_HOURS) AS "MAN-HOURS",
+         TESTED_AT AS "CREATED_AT"
+     FROM TOTAL_VIEW WHERE PROJECT LIKE ''#{project}%''
+     GROUP BY "CREATED_AT"
+     ORDER BY "CREATED_AT"';
+
+    total_tests_man_hours_model :=
+    '{
+       "series": [
+         {
+           "axis": "y",
+           "dataset": "dataset",
+           "key": "MAN-HOURS",
+           "label": "MAN-HOURS",
+           "color": "#5cb85c",
+           "thickness": "10px",
+           "type": [
+             "column"
+              ],
+           "id": "MAN-HOURS"
+         }
+       ],
+       "axes": {
+         "x": {
+           "key": "CREATED_AT",
+           "type": "date",
+           "ticks": "functions(value) {return ''wow!''}"
+         },
+         "y": {
+           "min": "0"
+         }
+       }
+     }';
+
+
+    INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
+    'TOTAL TESTS (COUNT)', 'table', total_tests_count_sql, total_tests_count_model)
+    RETURNING id INTO total_tests_count_id;
+
+    INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
+    'WEEKLY TEST IMPLEMENTATION PROGRESS', 'linechart', weekly_test_impl_progress_sql, weekly_test_impl_progress_model)
+    RETURNING id INTO weekly_test_impl_progress_id;
+
+    INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
+    'TOTAL JIRA TICKETS', 'linechart', total_jira_tickets_sql, total_jira_tickets_model)
+    RETURNING id INTO total_jira_tickets_id;
+
+    INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
+    'TOTAL TESTS (MAN-HOURS)', 'linechart', total_tests_man_hours_sql, total_tests_man_hours_model)
+    RETURNING id INTO total_tests_man_hours_id;
+
+    INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, total_tests_man_hours_id, '{"x":0,"y":0,"width":8,"height":11}');
+	  INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, total_tests_count_id, '{"x":8,"y":0,"width":4,"height":11}');
+    INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, weekly_test_impl_progress_id, '{"x":0,"y":11,"height":11,"width":8}');
+    INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, total_jira_tickets_id, '{"x":8,"y":11,"width":4,"height":11}');
+
+END$$;
