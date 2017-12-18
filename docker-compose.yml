@@ -1,0 +1,81 @@
+version: '3'
+services:
+  nginx:
+    image: nginx
+    volumes:
+     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+     - ./nginx/conf.d:/etc/nginx/conf.d
+    ports:
+     - "80:80"
+    depends_on:
+     - "zafira"
+     - "jenkins-master"
+     - "selenium-hub"
+    restart: always
+  db:
+    image: qaprosoft/postgres:9.6
+    volumes:
+     - ./pgdata:/var/lib/postgresql/data
+     - ./database:/docker-entrypoint-initdb.d
+    ports:
+     - "5432:5432"
+    env_file:
+     - variables.env
+    restart: always
+  zafira:
+    image: qaprosoft/zafira
+    env_file:
+     - variables.env
+    ports:
+     - "8001:8001"
+    depends_on:
+     - "db"
+    restart: always
+  jenkins-master:
+    image: qaprosoft/jenkins-master
+    env_file:
+     - variables.env
+    volumes:
+     - ./jenkins:/var/jenkins_home
+     - $HOME/.ssh:/var/jenkins_home/.ssh
+     - $HOME/.m2:/var/jenkins_home/.m2
+    ports:
+     - "50000:50000"
+    restart: always
+  jenkins-slave-api:
+    image: qaprosoft/jenkins-slave
+    env_file:
+     - variables.env
+    volumes:
+     - $HOME/.ssh:/root/.ssh
+     - $HOME/.m2:/root/.m2
+    ports:
+     - "50001:50000"
+    depends_on:
+     - "jenkins-master"
+    restart: always
+  selenium-hub:
+    image: qaprosoft/selenium-hub
+    env_file:
+     - variables.env
+    ports:
+     - "4444:4444"
+    restart: always
+  sonarqube:
+    image: qaprosoft/sonarqube
+    env_file:
+     - variables.env
+    command: -Dsonar.web.context=/sonarqube
+    depends_on:
+     - "db"
+    restart: always
+  rabbitmq:
+    image: qaprosoft/rabbitmq
+    env_file:
+     - variables.env
+    ports:
+     - 15672:15672
+     - 15674:15674
+     - 5672:5672
+    restart: always
+
