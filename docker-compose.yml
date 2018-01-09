@@ -78,4 +78,22 @@ services:
      - 15674:15674
      - 5672:5672
     restart: always
+  chrome:
+    image: selenium/node-chrome
+    environment:
+    - HUB_HOST=selenium-hub
+    - NODE_MAX_INSTANCES=5
+    - NODE_MAX_SESSIONS=5
+    volumes:
+    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
+    depends_on:
+     - "selenium-hub"
+  firefox:
+    image: selenium/node-firefox
+    environment:
+    - HUB_HOST=selenium-hub
+    - NODE_MAX_INSTANCES=5
+    - NODE_MAX_SESSIONS=5
+    depends_on:
+     - "selenium-hub"
 
