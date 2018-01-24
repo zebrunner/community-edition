@@ -9,6 +9,7 @@ QPS-Infra is dockerized QA infrastructure solution for Test Automation. Is is in
 
 * All together can be used as effective Test Automation infrastructure for test automation development, execution, managing etc.
 
+![Alt text](./qps-infra.png?raw=true "QPS-Infra")
 
 ## Contents
 * [Software prerequisites](#software-prerequisites)
