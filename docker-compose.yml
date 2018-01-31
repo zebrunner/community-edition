@@ -83,7 +83,7 @@ services:
     environment:
     - HUB_HOST=selenium-hub
     - NODE_MAX_INSTANCES=5
-    - NODE_MAX_SESSIONS=5
+    - NODE_MAX_SESSION=5
     volumes:
     - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
     depends_on:
@@ -93,7 +93,7 @@ services:
     environment:
     - HUB_HOST=selenium-hub
     - NODE_MAX_INSTANCES=5
-    - NODE_MAX_SESSIONS=5
+    - NODE_MAX_SESSION=5
     depends_on:
      - "selenium-hub"
 
