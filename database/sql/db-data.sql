@@ -291,197 +291,378 @@ ORDER BY TEST_CASES.CREATED_AT::date ASC;',
 END$$;
 
 DO $$
-  DECLARE general_dashboard_id zafira.DASHBOARDS.id%TYPE;
 
-	DECLARE total_tests_count_id zafira.WIDGETS.id%TYPE;
-	DECLARE total_tests_count_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE total_tests_count_model zafira.WIDGETS.model%TYPE;
+-- Declare dashboards
+DECLARE personal_dashboard_id zafira.DASHBOARDS.id%TYPE;
+DECLARE user_performance_dashboard_id zafira.DASHBOARDS.id%TYPE;
+DECLARE general_dashboard_id zafira.DASHBOARDS.id%TYPE;
+DECLARE monthly_dashboard_id zafira.DASHBOARDS.id%TYPE;
+DECLARE weekly_dashboard_id zafira.DASHBOARDS.id%TYPE;
+DECLARE nightly_dashboard_id zafira.DASHBOARDS.id%TYPE;
 
-	DECLARE total_tests_pie_id zafira.WIDGETS.id%TYPE;
-	DECLARE total_tests_pie_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE total_tests_pie_model zafira.WIDGETS.model%TYPE;
+-- Declare Personal dashboard widgets
+DECLARE nightly_details_personal_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_details_personal_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_details_personal_model zafira.WIDGETS.model%TYPE;
+DECLARE monthly_total_personal_pie_id zafira.WIDGETS.id%TYPE;
+DECLARE monthly_total_personal_pie_sql zafira.WIDGETS.sql%TYPE;
+DECLARE monthly_total_personal_pie_model zafira.WIDGETS.model%TYPE;
+DECLARE monthly_total_personal_table_id zafira.WIDGETS.id%TYPE;
+DECLARE monthly_total_personal_table_sql zafira.WIDGETS.sql%TYPE;
+DECLARE monthly_total_personal_table_model zafira.WIDGETS.model%TYPE;
+DECLARE weekly_total_personal_table_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_total_personal_table_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_total_personal_table_model zafira.WIDGETS.model%TYPE;
+DECLARE weekly_total_personal_pie_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_total_personal_pie_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_total_personal_pie_model zafira.WIDGETS.model%TYPE;
+DECLARE nightly_total_personal_pie_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_total_personal_pie_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_total_personal_pie_model zafira.WIDGETS.model%TYPE;
+DECLARE nightly_total_personal_table_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_total_personal_table_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_total_personal_table_model zafira.WIDGETS.model%TYPE;
+DECLARE total_last_30_days_personal_id zafira.WIDGETS.id%TYPE;
+DECLARE total_last_30_days_personal_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_last_30_days_personal_model zafira.WIDGETS.model%TYPE;
 
-	DECLARE weekly_test_impl_progress_id zafira.WIDGETS.id%TYPE;
-	DECLARE weekly_test_impl_progress_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE weekly_test_impl_progress_model zafira.WIDGETS.model%TYPE;
+-- Declare User Performance dashboard widgets
+DECLARE personal_total_rate_id zafira.WIDGETS.id%TYPE;
+DECLARE personal_total_rate_sql zafira.WIDGETS.sql%TYPE;
+DECLARE personal_total_rate_model zafira.WIDGETS.model%TYPE;
+DECLARE personal_total_tests_man_hours_id zafira.WIDGETS.id%TYPE;
+DECLARE personal_total_tests_man_hours_sql zafira.WIDGETS.sql%TYPE;
+DECLARE personal_total_tests_man_hours_model zafira.WIDGETS.model%TYPE;
+DECLARE weekly_test_impl_progress_user_perf_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_test_impl_progress_user_perf_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_test_impl_progress_user_perf_model zafira.WIDGETS.model%TYPE;
+DECLARE total_tests_trend_id zafira.WIDGETS.id%TYPE;
+DECLARE total_tests_trend_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_tests_trend_model zafira.WIDGETS.model%TYPE;
 
-	DECLARE total_jira_tickets_id zafira.WIDGETS.id%TYPE;
-	DECLARE total_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE total_jira_tickets_model zafira.WIDGETS.model%TYPE;
+-- Declare General dashboard widgets
+DECLARE total_tests_count_id zafira.WIDGETS.id%TYPE;
+DECLARE total_tests_count_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_tests_count_model zafira.WIDGETS.model%TYPE;
+DECLARE total_tests_pie_id zafira.WIDGETS.id%TYPE;
+DECLARE total_tests_pie_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_tests_pie_model zafira.WIDGETS.model%TYPE;
+DECLARE weekly_test_impl_progress_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_test_impl_progress_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_test_impl_progress_model zafira.WIDGETS.model%TYPE;
+DECLARE total_jira_tickets_id zafira.WIDGETS.id%TYPE;
+DECLARE total_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_jira_tickets_model zafira.WIDGETS.model%TYPE;
+DECLARE total_tests_man_hours_id zafira.WIDGETS.id%TYPE;
+DECLARE total_tests_man_hours_sql zafira.WIDGETS.sql%TYPE;
+DECLARE total_tests_man_hours_model zafira.WIDGETS.model%TYPE;
 
-	DECLARE total_tests_man_hours_id zafira.WIDGETS.id%TYPE;
-	DECLARE total_tests_man_hours_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE total_tests_man_hours_model zafira.WIDGETS.model%TYPE;
+-- Declare Monthly dashboard widgets
+DECLARE monthly_total_id zafira.WIDGETS.id%TYPE;
+DECLARE monthly_total_sql zafira.WIDGETS.sql%TYPE;
+DECLARE monthly_total_model zafira.WIDGETS.model%TYPE;
+DECLARE test_results_30_id zafira.WIDGETS.id%TYPE;
+DECLARE test_results_30_sql zafira.WIDGETS.sql%TYPE;
+DECLARE test_results_30_model zafira.WIDGETS.model%TYPE;
+DECLARE monthly_jira_tickets_id zafira.WIDGETS.id%TYPE;
+DECLARE monthly_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
+DECLARE monthly_jira_tickets_model zafira.WIDGETS.model%TYPE;
+DECLARE monthly_platform_details_id zafira.WIDGETS.id%TYPE;
+DECLARE monthly_platform_details_sql zafira.WIDGETS.sql%TYPE;
+DECLARE monthly_platform_details_model zafira.WIDGETS.model%TYPE;
+DECLARE monthly_details_id zafira.WIDGETS.id%TYPE;
+DECLARE monthly_details_sql zafira.WIDGETS.sql%TYPE;
+DECLARE monthly_details_model zafira.WIDGETS.model%TYPE;
+
+-- Declare Weekly dashboard widgets
+DECLARE weekly_total_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_total_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_total_model zafira.WIDGETS.model%TYPE;
+DECLARE test_results_7_id zafira.WIDGETS.id%TYPE;
+DECLARE test_results_7_sql zafira.WIDGETS.sql%TYPE;
+DECLARE test_results_7_model zafira.WIDGETS.model%TYPE;
+DECLARE weekly_jira_tickets_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_jira_tickets_model zafira.WIDGETS.model%TYPE;
+DECLARE weekly_platform_details_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_platform_details_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_platform_details_model zafira.WIDGETS.model%TYPE;
+DECLARE weekly_details_id zafira.WIDGETS.id%TYPE;
+DECLARE weekly_details_sql zafira.WIDGETS.sql%TYPE;
+DECLARE weekly_details_model zafira.WIDGETS.model%TYPE;
+
+-- Declare Nightly dashboard widgets
+DECLARE nightly_total_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_total_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_total_model zafira.WIDGETS.model%TYPE;
+DECLARE nightly_jira_tickets_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_jira_tickets_model zafira.WIDGETS.model%TYPE;
+DECLARE nightly_platform_details_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_platform_details_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_platform_details_model zafira.WIDGETS.model%TYPE;
+DECLARE nightly_details_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_details_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_details_model zafira.WIDGETS.model%TYPE;
 
 BEGIN
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('General Test', TRUE) RETURNING id INTO general_dashboard_id;
 
-	total_tests_count_sql :=
-	'set schema ''zafira'';
-   SELECT
-     PROJECT AS "PROJECT",
-     sum(PASSED) AS "PASS",
-     sum(FAILED) AS "FAIL",
-     sum(KNOWN_ISSUE) AS "ISSUE",
-     sum(SKIPPED) AS "SKIP",
-     round (100.0 * sum( passed ) / (sum( total )), 2) as "Pass Rate"
-   FROM TOTAL_VIEW
-   WHERE PROJECT LIKE ''#{project}%''
-   GROUP BY PROJECT
-   UNION
-   SELECT  ''<B><I>TOTAL</I></B>'' AS "PROJECT",
-     sum(PASSED) AS "PASS",
-     sum(FAILED) AS "FAIL",
-     sum(KNOWN_ISSUE) AS "ISSUE",
-     sum(SKIPPED) AS "SKIP",
-     round (100.0 * sum( passed ) / (sum( total )), 2) as "Pass Rate"
-   FROM TOTAL_VIEW
-   WHERE PROJECT LIKE ''#{project}%''
-   ORDER BY "PASS" DESC';
+-- Insert Personal dashboard data
+INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Personal Test', TRUE) RETURNING id INTO personal_dashboard_id;
 
-	total_tests_count_model := '
-    {
+nightly_details_personal_sql :=
+    'set schema ''zafira'';
+    SELECT
+        OWNER as "OWNER",
+        BUILD as "BUILD",
+        ''<a href="#{zafiraURL}/#!/tests/runs/''||TEST_RUN_ID||''" target="_blank"> '' || TEST_SUITE_NAME ||'' </a>'' AS "REPORT",
+        eTAF_Report as "eTAF_Report",
+        sum(Passed) || ''/'' || sum(FAILED) + sum(KNOWN_ISSUE) || ''/'' || sum(Skipped) as "P/F/S",
+        REBUILD as "REBUILD",
+    UPDATED as "UPDATED"
+    FROM NIGHTLY_VIEW
+    WHERE OWNER_ID=''#{currentUserId}''
+    GROUP BY "OWNER", "BUILD", "REPORT", "eTAF_Report", "REBUILD", "UPDATED"
+    ORDER BY "BUILD" DESC';
+
+	nightly_details_personal_model :=
+    '{
         "columns": [
-            "PROJECT",
-            "PASS",
-            "FAIL",
-            "ISSUE",
-            "SKIP",
-            "Pass Rate"
+            "OWNER",
+            "BUILD",
+            "REPORT",
+            "ETAF_REPORT",
+            "P/F/S",
+            "REBUILD",
+            "UPDATED"
         ]
     }';
 
-	total_tests_pie_sql :='
-     set schema ''zafira'';
-     SELECT
+	monthly_total_personal_pie_sql :=
+    'set schema ''zafira'';
+    SELECT
         unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
         unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
         unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
-     FROM TOTAL_VIEW
-     WHERE PROJECT LIKE ''#{project}%''
-     ORDER BY "value" DESC
-     ';
+    FROM BIMONTHLY_VIEW
+    WHERE
+        PROJECT LIKE ''#{project}%''
+        AND OWNER_ID = ''#{currentUserId}''
+        AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
+    ORDER BY "value" DESC';
 
-	total_tests_pie_model := '
-    {
-    "thickness": 20
+	monthly_total_personal_pie_model :=
+    '{
+        "thickness": 20
+     }';
+
+	monthly_total_personal_table_sql :=
+	'set schema ''zafira'';
+    SELECT OWNER AS "OWNER",
+        SUM(TOTAL)  AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 2) AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 2) AS "FAILED (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 2) AS "SKIPPED (%)"
+    FROM BIMONTHLY_VIEW
+    WHERE OWNER_ID = ''#{currentUserId}''
+        AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
+    GROUP BY OWNER
+    ORDER BY OWNER';
+
+	monthly_total_personal_table_model :=
+	'{
+        "columns": [
+            "OWNER",
+            "TOTAL",
+            "PASSED (%)",
+            "FAILED (%)",
+            "SKIPPED (%)"
+        ]
+     }';
+
+	weekly_total_personal_table_sql :=
+	'set schema ''zafira'';
+    SELECT OWNER AS "OWNER",
+        SUM(TOTAL)  AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 2) AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 2) AS "FAILED (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 2) AS "SKIPPED (%)"
+    FROM BIMONTHLY_VIEW
+    WHERE OWNER_ID = ''#{currentUserId}''
+        AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
+    GROUP BY OWNER
+    ORDER BY OWNER';
+
+	weekly_total_personal_table_model :=
+    '{
+        "columns": [
+            "OWNER",
+            "TOTAL",
+            "PASSED (%)",
+            "FAILED (%)",
+            "SKIPPED (%)"
+        ]
     }';
 
-	weekly_test_impl_progress_sql :=
+	weekly_total_personal_pie_sql :=
 	'set schema ''zafira'';
-   SELECT
-   date_trunc(''week'', TEST_CASES.CREATED_AT)::date AS "CREATED_AT" ,
-   count(*) AS "AMOUNT"
-   FROM TEST_CASES INNER JOIN
-   PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-   INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID=USERS.ID
-   WHERE PROJECTS.NAME LIKE ''#{project}%''
-   GROUP BY 1
-   ORDER BY 1;';
+    SELECT
+       unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
+       unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+       unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+    FROM WEEKLY_VIEW
+    WHERE
+        PROJECT LIKE ''#{project}%''
+        AND OWNER_ID = ''#{currentUserId}''
+    ORDER BY "value" DESC';
 
-	weekly_test_impl_progress_model :=
+	weekly_total_personal_pie_model :=
 	'{
-    "series": [
-      {
-        "axis": "y",
-        "dataset": "dataset",
-        "key": "AMOUNT",
-        "label": "INTERPOLATED AMOUNT",
-        "interpolation": {"mode": "bundle", "tension": 0.8},
-        "color": "#f0ad4e",
-        "type": [
-          "line"
-        ],
-        "id": "AMOUNT"
-      },
-      {
-        "axis": "y",
-        "dataset": "dataset",
-        "key": "AMOUNT",
-        "label": "AMOUNT",
-        "color": "#3a87ad",
-        "type": [
-          "column"
-        ],
-        "id": "AMOUNT"
-      }
-    ],
-    "axes": {
-      "x": {
-        "key": "CREATED_AT",
-        "type": "date"
-      }
-    }
-  }';
+         "thickness": 20
+     }';
 
-	total_jira_tickets_sql :=
+	nightly_total_personal_pie_sql :=
 	'set schema ''zafira'';
-       SELECT PROJECTS.NAME AS "PROJECT",
-         COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
-       FROM TEST_WORK_ITEMS
-       INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID INNER JOIN
-       TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID INNER JOIN
-       PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-       WHERE WORK_ITEMS.TYPE=''BUG''
-       AND PROJECTS.NAME LIKE ''#{project}%''
-       GROUP BY "PROJECT"
-       ORDER BY "COUNT" DESC;';
+    SELECT
+        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''IN_PROGR'', ''ISSUE'', ''ABORTED'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#4385F5'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(IN_PROGRESS), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+    FROM NIGHTLY_VIEW
+    WHERE
+        PROJECT LIKE ''#{project}%''
+        AND OWNER_ID = ''#{currentUserId}''
+    ORDER BY "value" DESC';
 
-	total_jira_tickets_model := '{"columns" : ["PROJECT", "COUNT"]}';
+	nightly_total_personal_pie_model :=
+    '{
+         "thickness": 20
+     }';
 
-	total_tests_man_hours_sql :=
+	nightly_total_personal_table_sql :=
 	'set schema ''zafira'';
-        SELECT
-             SUM(TOTAL_HOURS) AS "ACTUAL",
-             SUM(TOTAL_HOURS) AS "ETA",
-             TESTED_AT AS "CREATED_AT"
-        FROM TOTAL_VIEW
-        WHERE PROJECT LIKE ''#{project}%''
-        GROUP BY "CREATED_AT"
-        UNION
-        SELECT
-        SUM(TOTAL_HOURS) AS "ACTUAL",
-        ROUND(SUM(TOTAL_HOURS)/extract(day from current_date)
-        * extract(day from date_trunc(''day'', date_trunc(''month'', current_date) + interval ''1 month'') - interval ''1 day''))
-        AS "ETA",
-            date_trunc(''month'', current_date) AS "CREATED_AT"
-        FROM BIMONTHLY_VIEW
-        WHERE PROJECT LIKE ''#{project}%''
-        GROUP BY "CREATED_AT"
-        ORDER BY "CREATED_AT";';
+    SELECT OWNER AS "OWNER",
+        SUM(TOTAL)  AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 2) AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 2) AS "FAILED (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 2) AS "SKIPPED (%)"
+    FROM NIGHTLY_VIEW
+    WHERE OWNER_ID = ''#{currentUserId}''
+    GROUP BY OWNER
+    ORDER BY OWNER';
 
-	total_tests_man_hours_model :=
+	nightly_total_personal_table_model :=
+	'{
+        "columns":[
+           "OWNER",
+           "TOTAL",
+           "PASSED (%)",
+           "FAILED (%)",
+           "SKIPPED (%)"
+         ]
+     }';
+
+	total_last_30_days_personal_sql :=
+	'set schema ''zafira'';
+    SELECT
+        sum(PASSED) AS "PASSED",
+        sum(FAILED) AS "FAILED",
+        sum(KNOWN_ISSUE) AS "KNOWN_ISSUE",
+        sum(SKIPPED) AS "SKIPPED",
+        sum(IN_PROGRESS) AS "IN_PROGRESS",
+        sum(ABORTED) AS "ABORTED",
+        STARTED::date AS "CREATED_AT"
+    FROM BIMONTHLY_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    AND OWNER_ID = ''#{currentUserId}''
+    AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
+    GROUP BY "CREATED_AT"
+    ORDER BY "CREATED_AT";';
+
+	total_last_30_days_personal_model :=
 	'{
          "series": [
              {
                  "axis": "y",
                  "dataset": "dataset",
-                 "key": "ACTUAL",
-                 "label": "ACTUAL",
+                 "key": "PASSED",
+                 "label": "PASSED",
                  "color": "#5cb85c",
                  "thickness": "10px",
                  "type": [
-                     "column"
+                     "line",
+                     "dot",
+                     "area"
                  ],
-                 "id": "ACTUAL",
-                 "visible": true
+                 "id": "PASSED"
              },
              {
                  "axis": "y",
                  "dataset": "dataset",
-                 "key": "ETA",
-                 "label": "ETA",
-                 "color": "#C4C9CE",
+                 "key": "FAILED",
+                 "label": "FAILED",
+                 "color": "#d9534f",
                  "thickness": "10px",
-                 "interpolation": {
-                     "mode": "bundle",
-                     "tension": 1
-                 },
                  "type": [
-                     "dashed-line"
+                     "line",
+                     "dot",
+                     "area"
                  ],
-                 "id": "ETA",
-                 "visible": true
+                 "id": "FAILED"
+             },
+             {
+                 "axis": "y",
+                 "dataset": "dataset",
+                 "key": "KNOWN_ISSUE",
+                 "label": "KNOWN_ISSUE",
+                 "color": "#AA5C33",
+                 "thickness": "10px",
+                 "type": [
+                     "line",
+                     "dot",
+                     "area"
+                 ],
+                 "id": "KNOWN_ISSUE"
+             },
+             {
+                 "axis": "y",
+                 "dataset": "dataset",
+                 "key": "SKIPPED",
+                 "label": "SKIPPED",
+                 "color": "#f0ad4e",
+                 "thickness": "10px",
+                 "type": [
+                     "line",
+                     "dot",
+                     "area"
+                 ],
+                 "id": "SKIPPED"
+             },
+             {
+                 "axis": "y",
+                 "dataset": "dataset",
+                 "key": "ABORTED",
+                 "label": "ABORTED",
+                 "color": "#f0ad4e",
+                 "thickness": "10px",
+                 "type": [
+                     "line",
+                     "dot",
+                     "area"
+                 ],
+                 "id": "ABORTED"
+             },
+             {
+                 "axis": "y",
+                 "dataset": "dataset",
+                 "key": "IN_PROGRESS",
+                 "label": "IN_PROGRESS",
+                 "color": "#3a87ad",
+                 "type": [
+                     "line",
+                     "dot",
+                     "area"
+                 ],
+                 "id": "IN_PROGRESS"
              }
          ],
          "axes": {
@@ -489,544 +670,545 @@ BEGIN
                  "key": "CREATED_AT",
                  "type": "date",
                  "ticks": "functions(value) {return ''wow!''}"
-             },
-             "y": {
-                 "min": "0"
              }
          }
+    }';
+
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('NIGHTLY DETAILS PERSONAL TEST', 'table', nightly_details_personal_sql, nightly_details_personal_model)
+	RETURNING id INTO nightly_details_personal_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('MONTHLY TOTAL PERSONAL TEST', 'piechart', monthly_total_personal_pie_sql, monthly_total_personal_pie_model)
+	RETURNING id INTO monthly_total_personal_pie_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('MONTHLY TOTAL PERSONAL TEST', 'table', monthly_total_personal_table_sql, monthly_total_personal_table_model)
+	RETURNING id INTO monthly_total_personal_table_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY TOTAL PERSONAL TEST', 'table', weekly_total_personal_table_sql, weekly_total_personal_table_model)
+	RETURNING id INTO weekly_total_personal_table_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY TOTAL PERSONAL TEST', 'piechart', weekly_total_personal_pie_sql, weekly_total_personal_pie_model)
+	RETURNING id INTO weekly_total_personal_pie_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('NIGHTLY TOTAL PERSONAL TEST', 'piechart', nightly_total_personal_pie_sql, nightly_total_personal_pie_model)
+	RETURNING id INTO nightly_total_personal_pie_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('NIGHTLY TOTAL PERSONAL TEST', 'table', nightly_total_personal_table_sql, nightly_total_personal_table_model)
+	RETURNING id INTO nightly_total_personal_table_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TEST RESULTS (LAST 30 DAYS) PERSONAL TEST', 'table', total_last_30_days_personal_sql, total_last_30_days_personal_model)
+	RETURNING id INTO total_last_30_days_personal_id;
+
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, nightly_details_personal_id, '{"x":0,"y":28,"width":12,"height":21}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, monthly_total_personal_pie_id, '{"x":8,"y":0,"width":4,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, monthly_total_personal_table_id, '{"x":4,"y":11,"width":4,"height":6}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, weekly_total_personal_table_id, '{"x":8,"y":11,"width":4,"height":6}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, weekly_total_personal_pie_id, '{"x":4,"y":0,"width":4,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, nightly_total_personal_pie_id, '{"x":0,"y":0,"width":4,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, nightly_total_personal_table_id, '{"x":0,"y":11,"width":4,"height":6}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (personal_dashboard_id, total_last_30_days_personal_id, '{"x":0,"y":17,"width":12,"height":11}');
+
+	-- Insert User Performance dashboard data
+    INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('User Performance Test', TRUE) RETURNING id INTO user_performance_dashboard_id;
+
+	personal_total_rate_sql :=
+	'set schema ''zafira'';
+    SELECT
+        OWNER AS "OWNER",
+        sum( passed ) AS "PASSED",
+        sum( failed ) AS "FAILED",
+        sum( skipped ) AS "SKIPPED",
+        round (100.0 * sum( passed ) / (sum( total )), 2) as "PASS RATE"
+    FROM TOTAL_VIEW
+    WHERE OWNER_ID = ''#{currentUserId}''
+    GROUP BY "OWNER"';
+
+	personal_total_rate_model :=
+    '{
+         "columns":[
+            "OWNER",
+            "PASSED",
+            "FAILED",
+            "SKIPPED",
+            "PASS RATE"
+         ]
      }';
 
+	personal_total_tests_man_hours_sql :=
+    'set schema ''zafira'';
+    SELECT
+        SUM(TOTAL_HOURS) AS "MAN-HOURS",
+    	TESTED_AT AS "CREATED_AT"
+    FROM TOTAL_VIEW WHERE OWNER_ID = ''#{currentUserId}''
+    GROUP BY "CREATED_AT"
+    ORDER BY "CREATED_AT"';
 
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'TOTAL TESTS (COUNT)', 'table', total_tests_count_sql, total_tests_count_model)
+	personal_total_tests_man_hours_model :=
+    '{
+      "series": [
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "MAN-HOURS",
+          "label": "MAN-HOURS",
+          "color": "#5cb85c",
+          "thickness": "10px",
+          "type": [
+            "column"
+             ],
+          "id": "MAN-HOURS"
+        }
+      ],
+      "axes": {
+        "x": {
+          "key": "CREATED_AT",
+          "type": "date",
+          "ticks": "functions(value) {return ''wow!''}"
+        },
+        "y": {
+          "min": "0"
+        }
+      }
+    }';
+
+	weekly_test_impl_progress_user_perf_sql :=
+	'set schema ''zafira'';
+    SELECT
+        date_trunc(''week'', TEST_CASES.CREATED_AT)::date AS "CREATED_AT" ,
+        count(*) AS "AMOUNT"
+    FROM TEST_CASES INNER JOIN
+        USERS ON TEST_CASES.PRIMARY_OWNER_ID=USERS.ID
+    WHERE USERS.ID=''#{currentUserId}''
+    GROUP BY 1
+    ORDER BY 1;';
+
+	weekly_test_impl_progress_user_perf_model :=
+	'{
+      "series": [
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "AMOUNT",
+          "label": "INTERPOLATED AMOUNT",
+          "interpolation": {"mode": "bundle", "tension": 0.8},
+          "color": "#f0ad4e",
+          "type": [
+            "line"
+          ],
+          "id": "AMOUNT"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "AMOUNT",
+          "label": "AMOUNT",
+          "color": "#3a87ad",
+          "type": [
+            "column"
+          ],
+          "id": "AMOUNT"
+        }
+      ],
+      "axes": {
+        "x": {
+          "key": "CREATED_AT",
+          "type": "date"
+        },
+        "y": {
+          "min": "0"
+        }
+      }
+    }';
+
+	total_tests_trend_sql :=
+	'set schema ''zafira'';
+    SELECT
+        TESTED_AT AS "MONTH",
+        sum( PASSED ) AS "PASSED",
+        sum( FAILED ) AS "FAILED",
+        sum( SKIPPED ) AS "SKIPPED",
+        sum( IN_PROGRESS ) AS "IN_PROGRESS",
+        sum( ABORTED ) AS "ABORTED",
+        sum( TOTAL ) AS "TOTAL"
+    FROM TOTAL_VIEW
+    WHERE OWNER_ID=''#{currentUserId}''
+    GROUP BY 1
+    ORDER BY 1';
+
+	total_tests_trend_model :=
+    '{
+      "series": [
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "PASSED",
+          "label": "PASSED",
+          "color": "#5cb85c",
+          "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "PASSED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "FAILED",
+          "label": "FAILED",
+          "color": "#d9534f",
+    	  "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "FAILED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "SKIPPED",
+          "label": "SKIPPED",
+          "color": "#f0ad4e",
+    	  "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "SKIPPED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "IN_PROGRESS",
+          "label": "IN_PROGRESS",
+          "color": "#3a87ad",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "IN_PROGRESS"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "ABORTED",
+          "label": "ABORTED",
+          "color": "#aaaaaa",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "ABORTED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "TOTAL",
+          "label": "TOTAL",
+          "color": "#d3d3d3",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "TOTAL"
+        }
+      ],
+      "axes": {
+        "x": {
+          "key": "MONTH",
+          "type": "date",
+          "ticks": "functions(value) {return ''wow!''}"
+        }
+      }
+    }';
+
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('PERSONAL TOTAL RATE TEST', 'table', personal_total_rate_sql, personal_total_rate_model)
+	RETURNING id INTO personal_total_rate_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('PERSONAL TOTAL TESTS (MAN-HOURS) TEST', 'linechart', personal_total_tests_man_hours_sql, personal_total_tests_man_hours_model)
+	RETURNING id INTO personal_total_tests_man_hours_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY TEST IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON) TEST', 'linechart', weekly_test_impl_progress_user_perf_sql, weekly_test_impl_progress_user_perf_model)
+	RETURNING id INTO weekly_test_impl_progress_user_perf_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TOTAL TESTS TREND TEST', 'table', total_tests_trend_sql, total_tests_trend_model)
+	RETURNING id INTO total_tests_trend_id;
+
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (user_performance_dashboard_id, personal_total_rate_id, '{"x": 0, "y": 0, "height": 11, "width": 4}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (user_performance_dashboard_id, personal_total_tests_man_hours_id, '{"x": 4, "y": 0, "height": 11, "width": 8}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (user_performance_dashboard_id, weekly_test_impl_progress_user_perf_id, '{"x": 0, "y": 11, "height": 11, "width": 12}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (user_performance_dashboard_id, total_tests_trend_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
+
+	-- Insert General dashboard data
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('General Test', TRUE) RETURNING id INTO general_dashboard_id;
+
+	total_tests_count_sql :=
+	'set schema ''zafira'';
+    SELECT
+        PROJECT AS "PROJECT",
+        sum(PASSED) AS "PASS",
+        sum(FAILED) AS "FAIL",
+        sum(KNOWN_ISSUE) AS "ISSUE",
+        sum(SKIPPED) AS "SKIP",
+        round (100.0 * sum( passed ) / (sum( total )), 2) as "Pass Rate"
+    FROM TOTAL_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    GROUP BY PROJECT
+    UNION
+    SELECT  ''<B><I>TOTAL</I></B>'' AS "PROJECT",
+        sum(PASSED) AS "PASS",
+        sum(FAILED) AS "FAIL",
+        sum(KNOWN_ISSUE) AS "ISSUE",
+        sum(SKIPPED) AS "SKIP",
+        round (100.0 * sum( passed ) / (sum( total )), 2) as "Pass Rate"
+    FROM TOTAL_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    ORDER BY "PASS" DESC';
+
+	total_tests_count_model :=
+    '{
+        "columns": [
+            "PROJECT",
+            "PASS",
+            "FAIL",
+            "ISSUE",
+            "SKIP",
+            "PASS RATE"
+        ]
+    }';
+
+	total_tests_pie_sql :=
+    'set schema ''zafira'';
+    SELECT
+        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+    FROM TOTAL_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    ORDER BY "value" DESC';
+
+	total_tests_pie_model :=
+    '{
+         "thickness": 20
+     }';
+
+	weekly_test_impl_progress_sql :=
+    'set schema ''zafira'';
+    SELECT
+        date_trunc(''week'', TEST_CASES.CREATED_AT)::date AS "CREATED_AT" ,
+        count(*) AS "AMOUNT"
+    FROM TEST_CASES INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+    INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID=USERS.ID
+    WHERE PROJECTS.NAME LIKE ''#{project}%''
+    GROUP BY 1
+    ORDER BY 1;';
+
+	weekly_test_impl_progress_model :=
+	'{
+        "series": [
+          {
+            "axis": "y",
+            "dataset": "dataset",
+            "key": "AMOUNT",
+            "label": "INTERPOLATED AMOUNT",
+            "interpolation": {"mode": "bundle", "tension": 0.8},
+            "color": "#f0ad4e",
+            "type": [
+              "line"
+            ],
+            "id": "AMOUNT"
+          },
+          {
+            "axis": "y",
+            "dataset": "dataset",
+            "key": "AMOUNT",
+            "label": "AMOUNT",
+            "color": "#3a87ad",
+            "type": [
+              "column"
+            ],
+            "id": "AMOUNT"
+          }
+        ],
+        "axes": {
+          "x": {
+            "key": "CREATED_AT",
+            "type": "date"
+          }
+        }
+    }';
+
+	total_jira_tickets_sql :=
+	'set schema ''zafira'';
+    SELECT
+        PROJECTS.NAME AS "PROJECT",
+        COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
+    FROM TEST_WORK_ITEMS
+        INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID
+        INNER JOIN TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID
+        INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+    WHERE WORK_ITEMS.TYPE=''BUG''
+    AND PROJECTS.NAME LIKE ''#{project}%''
+    GROUP BY "PROJECT"
+    ORDER BY "COUNT" DESC;';
+
+	total_jira_tickets_model :=
+    '{
+        "columns":[
+           "PROJECT",
+           "COUNT"
+        ]
+     }';
+
+	total_tests_man_hours_sql :=
+	'set schema ''zafira'';
+    SELECT
+        SUM(TOTAL_HOURS) AS "ACTUAL",
+        SUM(TOTAL_HOURS) AS "ETA",
+        TESTED_AT AS "CREATED_AT"
+    FROM TOTAL_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    GROUP BY "CREATED_AT"
+    UNION
+    SELECT
+        SUM(TOTAL_HOURS) AS "ACTUAL",
+        ROUND(SUM(TOTAL_HOURS)/extract(day from current_date)
+        * extract(day from date_trunc(''day'', date_trunc(''month'', current_date) + interval ''1 month'') - interval ''1 day'')) AS "ETA",
+        date_trunc(''month'', current_date) AS "CREATED_AT"
+    FROM BIMONTHLY_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    GROUP BY "CREATED_AT"
+    ORDER BY "CREATED_AT";';
+
+	total_tests_man_hours_model :=
+	'{
+        "series": [
+            {
+                "axis": "y",
+                "dataset": "dataset",
+                "key": "ACTUAL",
+                "label": "ACTUAL",
+                "color": "#5cb85c",
+                "thickness": "10px",
+                "type": [
+                    "column"
+                ],
+                "id": "ACTUAL",
+                "visible": true
+            },
+            {
+                "axis": "y",
+                "dataset": "dataset",
+                "key": "ETA",
+                "label": "ETA",
+                "color": "#C4C9CE",
+                "thickness": "10px",
+                "interpolation": {
+                    "mode": "bundle",
+                    "tension": 1
+                },
+                "type": [
+                    "dashed-line"
+                ],
+                "id": "ETA",
+                "visible": true
+            }
+        ],
+        "axes": {
+            "x": {
+                "key": "CREATED_AT",
+                "type": "date",
+                "ticks": "functions(value) {return ''wow!''}"
+            },
+            "y": {
+                "min": "0"
+            }
+        }
+    }';
+
+
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TOTAL TESTS (COUNT) TEST', 'table', total_tests_count_sql, total_tests_count_model)
 	RETURNING id INTO total_tests_count_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'TOTAL TESTS', 'piechart', total_tests_pie_sql, total_tests_pie_model)
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TOTAL TESTS TEST', 'piechart', total_tests_pie_sql, total_tests_pie_model)
 	RETURNING id INTO total_tests_pie_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'WEEKLY TEST IMPLEMENTATION PROGRESS', 'linechart', weekly_test_impl_progress_sql, weekly_test_impl_progress_model)
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY TEST IMPLEMENTATION PROGRESS TEST', 'linechart', weekly_test_impl_progress_sql, weekly_test_impl_progress_model)
 	RETURNING id INTO weekly_test_impl_progress_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'TOTAL JIRA TICKETS', 'table', total_jira_tickets_sql, total_jira_tickets_model)
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TOTAL JIRA TICKETS TEST', 'table', total_jira_tickets_sql, total_jira_tickets_model)
 	RETURNING id INTO total_jira_tickets_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'TOTAL TESTS (MAN-HOURS)', 'linechart', total_tests_man_hours_sql, total_tests_man_hours_model)
+    INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TOTAL TESTS (MAN-HOURS) TEST', 'linechart', total_tests_man_hours_sql, total_tests_man_hours_model)
 	RETURNING id INTO total_tests_man_hours_id;
 
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, total_tests_man_hours_id, '{"x":0,"y":11,"width":12,"height":11}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, total_tests_pie_id, '{"x":0,"y":0,"width":4,"height":11}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, total_tests_count_id, '{"x":4,"y":0,"width":4,"height":11}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, weekly_test_impl_progress_id, '{"x":0,"y":22,"height":11,"width":12}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (general_dashboard_id, total_jira_tickets_id, '{"x":8,"y":0,"width":4,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (general_dashboard_id, total_tests_man_hours_id, '{"x":0,"y":11,"width":12,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (general_dashboard_id, total_tests_pie_id, '{"x":0,"y":0,"width":4,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (general_dashboard_id, total_tests_count_id, '{"x":4,"y":0,"width":4,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (general_dashboard_id, weekly_test_impl_progress_id, '{"x":0,"y":22,"height":11,"width":12}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (general_dashboard_id, total_jira_tickets_id, '{"x":8,"y":0,"width":4,"height":11}');
 
-END$$;
-
-DO $$
-
-DECLARE nightly_dashboard_id zafira.DASHBOARDS.id%TYPE;
-
-	DECLARE nightly_total_id zafira.WIDGETS.id%TYPE;
-	DECLARE nightly_total_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE nightly_total_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE nightly_jira_tickets_id zafira.WIDGETS.id%TYPE;
-	DECLARE nightly_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE nightly_jira_tickets_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE nightly_platform_details_id zafira.WIDGETS.id%TYPE;
-	DECLARE nightly_platform_details_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE nightly_platform_details_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE nightly_details_id zafira.WIDGETS.id%TYPE;
-	DECLARE nightly_details_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE nightly_details_model zafira.WIDGETS.model%TYPE;
-
-BEGIN
-
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Nightly Regression Test', TRUE) RETURNING id INTO nightly_dashboard_id;
-
-	nightly_total_sql :=
-	'set schema ''zafira'';
-   SELECT
-      unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
-      unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
-      unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
-   FROM NIGHTLY_VIEW
-   WHERE
-       PROJECT LIKE ''%#{project}''
-       AND STARTED >= date_trunc(''day'', current_date)
-   ORDER BY "value" DESC';
-
-	nightly_total_model := '
-     {
-      "thickness": 20
-     }';
-
-	nightly_jira_tickets_sql :=
-	'set schema ''zafira'';
-   SELECT PROJECTS.NAME AS "PROJECT",
-     COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
-   FROM TEST_WORK_ITEMS
-   INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID INNER JOIN
-   TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID INNER JOIN
-   PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-   WHERE WORK_ITEMS.TYPE=''BUG''
-   AND PROJECTS.NAME LIKE ''#{project}%''
-   AND TEST_WORK_ITEMS.CREATED_AT >= date_trunc(''day'', current_date)
-   GROUP BY "PROJECT"
-   ORDER BY "COUNT" DESC;';
-
-	nightly_jira_tickets_model := '{"columns" : ["PROJECT", "COUNT"]}';
-
-	nightly_platform_details_sql :=
-	'set schema ''zafira'';
-   SELECT
-   case when (PLATFORM IS NULL AND BROWSER <> '''') then ''WEB''
-        when (PLATFORM = ''*'' AND BROWSER <> '''') then ''WEB''
-        when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
-        when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
-        else PLATFORM end AS "PLATFORM",
-     Build AS "BUILD",
-     sum( PASSED ) AS "PASSED",
-     sum( FAILED ) AS "FAILED",
-     sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
-     sum( SKIPPED) AS "SKIPPED",
-     sum( ABORTED ) AS "ABORTED",
-     sum(TOTAL) AS "TOTAL",
-    round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED (%)",
-    round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED (%)",
-    round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE (%)",
-    round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED (%)",
-    round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
-   FROM NIGHTLY_VIEW
-   WHERE PROJECT LIKE ''%#{project}''
-   AND STARTED >= date_trunc(''day'', current_date)
-   GROUP BY "PLATFORM", "BUILD"
-   ORDER BY "PLATFORM"';
-
-	nightly_platform_details_model :=
-	'{
-     "columns": [
-       "PLATFORM",
-       "BUILD",
-       "PASSED",
-       "FAILED",
-       "KNOWN ISSUE",
-       "SKIPPED",
-       "ABORTED",
-       "TOTAL",
-       "PASSED (%)",
-       "FAILED (%)",
-       "KNOWN ISSUE (%)",
-       "SKIPPED (%)",
-       "ABORTED (%)"
-     ]
-   }';
-
-	nightly_details_sql :=
-	'set schema ''zafira'';
-   SELECT  OWNER AS "OWNER",
-     ''<a href="#{zafiraURL}/#!/dashboards/10?userId='' || OWNER_ID || ''" target="_blank">'' || OWNER || '' - Personal Nightly Board</a>'' AS "REPORT",
-     SUM(PASSED) AS "PASSED",
-     SUM(FAILED) AS "FAILED",
-     SUM(KNOWN_ISSUE) AS "KNOWN ISSUE",
-     SUM(SKIPPED) AS "SKIPPED",
-     SUM(TOTAL) AS "TOTAL",
-     round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
-     round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
-     round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
-     round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
-     round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
-   FROM NIGHTLY_VIEW
-   WHERE
-     PROJECT LIKE ''#{project}%''
-      AND STARTED >= date_trunc(''day'', current_date)
-   GROUP BY OWNER_ID, OWNER
-   ORDER BY OWNER';
-
-	nightly_details_model :=
-	'{
-     "columns": [
-       "OWNER",
-       "REPORT",
-       "PASSED",
-       "FAILED",
-       "KNOWN ISSUE",
-       "SKIPPED",
-       "TOTAL",
-       "PASSED (%)",
-       "FAILED (%)",
-       "KNOWN ISSUE (%)",
-       "SKIPPED (%)"
-     ]
-   }';
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'NIGHTLY TOTAL', 'piechart', nightly_total_sql, nightly_total_model)
-	RETURNING id INTO nightly_total_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'NIGHTLY JIRA TICKETS', 'table', nightly_jira_tickets_sql, nightly_jira_tickets_model)
-	RETURNING id INTO nightly_jira_tickets_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'NIGHTLY PLATFORM DETAILS', 'table', nightly_platform_details_sql, nightly_platform_details_model)
-	RETURNING id INTO nightly_platform_details_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'NIGHTLY DETAILS', 'table', nightly_details_sql, nightly_details_model)
-	RETURNING id INTO nightly_details_id;
-
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (nightly_dashboard_id, nightly_total_id, '{"x":0,"y":0,"height":11,"width":6}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (nightly_dashboard_id, nightly_jira_tickets_id, '{"x":6,"y":0,"height":11,"width":6}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (nightly_dashboard_id, nightly_platform_details_id, '{"x":0,"y":11,"height":11,"width":12}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (nightly_dashboard_id, nightly_details_id, '{"x":0,"y":22,"height":11,"width":12}');
-
-END$$;
-
-DO $$
-
-DECLARE weekly_dashboard_id zafira.DASHBOARDS.id%TYPE;
-
-	DECLARE weekly_total_id zafira.WIDGETS.id%TYPE;
-	DECLARE weekly_total_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE weekly_total_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE test_results_7_id zafira.WIDGETS.id%TYPE;
-	DECLARE test_results_7_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE test_results_7_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE weekly_jira_tickets_id zafira.WIDGETS.id%TYPE;
-	DECLARE weekly_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE weekly_jira_tickets_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE weekly_platform_details_id zafira.WIDGETS.id%TYPE;
-	DECLARE weekly_platform_details_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE weekly_platform_details_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE weekly_details_id zafira.WIDGETS.id%TYPE;
-	DECLARE weekly_details_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE weekly_details_model zafira.WIDGETS.model%TYPE;
-
-BEGIN
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Weekly Regression Test', TRUE) RETURNING id INTO weekly_dashboard_id;
-
-	weekly_total_sql :=
-	'set schema ''zafira'';
-   SELECT
-      unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
-      unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
-      unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
-   FROM WEEKLY_VIEW
-   WHERE
-       PROJECT LIKE ''%#{project}''
-   ORDER BY "value" DESC';
-
-	weekly_total_model := '
-     {
-      "thickness": 20
-     }';
-
-	test_results_7_sql :=
-	'set schema ''zafira'';
-   SELECT
-     sum(PASSED) AS "PASSED",
-     sum(FAILED) AS "FAILED",
-     sum(KNOWN_ISSUE) AS "KNOWN_ISSUE",
-     sum(SKIPPED) AS "SKIPPED",
-     sum(IN_PROGRESS) AS "IN_PROGRESS",
-     sum(ABORTED) AS "ABORTED",
-     STARTED AS "CREATED_AT"
-   FROM BIMONTHLY_VIEW
-   WHERE PROJECT LIKE ''#{project}%''
-   AND STARTED >= date_trunc(''day'', current_date  - interval ''7 day'')
-   GROUP BY STARTED
-   ORDER BY STARTED;';
-
-	test_results_7_model :=
-	'{
-     "series": [
-       {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "PASSED",
-         "label": "PASSED",
-         "color": "#5cb85c",
-         "thickness": "10px",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "PASSED"
-       },
-       {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "FAILED",
-         "label": "FAILED",
-         "color": "#d9534f",
-       "thickness": "10px",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "FAILED"
-       },
-   {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "KNOWN_ISSUE",
-         "label": "KNOWN_ISSUE",
-         "color": "#AA5C33",
-         "thickness": "10px",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "KNOWN_ISSUE"
-       },
-       {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "SKIPPED",
-         "label": "SKIPPED",
-         "color": "#f0ad4e",
-       "thickness": "10px",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "SKIPPED"
-       },
-       {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "ABORTED",
-         "label": "ABORTED",
-         "color": "#f0ad4e",
-       "thickness": "10px",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "ABORTED"
-       },
-       {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "IN_PROGRESS",
-         "label": "IN_PROGRESS",
-         "color": "#3a87ad",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "IN_PROGRESS"
-       }
-     ],
-     "axes": {
-       "x": {
-         "key": "CREATED_AT",
-         "type": "date",
-         "ticks": "functions(value) {return ''wow!''}"
-       }
-     }
-   }';
-
-	weekly_jira_tickets_sql :=
-	'set schema ''zafira'';
-   SELECT PROJECTS.NAME AS "PROJECT",
-     COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
-   FROM TEST_WORK_ITEMS
-   INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID INNER JOIN
-   TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID INNER JOIN
-   PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-   WHERE WORK_ITEMS.TYPE=''BUG''
-   AND PROJECTS.NAME LIKE ''#{project}%''
-   AND TEST_WORK_ITEMS.CREATED_AT >= date_trunc(''day'', date_trunc(''week'', current_date)  - interval ''2 day'')
-   GROUP BY "PROJECT"
-   ORDER BY "COUNT" DESC;';
-
-	weekly_jira_tickets_model := '{"columns" : ["PROJECT", "COUNT"]}';
-
-	weekly_platform_details_sql :=
-	'set schema ''zafira'';
-   SELECT
-   case when (PLATFORM IS NULL AND BROWSER <> '''') then ''WEB''
-        when (PLATFORM = ''*'' AND BROWSER <> '''') then ''WEB''
-        when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
-        when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
-        else PLATFORM end AS "PLATFORM",
-     Build AS "BUILD",
-     sum( PASSED ) AS "PASSED",
-     sum( FAILED ) AS "FAILED",
-     sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
-     sum( SKIPPED) AS "SKIPPED",
-     sum( ABORTED ) AS "ABORTED",
-     sum(TOTAL) AS "TOTAL",
-    round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED (%)",
-    round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED (%)",
-    round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE (%)",
-    round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED (%)",
-    round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
-   FROM WEEKLY_VIEW
-   WHERE PROJECT LIKE ''%#{project}''
-   GROUP BY "PLATFORM", "BUILD"
-   ORDER BY "PLATFORM"';
-
-	weekly_platform_details_model :=
-	'{
-     "columns": [
-       "PLATFORM",
-       "BUILD",
-       "PASSED",
-       "FAILED",
-       "KNOWN ISSUE",
-       "SKIPPED",
-       "ABORTED",
-       "TOTAL",
-       "PASSED (%)",
-       "FAILED (%)",
-       "KNOWN ISSUE (%)",
-       "SKIPPED (%)",
-       "ABORTED (%)"
-     ]
-   }';
-
-	weekly_details_sql :=
-	'set schema ''zafira'';
-   SELECT  OWNER AS "OWNER",
-     ''<a href="#{zafiraURL}/#!/dashboards/10?userId='' || OWNER_ID || ''" target="_blank">'' || OWNER || '' - Personal weekly Board</a>'' AS "REPORT",
-     SUM(PASSED) AS "PASSED",
-     SUM(FAILED) AS "FAILED",
-     SUM(KNOWN_ISSUE) AS "KNOWN ISSUE",
-     SUM(SKIPPED) AS "SKIPPED",
-     SUM(TOTAL) AS "TOTAL",
-     round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
-     round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
-     round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
-     round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
-     round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
-   FROM WEEKLY_VIEW
-   WHERE
-     PROJECT LIKE ''#{project}%''
-   GROUP BY OWNER_ID, OWNER
-   ORDER BY OWNER';
-
-	weekly_details_model :=
-	'{
-     "columns": [
-       "OWNER",
-       "REPORT",
-       "PASSED",
-       "FAILED",
-       "KNOWN ISSUE",
-       "SKIPPED",
-       "TOTAL",
-       "PASSED (%)",
-       "FAILED (%)",
-       "KNOWN ISSUE (%)",
-       "SKIPPED (%)"
-     ]
-   }';
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'WEEKLY TOTAL', 'piechart', weekly_total_sql, weekly_total_model)
-	RETURNING id INTO weekly_total_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'TEST RESULTS (LAST 7 DAYS)', 'linechart', test_results_7_sql, test_results_7_model)
-	RETURNING id INTO test_results_7_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'WEEKLY JIRA TICKETS', 'table', weekly_jira_tickets_sql, weekly_jira_tickets_model)
-	RETURNING id INTO weekly_jira_tickets_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'WEEKLY PLATFORM DETAILS', 'table', weekly_platform_details_sql, weekly_platform_details_model)
-	RETURNING id INTO weekly_platform_details_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'WEEKLY DETAILS', 'table', weekly_details_sql, weekly_details_model)
-	RETURNING id INTO weekly_details_id;
-
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (weekly_dashboard_id, weekly_total_id, '{"x": 0, "y": 0, "height": 11, "width": 4}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (weekly_dashboard_id, test_results_7_id, '{"x": 4, "y": 0, "height": 11, "width": 8}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (weekly_dashboard_id, weekly_jira_tickets_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (weekly_dashboard_id, weekly_platform_details_id, '{"x": 0, "y": 11, "height": 11, "width": 12}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (weekly_dashboard_id, weekly_details_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
-
-END$$;
-
-DO $$
-
-DECLARE monthly_dashboard_id zafira.DASHBOARDS.id%TYPE;
-
-	DECLARE monthly_total_id zafira.WIDGETS.id%TYPE;
-	DECLARE monthly_total_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE monthly_total_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE test_results_30_id zafira.WIDGETS.id%TYPE;
-	DECLARE test_results_30_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE test_results_30_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE monthly_jira_tickets_id zafira.WIDGETS.id%TYPE;
-	DECLARE monthly_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE monthly_jira_tickets_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE monthly_platform_details_id zafira.WIDGETS.id%TYPE;
-	DECLARE monthly_platform_details_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE monthly_platform_details_model zafira.WIDGETS.model%TYPE;
-
-	DECLARE monthly_details_id zafira.WIDGETS.id%TYPE;
-	DECLARE monthly_details_sql zafira.WIDGETS.sql%TYPE;
-	DECLARE monthly_details_model zafira.WIDGETS.model%TYPE;
-
-BEGIN
+	-- Insert Monthly dashboard data
 	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Monthly Regression Test', TRUE) RETURNING id INTO monthly_dashboard_id;
 
-	monthly_total_sql :=
-	'set schema ''zafira'';
-   SELECT
-      unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
-      unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
-      unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
-   FROM BIMONTHLY_VIEW
-   WHERE
-       PROJECT LIKE ''%#{project}''
-       AND STARTED > date_trunc(''month'', current_date  - interval ''1 month'')
-   ORDER BY "value" DESC';
+    monthly_total_sql :=
+    'set schema ''zafira'';
+    SELECT
+        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+    FROM BIMONTHLY_VIEW
+    WHERE
+        PROJECT LIKE ''%#{project}''
+        AND STARTED > date_trunc(''month'', current_date  - interval ''1 month'')
+    ORDER BY "value" DESC';
 
-	monthly_total_model := '
-     {
-      "thickness": 20
+	monthly_total_model :=
+    '{
+        "thickness": 20
      }';
 
 	test_results_30_sql :=
 	'set schema ''zafira'';
-   SELECT
-     sum(PASSED) AS "PASSED",
-     sum(FAILED) AS "FAILED",
-     sum(KNOWN_ISSUE) AS "KNOWN_ISSUE",
-     sum(SKIPPED) AS "SKIPPED",
-     sum(IN_PROGRESS) AS "IN_PROGRESS",
-     sum(ABORTED) AS "ABORTED",
-     STARTED AS "CREATED_AT"
-   FROM BIMONTHLY_VIEW
-   WHERE PROJECT LIKE ''#{project}%''
-   AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
-   GROUP BY STARTED
-   ORDER BY STARTED;';
+    SELECT
+        sum(PASSED) AS "PASSED",
+        sum(FAILED) AS "FAILED",
+        sum(KNOWN_ISSUE) AS "KNOWN_ISSUE",
+        sum(SKIPPED) AS "SKIPPED",
+        sum(IN_PROGRESS) AS "IN_PROGRESS",
+        sum(ABORTED) AS "ABORTED",
+        STARTED::date AS "CREATED_AT"
+    FROM BIMONTHLY_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
+    GROUP BY "CREATED_AT"
+    ORDER BY "CREATED_AT";';
 
 	test_results_30_model :=
 	'{
@@ -1059,194 +1241,615 @@ BEGIN
          ],
          "id": "FAILED"
        },
-   {
+    {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "KNOWN_ISSUE",
+          "label": "KNOWN_ISSUE",
+          "color": "#AA5C33",
+          "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "KNOWN_ISSUE"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "SKIPPED",
+          "label": "SKIPPED",
+          "color": "#f0ad4e",
+        "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "SKIPPED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "ABORTED",
+          "label": "ABORTED",
+          "color": "#f0ad4e",
+        "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "ABORTED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "IN_PROGRESS",
+          "label": "IN_PROGRESS",
+          "color": "#3a87ad",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "IN_PROGRESS"
+        }
+      ],
+      "axes": {
+        "x": {
+          "key": "CREATED_AT",
+          "type": "date",
+          "ticks": "functions(value) {return ''wow!''}"
+        }
+      }
+    }';
+
+	monthly_jira_tickets_sql :=
+	'set schema ''zafira'';
+    SELECT
+        PROJECTS.NAME AS "PROJECT",
+        COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
+    FROM TEST_WORK_ITEMS
+        INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID
+        INNER JOIN TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID
+        INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+    WHERE WORK_ITEMS.TYPE=''BUG''
+    AND PROJECTS.NAME LIKE ''#{project}%''
+    AND TEST_WORK_ITEMS.CREATED_AT > date_trunc(''month'', current_date  - interval ''1 month'')
+    GROUP BY "PROJECT"
+    ORDER BY "COUNT" DESC;';
+
+	monthly_jira_tickets_model :=
+    '{
+        "columns":[
+           "PROJECT",
+           "COUNT"
+        ]
+     }';
+
+	monthly_platform_details_sql :=
+    'set schema ''zafira'';
+    SELECT
+        case when (PLATFORM IS NULL AND BROWSER <> '''') then ''WEB''
+             when (PLATFORM = ''*'' AND BROWSER <> '''') then ''WEB''
+             when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
+             when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
+             else PLATFORM end AS "PLATFORM",
+        Build AS "BUILD",
+        sum( PASSED ) AS "PASSED",
+        sum( FAILED ) AS "FAILED",
+        sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
+        sum( SKIPPED) AS "SKIPPED",
+        sum( ABORTED ) AS "ABORTED",
+        sum(TOTAL) AS "TOTAL",
+        round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED (%)",
+        round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED (%)",
+        round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
+    FROM BIMONTHLY_VIEW
+    WHERE PROJECT LIKE ''%#{project}''
+    AND STARTED > date_trunc(''month'', current_date  - interval ''1 month'')
+    GROUP BY "PLATFORM", "BUILD"
+    ORDER BY "PLATFORM"';
+
+	monthly_platform_details_model :=
+	'{
+      "columns": [
+        "PLATFORM",
+        "BUILD",
+        "PASSED",
+        "FAILED",
+        "KNOWN ISSUE",
+        "SKIPPED",
+        "ABORTED",
+        "TOTAL",
+        "PASSED (%)",
+        "FAILED (%)",
+        "KNOWN ISSUE (%)",
+        "SKIPPED (%)",
+        "ABORTED (%)"
+      ]
+    }';
+
+	monthly_details_sql :=
+	'set schema ''zafira'';
+    SELECT
+        OWNER AS "OWNER",
+        ''<a href="#{zafiraURL}/#!/dashboards/'||personal_dashboard_id||'?userId='' || OWNER_ID || ''" target="_blank">'' || OWNER || '' - Personal Board</a>'' AS "REPORT",
+        SUM(PASSED) AS "PASSED",
+        SUM(FAILED) AS "FAILED",
+        SUM(KNOWN_ISSUE) AS "KNOWN ISSUE",
+        SUM(SKIPPED) AS "SKIPPED",
+        SUM(TOTAL) AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
+        round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
+    FROM BIMONTHLY_VIEW
+    WHERE
+    PROJECT LIKE ''#{project}%''
+    AND STARTED > date_trunc(''month'', current_date  - interval ''1 month'')
+    GROUP BY OWNER_ID, OWNER
+    ORDER BY OWNER';
+
+	monthly_details_model :=
+	'{
+      "columns": [
+        "OWNER",
+        "REPORT",
+        "PASSED",
+        "FAILED",
+        "KNOWN ISSUE",
+        "SKIPPED",
+        "TOTAL",
+        "PASSED (%)",
+        "FAILED (%)",
+        "KNOWN ISSUE (%)",
+        "SKIPPED (%)"
+      ]
+    }';
+
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('MONTHLY TOTAL TEST', 'piechart', monthly_total_sql, monthly_total_model)
+	RETURNING id INTO monthly_total_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TEST RESULTS (LAST 30 DAYS) TEST', 'linechart', test_results_30_sql, test_results_30_model)
+	RETURNING id INTO test_results_30_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('MONTHLY JIRA TICKETS TEST', 'table', monthly_jira_tickets_sql, monthly_jira_tickets_model)
+	RETURNING id INTO monthly_jira_tickets_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('MONTHLY PLATFORM DETAILS TEST', 'table', monthly_platform_details_sql, monthly_platform_details_model)
+	RETURNING id INTO monthly_platform_details_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('MONTHLY DETAILS TEST', 'table', monthly_details_sql, monthly_details_model)
+	RETURNING id INTO monthly_details_id;
+
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (monthly_dashboard_id, monthly_total_id, '{"x": 0, "y": 0, "height": 11, "width": 4}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (monthly_dashboard_id, test_results_30_id, '{"x": 4, "y": 0, "height": 11, "width": 8}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (monthly_dashboard_id, monthly_jira_tickets_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (monthly_dashboard_id, monthly_platform_details_id, '{"x": 0, "y": 11, "height": 11, "width": 12}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (monthly_dashboard_id, monthly_details_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
+
+	-- Insert Weekly dashboard data
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Weekly Regression Test', TRUE) RETURNING id INTO weekly_dashboard_id;
+
+	weekly_total_sql :=
+	'set schema ''zafira'';
+    SELECT
+        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+    FROM WEEKLY_VIEW
+    WHERE
+        PROJECT LIKE ''%#{project}''
+    ORDER BY "value" DESC';
+
+	weekly_total_model :=
+    '{
+         "thickness": 20
+     }';
+
+	test_results_7_sql :=
+	'set schema ''zafira'';
+    SELECT
+        sum(PASSED) AS "PASSED",
+        sum(FAILED) AS "FAILED",
+        sum(KNOWN_ISSUE) AS "KNOWN_ISSUE",
+        sum(SKIPPED) AS "SKIPPED",
+        sum(IN_PROGRESS) AS "IN_PROGRESS",
+        sum(ABORTED) AS "ABORTED",
+        STARTED::date AS "CREATED_AT"
+    FROM BIMONTHLY_VIEW
+    WHERE PROJECT LIKE ''#{project}%''
+    AND STARTED >= date_trunc(''day'', current_date  - interval ''7 day'')
+    GROUP BY "CREATED_AT"
+    ORDER BY "CREATED_AT";';
+
+	test_results_7_model :=
+	'{
+     "series": [
+       {
          "axis": "y",
          "dataset": "dataset",
-         "key": "KNOWN_ISSUE",
-         "label": "KNOWN_ISSUE",
-         "color": "#AA5C33",
+         "key": "PASSED",
+         "label": "PASSED",
+         "color": "#5cb85c",
          "thickness": "10px",
          "type": [
            "line",
            "dot",
            "area"
          ],
-         "id": "KNOWN_ISSUE"
+         "id": "PASSED"
        },
        {
          "axis": "y",
          "dataset": "dataset",
-         "key": "SKIPPED",
-         "label": "SKIPPED",
-         "color": "#f0ad4e",
+         "key": "FAILED",
+         "label": "FAILED",
+         "color": "#d9534f",
        "thickness": "10px",
          "type": [
            "line",
            "dot",
            "area"
          ],
-         "id": "SKIPPED"
+         "id": "FAILED"
        },
-       {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "ABORTED",
-         "label": "ABORTED",
-         "color": "#f0ad4e",
-       "thickness": "10px",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "ABORTED"
-       },
-       {
-         "axis": "y",
-         "dataset": "dataset",
-         "key": "IN_PROGRESS",
-         "label": "IN_PROGRESS",
-         "color": "#3a87ad",
-         "type": [
-           "line",
-           "dot",
-           "area"
-         ],
-         "id": "IN_PROGRESS"
-       }
-     ],
-     "axes": {
-       "x": {
-         "key": "CREATED_AT",
-         "type": "date",
-         "ticks": "functions(value) {return ''wow!''}"
-       }
-     }
-   }';
+    {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "KNOWN_ISSUE",
+          "label": "KNOWN_ISSUE",
+          "color": "#AA5C33",
+          "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "KNOWN_ISSUE"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "SKIPPED",
+          "label": "SKIPPED",
+          "color": "#f0ad4e",
+        "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "SKIPPED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "ABORTED",
+          "label": "ABORTED",
+          "color": "#f0ad4e",
+        "thickness": "10px",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "ABORTED"
+        },
+        {
+          "axis": "y",
+          "dataset": "dataset",
+          "key": "IN_PROGRESS",
+          "label": "IN_PROGRESS",
+          "color": "#3a87ad",
+          "type": [
+            "line",
+            "dot",
+            "area"
+          ],
+          "id": "IN_PROGRESS"
+        }
+      ],
+      "axes": {
+        "x": {
+          "key": "CREATED_AT",
+          "type": "date",
+          "ticks": "functions(value) {return ''wow!''}"
+        }
+      }
+    }';
 
-	monthly_jira_tickets_sql :=
+	weekly_jira_tickets_sql :=
 	'set schema ''zafira'';
-   SELECT PROJECTS.NAME AS "PROJECT",
-     COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
-   FROM TEST_WORK_ITEMS
-   INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID INNER JOIN
-   TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID INNER JOIN
-   PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-   WHERE WORK_ITEMS.TYPE=''BUG''
-   AND PROJECTS.NAME LIKE ''#{project}%''
-   AND TEST_WORK_ITEMS.CREATED_AT > date_trunc(''month'', current_date  - interval ''1 month'')
-   GROUP BY "PROJECT"
-   ORDER BY "COUNT" DESC;';
+    SELECT
+        PROJECTS.NAME AS "PROJECT",
+        COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
+    FROM TEST_WORK_ITEMS
+        INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID
+        INNER JOIN TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID
+        INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+    WHERE WORK_ITEMS.TYPE=''BUG''
+    AND PROJECTS.NAME LIKE ''#{project}%''
+    AND TEST_WORK_ITEMS.CREATED_AT >= date_trunc(''day'', date_trunc(''week'', current_date)  - interval ''2 day'')
+    GROUP BY "PROJECT"
+    ORDER BY "COUNT" DESC;';
 
-	monthly_jira_tickets_model := '{"columns" : ["PROJECT", "COUNT"]}';
+	weekly_jira_tickets_model :=
+    '{
+       "columns":[
+          "PROJECT",
+          "COUNT"
+       ]
+    }';
 
-	monthly_platform_details_sql :=
+	weekly_platform_details_sql :=
 	'set schema ''zafira'';
-   SELECT
-   case when (PLATFORM IS NULL AND BROWSER <> '''') then ''WEB''
-        when (PLATFORM = ''*'' AND BROWSER <> '''') then ''WEB''
-        when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
-        when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
-        else PLATFORM end AS "PLATFORM",
-     Build AS "BUILD",
-     sum( PASSED ) AS "PASSED",
-     sum( FAILED ) AS "FAILED",
-     sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
-     sum( SKIPPED) AS "SKIPPED",
-     sum( ABORTED ) AS "ABORTED",
-     sum(TOTAL) AS "TOTAL",
-    round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED (%)",
-    round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED (%)",
-    round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE (%)",
-    round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED (%)",
-    round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
-   FROM BIMONTHLY_VIEW
-   WHERE PROJECT LIKE ''%#{project}''
-   AND STARTED > date_trunc(''month'', current_date  - interval ''1 month'')
-   GROUP BY "PLATFORM", "BUILD"
-   ORDER BY "PLATFORM"';
+    SELECT
+        case when (PLATFORM IS NULL AND BROWSER <> '''') then ''WEB''
+             when (PLATFORM = ''*'' AND BROWSER <> '''') then ''WEB''
+             when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
+             when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
+             else PLATFORM end AS "PLATFORM",
+        Build AS "BUILD",
+        sum( PASSED ) AS "PASSED",
+        sum( FAILED ) AS "FAILED",
+        sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
+        sum( SKIPPED) AS "SKIPPED",
+        sum( ABORTED ) AS "ABORTED",
+        sum(TOTAL) AS "TOTAL",
+        round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED (%)",
+        round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED (%)",
+        round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
+    FROM WEEKLY_VIEW
+    WHERE PROJECT LIKE ''%#{project}''
+    GROUP BY "PLATFORM", "BUILD"
+    ORDER BY "PLATFORM"';
 
-	monthly_platform_details_model :=
+	weekly_platform_details_model :=
 	'{
-     "columns": [
-       "PLATFORM",
-       "BUILD",
-       "PASSED",
-       "FAILED",
-       "KNOWN ISSUE",
-       "SKIPPED",
-       "ABORTED",
-       "TOTAL",
-       "PASSED (%)",
-       "FAILED (%)",
-       "KNOWN ISSUE (%)",
-       "SKIPPED (%)",
-       "ABORTED (%)"
-     ]
-   }';
+      "columns": [
+        "PLATFORM",
+        "BUILD",
+        "PASSED",
+        "FAILED",
+        "KNOWN ISSUE",
+        "SKIPPED",
+        "ABORTED",
+        "TOTAL",
+        "PASSED (%)",
+        "FAILED (%)",
+        "KNOWN ISSUE (%)",
+        "SKIPPED (%)",
+        "ABORTED (%)"
+      ]
+    }';
 
-	monthly_details_sql :=
+	weekly_details_sql :=
 	'set schema ''zafira'';
-   SELECT  OWNER AS "OWNER",
-     ''<a href="#{zafiraURL}/#!/dashboards/10?userId='' || OWNER_ID || ''" target="_blank">'' || OWNER || '' - Personal monthly Board</a>'' AS "REPORT",
-     SUM(PASSED) AS "PASSED",
-     SUM(FAILED) AS "FAILED",
-     SUM(KNOWN_ISSUE) AS "KNOWN ISSUE",
-     SUM(SKIPPED) AS "SKIPPED",
-     SUM(TOTAL) AS "TOTAL",
-     round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
-     round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
-     round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
-     round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
-     round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
-   FROM BIMONTHLY_VIEW
+    SELECT
+        OWNER AS "OWNER",
+        ''<a href="#{zafiraURL}/#!/dashboards/'||personal_dashboard_id||'?userId='' || OWNER_ID || ''" target="_blank">'' || OWNER || '' - Personal Board</a>'' AS "REPORT",
+        SUM(PASSED) AS "PASSED",
+        SUM(FAILED) AS "FAILED",
+        SUM(KNOWN_ISSUE) AS "KNOWN ISSUE",
+        SUM(SKIPPED) AS "SKIPPED",
+        SUM(TOTAL) AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
+        round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
+   FROM WEEKLY_VIEW
    WHERE
-     PROJECT LIKE ''#{project}%''
-      AND STARTED > date_trunc(''month'', current_date  - interval ''1 month'')
+   PROJECT LIKE ''#{project}%''
    GROUP BY OWNER_ID, OWNER
    ORDER BY OWNER';
 
-	monthly_details_model :=
+	weekly_details_model :=
 	'{
-     "columns": [
-       "OWNER",
-       "REPORT",
-       "PASSED",
-       "FAILED",
-       "KNOWN ISSUE",
-       "SKIPPED",
-       "TOTAL",
-       "PASSED (%)",
-       "FAILED (%)",
-       "KNOWN ISSUE (%)",
-       "SKIPPED (%)"
-     ]
-   }';
+      "columns": [
+        "OWNER",
+        "REPORT",
+        "PASSED",
+        "FAILED",
+        "KNOWN ISSUE",
+        "SKIPPED",
+        "TOTAL",
+        "PASSED (%)",
+        "FAILED (%)",
+        "KNOWN ISSUE (%)",
+        "SKIPPED (%)"
+      ]
+    }';
 
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'MONTHLY TOTAL', 'piechart', monthly_total_sql, monthly_total_model)
-	RETURNING id INTO monthly_total_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY TOTAL TEST', 'piechart', weekly_total_sql, weekly_total_model)
+	RETURNING id INTO weekly_total_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('TEST RESULTS (LAST 7 DAYS) TEST', 'linechart', test_results_7_sql, test_results_7_model)
+	RETURNING id INTO test_results_7_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY JIRA TICKETS TEST', 'table', weekly_jira_tickets_sql, weekly_jira_tickets_model)
+	RETURNING id INTO weekly_jira_tickets_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY PLATFORM DETAILS TEST', 'table', weekly_platform_details_sql, weekly_platform_details_model)
+	RETURNING id INTO weekly_platform_details_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('WEEKLY DETAILS TEST', 'table', weekly_details_sql, weekly_details_model)
+	RETURNING id INTO weekly_details_id;
 
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'TEST RESULTS (LAST 30 DAYS)', 'linechart', test_results_30_sql, test_results_30_model)
-	RETURNING id INTO test_results_30_id;
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (weekly_dashboard_id, weekly_total_id, '{"x": 0, "y": 0, "height": 11, "width": 4}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (weekly_dashboard_id, test_results_7_id, '{"x": 4, "y": 0, "height": 11, "width": 8}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (weekly_dashboard_id, weekly_jira_tickets_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (weekly_dashboard_id, weekly_platform_details_id, '{"x": 0, "y": 11, "height": 11, "width": 12}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (weekly_dashboard_id, weekly_details_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
 
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'MONTHLY JIRA TICKETS', 'table', monthly_jira_tickets_sql, monthly_jira_tickets_model)
-	RETURNING id INTO monthly_jira_tickets_id;
+	-- Insert Nightly dashboard data
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Nightly Regression Test', TRUE) RETURNING id INTO nightly_dashboard_id;
 
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'MONTHLY PLATFORM DETAILS', 'table', monthly_platform_details_sql, monthly_platform_details_model)
-	RETURNING id INTO monthly_platform_details_id;
+	nightly_total_sql :=
+	'set schema ''zafira'';
+    SELECT
+        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''ISSUE'', ''ABORTED'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+    FROM NIGHTLY_VIEW
+    WHERE
+        PROJECT LIKE ''%#{project}''
+        AND STARTED >= date_trunc(''day'', current_date)
+    ORDER BY "value" DESC';
 
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES (
-		'MONTHLY DETAILS', 'table', monthly_details_sql, monthly_details_model)
-	RETURNING id INTO monthly_details_id;
+	nightly_total_model := '
+    {
+        "thickness": 20
+    }';
 
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (monthly_dashboard_id, monthly_total_id, '{"x": 0, "y": 0, "height": 11, "width": 4}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (monthly_dashboard_id, test_results_30_id, '{"x": 4, "y": 0, "height": 11, "width": 8}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (monthly_dashboard_id, monthly_jira_tickets_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (monthly_dashboard_id, monthly_platform_details_id, '{"x": 0, "y": 11, "height": 11, "width": 12}');
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES (monthly_dashboard_id, monthly_details_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
+	nightly_jira_tickets_sql :=
+	'set schema ''zafira'';
+    SELECT
+        PROJECTS.NAME AS "PROJECT",
+        COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
+    FROM TEST_WORK_ITEMS
+    INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID
+    INNER JOIN TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID
+    INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+    WHERE WORK_ITEMS.TYPE=''BUG''
+    AND PROJECTS.NAME LIKE ''#{project}%''
+    AND TEST_WORK_ITEMS.CREATED_AT >= date_trunc(''day'', current_date)
+    GROUP BY "PROJECT"
+    ORDER BY "COUNT" DESC;';
+
+	nightly_jira_tickets_model :=
+    '{
+       "columns":[
+          "PROJECT",
+          "COUNT"
+       ]
+    }';
+
+	nightly_platform_details_sql :=
+	'set schema ''zafira'';
+    SELECT
+        case when (PLATFORM IS NULL AND BROWSER <> '''') then ''WEB''
+            when (PLATFORM = ''*'' AND BROWSER <> '''') then ''WEB''
+            when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
+            when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
+            else PLATFORM end AS "PLATFORM",
+        Build AS "BUILD",
+        sum( PASSED ) AS "PASSED",
+        sum( FAILED ) AS "FAILED",
+        sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
+        sum( SKIPPED) AS "SKIPPED",
+        sum( ABORTED ) AS "ABORTED",
+        sum(TOTAL) AS "TOTAL",
+        round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED (%)",
+        round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED (%)",
+        round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
+    FROM NIGHTLY_VIEW
+    WHERE PROJECT LIKE ''%#{project}''
+    AND STARTED >= date_trunc(''day'', current_date)
+    GROUP BY "PLATFORM", "BUILD"
+    ORDER BY "PLATFORM"';
+
+	nightly_platform_details_model :=
+	'{
+      "columns": [
+        "PLATFORM",
+        "BUILD",
+        "PASSED",
+        "FAILED",
+        "KNOWN ISSUE",
+        "SKIPPED",
+        "ABORTED",
+        "TOTAL",
+        "PASSED (%)",
+        "FAILED (%)",
+        "KNOWN ISSUE (%)",
+        "SKIPPED (%)",
+        "ABORTED (%)"
+      ]
+    }';
+
+	nightly_details_sql :=
+	'set schema ''zafira'';
+    SELECT
+        OWNER AS "OWNER",
+        ''<a href="#{zafiraURL}/#!/dashboards/'||personal_dashboard_id||'?userId='' || OWNER_ID || ''" target="_blank">'' || OWNER || '' - Personal Board</a>'' AS "REPORT",
+        SUM(PASSED) AS "PASSED",
+        SUM(FAILED) AS "FAILED",
+        SUM(KNOWN_ISSUE) AS "KNOWN ISSUE",
+        SUM(SKIPPED) AS "SKIPPED",
+        SUM(TOTAL) AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
+        round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
+    FROM NIGHTLY_VIEW
+    WHERE
+      PROJECT LIKE ''#{project}%''
+       AND STARTED >= date_trunc(''day'', current_date)
+    GROUP BY OWNER_ID, OWNER
+    ORDER BY OWNER';
+
+	nightly_details_model :=
+	'{
+      "columns": [
+        "OWNER",
+        "REPORT",
+        "PASSED",
+        "FAILED",
+        "KNOWN ISSUE",
+        "SKIPPED",
+        "TOTAL",
+        "PASSED (%)",
+        "FAILED (%)",
+        "KNOWN ISSUE (%)",
+        "SKIPPED (%)"
+      ]
+    }';
+
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('NIGHTLY TOTAL TEST', 'piechart', nightly_total_sql, nightly_total_model)
+	RETURNING id INTO nightly_total_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('NIGHTLY JIRA TICKETS TEST', 'table', nightly_jira_tickets_sql, nightly_jira_tickets_model)
+	RETURNING id INTO nightly_jira_tickets_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('NIGHTLY PLATFORM DETAILS TEST', 'table', nightly_platform_details_sql, nightly_platform_details_model)
+	RETURNING id INTO nightly_platform_details_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+    ('NIGHTLY DETAILS TEST', 'table', nightly_details_sql, nightly_details_model)
+	RETURNING id INTO nightly_details_id;
+
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (nightly_dashboard_id, nightly_total_id, '{"x":0,"y":0,"height":11,"width":6}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (nightly_dashboard_id, nightly_jira_tickets_id, '{"x":6,"y":0,"height":11,"width":6}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (nightly_dashboard_id, nightly_platform_details_id, '{"x":0,"y":11,"height":11,"width":12}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+    (nightly_dashboard_id, nightly_details_id, '{"x":0,"y":22,"height":11,"width":12}');
 
 END$$;
