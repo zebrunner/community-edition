@@ -1,7 +1,7 @@
 QPS Infrastructure
 ==================
 
-QPS-Infra is dockerized QA infrastructure solution for Test Automation. Is is integrated by default with [carina-core](http://www.carina-core.io) open source solution and use jenkins as CI Tool.
+QPS-Infra is dockerized QA infrastructure solution for Test Automation. It is integrated by default with [carina-core](http://www.carina-core.io) open source solution and use jenkins as CI Tool.
 
 * QPS-Infra is built on the top of popular docker solutions, it includes Postgres database, [Zafira Reporting Tool](http://www.carina-core.io), Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, Rabbitmq etc.
 
