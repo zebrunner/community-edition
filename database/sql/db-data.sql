@@ -435,7 +435,7 @@ DECLARE nightly_failures_model zafira.WIDGETS.model%TYPE;
 BEGIN
 
 	-- Insert Failures dashboard data
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('FAILURES ANALYSIS TEST', TRUE) RETURNING id INTO failures_dashboard_id;
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Failures analysis Test', TRUE) RETURNING id INTO failures_dashboard_id;
 
 	error_message_sql :=
 	'set schema ''zafira'';
@@ -2107,7 +2107,7 @@ BEGIN
   SELECT count(*) AS "COUNT",
       ''<a href="#{zafiraURL}/#!/dashboards/'||failures_dashboard_id||'?hashcode='' || max(MESSAGE_HASHCODE)  || ''" target="_blank">Failures Analysis Report</a>'' AS "REPORT",
       substring(MESSAGE from 1 for 210) as "MESSAGE"
-  FROM NIGHTLY_FAILURES
+  FROM NIGHTLY_FAILURES_VIEW
   GROUP BY substring(MESSAGE from 1 for 210)
   HAVING count(*) > 0
   ORDER BY "COUNT" desc, "MESSAGE"';
