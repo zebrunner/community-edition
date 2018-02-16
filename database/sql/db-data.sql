@@ -4,10 +4,10 @@ INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
 	('JIRA_USER', '', 'JIRA'),
 	('JIRA_PASSWORD', '', 'JIRA'),
 	('JIRA_ENABLED', false, 'JIRA'),
-	('JENKINS_URL', '', 'JENKINS'),
-	('JENKINS_USER', '', 'JENKINS'),
-	('JENKINS_API_TOKEN_OR_PASSWORD', '', 'JENKINS'),
-	('JENKINS_ENABLED', false, 'JENKINS'),
+	('JENKINS_URL', 'http://demo.qaprosoft.com/jenkins', 'JENKINS'),
+	('JENKINS_USER', 'admin', 'JENKINS'),
+	('JENKINS_API_TOKEN_OR_PASSWORD', 'changeit', 'JENKINS'),
+	('JENKINS_ENABLED', true, 'JENKINS'),
 	('SLACK_WEB_HOOK_URL', '', 'SLACK'),
 	('SLACK_ENABLED', false, 'SLACK'),
 	('EMAIL_HOST', '', 'EMAIL'),
@@ -24,12 +24,12 @@ INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
 	('KEY', '', 'CRYPTO'),
 	('CRYPTO_KEY_SIZE', '128', 'CRYPTO'),
 	('CRYPTO_KEY_TYPE', 'AES', 'CRYPTO'),
-	('RABBITMQ_HOST', 'localhost', 'RABBITMQ'),
+	('RABBITMQ_HOST', 'demo.qaprosoft.com', 'RABBITMQ'),
 	('RABBITMQ_PORT', '5672', 'RABBITMQ'),
 	('RABBITMQ_USER', 'qpsdemo', 'RABBITMQ'),
 	('RABBITMQ_PASSWORD', 'qpsdemo', 'RABBITMQ'),
-	('RABBITMQ_WS', 'http://localhost:15674/stomp', 'RABBITMQ'),
-	('RABBITMQ_ENABLED', false, 'RABBITMQ'),
+	('RABBITMQ_WS', 'http://demo.qaprosoft.com/stomp', 'RABBITMQ'),
+	('RABBITMQ_ENABLED', true, 'RABBITMQ'),
 	('COMPANY_LOGO_URL', null, null);
 
 INSERT INTO zafira.PROJECTS (NAME, DESCRIPTION) VALUES ('UNKNOWN', '');
@@ -1801,9 +1801,9 @@ BEGIN
 	nightly_total_sql :=
 	'set schema ''zafira'';
     SELECT
-        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''IN PROGRESS'', ''KNOWN ISSUE'', ''ABORTED'']) AS "label",
-        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#4385F5'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
-        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), sum(IN_PROGRESS), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''KNOWN ISSUE'', ''ABORTED'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
     FROM NIGHTLY_VIEW
     WHERE
         PROJECT LIKE ''%#{project}''
