@@ -54,13 +54,13 @@ services:
     depends_on:
      - "jenkins-master"
     restart: always
-  selenium-hub:
-    image: qaprosoft/selenium-hub
-    env_file:
-     - variables.env
-    ports:
-     - "4444:4444"
-    restart: always
+#  selenium-hub:
+#    image: qaprosoft/selenium-hub
+#    env_file:
+#     - variables.env
+#    ports:
+#     - "4444:4444"
+#    restart: always
   sonarqube:
     image: qaprosoft/sonarqube
     env_file:
@@ -78,22 +78,42 @@ services:
      - 15674:15674
      - 5672:5672
     restart: always
-  chrome:
-    image: selenium/node-chrome
-    environment:
-    - HUB_HOST=selenium-hub
-    - NODE_MAX_INSTANCES=5
-    - NODE_MAX_SESSION=5
+#  chrome:
+#    image: selenium/node-chrome
+#    environment:
+#    - HUB_HOST=selenium-hub
+#    - NODE_MAX_INSTANCES=5
+#    - NODE_MAX_SESSION=5
+#    volumes:
+#    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
+#    depends_on:
+#     - "selenium-hub"
+#  firefox:
+#    image: selenium/node-firefox
+#    environment:
+#    - HUB_HOST=selenium-hub
+#    - NODE_MAX_INSTANCES=5
+#    - NODE_MAX_SESSION=5
+#    depends_on:
+#     - "selenium-hub"
+  selenoid:
+    network_mode: bridge
+    image: aerokube/selenoid:latest-release
     volumes:
-    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
-    depends_on:
-     - "selenium-hub"
-  firefox:
-    image: selenium/node-firefox
+      - "./selenoid:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./selenoid/video:/opt/selenoid/video"
     environment:
-    - HUB_HOST=selenium-hub
-    - NODE_MAX_INSTANCES=5
-    - NODE_MAX_SESSION=5
-    depends_on:
-     - "selenium-hub"
+      - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
+    ports:
+      - "4444:4444"
+  selenoid-ui:
+    image: "aerokube/selenoid-ui"
+    network_mode: bridge
+    links:
+      - selenoid
+    ports:
+      - "8080:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
 
