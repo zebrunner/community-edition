@@ -10,7 +10,7 @@ services:
     depends_on:
      - "zafira"
      - "jenkins-master"
-     - "selenium-hub"
+#     - "selenium-hub"
     restart: always
   db:
     image: qaprosoft/postgres:9.6
