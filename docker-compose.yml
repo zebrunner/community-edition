@@ -5,12 +5,13 @@ services:
     volumes:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
      - ./nginx/conf.d:/etc/nginx/conf.d
+     - ./nginx/html:/usr/share/nginx/html
     ports:
      - "80:80"
     depends_on:
      - "zafira"
      - "jenkins-master"
-     - "selenium-hub"
+#     - "selenium-hub"
     restart: always
   db:
     image: qaprosoft/postgres:9.6
@@ -23,16 +24,17 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira
+    image: qaprosoft/zafira:3.0.68
     env_file:
      - variables.env
+    #keep only for debugging purposes
     ports:
      - "8001:8001"
     depends_on:
      - "db"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master
+    image: qaprosoft/jenkins-master:2.0
     env_file:
      - variables.env
     volumes:
@@ -42,7 +44,7 @@ services:
     ports:
      - "50000:50000"
     restart: always
-  jenkins-slave-api:
+  jenkins-slave:
     image: qaprosoft/jenkins-slave
     env_file:
      - variables.env
@@ -54,13 +56,13 @@ services:
     depends_on:
      - "jenkins-master"
     restart: always
-  selenium-hub:
-    image: qaprosoft/selenium-hub
-    env_file:
-     - variables.env
-    ports:
-     - "4444:4444"
-    restart: always
+#  selenium-hub:
+#    image: qaprosoft/selenium-hub
+#    env_file:
+#     - variables.env
+#    ports:
+#     - "4444:4444"
+#    restart: always
   sonarqube:
     image: qaprosoft/sonarqube
     env_file:
@@ -78,22 +80,44 @@ services:
      - 15674:15674
      - 5672:5672
     restart: always
-  chrome:
-    image: selenium/node-chrome
-    environment:
-    - HUB_HOST=selenium-hub
-    - NODE_MAX_INSTANCES=5
-    - NODE_MAX_SESSION=5
+#  chrome:
+#    image: selenium/node-chrome
+#    environment:
+#    - HUB_HOST=selenium-hub
+#    - NODE_MAX_INSTANCES=5
+#    - NODE_MAX_SESSION=5
+#    volumes:
+#    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
+#    depends_on:
+#     - "selenium-hub"
+#  firefox:
+#    image: selenium/node-firefox
+#    environment:
+#    - HUB_HOST=selenium-hub
+#    - NODE_MAX_INSTANCES=5
+#    - NODE_MAX_SESSION=5
+#    depends_on:
+#     - "selenium-hub"
+  selenoid:
+    network_mode: bridge
+    image: aerokube/selenoid:latest-release
     volumes:
-    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
-    depends_on:
-     - "selenium-hub"
-  firefox:
-    image: selenium/node-firefox
+     - "./selenoid:/etc/selenoid"
+     - "/var/run/docker.sock:/var/run/docker.sock"
+     - "./selenoid/video:/opt/selenoid/video"
     environment:
-    - HUB_HOST=selenium-hub
-    - NODE_MAX_INSTANCES=5
-    - NODE_MAX_SESSION=5
+     - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
+    ports:
+     - "4444:4444"
+  selenoid-ui:
+    image: "aerokube/selenoid-ui"
+    network_mode: bridge
+    links:
+     - selenoid
+    ports:
+     - "8080:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
     depends_on:
-     - "selenium-hub"
+     - selenoid
 

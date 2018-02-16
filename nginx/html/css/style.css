@@ -1,0 +1,41 @@
+
+body {
+	overflow-x: hidden;
+  background-color: #eef0f3 !important;
+}
+
+f {
+  font-family: 'Montserrat Black', sans-serif;
+}
+
+.welcome {
+  padding-left: 20px;
+  margin-bottom: 60px;
+  font-size: 25px;
+  font-family: 'Montserrat', sans-serif;
+  color: #696974;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0;
+    z-index: 10000;
+    transition: all 0.2s ease-in-out;
+    height: 80px;
+    background-color:transparent;
+    text-align: center;
+    line-height: 40px;
+}
+
+
+.page-section {
+    padding: 50px 0;
+}
+
+
+
+
+}

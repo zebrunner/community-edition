@@ -4,10 +4,10 @@ INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
 	('JIRA_USER', '', 'JIRA'),
 	('JIRA_PASSWORD', '', 'JIRA'),
 	('JIRA_ENABLED', false, 'JIRA'),
-	('JENKINS_URL', '', 'JENKINS'),
-	('JENKINS_USER', '', 'JENKINS'),
-	('JENKINS_API_TOKEN_OR_PASSWORD', '', 'JENKINS'),
-	('JENKINS_ENABLED', false, 'JENKINS'),
+	('JENKINS_URL', 'http://demo.qaprosoft.com/jenkins', 'JENKINS'),
+	('JENKINS_USER', 'admin', 'JENKINS'),
+	('JENKINS_API_TOKEN_OR_PASSWORD', 'changeit', 'JENKINS'),
+	('JENKINS_ENABLED', true, 'JENKINS'),
 	('SLACK_WEB_HOOK_URL', '', 'SLACK'),
 	('SLACK_ENABLED', false, 'SLACK'),
 	('EMAIL_HOST', '', 'EMAIL'),
@@ -24,12 +24,12 @@ INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
 	('KEY', '', 'CRYPTO'),
 	('CRYPTO_KEY_SIZE', '128', 'CRYPTO'),
 	('CRYPTO_KEY_TYPE', 'AES', 'CRYPTO'),
-	('RABBITMQ_HOST', 'localhost', 'RABBITMQ'),
+	('RABBITMQ_HOST', 'demo.qaprosoft.com', 'RABBITMQ'),
 	('RABBITMQ_PORT', '5672', 'RABBITMQ'),
 	('RABBITMQ_USER', 'qpsdemo', 'RABBITMQ'),
 	('RABBITMQ_PASSWORD', 'qpsdemo', 'RABBITMQ'),
-	('RABBITMQ_WS', 'http://localhost:15674/stomp', 'RABBITMQ'),
-	('RABBITMQ_ENABLED', false, 'RABBITMQ'),
+	('RABBITMQ_WS', 'http://demo.qaprosoft.com/stomp', 'RABBITMQ'),
+	('RABBITMQ_ENABLED', true, 'RABBITMQ'),
 	('COMPANY_LOGO_URL', null, null);
 
 INSERT INTO zafira.PROJECTS (NAME, DESCRIPTION) VALUES ('UNKNOWN', '');
@@ -37,14 +37,7 @@ INSERT INTO zafira.PROJECTS (NAME, DESCRIPTION) VALUES ('UNKNOWN', '');
 
 DO $$
 DECLARE GROUP_ID zafira.GROUP_PERMISSIONS.id%TYPE;
-DECLARE dashboard_id zafira.DASHBOARDS.id%TYPE;
-DECLARE widget_id zafira.WIDGETS.id%TYPE;
 DECLARE USER_ID zafira.USER_PREFERENCES.id%TYPE;
-
-DECLARE general_dashboard_id zafira.DASHBOARDS.id%TYPE;
-DECLARE result_widget_id zafira.WIDGETS.id%TYPE;
-DECLARE top_widget_id zafira.WIDGETS.id%TYPE;
-DECLARE progress_widget_id zafira.WIDGETS.id%TYPE;
 
 BEGIN
 
@@ -125,169 +118,6 @@ BEGIN
 		('DEFAULT_DASHBOARD', 'General', USER_ID),
 		('THEME', '32', USER_ID);
 
-  INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('User Performance', TRUE) RETURNING id INTO dashboard_id;
-
-  INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES ('Performance widget', 'linechart',
-	'set schema zafira;
-SELECT TEST_CONFIGS.ENV || "-" || TEST_CONFIGS.DEVICE AS env,
-	TEST_METRICS.OPERATION,
-	TEST_METRICS.ELAPSED AS "ELAPSED",
-	TEST_METRICS.CREATED_AT AS "CREATED_AT"
-FROM TEST_METRICS INNER JOIN
-	TESTS ON TEST_METRICS.TEST_ID = TESTS.ID INNER JOIN
-	TEST_CONFIGS ON TEST_CONFIGS.ID = TESTS.TEST_CONFIG_ID
-WHERE TESTS.TEST_CASE_ID = #{test_case_id} #{time_step}
-ORDER BY env, "CREATED_AT"',
-    '{"series":[{"axis":"y","dataset":"dataset","key":"ELAPSED","label":"ELAPSED","color":"#5cb85c","thickness":"10px",
-    	"type":["line","dot"],"id":"ELAPSED"}],"axes":{"x":{"key":"CREATED_AT","type":"int","ticks": "functions(value) {return ''wow!''}"}}}')
-    RETURNING id INTO widget_id;
-
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, POSITION, SIZE, LOCATION) VALUES (dashboard_id, widget_id, 1, 12, '{"x": 0, "y": 0, "height": 11, "width": 12}');
-
-
-
-
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('General', FALSE) RETURNING id INTO general_dashboard_id;
-
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES ('Test results (last 30 days)', 'linechart',
-		'set schema ''zafira'';
-SELECT
-	sum( case when TESTS.STATUS = ''PASSED'' then 1 else 0 end ) AS "PASSED",
-	sum( case when TESTS.STATUS = ''FAILED'' then 1 else 0 end ) AS "FAILED",
-	sum( case when TESTS.STATUS = ''SKIPPED'' then 1 else 0 end ) AS "SKIPPED",
-	sum( case when TESTS.STATUS = ''IN_PROGRESS'' then 1 else 0 end ) AS "INCOMPLETE",
-	TESTS.CREATED_AT::date AS "CREATED_AT"
-FROM
-	TESTS INNER JOIN
-TEST_RUNS ON TESTS.TEST_RUN_ID = TEST_RUNS.ID INNER JOIN
-PROJECTS ON TEST_RUNS.PROJECT_ID = PROJECTS.ID
-WHERE
-	TESTS.CREATED_AT::date >= (current_date - 30) AND PROJECTS.NAME LIKE ''#{project}%''
-GROUP BY TESTS.CREATED_AT::date
-ORDER BY TESTS.CREATED_AT::date;',
-'{
-  "series": [
-    {
-      "axis": "y",
-      "dataset": "dataset",
-      "key": "PASSED",
-      "label": "PASSED",
-      "color": "#5cb85c",
-      "thickness": "10px",
-      "type": [
-        "line",
-        "dot",
-        "area"
-      ],
-      "id": "PASSED"
-    },
-    {
-      "axis": "y",
-      "dataset": "dataset",
-      "key": "FAILED",
-      "label": "FAILED",
-      "color": "#d9534f",
-	  "thickness": "10px",
-      "type": [
-        "line",
-        "dot",
-        "area"
-      ],
-      "id": "FAILED"
-    },
-    {
-      "axis": "y",
-      "dataset": "dataset",
-      "key": "SKIPPED",
-      "label": "SKIPPED",
-      "color": "#f0ad4e",
-	  "thickness": "10px",
-      "type": [
-        "line",
-        "dot",
-        "area"
-      ],
-      "id": "SKIPPED"
-    },
-    {
-      "axis": "y",
-      "dataset": "dataset",
-      "key": "INCOMPLETE",
-      "label": "INCOMPLETE",
-      "color": "#3a87ad",
-      "type": [
-        "line",
-        "dot",
-        "area"
-      ],
-      "id": "INCOMPLETE"
-    }
-  ],
-  "axes": {
-    "x": {
-      "key": "CREATED_AT",
-      "type": "date"
-    }
-  }
-}')
-		RETURNING id INTO result_widget_id;
-
-		INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES ('Top 8 test automation developers', 'piechart',
-		'set schema ''zafira'';
-SELECT
-	USERS.USERNAME AS "label",
-	COUNT(*) AS "value",
-	CONCAT(''#'', floor(random()*(999-100+1))+100) AS "color"
-FROM
-	TEST_CASES INNER JOIN
-USERS ON USERS.ID = TEST_CASES.PRIMARY_OWNER_ID INNER JOIN
-PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-WHERE
-	PROJECTS.NAME LIKE ''#{project}%''
-GROUP BY USERS.USERNAME
-ORDER BY "value" DESC
-LIMIT 8;',
-'{}')
-		RETURNING id INTO top_widget_id;
-
-		INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES ('Test implementation progress (last 30 days)', 'linechart',
-		'set schema ''zafira'';
-SELECT
-	TEST_CASES.CREATED_AT::date AS "CREATED_AT",
-	COUNT(*) AS "AMOUNT"
-FROM
-	TEST_CASES INNER JOIN
-PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-WHERE
-	TEST_CASES.CREATED_AT::date >= (current_date - 30) AND PROJECTS.NAME LIKE ''#{project}%''
-GROUP BY TEST_CASES.CREATED_AT::date
-ORDER BY TEST_CASES.CREATED_AT::date ASC;',
-'{
-  "series": [
-    {
-      "axis": "y",
-      "dataset": "dataset",
-      "key": "AMOUNT",
-      "label": "AMOUNT",
-      "color": "#3a87ad",
-      "type": [
-        "column"
-      ],
-      "id": "AMOUNT"
-    }
-  ],
-  "axes": {
-    "x": {
-      "key": "CREATED_AT",
-      "type": "date"
-    }
-  }
-}')
-		RETURNING id INTO progress_widget_id;
-
-		INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, POSITION, SIZE, LOCATION) VALUES (general_dashboard_id, result_widget_id, 0, 12, '{"x": 0, "y": 0, "height": 11, "width": 12}');
-		INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, POSITION, SIZE, LOCATION) VALUES (general_dashboard_id, top_widget_id, 1, 4, '{"x": 0, "y": 11, "height": 11, "width": 4}');
-		INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, POSITION, SIZE, LOCATION) VALUES (general_dashboard_id, progress_widget_id, 3, 8, '{"x": 4, "y": 11, "height": 11, "width": 8}');
 END$$;
 
 DO $$
@@ -435,7 +265,7 @@ DECLARE nightly_failures_model zafira.WIDGETS.model%TYPE;
 BEGIN
 
 	-- Insert Failures dashboard data
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Failures analysis Test', TRUE) RETURNING id INTO failures_dashboard_id;
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Failures analysis', TRUE, 5) RETURNING id INTO failures_dashboard_id;
 
 	error_message_sql :=
 	'set schema ''zafira'';
@@ -499,13 +329,13 @@ BEGIN
     }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('NIGHTLY DETAILS TEST', 'table', error_message_sql, error_message_model)
+		('NIGHTLY DETAILS', 'table', error_message_sql, error_message_model)
 	RETURNING id INTO error_message_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('DETAILED FAILURES REPORT TEST', 'table', detailed_failures_report_sql, detailed_failures_report_model)
+		('DETAILED FAILURES REPORT', 'table', detailed_failures_report_sql, detailed_failures_report_model)
 	RETURNING id INTO detailed_failures_report_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('FAILURES COUNT TEST', 'table', failures_count_sql, failures_count_model)
+		('FAILURES COUNT', 'table', failures_count_sql, failures_count_model)
 	RETURNING id INTO failures_count_id;
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
 		(failures_dashboard_id, error_message_id, '{"x":3,"y":0,"width":9,"height":14}');
@@ -515,7 +345,7 @@ BEGIN
 		(failures_dashboard_id, failures_count_id, '{"x":0,"y":0,"width":3,"height":14}');
 
 	-- Insert Personal dashboard data
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Personal Test', TRUE) RETURNING id INTO personal_dashboard_id;
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Personal', FALSE, 1) RETURNING id INTO personal_dashboard_id;
 
 	nightly_details_personal_sql :=
 	'set schema ''zafira'';
@@ -523,13 +353,13 @@ BEGIN
       OWNER as "OWNER",
       BUILD as "BUILD",
       ''<a href="#{zafiraURL}/#!/tests/runs/''||TEST_RUN_ID||''" target="_blank"> '' || TEST_SUITE_NAME ||'' </a>'' AS "REPORT",
-      eTAF_Report as "eTAF_Report",
+      eTAF_Report as "ETAF_REPORT",
       sum(Passed) || ''/'' || sum(FAILED) + sum(KNOWN_ISSUE) || ''/'' || sum(Skipped) as "P/F/S",
       REBUILD as "REBUILD",
   UPDATED as "UPDATED"
   FROM NIGHTLY_VIEW
   WHERE OWNER_ID=''#{currentUserId}''
-  GROUP BY "OWNER", "BUILD", "REPORT", "eTAF_Report", "REBUILD", "UPDATED"
+  GROUP BY "OWNER", "BUILD", "REPORT", "ETAF_REPORT", "REBUILD", "UPDATED"
   ORDER BY "BUILD" DESC';
 
 	nightly_details_personal_model :=
@@ -628,9 +458,9 @@ BEGIN
 	nightly_total_personal_pie_sql :=
 	'set schema ''zafira'';
     SELECT
-        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''IN PROGRESS'', ''KNOWN ISSUE'', ''ABORTED'']) AS "label",
-        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#4385F5'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
-        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(IN_PROGRESS), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
+        unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''KNOWN ISSUE'', ''ABORTED'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[SUM(PASSED), SUM(FAILED), SUM(SKIPPED), SUM(KNOWN_ISSUE), SUM(ABORTED)]) AS "value"
     FROM NIGHTLY_VIEW
     WHERE
         PROJECT LIKE ''#{project}%''
@@ -789,6 +619,7 @@ BEGIN
   FROM NIGHTLY_FAILURES_VIEW
   WHERE
       OWNER_ID = #{currentUserId}
+      AND MESSAGE IS NOT NULL
   GROUP BY "ENV", substring(MESSAGE from 1 for 210), "REBUILD"
   ORDER BY "COUNT" DESC';
 
@@ -804,28 +635,28 @@ BEGIN
   }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('NIGHTLY DETAILS PERSONAL TEST', 'table', nightly_details_personal_sql, nightly_details_personal_model)
+		('NIGHTLY DETAILS PERSONAL', 'table', nightly_details_personal_sql, nightly_details_personal_model)
 	RETURNING id INTO nightly_details_personal_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('MONTHLY TOTAL PERSONAL TEST', 'piechart', monthly_total_personal_pie_sql, monthly_total_personal_pie_model)
+		('MONTHLY TOTAL PERSONAL', 'piechart', monthly_total_personal_pie_sql, monthly_total_personal_pie_model)
 	RETURNING id INTO monthly_total_personal_pie_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('MONTHLY TOTAL PERSONAL TEST', 'table', monthly_total_personal_table_sql, monthly_total_personal_table_model)
+		('MONTHLY TOTAL PERSONAL', 'table', monthly_total_personal_table_sql, monthly_total_personal_table_model)
 	RETURNING id INTO monthly_total_personal_table_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('WEEKLY TOTAL PERSONAL TEST', 'table', weekly_total_personal_table_sql, weekly_total_personal_table_model)
+		('WEEKLY TOTAL PERSONAL', 'table', weekly_total_personal_table_sql, weekly_total_personal_table_model)
 	RETURNING id INTO weekly_total_personal_table_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('WEEKLY TOTAL PERSONAL TEST', 'piechart', weekly_total_personal_pie_sql, weekly_total_personal_pie_model)
+		('WEEKLY TOTAL PERSONAL', 'piechart', weekly_total_personal_pie_sql, weekly_total_personal_pie_model)
 	RETURNING id INTO weekly_total_personal_pie_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('NIGHTLY TOTAL PERSONAL TEST', 'piechart', nightly_total_personal_pie_sql, nightly_total_personal_pie_model)
+		('NIGHTLY TOTAL PERSONAL', 'piechart', nightly_total_personal_pie_sql, nightly_total_personal_pie_model)
 	RETURNING id INTO nightly_total_personal_pie_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('NIGHTLY TOTAL PERSONAL TEST', 'table', nightly_total_personal_table_sql, nightly_total_personal_table_model)
+		('NIGHTLY TOTAL PERSONAL', 'table', nightly_total_personal_table_sql, nightly_total_personal_table_model)
 	RETURNING id INTO nightly_total_personal_table_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('TEST RESULTS (LAST 30 DAYS) PERSONAL TEST', 'linechart', total_last_30_days_personal_sql, total_last_30_days_personal_model)
+		('TEST RESULTS (LAST 30 DAYS) PERSONAL', 'linechart', total_last_30_days_personal_sql, total_last_30_days_personal_model)
 	RETURNING id INTO total_last_30_days_personal_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
 		('NIGHTLY - PERSONAL FAILURES', 'table', nightly_personal_failures_sql, nightly_personal_failures_model)
@@ -851,7 +682,7 @@ BEGIN
 		(personal_dashboard_id, nightly_personal_failures_id, '{"x":0,"y":49,"width":12,"height":15}');
 
 	-- Insert User Performance dashboard data
-    INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('User Performance Test', TRUE) RETURNING id INTO user_performance_dashboard_id;
+    INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('User Performance', TRUE, 6) RETURNING id INTO user_performance_dashboard_id;
 
 	personal_total_rate_sql :=
 	'set schema ''zafira'';
@@ -1072,16 +903,16 @@ BEGIN
     }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('PERSONAL TOTAL RATE TEST', 'table', personal_total_rate_sql, personal_total_rate_model)
+    ('PERSONAL TOTAL RATE', 'table', personal_total_rate_sql, personal_total_rate_model)
 	RETURNING id INTO personal_total_rate_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('PERSONAL TOTAL TESTS (MAN-HOURS) TEST', 'linechart', personal_total_tests_man_hours_sql, personal_total_tests_man_hours_model)
+    ('PERSONAL TOTAL TESTS (MAN-HOURS)', 'linechart', personal_total_tests_man_hours_sql, personal_total_tests_man_hours_model)
 	RETURNING id INTO personal_total_tests_man_hours_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('WEEKLY TEST IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON) TEST', 'linechart', weekly_test_impl_progress_user_perf_sql, weekly_test_impl_progress_user_perf_model)
+    ('WEEKLY TEST IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON)', 'linechart', weekly_test_impl_progress_user_perf_sql, weekly_test_impl_progress_user_perf_model)
 	RETURNING id INTO weekly_test_impl_progress_user_perf_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TOTAL TESTS TREND TEST', 'linechart', total_tests_trend_sql, total_tests_trend_model)
+    ('TOTAL TESTS TREND', 'linechart', total_tests_trend_sql, total_tests_trend_model)
 	RETURNING id INTO total_tests_trend_id;
 
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
@@ -1094,7 +925,7 @@ BEGIN
     (user_performance_dashboard_id, total_tests_trend_id, '{"x": 0, "y": 22, "height": 11, "width": 12}');
 
 	-- Insert General dashboard data
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('General Test', TRUE) RETURNING id INTO general_dashboard_id;
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('General', FALSE, 0) RETURNING id INTO general_dashboard_id;
 
 	total_tests_count_sql :=
 	'set schema ''zafira'';
@@ -1390,22 +1221,22 @@ BEGIN
     }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TOTAL TESTS (COUNT) TEST', 'table', total_tests_count_sql, total_tests_count_model)
+    ('TOTAL TESTS (COUNT)', 'table', total_tests_count_sql, total_tests_count_model)
 	RETURNING id INTO total_tests_count_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TOTAL TESTS TEST', 'piechart', total_tests_pie_sql, total_tests_pie_model)
+    ('TOTAL TESTS', 'piechart', total_tests_pie_sql, total_tests_pie_model)
 	RETURNING id INTO total_tests_pie_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('WEEKLY TEST IMPLEMENTATION PROGRESS TEST', 'linechart', weekly_test_impl_progress_sql, weekly_test_impl_progress_model)
+    ('WEEKLY TEST IMPLEMENTATION PROGRESS', 'linechart', weekly_test_impl_progress_sql, weekly_test_impl_progress_model)
 	RETURNING id INTO weekly_test_impl_progress_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TOTAL JIRA TICKETS TEST', 'table', total_jira_tickets_sql, total_jira_tickets_model)
+    ('TOTAL JIRA TICKETS', 'table', total_jira_tickets_sql, total_jira_tickets_model)
 	RETURNING id INTO total_jira_tickets_id;
     INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TOTAL TESTS (MAN-HOURS) TEST', 'linechart', total_tests_man_hours_sql, total_tests_man_hours_model)
+    ('TOTAL TESTS (MAN-HOURS)', 'linechart', total_tests_man_hours_sql, total_tests_man_hours_model)
 	RETURNING id INTO total_tests_man_hours_id;
     INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TOTAL TESTS (BY MONTH) TEST', 'linechart', total_tests_by_month_sql, total_tests_by_month_model)
+    ('TOTAL TESTS (BY MONTH)', 'linechart', total_tests_by_month_sql, total_tests_by_month_model)
 	RETURNING id INTO total_tests_by_month_id;
 
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
@@ -1422,7 +1253,7 @@ BEGIN
     (general_dashboard_id, total_tests_by_month_id, '{"x":4,"y":11,"width":8,"height":11}');
 
 	-- Insert Monthly dashboard data
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Monthly Regression Test', TRUE) RETURNING id INTO monthly_dashboard_id;
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Monthly Regression', FALSE, 4) RETURNING id INTO monthly_dashboard_id;
 
     monthly_total_sql :=
     'set schema ''zafira'';
@@ -1678,19 +1509,19 @@ BEGIN
     }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('MONTHLY TOTAL TEST', 'piechart', monthly_total_sql, monthly_total_model)
+    ('MONTHLY TOTAL', 'piechart', monthly_total_sql, monthly_total_model)
 	RETURNING id INTO monthly_total_id;
     INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('MONTHLY TOTAL (%) TEST', 'piechart', monthly_total_percent_sql, monthly_total_percent_model)
+    ('MONTHLY TOTAL (%)', 'piechart', monthly_total_percent_sql, monthly_total_percent_model)
 	RETURNING id INTO monthly_total_percent_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TEST RESULTS (LAST 30 DAYS) TEST', 'linechart', test_results_30_sql, test_results_30_model)
+    ('TEST RESULTS (LAST 30 DAYS)', 'linechart', test_results_30_sql, test_results_30_model)
 	RETURNING id INTO test_results_30_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('MONTHLY PLATFORM DETAILS TEST', 'table', monthly_platform_details_sql, monthly_platform_details_model)
+    ('MONTHLY PLATFORM DETAILS', 'table', monthly_platform_details_sql, monthly_platform_details_model)
 	RETURNING id INTO monthly_platform_details_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('MONTHLY DETAILS TEST', 'table', monthly_details_sql, monthly_details_model)
+    ('MONTHLY DETAILS', 'table', monthly_details_sql, monthly_details_model)
 	RETURNING id INTO monthly_details_id;
 
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
@@ -1705,7 +1536,7 @@ BEGIN
     (monthly_dashboard_id, monthly_details_id, '{"x":0,"y":11,"height":11,"width":12}');
 
 	-- Insert Weekly dashboard data
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Weekly Regression Test', TRUE) RETURNING id INTO weekly_dashboard_id;
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Weekly Regression', FALSE, 3) RETURNING id INTO weekly_dashboard_id;
 
 	weekly_total_sql :=
 	'set schema ''zafira'';
@@ -1938,19 +1769,19 @@ BEGIN
     }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('WEEKLY TOTAL TEST', 'piechart', weekly_total_sql, weekly_total_model)
+    ('WEEKLY TOTAL', 'piechart', weekly_total_sql, weekly_total_model)
 	RETURNING id INTO weekly_total_id;
     INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('WEEKLY TOTAL (%) TEST', 'piechart', weekly_total_percent_sql, weekly_total_percent_model)
+    ('WEEKLY TOTAL (%)', 'piechart', weekly_total_percent_sql, weekly_total_percent_model)
 	RETURNING id INTO weekly_total_percent_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('TEST RESULTS (LAST 7 DAYS) TEST', 'linechart', test_results_7_sql, test_results_7_model)
+    ('TEST RESULTS (LAST 7 DAYS)', 'linechart', test_results_7_sql, test_results_7_model)
 	RETURNING id INTO test_results_7_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('WEEKLY PLATFORM DETAILS TEST', 'table', weekly_platform_details_sql, weekly_platform_details_model)
+    ('WEEKLY PLATFORM DETAILS', 'table', weekly_platform_details_sql, weekly_platform_details_model)
 	RETURNING id INTO weekly_platform_details_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('WEEKLY DETAILS TEST', 'table', weekly_details_sql, weekly_details_model)
+    ('WEEKLY DETAILS', 'table', weekly_details_sql, weekly_details_model)
 	RETURNING id INTO weekly_details_id;
 
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
@@ -1965,7 +1796,7 @@ BEGIN
     (weekly_dashboard_id, weekly_details_id, '{"x":0,"y":11,"height":11,"width":12}');
 
 	-- Insert Nightly dashboard data
-	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN) VALUES ('Nightly Regression Test', TRUE) RETURNING id INTO nightly_dashboard_id;
+	INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Nightly Regression', FALSE, 2) RETURNING id INTO nightly_dashboard_id;
 
 	nightly_total_sql :=
 	'set schema ''zafira'';
@@ -1976,7 +1807,6 @@ BEGIN
     FROM NIGHTLY_VIEW
     WHERE
         PROJECT LIKE ''%#{project}''
-        AND STARTED >= date_trunc(''day'', current_date)
     ORDER BY "value" DESC';
 
 	nightly_total_model := '
@@ -1987,17 +1817,18 @@ BEGIN
 	nightly_total_percent_sql :=
 	'set schema ''zafira'';
     SELECT
-       unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''IN PROGRESS'', ''KNOWN ISSUE'', ''ABORTED'']) AS "label",
-       unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#4385F5'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+       unnest(array[''PASSED'', ''FAILED'', ''SKIPPED'', ''KNOWN ISSUE'', ''ABORTED'']) AS "label",
+       unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
        unnest(
         array[round(100.0 * sum(PASSED)/sum(TOTAL), 2),
             round(100.0 * sum(FAILED)/sum(TOTAL), 2),
             round(100.0 * sum(SKIPPED)/sum(TOTAL), 2),
-            round(100.0 * sum(IN_PROGRESS)/sum(TOTAL), 2),
             round(100.0 * sum(KNOWN_ISSUE)/sum(TOTAL), 2),
             round(100.0 * sum(ABORTED)/sum(TOTAL), 2)
                    ]) AS "value"
     FROM NIGHTLY_VIEW
+	  WHERE
+        PROJECT LIKE ''%#{project}''
     ORDER BY "value" DESC';
 
 	nightly_total_percent_model :=
@@ -2027,7 +1858,6 @@ BEGIN
         round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
     FROM NIGHTLY_VIEW
     WHERE PROJECT LIKE ''%#{project}''
-    AND STARTED >= date_trunc(''day'', current_date)
     GROUP BY "PLATFORM", "BUILD"
     ORDER BY "PLATFORM"';
 
@@ -2068,7 +1898,6 @@ BEGIN
     FROM NIGHTLY_VIEW
     WHERE
       PROJECT LIKE ''#{project}%''
-       AND STARTED >= date_trunc(''day'', current_date)
     GROUP BY OWNER_ID, OWNER
     ORDER BY OWNER';
 
@@ -2122,22 +1951,22 @@ BEGIN
   }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('NIGHTLY TOTAL TEST', 'piechart', nightly_total_sql, nightly_total_model)
+    ('NIGHTLY TOTAL', 'piechart', nightly_total_sql, nightly_total_model)
 	RETURNING id INTO nightly_total_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('NIGHTLY TOTAL (%) TEST', 'piechart', nightly_total_percent_sql, nightly_total_percent_model)
+    ('NIGHTLY TOTAL (%)', 'piechart', nightly_total_percent_sql, nightly_total_percent_model)
 	RETURNING id INTO nightly_total_percent_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('NIGHTLY PLATFORM DETAILS TEST', 'table', nightly_platform_details_sql, nightly_platform_details_model)
+    ('NIGHTLY PLATFORM DETAILS', 'table', nightly_platform_details_sql, nightly_platform_details_model)
 	RETURNING id INTO nightly_platform_details_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('NIGHTLY DETAILS TEST', 'table', nightly_details_sql, nightly_details_model)
+    ('NIGHTLY DETAILS', 'table', nightly_details_sql, nightly_details_model)
 	RETURNING id INTO nightly_details_id;
   INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-    ('NIGHTLY (DATE) TEST', 'table', nightly_regression_date_sql, nightly_regression_date_model)
+    ('NIGHTLY (DATE)', 'table', nightly_regression_date_sql, nightly_regression_date_model)
 	RETURNING id INTO nightly_regression_date_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('NIGHTLY FAILURES TEST', 'table', nightly_failures_sql, nightly_failures_model)
+		('NIGHTLY FAILURES', 'table', nightly_failures_sql, nightly_failures_model)
 	RETURNING id INTO nightly_failures_id;
 
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
