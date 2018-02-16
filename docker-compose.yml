@@ -23,16 +23,17 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira
+    image: qaprosoft/zafira:3.0.66
     env_file:
      - variables.env
+    #keep only for debugging purposes
     ports:
      - "8001:8001"
     depends_on:
      - "db"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master
+    image: qaprosoft/jenkins-master:2.0
     env_file:
      - variables.env
     volumes:
