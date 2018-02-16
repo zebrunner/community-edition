@@ -5,6 +5,7 @@ services:
     volumes:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
      - ./nginx/conf.d:/etc/nginx/conf.d
+     - ./nginx/html:/usr/share/nginx/html
     ports:
      - "80:80"
     depends_on:
