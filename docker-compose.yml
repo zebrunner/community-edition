@@ -101,20 +101,22 @@ services:
     network_mode: bridge
     image: aerokube/selenoid:latest-release
     volumes:
-      - "./selenoid:/etc/selenoid"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./selenoid/video:/opt/selenoid/video"
+     - "./selenoid:/etc/selenoid"
+     - "/var/run/docker.sock:/var/run/docker.sock"
+     - "./selenoid/video:/opt/selenoid/video"
     environment:
-      - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
+     - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
     ports:
-      - "4444:4444"
+     - "4444:4444"
   selenoid-ui:
     image: "aerokube/selenoid-ui"
     network_mode: bridge
     links:
-      - selenoid
+     - selenoid
     ports:
-      - "8080:8080"
+     - "8080:8080"
     command: ["--selenoid-uri", "http://selenoid:4444"]
+    depends_on:
+     - selenoid
 
