@@ -43,7 +43,7 @@ services:
     ports:
      - "50000:50000"
     restart: always
-  jenkins-slave-api:
+  jenkins-slave:
     image: qaprosoft/jenkins-slave
     env_file:
      - variables.env
