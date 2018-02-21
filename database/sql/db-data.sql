@@ -15,8 +15,8 @@ INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
 	('EMAIL_USER', '', 'EMAIL'),
 	('EMAIL_PASSWORD', '', 'EMAIL'),
 	('EMAIL_ENABLED', false, 'EMAIL'),
-	('AMAZON_ACCESS_KEY', 'AKIAIOBQFZ6YOU2KWKAA', 'AMAZON'),
-	('AMAZON_SECRET_KEY', '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', 'AMAZON'),
+	('AMAZON_ACCESS_KEY', '', 'AMAZON'),
+	('AMAZON_SECRET_KEY', '', 'AMAZON'),
 	('AMAZON_BUCKET', 'zafira', 'AMAZON'),
 	('AMAZON_ENABLED', true, 'AMAZON'),
 	('HIPCHAT_ACCESS_TOKEN', '', 'HIPCHAT'),
@@ -1434,6 +1434,7 @@ BEGIN
              when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
              when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
              else PLATFORM end AS "PLATFORM",
+        TEST_SUITE_NAME AS "SUITE NAME",
         Build AS "BUILD",
         sum( PASSED ) AS "PASSED",
         sum( FAILED ) AS "FAILED",
@@ -1448,13 +1449,14 @@ BEGIN
         round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
     FROM MONTHLY_VIEW
     WHERE PROJECT LIKE ''%#{project}''
-    GROUP BY "PLATFORM", "BUILD"
+    GROUP BY "PLATFORM", "BUILD", "SUITE NAME"
     ORDER BY "PLATFORM"';
 
 	monthly_platform_details_model :=
 	'{
       "columns": [
         "PLATFORM",
+	      "SUITE NAME",
         "BUILD",
         "PASSED",
         "FAILED",
@@ -1694,6 +1696,7 @@ BEGIN
              when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
              when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
              else PLATFORM end AS "PLATFORM",
+        TEST_SUITE_NAME AS "SUITE NAME",
         Build AS "BUILD",
         sum( PASSED ) AS "PASSED",
         sum( FAILED ) AS "FAILED",
@@ -1708,14 +1711,15 @@ BEGIN
         round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
     FROM WEEKLY_VIEW
     WHERE PROJECT LIKE ''%#{project}''
-    GROUP BY "PLATFORM", "BUILD"
+    GROUP BY "PLATFORM", "BUILD", "SUITE NAME"
     ORDER BY "PLATFORM"';
 
 	weekly_platform_details_model :=
 	'{
       "columns": [
         "PLATFORM",
-        "BUILD",
+        "SUITE NAME",
+	      "BUILD",
         "PASSED",
         "FAILED",
         "KNOWN ISSUE",
@@ -1844,6 +1848,7 @@ BEGIN
             when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
             when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
             else PLATFORM end AS "PLATFORM",
+        TEST_SUITE_NAME AS "SUITE NAME",
         Build AS "BUILD",
         sum( PASSED ) AS "PASSED",
         sum( FAILED ) AS "FAILED",
@@ -1858,14 +1863,15 @@ BEGIN
         round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
     FROM NIGHTLY_VIEW
     WHERE PROJECT LIKE ''%#{project}''
-    GROUP BY "PLATFORM", "BUILD"
+    GROUP BY "PLATFORM", "BUILD", "SUITE NAME"
     ORDER BY "PLATFORM"';
 
 	nightly_platform_details_model :=
 	'{
       "columns": [
         "PLATFORM",
-        "BUILD",
+        "SUITE NAME",
+	      "BUILD",
         "PASSED",
         "FAILED",
         "KNOWN ISSUE",
