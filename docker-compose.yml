@@ -34,7 +34,7 @@ services:
      - "db"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.0
+    image: qaprosoft/jenkins-master
     env_file:
      - variables.env
     volumes:
