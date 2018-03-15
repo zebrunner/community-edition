@@ -1434,7 +1434,6 @@ BEGIN
              when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
              when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
              else PLATFORM end AS "PLATFORM",
-        TEST_SUITE_NAME AS "SUITE NAME",
         Build AS "BUILD",
         sum( PASSED ) AS "PASSED",
         sum( FAILED ) AS "FAILED",
@@ -1449,14 +1448,13 @@ BEGIN
         round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
     FROM MONTHLY_VIEW
     WHERE PROJECT LIKE ''%#{project}''
-    GROUP BY "PLATFORM", "BUILD", "SUITE NAME"
+    GROUP BY "PLATFORM", "BUILD"
     ORDER BY "PLATFORM"';
 
 	monthly_platform_details_model :=
 	'{
       "columns": [
         "PLATFORM",
-	      "SUITE NAME",
         "BUILD",
         "PASSED",
         "FAILED",
@@ -1696,7 +1694,6 @@ BEGIN
              when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
              when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
              else PLATFORM end AS "PLATFORM",
-        TEST_SUITE_NAME AS "SUITE NAME",
         Build AS "BUILD",
         sum( PASSED ) AS "PASSED",
         sum( FAILED ) AS "FAILED",
@@ -1711,15 +1708,14 @@ BEGIN
         round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
     FROM WEEKLY_VIEW
     WHERE PROJECT LIKE ''%#{project}''
-    GROUP BY "PLATFORM", "BUILD", "SUITE NAME"
+    GROUP BY "PLATFORM", "BUILD"
     ORDER BY "PLATFORM"';
 
 	weekly_platform_details_model :=
 	'{
       "columns": [
         "PLATFORM",
-        "SUITE NAME",
-	      "BUILD",
+        "BUILD",
         "PASSED",
         "FAILED",
         "KNOWN ISSUE",
@@ -1848,7 +1844,6 @@ BEGIN
             when (PLATFORM IS NULL AND BROWSER = '''') then ''API''
             when (PLATFORM = ''*''  AND BROWSER = '''') then ''API''
             else PLATFORM end AS "PLATFORM",
-        TEST_SUITE_NAME AS "SUITE NAME",
         Build AS "BUILD",
         sum( PASSED ) AS "PASSED",
         sum( FAILED ) AS "FAILED",
@@ -1863,15 +1858,14 @@ BEGIN
         round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED (%)"
     FROM NIGHTLY_VIEW
     WHERE PROJECT LIKE ''%#{project}''
-    GROUP BY "PLATFORM", "BUILD", "SUITE NAME"
+    GROUP BY "PLATFORM", "BUILD"
     ORDER BY "PLATFORM"';
 
 	nightly_platform_details_model :=
 	'{
       "columns": [
         "PLATFORM",
-        "SUITE NAME",
-	      "BUILD",
+        "BUILD",
         "PASSED",
         "FAILED",
         "KNOWN ISSUE",
