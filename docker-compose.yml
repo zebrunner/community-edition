@@ -24,7 +24,7 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira
+    image: qaprosoft/zafira:queued_runs
     env_file:
      - variables.env
     #keep only for debugging purposes
