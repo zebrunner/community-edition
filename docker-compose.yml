@@ -120,4 +120,8 @@ services:
     command: ["--selenoid-uri", "http://selenoid:4444"]
     depends_on:
      - selenoid
-
+  ftp:
+    image: qaprosoft/pure-ftpd:latest
+    ports:
+     - "21:21"
+     - "30000-30009:30000-30009"
