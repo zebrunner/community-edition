@@ -24,10 +24,12 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:queued_runs
+    image: qaprosoft/zafira:3.1.10
     env_file:
      - variables.env
     #keep only for debugging purposes
+    environment:
+     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
     ports:
      - "8001:8001"
     depends_on:
@@ -52,6 +54,7 @@ services:
      - $HOME/.ssh:/root/.ssh
      - $HOME/.m2:/root/.m2
     ports:
+     - "8000:8000"
      - "50001:50000"
     depends_on:
      - "jenkins-master"
