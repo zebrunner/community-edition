@@ -23,15 +23,18 @@ services:
     env_file:
      - variables.env
     restart: always
+  screenshoter:
+    image: selenium/standalone-chrome:latest
+    restart: always
   zafira:
-    image: qaprosoft/zafira:3.1.10
+    image: qaprosoft/zafira
     env_file:
      - variables.env
-    #keep only for debugging purposes
-    environment:
-     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
-    ports:
-     - "8001:8001"
+    #Uncomment only for debugging Zafira
+#    environment:
+#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
+#    ports:
+#     - "8001:8001"
     depends_on:
      - "db"
     restart: always
