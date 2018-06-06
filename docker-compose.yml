@@ -28,7 +28,7 @@ services:
     image: selenium/standalone-chrome:latest
     restart: always
   zafira:
-    image: qaprosoft/zafira:demo
+    image: qaprosoft/zafira:3.1.20
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
@@ -87,24 +87,17 @@ services:
      - 15674:15674
      - 5672:5672
     restart: always
-#  chrome:
-#    image: selenium/node-chrome
-#    environment:
-#    - HUB_HOST=selenium-hub
-#    - NODE_MAX_INSTANCES=5
-#    - NODE_MAX_SESSION=5
-#    volumes:
-#    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
-#    depends_on:
-#     - "selenium-hub"
-#  firefox:
-#    image: selenium/node-firefox
-#    environment:
-#    - HUB_HOST=selenium-hub
-#    - NODE_MAX_INSTANCES=5
-#    - NODE_MAX_SESSION=5
-#    depends_on:
-#     - "selenium-hub"
+  ftp:
+    image: qaprosoft/pure-ftpd:latest
+    ports:
+     - "21:21"
+     - "30000-30009:30000-30009"
+  ggr:
+    image: aerokube/ggr:latest-release
+    volumes:
+      - ./grid-router/:/etc/grid-router:ro
+    network_mode: host
+    restart: always
   selenoid:
     network_mode: bridge
     image: aerokube/selenoid:latest-release
@@ -116,19 +109,5 @@ services:
      - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
     ports:
-     - "4444:4444"
-  selenoid-ui:
-    image: "aerokube/selenoid-ui"
-    network_mode: bridge
-    links:
-     - selenoid
-    ports:
-     - "8080:8080"
-    command: ["--selenoid-uri", "http://selenoid:4444"]
-    depends_on:
-     - selenoid
-  ftp:
-    image: qaprosoft/pure-ftpd:latest
-    ports:
-     - "21:21"
-     - "30000-30009:30000-30009"
+     - "4445:4444"
+
