@@ -1,6 +1,6 @@
 {
     "chrome": {
-        "default": "64.0",
+        "default": "65.0",
         "versions": {
             "63.0": {
                 "image": "selenoid/vnc:chrome_63.0",
@@ -12,6 +12,14 @@
             },
             "64.0": {
                 "image": "selenoid/vnc:chrome_64.0",
+                "port": "4444",
+                "path": "/",
+                "tmpfs": {
+                    "/tmp": "size=128m"
+                }
+            },
+            "65.0": {
+                "image": "selenoid/vnc:chrome_65.0",
                 "port": "4444",
                 "path": "/",
                 "tmpfs": {
