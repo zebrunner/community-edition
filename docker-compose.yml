@@ -63,13 +63,6 @@ services:
     depends_on:
      - "jenkins-master"
     restart: always
-#  selenium-hub:
-#    image: qaprosoft/selenium-hub
-#    env_file:
-#     - variables.env
-#    ports:
-#     - "4444:4444"
-#    restart: always
   sonarqube:
     image: qaprosoft/sonarqube
     env_file:
@@ -92,12 +85,12 @@ services:
     ports:
      - "21:21"
      - "30000-30009:30000-30009"
-  ggr:
-    image: aerokube/ggr:latest-release
-    volumes:
-      - ./grid-router/:/etc/grid-router:ro
-    network_mode: host
-    restart: always
+ # ggr:
+ #   image: aerokube/ggr:latest-release
+ #   volumes:
+ #     - ./grid-router/:/etc/grid-router:ro
+ #   network_mode: host
+ #   restart: always
   selenoid:
     network_mode: bridge
     image: aerokube/selenoid:latest-release
@@ -109,5 +102,5 @@ services:
      - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
     ports:
-     - "4445:4444"
+     - "4444:4444"
 
