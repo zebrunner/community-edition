@@ -44,7 +44,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 * [Selenium Grid](http://demo.qaprosoft.com/grid/console)
 * [Zafira Reporting Tool](http://demo.qaprosoft.com/zafira)
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
-*  Note: replace demo.qaprosoft.com with your actual server name or IP address
+
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
