@@ -25,10 +25,12 @@ services:
      - variables.env
     restart: always
   screenshoter:
-    image: selenium/standalone-chrome:latest
+    image: selenium/standalone-chrome:3.11.0-californium
+    volumes:
+    - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.1.20
+    image: qaprosoft/zafira:3.1.21
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
