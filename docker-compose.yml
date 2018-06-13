@@ -33,11 +33,11 @@ services:
     image: qaprosoft/zafira:3.1.21
     env_file:
      - variables.env
-    #Uncomment only for debugging Zafira
-    environment:
-     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
-    ports:
-     - "8001:8001"
+#    #Uncomment only for debugging Zafira
+#    environment:
+#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
+#    ports:
+#     - "8001:8001"
     depends_on:
      - "db"
     restart: always
