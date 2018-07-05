@@ -31,6 +31,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 * Optional: update default credentials if neccessary
 * Optional: adjust docker-compose.yml file by removing unused services. By default it contains:
   nginx, postgres, zafira, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq  
+* Update username, password in definitions.json for RabbitMQ if you are not using default qpsdemo/qpsdemo user
 
 
 ## Services start/stop/restart
