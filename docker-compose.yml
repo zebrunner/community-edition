@@ -77,6 +77,8 @@ services:
     image: qaprosoft/rabbitmq
     env_file:
      - variables.env
+    volumes:
+     - ./definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
      - 15672:15672
      - 15674:15674
@@ -105,4 +107,3 @@ services:
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
     ports:
      - "4444:4444"
-
