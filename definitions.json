@@ -1,0 +1,47 @@
+{
+	"rabbit_version": "3.6.14",
+	"users": [
+		{
+			"name": "qpsdemo",
+			"password": "qpsdemo",
+			"tags": "administrator"
+		}
+	],
+	"vhosts": [
+		{
+			"name": "/"
+		}
+	],
+	"permissions": [
+		{
+			"user": "qpsdemo",
+			"vhost": "/",
+			"configure": ".*",
+			"write": ".*",
+			"read": ".*"
+		}
+	],
+	"parameters": [],
+	"global_parameters": [
+		{
+			"name": "cluster_name",
+			"value": "rabbit@dd5b9008bd58"
+		}
+	],
+	"policies": [],
+	"queues": [],
+	"exchanges": [
+		{
+			"name": "logs",
+			"vhost": "/",
+			"type": "x-recent-history",
+			"durable": false,
+			"auto_delete": false,
+			"internal": false,
+			"arguments": {
+				"x-recent-history": 1000
+			}
+		}
+	],
+	"bindings": []
+}
