@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<qa:browsers xmlns:qa="urn:config.gridrouter.qatools.ru">
+  <browser name="QPS-HUB" defaultVersion="*">
+    <version number="*">
+        <region name="qps-hub">
+            <host name="selenium-hub" port="4444" count="100"/>
+        </region>
+    </version>
+  </browser>
+  <browser name="chrome" defaultVersion="67.0">
+    <version number="66.0">
+      <region name="stage">
+        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+      </region>
+    </version>
+    <version number="67.0">
+      <region name="stage">
+        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+      </region>
+    </version>
+  </browser>
+  <browser name="firefox" defaultVersion="60.0">
+    <version number="59.0">
+      <region name="stage">
+        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+      </region>
+    </version>
+    <version number="60.0">
+      <region name="stage">
+        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+      </region>
+    </version>
+  </browser>
+</qa:browsers>

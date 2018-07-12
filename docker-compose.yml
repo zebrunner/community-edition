@@ -33,10 +33,10 @@ services:
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
-    environment:
-     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
-    ports:
-     - "8002:8000"
+#    environment:
+#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
+#    ports:
+#     - "8002:8000"
     depends_on:
      - "db"
     restart: always
@@ -107,23 +107,45 @@ services:
     ports:
      - "21:21"
      - "30000-30009:30000-30009"
- # ggr:
- #   image: aerokube/ggr:latest-release
- #   volumes:
- #     - ./grid-router/:/etc/grid-router:ro
- #   network_mode: host
- #   restart: always
+  selenium-hub:
+    image: qaprosoft/selenium-hub:capabilities
+    env_file:
+     - variables.env
+    environment:
+     - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
+    restart: always
+  elk:
+    image: sebp/elk:630
+    volumes:
+     - ./logstash.conf:/etc/logstash/conf.d/logstash.conf
+     - ./elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
+     - ./elasticsearch:/var/lib/elasticsearch
+    ports:
+     - "5601:5601"
+     - "9200:9200"
+     - "5044:5044"
+    depends_on:
+     - "rabbitmq"
+    restart: always
+  ggr:
+    image: aerokube/ggr:latest-release
+    volumes:
+      - ./grid-router/:/etc/grid-router:ro
+    ports:
+     - "4444:4444"
+    restart: always
   selenoid:
     network_mode: bridge
     image: aerokube/selenoid:latest-release
     volumes:
-     - "$PWD/selenoid:/etc/selenoid"
-     - "/var/run/docker.sock:/var/run/docker.sock"
-     - "$PWD/selenoid/video:/opt/selenoid/video"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/selenoid/:/etc/selenoid/
+      - $PWD/selenoid/video/:/opt/selenoid/video/
     environment:
-     - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video
-    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
+      - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video/
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-listen", ":4445", "-timeout", "3m0s"]
     ports:
-     - "4444:4444"
-#TODO: add elasticsearch for live logs streaming
+      - "4445:4445"
+    restart: always
+#TODO:
 #also describe workaround to increase vm.max_map_count=262144 appending it to /etc/sysctl.conf
