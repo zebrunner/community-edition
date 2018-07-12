@@ -1,4 +1,3 @@
-
 version: '3'
 services:
   nginx:
@@ -30,19 +29,19 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.1.22
+    image: qaprosoft/zafira:3.2.25
     env_file:
      - variables.env
-#    #Uncomment only for debugging Zafira
-#    environment:
-#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n"
-#    ports:
-#     - "8001:8001"
+    #Uncomment only for debugging Zafira
+    environment:
+     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
+    ports:
+     - "8002:8000"
     depends_on:
      - "db"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.3
+    image: qaprosoft/jenkins-master:2.5
     env_file:
      - variables.env
     volumes:
@@ -52,16 +51,35 @@ services:
     ports:
      - "50000:50000"
     restart: always
-  jenkins-slave:
+  jenkins-slave-api:
     image: qaprosoft/jenkins-slave
     env_file:
      - variables.env
+    environment:
+     - JENKINS_SLAVE_NAME=jenkins-slave-api
+     - JENKINS_SLAVE_WORKERS=5
+     - JENKINS_SLAVE_LABELS=qps-slave api
     volumes:
      - $HOME/.ssh:/root/.ssh
      - $HOME/.m2:/root/.m2
     ports:
      - "8000:8000"
-     - "50001:50000"
+    depends_on:
+     - "jenkins-master"
+    restart: always
+  jenkins-slave-web:
+    image: qaprosoft/jenkins-slave
+    env_file:
+     - variables.env
+    environment:
+     - JENKINS_SLAVE_NAME=jenkins-slave-web
+     - JENKINS_SLAVE_WORKERS=1
+     - JENKINS_SLAVE_LABELS=qps-slave web
+    volumes:
+     - $HOME/.ssh:/root/.ssh
+     - $HOME/.m2:/root/.m2
+    ports:
+     - "8001:8000"
     depends_on:
      - "jenkins-master"
     restart: always
@@ -97,12 +115,13 @@ services:
     network_mode: bridge
     image: aerokube/selenoid:latest-release
     volumes:
-     - "./selenoid:/etc/selenoid"
+     - "$PWD/selenoid:/etc/selenoid"
      - "/var/run/docker.sock:/var/run/docker.sock"
-     - "./selenoid/video:/opt/selenoid/video"
+     - "$PWD/selenoid/video:/opt/selenoid/video"
     environment:
-     - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
+     - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
     ports:
      - "4444:4444"
-
+#TODO: add elasticsearch for live logs streaming
+#also describe workaround to increase vm.max_map_count=262144 appending it to /etc/sysctl.conf

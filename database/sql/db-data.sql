@@ -39,7 +39,7 @@ INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
 	('RABBITMQ_WS', 'http://demo.qaprosoft.com/stomp', 'RABBITMQ'),
 	('RABBITMQ_ENABLED', true, 'RABBITMQ'),
 	('COMPANY_LOGO_URL', null, null),
-	('LAST_ALTER_VERSION', '0', null);
+	('LAST_ALTER_VERSION', '86', null);
 
 INSERT INTO zafira.PROJECTS (NAME, DESCRIPTION) VALUES ('UNKNOWN', '');
 
@@ -195,6 +195,9 @@ DECLARE total_last_30_days_personal_model zafira.WIDGETS.model%TYPE;
 DECLARE nightly_personal_failures_id zafira.WIDGETS.id%TYPE;
 DECLARE nightly_personal_failures_sql zafira.WIDGETS.sql%TYPE;
 DECLARE nightly_personal_failures_model zafira.WIDGETS.model%TYPE;
+DECLARE nightly_personal_cron_id zafira.WIDGETS.id%TYPE;
+DECLARE nightly_personal_cron_sql zafira.WIDGETS.sql%TYPE;
+DECLARE nightly_personal_cron_model zafira.WIDGETS.model%TYPE;
 
 	-- Declare User Performance dashboard widgets
 DECLARE personal_total_rate_id zafira.WIDGETS.id%TYPE;
@@ -240,9 +243,6 @@ DECLARE monthly_total_percent_model zafira.WIDGETS.model%TYPE;
 DECLARE test_results_30_id zafira.WIDGETS.id%TYPE;
 DECLARE test_results_30_sql zafira.WIDGETS.sql%TYPE;
 DECLARE test_results_30_model zafira.WIDGETS.model%TYPE;
-DECLARE monthly_jira_tickets_id zafira.WIDGETS.id%TYPE;
-DECLARE monthly_jira_tickets_sql zafira.WIDGETS.sql%TYPE;
-DECLARE monthly_jira_tickets_model zafira.WIDGETS.model%TYPE;
 DECLARE monthly_platform_details_id zafira.WIDGETS.id%TYPE;
 DECLARE monthly_platform_details_sql zafira.WIDGETS.sql%TYPE;
 DECLARE monthly_platform_details_model zafira.WIDGETS.model%TYPE;
@@ -565,7 +565,7 @@ BEGIN
     }';
 
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
-		('NIGHTLY DETAILS', 'table', error_message_sql, error_message_model)
+		('ERROR MESSAGE', 'table', error_message_sql, error_message_model)
 	RETURNING id INTO error_message_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
 		('DETAILED FAILURES REPORT', 'table', detailed_failures_report_sql, detailed_failures_report_model)
@@ -745,7 +745,7 @@ STARTED::date AS "CREATED_AT"
     FROM BIMONTHLY_VIEW
     WHERE PROJECT LIKE ANY (''{#{project}}'')
     AND OWNER_ID = ''#{currentUserId}''
-    AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
+    AND STARTED >= current_date  - interval ''30 day''
     GROUP BY "CREATED_AT"
     ORDER BY "CREATED_AT";';
 
@@ -886,7 +886,39 @@ STARTED::date AS "CREATED_AT"
       ]
   }';
 
-	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+  nightly_personal_cron_sql :=
+  'set schema ''zafira'';
+  SELECT
+  ''<a href="''||UPSTREAM_JOB_URL||''" target="_blank">''||UPSTREAM_JOB_NAME||''</a>'' AS "NAME",
+        OWNER as "OWNER",
+        UPSTREAM_JOB_BUILD_NUMBER as "BUILD",
+        SUM(PASSED) as "PASS",
+        SUM(FAILED) as "FAIL",
+        SUM(SKIPPED) as "SKIP",
+	      SUM(ABORTED) as "ABORTED",
+  ''<a href="#{jenkinsURL}/job/Management_Jobs/job/smartJobsRerun/buildWithParameters?token=ciStart&upstream_job_id=''||UPSTREAM_JOB_ID||''&upstream_job_build_number=''||UPSTREAM_JOB_BUILD_NUMBER||''&ci_user_id=''||OWNER||''&doRebuild=true&rerunFailures=false" id="cron_rerun" class="cron_rerun_all" target="_blank">Restart all</a>'' AS "RESTART ALL",
+  ''<a href="#{jenkinsURL}/job/Management_Jobs/job/smartJobsRerun/buildWithParameters?token=ciStart&upstream_job_id=''||UPSTREAM_JOB_ID||''&upstream_job_build_number=''||UPSTREAM_JOB_BUILD_NUMBER||''&ci_user_id=''||OWNER||''&doRebuild=true&rerunFailures=true" class="cron_rerun_failures" target="_blank">Restart failures</a>'' AS "RESTART FAILURES"
+    FROM NIGHTLY_VIEW
+  WHERE OWNER_ID=''#{currentUserId}''
+  GROUP BY "OWNER", "BUILD", "NAME", UPSTREAM_JOB_ID, UPSTREAM_JOB_URL
+  ORDER BY "BUILD" DESC';
+
+  nightly_personal_cron_model :=
+  '{
+         "columns": [
+             "NAME",
+             "BUILD",
+             "OWNER",
+             "PASS",
+             "FAIL",
+             "SKIP",
+	           "ABORTED",
+             "RESTART ALL",
+             "RESTART FAILURES"
+         ]
+     }';
+
+  INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
 		('NIGHTLY DETAILS PERSONAL', 'table', nightly_details_personal_sql, nightly_details_personal_model)
 	RETURNING id INTO nightly_details_personal_id;
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
@@ -913,8 +945,11 @@ STARTED::date AS "CREATED_AT"
 	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
 		('NIGHTLY - PERSONAL FAILURES', 'table', nightly_personal_failures_sql, nightly_personal_failures_model)
 	RETURNING id INTO nightly_personal_failures_id;
+  INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+  ('NIGHTLY PERSONAL (CRON)', 'table', nightly_personal_cron_sql, nightly_personal_cron_model)
+  RETURNING id INTO nightly_personal_cron_id;
 
-	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+  INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
 		(personal_dashboard_id, nightly_details_personal_id, '{"x":0,"y":28,"width":12,"height":21}');
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
 		(personal_dashboard_id, monthly_total_personal_pie_id, '{"x":8,"y":0,"width":4,"height":11}');
@@ -932,8 +967,11 @@ STARTED::date AS "CREATED_AT"
 		(personal_dashboard_id, total_last_30_days_personal_id, '{"x":0,"y":17,"width":12,"height":11}');
 	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
 		(personal_dashboard_id, nightly_personal_failures_id, '{"x":0,"y":49,"width":12,"height":15}');
+  INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+  (personal_dashboard_id, nightly_personal_cron_id, '{"x":0,"y":17,"width":12,"height":8}');
 
-	-- Insert User Performance dashboard data
+
+  -- Insert User Performance dashboard data
     INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('User Performance', TRUE, 6) RETURNING id INTO user_performance_dashboard_id;
 
 	personal_total_rate_sql :=
@@ -1327,7 +1365,7 @@ STARTED::date AS "CREATED_AT"
     SELECT
         SUM(TOTAL_HOURS) AS "ACTUAL",
         ROUND(SUM(TOTAL_HOURS)/extract(day from current_date)
-        * extract(day from date_trunc(''day'', date_trunc(''month'', current_date) + interval ''1 month'') - interval ''1 day'')) AS "ETA",
+        * extract(day from date_trunc(''month'', current_date) + interval ''1 month'' - interval ''1 day'')) AS "ETA",
         date_trunc(''month'', current_date) AS "CREATED_AT"
     FROM MONTHLY_VIEW
     WHERE PROJECT LIKE ANY (''{#{project}}'')
@@ -1588,7 +1626,7 @@ STARTED::date AS "CREATED_AT"
         STARTED::date AS "CREATED_AT"
     FROM BIMONTHLY_VIEW
     WHERE PROJECT LIKE ANY (''{#{project}}'')
-    AND STARTED >= date_trunc(''day'', current_date  - interval ''30 day'')
+    AND STARTED >= current_date  - interval ''30 day''
     GROUP BY "CREATED_AT"
     ORDER BY "CREATED_AT";';
 
@@ -1701,29 +1739,6 @@ STARTED::date AS "CREATED_AT"
         }
       }
     }';
-
-	monthly_jira_tickets_sql :=
-	'set schema ''zafira'';
-    SELECT
-        PROJECTS.NAME AS "PROJECT",
-        COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
-    FROM TEST_WORK_ITEMS
-        INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID
-        INNER JOIN TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID
-        INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
-    WHERE WORK_ITEMS.TYPE=''BUG''
-    AND PROJECTS.NAME LIKE ANY (''{#{project}}'')
-    AND TEST_WORK_ITEMS.CREATED_AT > date_trunc(''month'', current_date  - interval ''1 month'')
-    GROUP BY "PROJECT"
-    ORDER BY "COUNT" DESC;';
-
-	monthly_jira_tickets_model :=
-    '{
-        "columns":[
-           "PROJECT",
-           "COUNT"
-        ]
-     }';
 
 	monthly_platform_details_sql :=
     'set schema ''zafira'';
@@ -1895,7 +1910,7 @@ STARTED::date AS "CREATED_AT"
         STARTED::date AS "CREATED_AT"
     FROM MONTHLY_VIEW
     WHERE PROJECT LIKE ANY (''{#{project}}'')
-    AND STARTED >= date_trunc(''day'', current_date  - interval ''7 day'')
+    AND STARTED >= current_date  - interval ''7 day''
     GROUP BY "CREATED_AT"
     ORDER BY "CREATED_AT";';
 
