@@ -128,7 +128,6 @@ services:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 3g
     ports:
      - "5601:5601"
      - "9200:9200"
