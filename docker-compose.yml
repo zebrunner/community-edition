@@ -120,6 +120,15 @@ services:
      - ./logstash.conf:/etc/logstash/conf.d/logstash.conf
      - ./elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
      - ./elasticsearch:/var/lib/elasticsearch
+    environment:
+      - bootstrap.memory_lock=true
+      - KIBANA_START=0
+      - ES_HEAP_SIZE=2g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 3g
     ports:
      - "5601:5601"
      - "9200:9200"
