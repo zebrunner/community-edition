@@ -6,6 +6,7 @@ services:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
      - ./nginx/conf.d:/etc/nginx/conf.d
      - ./nginx/html:/usr/share/nginx/html
+     - ./selenoid/video:/usr/share/nginx/video
     ports:
      - "80:80"
     depends_on:
@@ -29,7 +30,7 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.2.25
+    image: qaprosoft/zafira
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
@@ -41,7 +42,7 @@ services:
      - "db"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.5
+    image: qaprosoft/jenkins-master:2.6
     env_file:
      - variables.env
     volumes:
@@ -73,7 +74,7 @@ services:
      - variables.env
     environment:
      - JENKINS_SLAVE_NAME=jenkins-slave-web
-     - JENKINS_SLAVE_WORKERS=1
+     - JENKINS_SLAVE_WORKERS=3
      - JENKINS_SLAVE_LABELS=qps-slave web
     volumes:
      - $HOME/.ssh:/root/.ssh
@@ -120,6 +121,14 @@ services:
      - ./logstash.conf:/etc/logstash/conf.d/logstash.conf
      - ./elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
      - ./elasticsearch:/var/lib/elasticsearch
+    environment:
+      - bootstrap.memory_lock=true
+      - KIBANA_START=0
+      - ES_HEAP_SIZE=2g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
      - "5601:5601"
      - "9200:9200"
