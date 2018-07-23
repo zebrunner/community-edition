@@ -108,6 +108,7 @@ services:
     ports:
      - "21:21"
      - "30000-30009:30000-30009"
+    restart: always
   selenium-hub:
     image: qaprosoft/selenium-hub:capabilities
     env_file:
