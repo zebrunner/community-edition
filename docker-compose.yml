@@ -12,7 +12,7 @@ services:
     depends_on:
      - "zafira"
      - "jenkins-master"
-#     - "selenium-hub"
+     - "selenium-hub"
     restart: always
   db:
     image: qaprosoft/postgres:9.6
@@ -110,7 +110,7 @@ services:
      - "30000-30009:30000-30009"
     restart: always
   selenium-hub:
-    image: qaprosoft/selenium-hub:capabilities
+    image: qaprosoft/selenium-hub:3.1
     env_file:
      - variables.env
     environment:
