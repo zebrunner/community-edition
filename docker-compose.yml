@@ -30,7 +30,7 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.2.26
+    image: qaprosoft/zafira:3.2.27
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
