@@ -116,27 +116,27 @@ services:
     environment:
      - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
     restart: always
-  elk:
-    image: sebp/elk:630
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
     volumes:
-     - ./logstash.conf:/etc/logstash/conf.d/logstash.conf
-     - ./elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
-     - ./elasticsearch:/var/lib/elasticsearch
+     - ./esdata:/usr/share/elasticsearch/data
+     - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
     environment:
-      - bootstrap.memory_lock=true
-      - KIBANA_START=0
-      - ES_HEAP_SIZE=2g
+     - bootstrap.memory_lock=true
     ulimits:
       memlock:
         soft: -1
         hard: -1
     ports:
-     - "5601:5601"
-     - "9200:9200"
-     - "5044:5044"
-    depends_on:
-     - "rabbitmq"
+     - 9200:9200
     restart: always
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.3.1
+    volumes:
+     - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    restart: always
+    depends_on:
+     - elasticsearch
   ggr:
     image: aerokube/ggr:latest-release
     volumes:
