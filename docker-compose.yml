@@ -13,6 +13,7 @@ services:
      - "zafira"
      - "jenkins-master"
      - "selenium-hub"
+     - "elasticsearch"
     restart: always
   db:
     image: qaprosoft/postgres:9.6
@@ -97,7 +98,7 @@ services:
     env_file:
      - variables.env
     volumes:
-     - ./definitions.json:/etc/rabbitmq/definitions.json:ro
+     - ./config/definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
      - 15672:15672
      - 15674:15674
