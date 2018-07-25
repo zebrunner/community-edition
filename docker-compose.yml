@@ -41,6 +41,7 @@ services:
 #     - "8002:8000"
     depends_on:
      - "db"
+     - "rabbitmq"
     restart: always
   jenkins-master:
     image: qaprosoft/jenkins-master:2.6
