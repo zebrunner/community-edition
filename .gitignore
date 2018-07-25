@@ -1,5 +1,5 @@
 jenkins
 pgdata
 ramdisk
-elasticsearch
+esdata/nodes
 selenoid/video
