@@ -1,43 +1,44 @@
 INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
 	('GOOGLE_CLIENT_SECRET_ORIGIN', '', 'GOOGLE'),
-  	('GOOGLE_ENABLED', false, 'GOOGLE'),
+  ('GOOGLE_ENABLED', false, 'GOOGLE'),
 	('LDAP_DN', '', 'LDAP'),
-  	('LDAP_SEARCH_FILTER', '', 'LDAP'),
-  	('LDAP_URL', '', 'LDAP'),
-  	('LDAP_MANAGER_USER', '', 'LDAP'),
-  	('LDAP_MANAGER_PASSWORD', '', 'LDAP'),
-  	('LDAP_ENABLED', false, 'LDAP'),
+  ('LDAP_SEARCH_FILTER', '', 'LDAP'),
+  ('LDAP_URL', '', 'LDAP'),
+  ('LDAP_MANAGER_USER', '', 'LDAP'),
+  ('LDAP_MANAGER_PASSWORD', '', 'LDAP'),
+  ('LDAP_ENABLED', false, 'LDAP'),
 	('JIRA_CLOSED_STATUS', 'CLOSED', 'JIRA'),
 	('JIRA_URL', '', 'JIRA'),
 	('JIRA_USER', '', 'JIRA'),
 	('JIRA_PASSWORD', '', 'JIRA'),
 	('JIRA_ENABLED', false, 'JIRA'),
-	('JENKINS_URL', 'http://demo.qaprosoft.com/jenkins', 'JENKINS'),
-	('JENKINS_USER', 'admin', 'JENKINS'),
-	('JENKINS_API_TOKEN_OR_PASSWORD', 'changeit', 'JENKINS'),
-	('JENKINS_ENABLED', true, 'JENKINS'),
+	('JENKINS_URL', '', 'JENKINS'),
+	('JENKINS_USER', '', 'JENKINS'),
+	('JENKINS_API_TOKEN_OR_PASSWORD', '', 'JENKINS'),
+	('JENKINS_ENABLED', false, 'JENKINS'),
 	('SLACK_WEB_HOOK_URL', '', 'SLACK'),
 	('SLACK_ENABLED', false, 'SLACK'),
 	('EMAIL_HOST', '', 'EMAIL'),
 	('EMAIL_PORT', '', 'EMAIL'),
 	('EMAIL_USER', '', 'EMAIL'),
+	('EMAIL_FROM_ADDRESS', '', 'EMAIL'),
 	('EMAIL_PASSWORD', '', 'EMAIL'),
 	('EMAIL_ENABLED', false, 'EMAIL'),
 	('AMAZON_ACCESS_KEY', '', 'AMAZON'),
 	('AMAZON_SECRET_KEY', '', 'AMAZON'),
-	('AMAZON_BUCKET', 'zafira', 'AMAZON'),
-	('AMAZON_ENABLED', true, 'AMAZON'),
+	('AMAZON_BUCKET', '', 'AMAZON'),
+	('AMAZON_ENABLED', false, 'AMAZON'),
 	('HIPCHAT_ACCESS_TOKEN', '', 'HIPCHAT'),
 	('HIPCHAT_ENABLED', false, 'HIPCHAT'),
 	('KEY', '', 'CRYPTO'),
 	('CRYPTO_KEY_SIZE', '128', 'CRYPTO'),
 	('CRYPTO_KEY_TYPE', 'AES', 'CRYPTO'),
-	('RABBITMQ_HOST', 'demo.qaprosoft.com', 'RABBITMQ'),
-	('RABBITMQ_PORT', '5672', 'RABBITMQ'),
-	('RABBITMQ_USER', 'qpsdemo', 'RABBITMQ'),
-	('RABBITMQ_PASSWORD', 'qpsdemo', 'RABBITMQ'),
-	('RABBITMQ_WS', 'http://demo.qaprosoft.com/stomp', 'RABBITMQ'),
-	('RABBITMQ_ENABLED', true, 'RABBITMQ'),
+	('RABBITMQ_HOST', '', 'RABBITMQ'),
+	('RABBITMQ_PORT', '', 'RABBITMQ'),
+	('RABBITMQ_USER', '', 'RABBITMQ'),
+	('RABBITMQ_PASSWORD', '', 'RABBITMQ'),
+	('RABBITMQ_WS', '', 'RABBITMQ'),
+	('RABBITMQ_ENABLED', false, 'RABBITMQ'),
 	('COMPANY_LOGO_URL', null, null),
 	('LAST_ALTER_VERSION', '86', null);
 
@@ -410,6 +411,9 @@ BEGIN
             "x": {
                 "key": "TESTED_AT",
                 "type": "date"
+            },
+            "y": {
+                "min": "0"
             }
         }
     }';
@@ -896,8 +900,8 @@ STARTED::date AS "CREATED_AT"
         SUM(FAILED) as "FAIL",
         SUM(SKIPPED) as "SKIP",
 	      SUM(ABORTED) as "ABORTED",
-  ''<a href="#{jenkinsURL}/job/Management_Jobs/job/smartJobsRerun/buildWithParameters?token=ciStart&upstream_job_id=''||UPSTREAM_JOB_ID||''&upstream_job_build_number=''||UPSTREAM_JOB_BUILD_NUMBER||''&ci_user_id=''||OWNER||''&doRebuild=true&rerunFailures=false" id="cron_rerun" class="cron_rerun_all" target="_blank">Restart all</a>'' AS "RESTART ALL",
-  ''<a href="#{jenkinsURL}/job/Management_Jobs/job/smartJobsRerun/buildWithParameters?token=ciStart&upstream_job_id=''||UPSTREAM_JOB_ID||''&upstream_job_build_number=''||UPSTREAM_JOB_BUILD_NUMBER||''&ci_user_id=''||OWNER||''&doRebuild=true&rerunFailures=true" class="cron_rerun_failures" target="_blank">Restart failures</a>'' AS "RESTART FAILURES"
+  ''<a href="#{jenkinsURL}/job/Management_Jobs/job/smartJobsRerun/buildWithParameters?token=ciStart&ci_job_id=''||UPSTREAM_JOB_ID||''&ci_parent_build=''||UPSTREAM_JOB_BUILD_NUMBER||''&ci_user_id=''||OWNER||''&doRebuild=true&rerunFailures=false" id="cron_rerun" class="cron_rerun_all" target="_blank">Restart all</a>'' AS "RESTART ALL",
+  ''<a href="#{jenkinsURL}/job/Management_Jobs/job/smartJobsRerun/buildWithParameters?token=ciStart&ci_job_id=''||UPSTREAM_JOB_ID||''&ci_parent_build=''||UPSTREAM_JOB_BUILD_NUMBER||''&ci_user_id=''||OWNER||''&doRebuild=true&rerunFailures=true" class="cron_rerun_failures" target="_blank">Restart failures</a>'' AS "RESTART FAILURES"
     FROM NIGHTLY_VIEW
   WHERE OWNER_ID=''#{currentUserId}''
   GROUP BY "OWNER", "BUILD", "NAME", UPSTREAM_JOB_ID, UPSTREAM_JOB_URL
