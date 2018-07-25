@@ -41,6 +41,7 @@ services:
 #     - "8002:8000"
     depends_on:
      - "db"
+     - "screenshoter"
      - "rabbitmq"
     restart: always
   jenkins-master:
