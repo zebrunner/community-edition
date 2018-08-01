@@ -6,12 +6,14 @@ services:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
      - ./nginx/conf.d:/etc/nginx/conf.d
      - ./nginx/html:/usr/share/nginx/html
+     - ./selenoid/video:/usr/share/nginx/video
     ports:
      - "80:80"
     depends_on:
      - "zafira"
      - "jenkins-master"
-#     - "selenium-hub"
+     - "selenium-hub"
+     - "elasticsearch"
     restart: always
   db:
     image: qaprosoft/postgres:9.6
@@ -23,18 +25,27 @@ services:
     env_file:
      - variables.env
     restart: always
+  screenshoter:
+    image: selenium/standalone-chrome:3.11.0-californium
+    volumes:
+    - /dev/shm:/dev/shm
+    restart: always
   zafira:
-    image: qaprosoft/zafira:3.0.68
+    image: qaprosoft/zafira:3.2.27
     env_file:
      - variables.env
-    #keep only for debugging purposes
-    ports:
-     - "8001:8001"
+    #Uncomment only for debugging Zafira
+#    environment:
+#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
+#    ports:
+#     - "8002:8000"
     depends_on:
      - "db"
+     - "screenshoter"
+     - "rabbitmq"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.0
+    image: qaprosoft/jenkins-master:2.7
     env_file:
      - variables.env
     volumes:
@@ -44,25 +55,38 @@ services:
     ports:
      - "50000:50000"
     restart: always
-  jenkins-slave:
+  jenkins-slave-api:
     image: qaprosoft/jenkins-slave
     env_file:
      - variables.env
+    environment:
+     - JENKINS_SLAVE_NAME=jenkins-slave-api
+     - JENKINS_SLAVE_WORKERS=5
+     - JENKINS_SLAVE_LABELS=qps-slave api
     volumes:
      - $HOME/.ssh:/root/.ssh
      - $HOME/.m2:/root/.m2
     ports:
-     - "50001:50000"
+     - "8000:8000"
     depends_on:
      - "jenkins-master"
     restart: always
-#  selenium-hub:
-#    image: qaprosoft/selenium-hub
-#    env_file:
-#     - variables.env
-#    ports:
-#     - "4444:4444"
-#    restart: always
+  jenkins-slave-web:
+    image: qaprosoft/jenkins-slave
+    env_file:
+     - variables.env
+    environment:
+     - JENKINS_SLAVE_NAME=jenkins-slave-web
+     - JENKINS_SLAVE_WORKERS=3
+     - JENKINS_SLAVE_LABELS=qps-slave web
+    volumes:
+     - $HOME/.ssh:/root/.ssh
+     - $HOME/.m2:/root/.m2
+    ports:
+     - "8001:8000"
+    depends_on:
+     - "jenkins-master"
+    restart: always
   sonarqube:
     image: qaprosoft/sonarqube
     env_file:
@@ -75,49 +99,67 @@ services:
     image: qaprosoft/rabbitmq
     env_file:
      - variables.env
+    volumes:
+     - ./config/definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
      - 15672:15672
      - 15674:15674
      - 5672:5672
     restart: always
-#  chrome:
-#    image: selenium/node-chrome
-#    environment:
-#    - HUB_HOST=selenium-hub
-#    - NODE_MAX_INSTANCES=5
-#    - NODE_MAX_SESSION=5
-#    volumes:
-#    - /dev/shm:/dev/shm # Mitigates the Chromium issue described at https://code.google.com/p/chromium/issues/detail?id=519952
-#    depends_on:
-#     - "selenium-hub"
-#  firefox:
-#    image: selenium/node-firefox
-#    environment:
-#    - HUB_HOST=selenium-hub
-#    - NODE_MAX_INSTANCES=5
-#    - NODE_MAX_SESSION=5
-#    depends_on:
-#     - "selenium-hub"
+  ftp:
+    image: qaprosoft/pure-ftpd:latest
+    ports:
+     - "21:21"
+     - "30000-30009:30000-30009"
+    restart: always
+  selenium-hub:
+    image: qaprosoft/selenium-hub:3.1
+    env_file:
+     - variables.env
+    environment:
+     - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
+    restart: always
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
+    volumes:
+     - ./esdata:/usr/share/elasticsearch/data
+     - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    environment:
+     - bootstrap.memory_lock=true
+#     - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+     - 9200:9200
+    restart: always
+  logstash:
+    image: docker.elastic.co/logstash/logstash:6.3.1
+    volumes:
+     - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    restart: always
+    depends_on:
+     - elasticsearch
+  ggr:
+    image: aerokube/ggr:latest-release
+    volumes:
+      - ./grid-router/:/etc/grid-router:ro
+    ports:
+     - "4444:4444"
+    restart: always
   selenoid:
     network_mode: bridge
     image: aerokube/selenoid:latest-release
     volumes:
-     - "./selenoid:/etc/selenoid"
-     - "/var/run/docker.sock:/var/run/docker.sock"
-     - "./selenoid/video:/opt/selenoid/video"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/selenoid/:/etc/selenoid/
+      - $PWD/selenoid/video/:/opt/selenoid/video/
     environment:
-     - OVERRIDE_VIDEO_OUTPUT_DIR=./selenoid/video
-    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video"]
+      - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video/
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-listen", ":4445", "-timeout", "3m0s"]
     ports:
-     - "4444:4444"
-  selenoid-ui:
-    image: "aerokube/selenoid-ui"
-    network_mode: bridge
-    links:
-     - selenoid
-    ports:
-     - "8080:8080"
-    command: ["--selenoid-uri", "http://selenoid:4444"]
-    depends_on:
-     - selenoid
-
+      - "4445:4445"
+    restart: always
+#TODO:
+#also describe workaround to increase vm.max_map_count=262144 appending it to /etc/sysctl.conf

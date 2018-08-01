@@ -1,3 +1,5 @@
 jenkins
 pgdata
 ramdisk
+esdata/nodes
+selenoid/video

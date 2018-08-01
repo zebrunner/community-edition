@@ -3,7 +3,7 @@ QPS Infrastructure
 
 QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is integrated by default with [carina-core](http://www.carina-core.io) open source solution and uses jenkins as CI Tool.
 
-* QPS-Infra is built on top of popular docker solutions, it includes Postgres database, [Zafira Reporting Tool](http://www.carina-core.io), Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, Rabbitmq, etc.
+* QPS-Infra is built on top of popular docker solutions, it includes Postgres database, [Zafira Reporting Tool](http://qaprosoft.github.io/zafira), Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, Rabbitmq, etc.
 
 * All components are deployed under NGINX WebServer which can be configured in fully secured environment
 
@@ -20,7 +20,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 
 
 ## Software prerequisites
-* Change current user uid/guid to uid=1000 and gid=1000 - (https://github.com/jenkinsci/docker)
+* Create new user, then change uid/guid to uid=1000 and gid=1000 - (https://github.com/jenkinsci/docker) for this user
   Note: for current user just change uid/guid inside /etc/passwd and reboot host
 * Install [docker](http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/) and [docker-composer](https://docs.docker.com/compose/install/#install-compose)
 
@@ -31,6 +31,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 * Optional: update default credentials if neccessary
 * Optional: adjust docker-compose.yml file by removing unused services. By default it contains:
   nginx, postgres, zafira, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq  
+* Update username, password in definitions.json for RabbitMQ if you are not using default qpsdemo/qpsdemo user
 
 
 ## Services start/stop/restart
@@ -44,7 +45,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 * [Selenium Grid](http://demo.qaprosoft.com/grid/console)
 * [Zafira Reporting Tool](http://demo.qaprosoft.com/zafira)
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
-*  Note: replace demo.qaprosoft.com with your actual server name or IP address
+
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
