@@ -1303,6 +1303,7 @@ STARTED::date AS "CREATED_AT"
         date_trunc(''month'', TESTED_AT) AS "CREATED_AT"
     FROM TOTAL_VIEW
     WHERE PROJECT LIKE ANY (''{#{project}}'')
+    AND TESTED_AT < date_trunc(''month'', current_date)
     GROUP BY "CREATED_AT"
     ORDER BY "CREATED_AT"';
 
