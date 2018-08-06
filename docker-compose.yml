@@ -31,7 +31,7 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.2.27
+    image: qaprosoft/zafira:3.2.28
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
@@ -135,9 +135,10 @@ services:
      - 9200:9200
     restart: always
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.3.1
+    image: docker.elastic.co/logstash/logstash:6.3.2
     volumes:
      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+     - ./config/mapping.json:/mapping.json:ro
     restart: always
     depends_on:
      - elasticsearch
