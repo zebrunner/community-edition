@@ -31,7 +31,7 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.2.27
+    image: qaprosoft/zafira:latest
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
@@ -43,6 +43,7 @@ services:
      - "db"
      - "screenshoter"
      - "rabbitmq"
+     - "redis"
     restart: always
   jenkins-master:
     image: qaprosoft/jenkins-master:2.7
@@ -94,6 +95,11 @@ services:
     command: -Dsonar.web.context=/sonarqube
     depends_on:
      - "db"
+    restart: always
+  redis:
+    image: redis:4.0.11
+    ports:
+    - 6379:6379
     restart: always
   rabbitmq:
     image: qaprosoft/rabbitmq
