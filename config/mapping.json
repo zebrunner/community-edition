@@ -1,0 +1,33 @@
+{
+  "index_patterns" : ["*"],
+  "mappings" : {
+    "doc" : {
+      "properties" : {
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "@version" : {
+          "type" : "text"
+        },
+        "correlation-id" : {
+          "type" : "keyword"
+        },
+        "level" : {
+          "type" : "text"
+        },
+        "logger" : {
+          "type" : "text"
+        },
+        "message" : {
+          "type" : "text"
+        },
+        "threadName" : {
+          "type" : "text"
+        },
+        "timestamp" : {
+          "type" : "long"
+        }
+      }
+    }
+  }
+}
