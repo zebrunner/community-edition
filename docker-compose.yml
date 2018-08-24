@@ -46,7 +46,7 @@ services:
      - "redis"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.7
+    image: qaprosoft/jenkins-master:2.8
     env_file:
      - variables.env
     volumes:
@@ -129,10 +129,10 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
     volumes:
      - ./esdata:/usr/share/elasticsearch/data
-     - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+     - ./config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
     environment:
      - bootstrap.memory_lock=true
-#     - ES_JAVA_OPTS=-Xms2g -Xmx2g
+     - ES_JAVA_OPTS=-Xms2g -Xmx2g
     ulimits:
       memlock:
         soft: -1
