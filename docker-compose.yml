@@ -31,7 +31,7 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.2.28
+    image: qaprosoft/zafira:3.2.30
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
@@ -43,9 +43,10 @@ services:
      - "db"
      - "screenshoter"
      - "rabbitmq"
+     - "redis"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.7
+    image: qaprosoft/jenkins-master:2.8
     env_file:
      - variables.env
     volumes:
@@ -95,6 +96,11 @@ services:
     depends_on:
      - "db"
     restart: always
+  redis:
+    image: redis:4.0.11
+    ports:
+    - 6379:6379
+    restart: always
   rabbitmq:
     image: qaprosoft/rabbitmq
     env_file:
@@ -123,10 +129,10 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
     volumes:
      - ./esdata:/usr/share/elasticsearch/data
-     - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+     - ./config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
     environment:
      - bootstrap.memory_lock=true
-#     - ES_JAVA_OPTS=-Xms2g -Xmx2g
+     - ES_JAVA_OPTS=-Xms2g -Xmx2g
     ulimits:
       memlock:
         soft: -1
