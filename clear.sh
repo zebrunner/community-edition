@@ -9,7 +9,7 @@ docker rmi -f $(docker images -q)
 rm -rf ./jenkins/*
 rm -rf ./pgdata/*
 
-rm -rf ./esdata/*
+rm -rf ./esdata/nodes/*
 rm -rf ./selenoid/video/*
 
 
