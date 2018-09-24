@@ -31,7 +31,7 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:latest
+    image: qaprosoft/zafira:3.2.30
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
@@ -46,7 +46,7 @@ services:
      - "redis"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.7
+    image: qaprosoft/jenkins-master:2.8
     env_file:
      - variables.env
     volumes:
@@ -129,10 +129,10 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
     volumes:
      - ./esdata:/usr/share/elasticsearch/data
-     - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+     - ./config/elasticsearch.yml:/etc/elasticsearch/elasticsearch.yml
     environment:
      - bootstrap.memory_lock=true
-#     - ES_JAVA_OPTS=-Xms2g -Xmx2g
+     - ES_JAVA_OPTS=-Xms2g -Xmx2g
     ulimits:
       memlock:
         soft: -1
@@ -141,7 +141,7 @@ services:
      - 9200:9200
     restart: always
   logstash:
-    image: docker.elastic.co/logstash/logstash:6.3.1
+    image: docker.elastic.co/logstash/logstash:6.3.2
     volumes:
      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
      - ./config/mapping.json:/mapping.json:ro
