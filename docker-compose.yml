@@ -31,7 +31,7 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.2.30
+    image: qaprosoft/zafira:3.2.32
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
@@ -46,7 +46,7 @@ services:
      - "redis"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.8
+    image: qaprosoft/jenkins-master:2.9
     env_file:
      - variables.env
     volumes:
@@ -68,7 +68,7 @@ services:
      - $HOME/.ssh:/root/.ssh
      - $HOME/.m2:/root/.m2
     ports:
-     - "8000:8000"
+     - "8001:8000"
     depends_on:
      - "jenkins-master"
     restart: always
@@ -84,7 +84,7 @@ services:
      - $HOME/.ssh:/root/.ssh
      - $HOME/.m2:/root/.m2
     ports:
-     - "8001:8000"
+     - "8000:8000"
     depends_on:
      - "jenkins-master"
     restart: always
