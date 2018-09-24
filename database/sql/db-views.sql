@@ -1,4 +1,4 @@
-set schema 'zafira';
+SET SCHEMA 'zafira';
 
 --DELETE OR DETACH ALL TESTS WHERE CREATED_AT::date < '2016-01-01'
 
