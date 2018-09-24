@@ -168,11 +168,5 @@ services:
     ports:
       - "4445:4445"
     restart: always
-  selenoid-ui:
-    network_mode: bridge
-    image: aerokube/selenoid-ui:latest-release
-    ports:
-     - "8080:8080"
-    command: ["--selenoid-uri", "http://172.30.0.174:4445"]
 #TODO:
 #also describe workaround to increase vm.max_map_count=262144 appending it to /etc/sysctl.conf
