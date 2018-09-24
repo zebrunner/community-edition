@@ -31,14 +31,14 @@ services:
     - /dev/shm:/dev/shm
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.2.30
+    image: qaprosoft/zafira:demo
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
-#    environment:
-#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
-#    ports:
-#     - "8002:8000"
+    environment:
+     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
+    ports:
+     - "8002:8000"
     depends_on:
      - "db"
      - "screenshoter"
@@ -46,7 +46,7 @@ services:
      - "redis"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:2.8
+    image: qaprosoft/jenkins-master:2.9
     env_file:
      - variables.env
     volumes:
@@ -68,7 +68,7 @@ services:
      - $HOME/.ssh:/root/.ssh
      - $HOME/.m2:/root/.m2
     ports:
-     - "8000:8000"
+     - "8001:8000"
     depends_on:
      - "jenkins-master"
     restart: always
@@ -84,7 +84,7 @@ services:
      - $HOME/.ssh:/root/.ssh
      - $HOME/.m2:/root/.m2
     ports:
-     - "8001:8000"
+     - "8000:8000"
     depends_on:
      - "jenkins-master"
     restart: always
@@ -168,5 +168,11 @@ services:
     ports:
       - "4445:4445"
     restart: always
+  selenoid-ui:
+    network_mode: bridge
+    image: aerokube/selenoid-ui:latest-release
+    ports:
+     - "8080:8080"
+    command: ["--selenoid-uri", "http://172.30.0.174:4445"]
 #TODO:
 #also describe workaround to increase vm.max_map_count=262144 appending it to /etc/sysctl.conf
