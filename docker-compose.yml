@@ -42,7 +42,7 @@ services:
   zafira-batch:
     image: qaprosoft/zafira-batch:latest
     env_file:
-    - integrations.env
+    - variables.env
     depends_on:
     - "db"
     - "rabbitmq"
