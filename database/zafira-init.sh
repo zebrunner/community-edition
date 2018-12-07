@@ -10,8 +10,6 @@ psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -f /docker-entrypoint-initdb.d
 psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -f /docker-entrypoint-initdb.d/sql/db-app-data.sql
 psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -f /docker-entrypoint-initdb.d/sql/db-views.sql
 psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -f /docker-entrypoint-initdb.d/sql/db-widgets.sql
-psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -f /docker-entrypoint-initdb.d/sql/db-mng-structure.sql
-psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -f /docker-entrypoint-initdb.d/sql/db-mng-data.sql
 
 if [ "$ZAFIRA_AMAZON_ENABLED" == true ];
 then
@@ -45,5 +43,4 @@ then
     psql --username $POSTGRES_USER -c "UPDATE zafira.SETTINGS SET VALUE='$ZAFIRA_RABBITMQ_PORT' WHERE NAME='RABBITMQ_PORT';"
     psql --username $POSTGRES_USER -c "UPDATE zafira.SETTINGS SET VALUE='$ZAFIRA_RABBITMQ_USER' WHERE NAME='RABBITMQ_USER';"
     psql --username $POSTGRES_USER -c "UPDATE zafira.SETTINGS SET VALUE='$ZAFIRA_RABBITMQ_PASS' WHERE NAME='RABBITMQ_PASSWORD';"
-    psql --username $POSTGRES_USER -c "UPDATE zafira.SETTINGS SET VALUE='$ZAFIRA_RABBITMQ_WS' WHERE NAME='RABBITMQ_WS';"
 fi

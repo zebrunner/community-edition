@@ -25,11 +25,6 @@ services:
     env_file:
      - variables.env
     restart: always
-  screenshoter:
-    image: selenium/standalone-chrome:3.11.0-californium
-    volumes:
-    - /dev/shm:/dev/shm
-    restart: always
   zafira:
     image: qaprosoft/zafira:3.3.38
     env_file:
@@ -41,9 +36,17 @@ services:
      - "8002:8000"
     depends_on:
      - "db"
-     - "screenshoter"
      - "rabbitmq"
      - "redis"
+    restart: always
+  zafira-batch:
+    image: qaprosoft/zafira-batch:latest
+    env_file:
+    - integrations.env
+    depends_on:
+    - "db"
+    - "rabbitmq"
+    - "redis"
     restart: always
   jenkins-master:
     image: qaprosoft/jenkins-master:3.3
@@ -109,7 +112,7 @@ services:
      - ./config/definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
      - 15672:15672
-     - 15674:15674
+     - 61613:61613
      - 5672:5672
     restart: always
   ftp:
