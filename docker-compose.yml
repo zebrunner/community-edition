@@ -112,7 +112,7 @@ services:
      - ./config/definitions.json:/etc/rabbitmq/definitions.json:ro
     ports:
      - 15672:15672
-     - 61613:61613
+#      - 61613:61613
      - 5672:5672
     restart: always
   ftp:
