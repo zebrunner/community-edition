@@ -2034,7 +2034,7 @@ BEGIN
   WHERE PROJECT LIKE ANY (''{#{project}}'')
     AND lower(PLATFORM) <> ''n/a''
   GROUP BY "PLATFORM"
-  ORDER BY "PLATFORM"';
+  ORDER BY "PLATFORM" DESC';
 
 	monthly_platform_pass_rate_model :=
 	'{
@@ -2465,7 +2465,7 @@ BEGIN
 }';
 
 	weekly_platform_pass_rate_sql :=
-	'lower(PLATFORM) AS "PLATFORM",
+	'SELECT lower(PLATFORM) AS "PLATFORM",
       round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED",
       round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE",
       round (100.0 * sum( QUEUED) / sum(TOTAL), 0)::integer AS "QUEUED",
@@ -2476,7 +2476,7 @@ BEGIN
   WHERE PROJECT LIKE ANY (''{#{project}}'')
     AND lower(PLATFORM) <> ''n/a''
   GROUP BY "PLATFORM"
-  ORDER BY "PLATFORM"';
+  ORDER BY "PLATFORM" DESC';
 
 	weekly_platform_pass_rate_model :=
 	'{
@@ -2749,7 +2749,7 @@ BEGIN
 }';
 
 	nightly_platform_pass_rate_sql :=
-	'SELECT PLATFORM AS "PLATFORM",
+	'SELECT lower(PLATFORM) AS "PLATFORM",
       round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED",
       round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE",
       round (100.0 * sum( QUEUED) / sum(TOTAL), 0)::integer AS "QUEUED",
@@ -2758,8 +2758,9 @@ BEGIN
       0 - round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED"
   FROM NIGHTLY_VIEW
   WHERE PROJECT LIKE ANY (''{#{project}}'')
+      AND lower(PLATFORM) <> ''n/a''
   GROUP BY PLATFORM
-  ORDER BY PLATFORM';
+  ORDER BY PLATFORM DESC';
 
 	nightly_platform_pass_rate_model :=
 	'{
@@ -2925,7 +2926,7 @@ BEGIN
   FROM NIGHTLY_VIEW
   WHERE PROJECT LIKE ANY (''{#{project}}'')
   GROUP BY OWNER_USERNAME
-  ORDER BY OWNER_USERNAME';
+  ORDER BY OWNER_USERNAME DESC';
 
 	nightly_person_pass_rate_model :=
 	'{
@@ -2982,7 +2983,7 @@ BEGIN
         "ABORTED"
     ],
     "height": {
-        "dataItemValue": 160
+        "dataItemValue": 58
     },
     "series": [
         {
