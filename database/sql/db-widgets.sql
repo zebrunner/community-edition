@@ -20,6 +20,10 @@ DECLARE personal_dashboard_id DASHBOARDS.id%TYPE;
 	DECLARE stability_trend_id WIDGETS.id%TYPE;
 	DECLARE stability_trend_sql WIDGETS.sql%TYPE;
 	DECLARE stability_trend_model WIDGETS.model%TYPE;
+	DECLARE test_execution_time_id WIDGETS.id%TYPE;
+	DECLARE test_execution_time_sql WIDGETS.sql%TYPE;
+	DECLARE test_execution_time_model WIDGETS.model%TYPE;
+
 	-- Declare Failures dashboard widgets
 	DECLARE error_message_id WIDGETS.id%TYPE;
 	DECLARE error_message_sql WIDGETS.sql%TYPE;
@@ -322,6 +326,59 @@ BEGIN
       ]
   }';
 
+	test_execution_time_sql =
+	'SELECT
+      AVG_TIME as "AVG TIME",
+      MAX_TIME as "MAX TIME",
+      MIN_TIME as "MIN TIME",
+      date_trunc(''month'', TESTED_AT) AS "TESTED_AT"
+  FROM TEST_CASE_HEALTH_VIEW
+  WHERE TEST_CASE_ID = ''#{testCaseId}''
+  ORDER BY "TESTED_AT"';
+
+	test_execution_time_model =
+	'{
+      "grid": {
+          "right": "2%",
+          "left": "2%",
+          "top": "8%",
+          "bottom": "8%"
+      },
+      "legend": {},
+      "tooltip": {
+          "trigger": "axis"
+      },
+      "dimensions": [
+          "TESTED_AT",
+          "AVG TIME",
+          "MAX TIME",
+          "MIN TIME"
+      ],
+      "color": [
+          "#61c8b3",
+          "#e76a77",
+          "#fddb7a"
+      ],
+      "xAxis": {
+          "type": "category",
+          "boundaryGap": false,
+          "axisLabel": {
+              "formatter": "$filter | date: MMM dd$"
+          }
+      },
+      "yAxis": {},
+      "series": [
+          {
+              "type": "line"
+          },
+          {
+              "type": "line"
+          },
+          {
+              "type": "line"
+          }
+      ]
+}';
 	INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
 																											 ('STABILITY (%)', 'echart', stability_percent_sql, stability_percent_model)
 			RETURNING id INTO stability_percent_id;
@@ -332,12 +389,18 @@ BEGIN
 																											 ('STABILITY TREND (%)', 'echart', stability_trend_sql, stability_trend_model)
 			RETURNING id INTO stability_trend_id;
 
+	INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+	('TEST EXECUTION TIME DETAILS (sec)', 'echart', test_execution_time_sql, test_execution_time_model)
+	RETURNING id INTO test_execution_time_id;
 	INSERT INTO DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
 																																						(stability_dashboard_id, stability_percent_id, '{"x":0,"y":0,"width":4,"height":11}');
 	INSERT INTO DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
-																																						(stability_dashboard_id, test_case_info_id, '{"x":4,"y":0,"width":8,"height":6}');
+																																						(stability_dashboard_id, test_case_info_id, '{"x":4,"y":0,"width":8,"height":11}');
 	INSERT INTO DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
-																																						(stability_dashboard_id, stability_trend_id, '{"x":0,"y":22,"width":12,"height":11}');
+																																						(stability_dashboard_id, stability_trend_id, '{"x":0,"y":11,"width":12,"height":11}');
+	INSERT INTO DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+	(stability_dashboard_id, test_execution_time_id, '{"x":0,"y":22,"width":12,"height":11}');
+
 	-- Insert Failures dashboard data
 	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Failures analysis', TRUE, 5) RETURNING id INTO failures_dashboard_id;
 
