@@ -5,8 +5,11 @@
 
 
 # pull required docker images
-docker pull selenoid/vnc:chrome_67.0
-docker pull selenoid/vnc:firefox_60.0
+docker pull selenoid/vnc:chrome_72.0
+docker pull selenoid/vnc:firefox_65.0
+
+#docker pull selenoid/vnc:chrome_67.0
+#docker pull selenoid/vnc:firefox_60.0
 docker pull selenoid/video-recorder:latest-release
 
 #-------------- START EVERYTHING ------------------------------

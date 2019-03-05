@@ -7,25 +7,25 @@
         </region>
     </version>
   </browser>
-  <browser name="chrome" defaultVersion="67.0">
-    <version number="66.0">
+  <browser name="chrome" defaultVersion="72.0">
+    <version number="72.0">
       <region name="stage">
         <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
       </region>
     </version>
-    <version number="67.0">
+    <version number="71.0">
       <region name="stage">
         <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
       </region>
     </version>
   </browser>
-  <browser name="firefox" defaultVersion="60.0">
-    <version number="59.0">
+  <browser name="firefox" defaultVersion="65.0">
+    <version number="65.0">
       <region name="stage">
         <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
       </region>
     </version>
-    <version number="60.0">
+    <version number="64.0">
       <region name="stage">
         <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
       </region>
