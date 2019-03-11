@@ -49,7 +49,7 @@ services:
     - "redis"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:3.12
+    image: qaprosoft/jenkins-master:3.13
     env_file:
      - variables.env
     volumes:
