@@ -28,6 +28,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 ## Initial setup
 * Update ./nginx/conf.d/default.conf file by replacing demo.qaprosoft.com with real server_name or IP address. Also specify valid resolver host(s)
 * Update ./variables.env file by replacing demo.qaprosoft.com with real server_name or IP address
+* Update ./docker-compose.yml file by replacing zafira:3.3.43 with the latest version
 * Optional: update default credentials if neccessary
 * Optional: adjust docker-compose.yml file by removing unused services. By default it contains:
   nginx, postgres, zafira, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq  
