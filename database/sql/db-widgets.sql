@@ -134,7 +134,7 @@ DECLARE personal_dashboard_id DASHBOARDS.id%TYPE;
 
 BEGIN
 	-- Insert Stability dashboard data
-	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Stability', TRUE, 8) RETURNING id INTO stability_dashboard_id;
+	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION, EDITABLE) VALUES ('Stability', TRUE, 8, FALSE) RETURNING id INTO stability_dashboard_id;
 	stability_percent_sql :=
 	'SELECT
   unnest(array[''STABILITY'',
@@ -478,7 +478,7 @@ BEGIN
 																																						(failures_dashboard_id, failures_count_id, '{"x":0,"y":0,"width":3,"height":14}');
 
 	-- Insert Personal dashboard data
-	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Personal', FALSE, 1) RETURNING id INTO personal_dashboard_id;
+	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION, EDITABLE) VALUES ('Personal', FALSE, 1, FALSE) RETURNING id INTO personal_dashboard_id;
 
 	nightly_details_personal_sql :=
 	'SELECT
@@ -1029,7 +1029,7 @@ BEGIN
 																																						(personal_dashboard_id, nightly_personal_cron_id, '{"x":0,"y":22,"width":12,"height":6}');
 
 	-- Insert User Performance dashboard data
-	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('User Performance', TRUE, 6) RETURNING id INTO user_performance_dashboard_id;
+	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION, EDITABLE) VALUES ('User Performance', TRUE, 6, FALSE) RETURNING id INTO user_performance_dashboard_id;
 
 	personal_total_rate_sql :=
 	'SELECT
@@ -1334,7 +1334,7 @@ BEGIN
 																																						(user_performance_dashboard_id, total_tests_trend_id, '{"x":0,"y":23,"width":12,"height":12}');
 
 	-- Insert General dashboard data
-	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('General', FALSE, 0) RETURNING id INTO general_dashboard_id;
+	INSERT INTO DASHBOARDS (TITLE, HIDDEN, POSITION, EDITABLE) VALUES ('General', FALSE, 0, FALSE) RETURNING id INTO general_dashboard_id;
 
 	total_tests_count_sql :=
 	'SELECT
