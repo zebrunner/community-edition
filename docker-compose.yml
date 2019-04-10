@@ -26,19 +26,23 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:3.3.43
+    image: qaprosoft/zafira:launchers
     env_file:
      - variables.env
     #Uncomment only for debugging Zafira
-#    environment:
-#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
-    ports:
-     - "8002:8000"
+    environment:
+     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
     depends_on:
      - "db"
      - "rabbitmq"
      - "redis"
     restart: always
+  zafira-ui:
+    image: qaprosoft/zafira-ui:1.12-SNAPSHOT
+    env_file:
+     - variables.env
+    depends_on:
+      - "zafira"
   zafira-batch:
     image: qaprosoft/zafira-batch:latest
     env_file:
