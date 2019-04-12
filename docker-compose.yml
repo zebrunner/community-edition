@@ -39,6 +39,12 @@ services:
      - "rabbitmq"
      - "redis"
     restart: always
+  zafira-ui:
+    image: qaprosoft/zafira-ui:1.12-SNAPSHOT
+    env_file:
+     - variables.env
+    depends_on:
+      - "zafira"
   zafira-batch:
     image: qaprosoft/zafira-batch:latest
     env_file:
