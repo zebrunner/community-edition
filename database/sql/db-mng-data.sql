@@ -2,8 +2,7 @@ SET SCHEMA 'management';
 
 INSERT INTO tenancies (name) VALUES ('zafira');
 
-
-INSERT INTO widget_templates VALUES (1, 'TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicates your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (1, 'TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicates your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECT": join(PROJECT),
@@ -147,7 +146,7 @@ SELECT
   "FEATURE": [],
   "PLATFORM": ["*"]
 }', false);
-INSERT INTO widget_templates VALUES (2, 'TEST CASE STABILITY TREND', 'Test case stability trend on monthly basis.', 'LINE', 'SELECT
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (2, 'TEST CASE STABILITY TREND', 'Test case stability trend on monthly basis.', 'LINE', 'SELECT
       STABILITY as "STABILITY",
       100 - OMISSION - KNOWN_FAILURE - ABORTED as "FAILURE",
       100 - KNOWN_FAILURE - ABORTED as "OMISSION",
@@ -232,7 +231,7 @@ INSERT INTO widget_templates VALUES (2, 'TEST CASE STABILITY TREND', 'Test case 
 }', '', '2019-04-15 16:10:05.202285', '2019-04-09 15:01:19.572092', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates VALUES (3, 'PASS RATE', 'Pass rate percent with extra grouping by project, owner etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (3, 'PASS RATE', 'Pass rate percent with extra grouping by project, owner etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PLATFORM": join(PLATFORM),
@@ -534,7 +533,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   "PERIOD": "Last 30 Days"
 }
 ', false);
-INSERT INTO widget_templates VALUES (4, 'TOTAL JIRA TICKETS', 'Number of discovered and registered bugs by automation', 'TABLE', '<#global MULTIPLE_VALUES = {
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (4, 'TOTAL JIRA TICKETS', 'Number of discovered and registered bugs by automation', 'TABLE', '<#global MULTIPLE_VALUES = {
   "PROJECTS.NAME": join(PROJECT)
 }>
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
@@ -584,7 +583,7 @@ SELECT
 }', '', '2019-04-12 22:38:01.642146', '2019-04-09 15:54:48.757347', '{
   "PROJECT": []
 }', false);
-INSERT INTO widget_templates VALUES (5, 'PASS RATE TREND', 'Consolidated test status trend with ability to specify 10+ extra filters and grouping by hours, days, month etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (5, 'PASS RATE TREND', 'Consolidated test status trend with ability to specify 10+ extra filters and grouping by hours, days, month etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -946,7 +945,7 @@ SELECT
   "PERSONAL": "true",
   "currentUserId": 1,
   "PROJECT": [],
-  "USER": ["anonymous", "rzubkouski"],
+  "USER": ["anonymous"],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
@@ -957,7 +956,7 @@ SELECT
   "LANGUAGE": [],
   "JOB_NAME": []
 }', false);
-INSERT INTO widget_templates VALUES (6, 'TEST FAILURE COUNT', 'High level information about the similar errors.', 'TABLE', '
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (6, 'TEST FAILURE COUNT', 'High level information about the similar errors.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT ENV AS "ENV",
@@ -1016,7 +1015,7 @@ SELECT ENV AS "ENV",
   "PERIOD": "Last 24 Hours",
   "hashcode": "1046730996"
 }', true);
-INSERT INTO widget_templates VALUES (7, 'MONTHLY TEST IMPLEMENTATION PROGRESS', 'Number of new automated cases per week.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (7, 'MONTHLY TEST IMPLEMENTATION PROGRESS', 'Number of new automated cases per week.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECTS.NAME": join(PROJECT),
@@ -1137,7 +1136,7 @@ SELECT
   "currentUserId": 1,
   "USER": []
 }', false);
-INSERT INTO widget_templates VALUES (8, 'PASS RATE', 'Consolidated test status information with ability to specify 10+ extra filters including daily, weekly, monthly etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (8, 'PASS RATE', 'Consolidated test status information with ability to specify 10+ extra filters including daily, weekly, monthly etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1413,7 +1412,7 @@ SELECT
   "PERSONAL": "true",
   "currentUserId": 2,
   "PROJECT": [],
-  "USER": ["anonymous", "rzubkouski"],
+  "USER": ["anonymous"],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
@@ -1425,7 +1424,7 @@ SELECT
   "JOB_NAME": []
 }
 ', false);
-INSERT INTO widget_templates VALUES (9, 'TESTS FAILURES', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (9, 'TESTS FAILURES', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1608,7 +1607,7 @@ SELECT count(*) AS "COUNT",
   "PERSONAL": "true",
   "currentUserId": 1,
   "PROJECT": [],
-  "USER": ["anonymous", "rzubkouski"],
+  "USER": ["anonymous"],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
@@ -1619,7 +1618,7 @@ SELECT count(*) AS "COUNT",
   "LANGUAGE": [],
   "JOB_NAME": []
 }', false);
-INSERT INTO widget_templates VALUES (10, 'TEST FAILURE DETAILS', 'All tests/jobs with the similar failure.', 'TABLE', '
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (10, 'TEST FAILURE DETAILS', 'All tests/jobs with the similar failure.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT count(*) as "COUNT",
@@ -1679,7 +1678,7 @@ SELECT count(*) as "COUNT",
   "PERIOD": "Last 24 Hours",
   "hashcode": "38758212"
 }', true);
-INSERT INTO widget_templates VALUES (11, 'TESTCASE INFO', 'Detailed test case information.', 'TABLE', 'SELECT
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (11, 'TESTCASE INFO', 'Detailed test case information.', 'TABLE', 'SELECT
          TEST_CASES.ID AS "ID",
          TEST_CASES.TEST_CLASS AS "TEST CLASS",
          TEST_CASES.TEST_METHOD AS "TEST METHOD",
@@ -1694,7 +1693,7 @@ INSERT INTO widget_templates VALUES (11, 'TESTCASE INFO', 'Detailed test case in
 }', '', '2019-04-15 16:12:13.352187', '2019-04-12 21:37:29.411124', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates VALUES (12, 'TEST CASE DURATION TREND', 'All kind of duration metrics per test case.', 'LINE', 'SELECT
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (12, 'TEST CASE DURATION TREND', 'All kind of duration metrics per test case.', 'LINE', 'SELECT
       AVG_TIME as "AVG TIME",
       MAX_TIME as "MAX TIME",
       MIN_TIME as "MIN TIME",
@@ -1743,7 +1742,7 @@ INSERT INTO widget_templates VALUES (12, 'TEST CASE DURATION TREND', 'All kind o
 }', '', '2019-04-15 16:12:13.352187', '2019-04-09 15:09:23.010109', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates VALUES (13, 'TEST CASE STABILITY', 'Aggregated stability metric for test case.', 'PIE', 'SELECT
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (13, 'TEST CASE STABILITY', 'Aggregated stability metric for test case.', 'PIE', 'SELECT
   unnest(array[''STABILITY'',
                   ''FAILURE'',
                   ''OMISSION'',
@@ -1818,7 +1817,7 @@ INSERT INTO widget_templates VALUES (13, 'TEST CASE STABILITY', 'Aggregated stab
 }', '', '2019-04-15 16:12:13.352187', '2019-04-09 14:52:48.600982', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates VALUES (14, 'TESTS SUMMARY', 'Detailed information about passed, failed, skipped etc.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (14, 'TESTS SUMMARY', 'Detailed information about passed, failed, skipped etc.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -2006,7 +2005,7 @@ SELECT
   "PERSONAL": "true",
   "currentUserId": 1,
   "PROJECT": [],
-  "USER": ["anonymous", "rzubkouski"],
+  "USER": ["anonymous"],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
