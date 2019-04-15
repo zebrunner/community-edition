@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $( psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -tAc "SELECT 1 FROM pg_database WHERE datname = 'sonar'" ) == '1' ]; then
+if [ $( psql -v ON_ERROR_STOP=1 --username $POSTGRES_USER -tAc "SELECT 1 FROM pg_database WHERE datname = 'sonar'" ) = '1' ]; then
 echo "Database already exists"
 exit 1
 fi
