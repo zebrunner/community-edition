@@ -13,3 +13,13 @@ fi
 
 sed 's/demo.qaprosoft.com/'$1'/g' variables.env.original > variables.env
 sed 's/demo.qaprosoft.com/'$1'/g' ./nginx/conf.d/default.conf.original > ./nginx/conf.d/default.conf
+
+
+if [[ ! -d esdata ]]; then
+    mkdir esdata
+fi
+
+if [[ ! -d jenkins ]]; then
+    mkdir jenkins
+fi
+
