@@ -260,7 +260,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   ${WHERE_MULTIPLE_CLAUSE}
   GROUP BY "GROUP_FIELD"
   ORDER BY "GROUP_FIELD" DESC
-
+  
   <#--
     Generates WHERE clause for multiple choosen parameters
     @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
@@ -305,13 +305,16 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     <#break>
   <#case "Nightly">
     <#local result = "NIGHTLY_VIEW" />
-    <#break>
+    <#break>    
   <#case "Weekly">
     <#local result = "WEEKLY_VIEW" />
     <#break>
   <#case "Last 30 Days">
-    <#local result = "MONTHLY_VIEW" />
+    <#local result = "LAST30DAYS_VIEW" />
     <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>    
  </#switch>
  <#return result>
 </#function>
