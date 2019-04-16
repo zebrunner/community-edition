@@ -53,7 +53,7 @@ services:
     depends_on:
       - "zafira"
   jenkins-master:
-    image: qaprosoft/jenkins-master:3.13
+    image: qaprosoft/jenkins-master:4.0
     env_file:
      - variables.env
     volumes:
