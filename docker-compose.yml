@@ -25,35 +25,33 @@ services:
     env_file:
      - variables.env
     restart: always
-  zafira:
-    image: qaprosoft/zafira:3.4.50
-    env_file:
-     - variables.env
-    #Uncomment only for debugging Zafira
-#    environment:
-#     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
-    ports:
-     - "8002:8000"
-    depends_on:
-     - "db"
-     - "rabbitmq"
-     - "redis"
-    restart: always
-  zafira-ui:
-    image: qaprosoft/zafira-ui:1.1
-    env_file:
-     - variables.env
-    depends_on:
-      - "zafira"
   zafira-batch:
     image: qaprosoft/zafira-batch:latest
     env_file:
-    - variables.env
+      - variables.env
     depends_on:
-    - "db"
-    - "rabbitmq"
-    - "redis"
+      - "db"
+      - "rabbitmq"
+      - "redis"
     restart: always
+  zafira:
+    image: qaprosoft/zafira:3.4.50
+    env_file:
+      - variables.env
+    #Uncomment only for debugging Zafira
+    #    environment:
+    #     - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
+    ports:
+      - "8002:8000"
+    depends_on:
+      - "db"
+      - "rabbitmq"
+      - "redis"
+    restart: always
+  zafira-ui:
+    image: qaprosoft/zafira-ui:latest
+    depends_on:
+      - "zafira"
   jenkins-master:
     image: qaprosoft/jenkins-master:3.13
     env_file:
