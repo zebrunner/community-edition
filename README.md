@@ -20,20 +20,25 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 
 
 ## Software prerequisites
-* Create new user, then change uid/guid to uid=1000 and gid=1000 - (https://github.com/jenkinsci/docker) for this user
-  Note: for current user just change uid/guid inside /etc/passwd and reboot host
+* Docker requires to use user with uid=1000 and gid=1000 for simple volumes sharing etc.
+  Note: to verify current user uid/gid execute
+  ```
+  ubuntu:~/tools/qps-infra$ id
+  uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),102(netdev),999(docker
+  ```
 * Install [docker](http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/) and [docker-composer](https://docs.docker.com/compose/install/#install-compose)
 
 
 ## Initial setup
-* Clone [qps-infra](https://github.com/qaprosoft/qps-infra). Optionally create your private repo for it to have flixibly migrated infrastructure
+* Clone [qps-infra](https://github.com/qaprosoft/qps-infra). Optionally create your private repo for it to have easily migrated infrastructure
 * Goto qps-infra folder and launch setup.sh script providing your hostname or ip address as argument
-'''
+```
+git clone https://github.com/qaprosoft/qps-infra.git
 cd qps-infra
 ./setup.sh myhost.domain.com
-'''
+```
 * Optional: update default credentials if neccessary (strongly recommended for publicly available environments)
-* If you changed ZAFIRA_RABBITMQ_USER and ZAFIRA_RABBITMQ_PASS please update them in config/definitions.json as well
+  Note: If you changed ZAFIRA_RABBITMQ_USER and ZAFIRA_RABBITMQ_PASS please update them in config/definitions.json as well
 * Optional: adjust docker-compose.yml file by removing unused services. By default it contains:
   nginx, postgres, zafira/zafira-ui/zafira-batch, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
 * Execute ./start.sh to start all containers
@@ -43,11 +48,12 @@ cd qps-infra
 ## Services start/stop/restart
 * Use ./stop.sh script to stop everything
 * Opional: it is recommended to remove old containers during restart
-'''
-docker-compose rm -g
-'''
 * Use ./start.sh to start all containers
-
+```
+./stop.sh
+docker-compose rm -g
+./start.sh
+```
 
 ## Env details
 * After QPS-Infra startup the following components are available. Take a look at variables.env for default credentials:
