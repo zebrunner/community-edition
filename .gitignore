@@ -4,3 +4,5 @@ ramdisk
 esdata/nodes
 selenoid/video
 empty.txt
+nginx/conf.d/default.conf
+variables.env
