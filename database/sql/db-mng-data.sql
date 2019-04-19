@@ -2,10 +2,10 @@ SET SCHEMA 'management';
 
 INSERT INTO tenancies (name) VALUES ('zafira');
 
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (1, 'TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicates your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (1, 'TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicates your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
-  "PROJECT": join(PROJECT),
+  "PROJECT": multiJoin(PROJECT, projects),
   "OWNER_USERNAME": join(USER),
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
@@ -62,10 +62,19 @@ SELECT
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
 </#function>
-', '{
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '{
     "grid": {
         "right": "4%",
         "left": "4%",
@@ -121,7 +130,7 @@ SELECT
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
     "multiple": true
   },
   "ENV": {
@@ -136,7 +145,7 @@ SELECT
     "valuesQuery": "SELECT DISTINCT FEATURE FROM TOTAL_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
     "multiple": true
   }
-}', '', '2019-04-15 15:48:22.855454', '2019-04-09 12:38:01.466911', '{
+}', '', '2019-04-18 11:52:37.937109', '2019-04-09 12:38:01.466911', '{
   "PERSONAL": "true",
   "currentUserId": 1,
   "PROJECT": [],
@@ -146,7 +155,7 @@ SELECT
   "FEATURE": [],
   "PLATFORM": ["*"]
 }', false);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (2, 'TEST CASE STABILITY TREND', 'Test case stability trend on monthly basis.', 'LINE', 'SELECT
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (2, 'TEST CASE STABILITY TREND', 'Test case stability trend on monthly basis.', 'LINE', 'SELECT
       STABILITY as "STABILITY",
       100 - OMISSION - KNOWN_FAILURE - ABORTED as "FAILURE",
       100 - KNOWN_FAILURE - ABORTED as "OMISSION",
@@ -228,15 +237,15 @@ INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         }
     ]
 }', '{
-}', '', '2019-04-15 16:10:05.202285', '2019-04-09 15:01:19.572092', '{
+}', '', '2019-04-16 08:14:05.858325', '2019-04-09 15:01:19.572092', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (3, 'PASS RATE', 'Pass rate percent with extra grouping by project, owner etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (3, 'PASS RATE', 'Pass rate percent with extra grouping by project, owner etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PLATFORM": join(PLATFORM),
   "OWNER_USERNAME": join(USER),
-  "PROJECT": join(PROJECT),
+  "PROJECT": multiJoin(PROJECT, projects),
   "DEVICE": join(DEVICE),
   "ENV": join(ENV),
   "APP_VERSION": join(APP_VERSION),
@@ -260,7 +269,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   ${WHERE_MULTIPLE_CLAUSE}
   GROUP BY "GROUP_FIELD"
   ORDER BY "GROUP_FIELD" DESC
-  
+
   <#--
     Generates WHERE clause for multiple choosen parameters
     @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
@@ -305,7 +314,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     <#break>
   <#case "Nightly">
     <#local result = "NIGHTLY_VIEW" />
-    <#break>    
+    <#break>
   <#case "Weekly">
     <#local result = "WEEKLY_VIEW" />
     <#break>
@@ -314,7 +323,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     <#break>
   <#case "Monthly">
     <#local result = "MONTHLY_VIEW" />
-    <#break>    
+    <#break>
  </#switch>
  <#return result>
 </#function>
@@ -324,8 +333,18 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>', '{
     "tooltip": {
         "trigger": "axis",
@@ -477,7 +496,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
     "multiple": true
   },
   "ENV": {
@@ -518,7 +537,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     "multiple": true
   }
 }
-', '', '2019-04-15 16:13:13.922899', '2019-03-27 08:38:47.112148', '{
+', '', '2019-04-18 11:58:18.094722', '2019-03-27 08:38:47.112148', '{
   "GROUP_BY": "PLATFORM",
   "PROJECT": [],
   "USER": [],
@@ -536,8 +555,9 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   "PERIOD": "Last 30 Days"
 }
 ', false);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (4, 'TOTAL JIRA TICKETS', 'Number of discovered and registered bugs by automation', 'TABLE', '<#global MULTIPLE_VALUES = {
-  "PROJECTS.NAME": join(PROJECT)
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (4, 'TOTAL JIRA TICKETS', 'Number of discovered and registered bugs by automation', 'TABLE', '<#global MULTIPLE_VALUES = {
+  "PROJECTS.NAME": multiJoin(PROJECT, projects)
 }>
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
 
@@ -576,21 +596,32 @@ SELECT
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
-</#function>', '', '{
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '{"columns": ["PROJECT", "COUNT"]}', '{
   "PROJECT": {
     "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
     "multiple": true
   }
-}', '', '2019-04-12 22:38:01.642146', '2019-04-09 15:54:48.757347', '{
+}', '', '2019-04-18 14:44:38.306478', '2019-04-09 15:54:48.757347', '{
   "PROJECT": []
 }', false);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (5, 'PASS RATE TREND', 'Consolidated test status trend with ability to specify 10+ extra filters and grouping by hours, days, month etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (5, 'PASS RATE TREND', 'Consolidated test status trend with ability to specify 10+ extra filters and grouping by hours, days, month etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
-  "PROJECT": join(PROJECT),
+  "PROJECT": multiJoin(PROJECT, projects),
   "OWNER_USERNAME": join(USER),
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
@@ -728,8 +759,18 @@ SELECT
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>', '{
     "grid": {
         "right": "4%",
@@ -902,7 +943,7 @@ SELECT
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
     "multiple": true
   },
   "ENV": {
@@ -943,7 +984,7 @@ SELECT
     "multiple": true
   }
 }
-', '', '2019-04-15 16:14:16.909359', '2019-04-12 09:54:38.556068', '{
+', '', '2019-04-18 12:01:16.983811', '2019-04-12 09:54:38.556068', '{
   "PERIOD": "Last 24 Hours",
   "PERSONAL": "true",
   "currentUserId": 1,
@@ -959,7 +1000,7 @@ SELECT
   "LANGUAGE": [],
   "JOB_NAME": []
 }', false);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (6, 'TEST FAILURE COUNT', 'High level information about the similar errors.', 'TABLE', '
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (6, 'TEST FAILURE COUNT', 'High level information about the similar errors.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT ENV AS "ENV",
@@ -1014,14 +1055,14 @@ SELECT ENV AS "ENV",
       ],
     "required": true
   }
-}', '', '2019-04-15 16:12:13.352187', '2019-04-12 18:54:44.519344', '{
+}', '', '2019-04-18 14:36:01.613525', '2019-04-12 18:54:44.519344', '{
   "PERIOD": "Last 24 Hours",
-  "hashcode": "1046730996"
+  "hashcode": "38758212"
 }', true);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (7, 'MONTHLY TEST IMPLEMENTATION PROGRESS', 'Number of new automated cases per week.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (7, 'MONTHLY TEST IMPLEMENTATION PROGRESS', 'Number of new automated cases per week.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
-  "PROJECTS.NAME": join(PROJECT),
+  "PROJECTS.NAME": multiJoin(PROJECT, projects),
   "USERS.USERNAME": join(USER)
 }>
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
@@ -1076,8 +1117,18 @@ SELECT
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>
 ', '{
     "grid": {
@@ -1133,17 +1184,17 @@ SELECT
     "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
     "multiple": true
   }
-}', '', '2019-04-15 15:48:31.226114', '2019-04-09 13:04:34.054318', '{
-  "PROJECT": [],
+}', '', '2019-04-18 11:19:32.197423', '2019-04-09 13:04:34.054318', '{
+  "PROJECT": ["AURONIA", "UNKNOWN"],
   "PERSONAL": "true",
   "currentUserId": 1,
   "USER": []
 }', false);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (8, 'PASS RATE', 'Consolidated test status information with ability to specify 10+ extra filters including daily, weekly, monthly etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (8, 'PASS RATE', 'Consolidated test status information with ability to specify 10+ extra filters including daily, weekly, monthly etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
-  "PROJECT": join(PROJECT),
+  "PROJECT": multiJoin(PROJECT, projects),
   "OWNER_USERNAME": join(USER),
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
@@ -1281,9 +1332,20 @@ SELECT
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
 </#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>
+
 ', '{
     "legend": {
         "orient": "vertical",
@@ -1370,7 +1432,7 @@ SELECT
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
     "multiple": true
   },
   "ENV": {
@@ -1410,9 +1472,9 @@ SELECT
     "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
     "multiple": true
   }
-}', '', '2019-04-15 16:13:22.662018', '2019-04-08 15:59:40.214693', '{
+}', '', '2019-04-18 12:04:29.597225', '2019-04-08 15:59:40.214693', '{
   "PERIOD": "Last 30 Days",
-  "PERSONAL": "true",
+  "PERSONAL": "false",
   "currentUserId": 2,
   "PROJECT": [],
   "USER": ["anonymous"],
@@ -1427,11 +1489,11 @@ SELECT
   "JOB_NAME": []
 }
 ', false);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (9, 'TESTS FAILURES', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (9, 'TESTS FAILURES', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
-  "PROJECT": join(PROJECT),
+  "PROJECT": multiJoin(PROJECT, projects),
   "OWNER_USERNAME": join(USER),
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
@@ -1535,8 +1597,18 @@ SELECT count(*) AS "COUNT",
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>', '{"columns": ["COUNT", "ENV", "REPORT", "MESSAGE"]}', '{
     "PERIOD": {
     "values": [
@@ -1565,7 +1637,7 @@ SELECT count(*) AS "COUNT",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
     "multiple": true
   },
   "ENV": {
@@ -1605,7 +1677,7 @@ SELECT count(*) AS "COUNT",
     "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
     "multiple": true
   }
-}', '', '2019-04-15 16:14:27.496976', '2019-04-12 15:12:14.804581', '{
+}', '', '2019-04-18 12:05:39.510314', '2019-04-12 15:12:14.804581', '{
   "PERIOD": "Last 24 Hours",
   "PERSONAL": "true",
   "currentUserId": 1,
@@ -1621,7 +1693,7 @@ SELECT count(*) AS "COUNT",
   "LANGUAGE": [],
   "JOB_NAME": []
 }', false);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (10, 'TEST FAILURE DETAILS', 'All tests/jobs with the similar failure.', 'TABLE', '
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (10, 'TEST FAILURE DETAILS', 'All tests/jobs with the similar failure.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT count(*) as "COUNT",
@@ -1677,26 +1749,28 @@ SELECT count(*) as "COUNT",
       ],
     "required": true
   }
-}', '', '2019-04-15 16:12:13.352187', '2019-04-12 19:20:37.515495', '{
+}', '', '2019-04-16 08:14:05.858325', '2019-04-12 19:20:37.515495', '{
   "PERIOD": "Last 24 Hours",
   "hashcode": "38758212"
 }', true);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (11, 'TESTCASE INFO', 'Detailed test case information.', 'TABLE', 'SELECT
-         TEST_CASES.ID AS "ID",
-         TEST_CASES.TEST_CLASS AS "TEST CLASS",
-         TEST_CASES.TEST_METHOD AS "TEST METHOD",
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (11, 'TESTCASE INFO', 'Detailed test case information.', 'TABLE', 'SELECT
+         TEST_CASES.TEST_CLASS || ''.'' || TEST_CASES.TEST_METHOD AS "TEST METHOD",
          TEST_SUITES.FILE_NAME AS "TEST SUITE",
          USERS.USERNAME AS "OWNER",
+         PROJECTS.NAME AS "PROJECT",
          TEST_CASES.CREATED_AT::date::text AS "CREATED AT"
          FROM TEST_CASES
-         LEFT JOIN TEST_SUITES ON TEST_CASES.TEST_SUITE_ID = TEST_SUITES.ID
-         LEFT JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID = USERS.ID
-     WHERE TEST_CASES.ID = ''${testCaseId}''', '{"columns": ["ID", "TEST CLASS", "TEST METHOD", "TEST SUITE", "OWNER", "CREATED AT"]}', '{
+         INNER JOIN TEST_SUITES ON TEST_CASES.TEST_SUITE_ID = TEST_SUITES.ID
+         INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID = USERS.ID
+         INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+     WHERE TEST_CASES.ID = ''${testCaseId}''
+', '{"columns": ["OWNER", "PROJECT", "TEST METHOD", "TEST SUITE", "CREATED AT"]}', '{
 
-}', '', '2019-04-15 16:12:13.352187', '2019-04-12 21:37:29.411124', '{
+}', '', '2019-04-18 14:43:45.345703', '2019-04-12 21:37:29.411124', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (12, 'TEST CASE DURATION TREND', 'All kind of duration metrics per test case.', 'LINE', 'SELECT
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (12, 'TEST CASE DURATION TREND', 'All kind of duration metrics per test case.', 'LINE', 'SELECT
       AVG_TIME as "AVG TIME",
       MAX_TIME as "MAX TIME",
       MIN_TIME as "MIN TIME",
@@ -1742,10 +1816,10 @@ INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         }
     ]
 }', '{
-}', '', '2019-04-15 16:12:13.352187', '2019-04-09 15:09:23.010109', '{
+}', '', '2019-04-16 08:14:05.858325', '2019-04-09 15:09:23.010109', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (13, 'TEST CASE STABILITY', 'Aggregated stability metric for test case.', 'PIE', 'SELECT
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (13, 'TEST CASE STABILITY', 'Aggregated stability metric for test case.', 'PIE', 'SELECT
   unnest(array[''STABILITY'',
                   ''FAILURE'',
                   ''OMISSION'',
@@ -1817,14 +1891,14 @@ INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         }
     ]
 }', '{
-}', '', '2019-04-15 16:12:13.352187', '2019-04-09 14:52:48.600982', '{
+}', '', '2019-04-16 08:14:05.858325', '2019-04-09 14:52:48.600982', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (14, 'TESTS SUMMARY', 'Detailed information about passed, failed, skipped etc.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (14, 'TESTS SUMMARY', 'Detailed information about passed, failed, skipped etc.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
-  "PROJECT": join(PROJECT),
+  "PROJECT": multiJoin(PROJECT, projects),
   "OWNER_USERNAME": join(USER),
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
@@ -1846,7 +1920,13 @@ SELECT
         SUM(KNOWN_ISSUE) AS "DEFECT",
         SUM(SKIPPED) AS "SKIP",
         sum( QUEUED ) AS "QUEUE",
-        SUM(TOTAL) AS "TOTAL"
+        SUM(TOTAL) AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
+        round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * sum( QUEUED ) / sum(TOTAL), 0)::integer AS "QUEUED (%)",
+        round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
     FROM ${VIEW}
     ${WHERE_MULTIPLE_CLAUSE}
     GROUP BY OWNER_ID, OWNER_USERNAME
@@ -1932,9 +2012,19 @@ SELECT
     @array - to join
     @return - joined array as string
   -->
-<#function join array>
+<#function join array=[]>
   <#return array?join('', '') />
-</#function>', '{"columns": ["OWNER", "PASS", "FAIL", "DEFECT", "SKIP", "TOTAL"]}
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '{"columns": ["OWNER", "PASS", "FAIL", "DEFECT", "SKIP", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}
 ', '{
     "PERIOD": {
     "values": [
@@ -1963,7 +2053,7 @@ SELECT
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
     "multiple": true
   },
   "ENV": {
@@ -2003,7 +2093,8 @@ SELECT
     "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
     "multiple": true
   }
-}', '', '2019-04-15 16:14:08.764212', '2019-04-09 17:06:51.739459', '{
+}', '{"legend": ["OWNER", "PASS", "FAIL", "DEFECT", "SKIP", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}
+', '2019-04-18 14:44:15.942558', '2019-04-09 17:06:51.739459', '{
   "PERIOD": "Last 24 Hours",
   "PERSONAL": "true",
   "currentUserId": 1,
@@ -2019,5 +2110,217 @@ SELECT
   "LANGUAGE": [],
   "JOB_NAME": []
 }', false);
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (15, 'KNOWN ISSUES AND BLOCKERS', 'Detailed information about known issues and blockers', 'TABLE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "PLATFORM": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+SELECT
+      PROJECT AS "PROJECT",
+      ENV AS "ENV",
+      OWNER_USERNAME AS "OWNER",
+      PLATFORM AS "PLATFORM",
+      PLATFORM_VERSION AS "PLATFORM_VERSION",
+      BROWSER AS "BROWSER",
+      BROWSER_VERSION AS "BROWSER_VERSION",
+      APP_VERSION AS "APP_VERSION",
+      DEVICE AS "DEVICE",
+      LOCALE AS "LOCALE",
+      LANGUAGE AS "LANGUAGE",
+      TEST_SUITE_NAME AS "SUITE NAME",
+      TEST_INFO_URL AS "TEST_INFO_URL",
+      MESSAGE AS "Error Message"
+    FROM ${VIEW}
+    ${WHERE_MULTIPLE_CLAUSE}
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+
+ <#if BLOCKER="true">
+   <#local result = " (KNOWN_ISSUE > 0) AND (TEST_BLOCKER=TRUE) "/>
+ <#else>
+   <#local result = " (KNOWN_ISSUE > 0)" />
+ </#if>
+
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+ <#local result = " WHERE " + result/>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '{"columns": ["PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "BLOCKER": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM LAST30DAYS_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM LAST30DAYS_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM LAST30DAYS_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM LAST30DAYS_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "multiple": true
+  }
+}', '{"legend": ["PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '2019-04-18 16:01:29.716692', '2019-04-18 15:12:31.727154', '{
+  "PERIOD": "Last 24 Hours",
+  "PERSONAL": "false",
+  "currentUserId": 1,
+  "PROJECT": [],
+  "USER": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "PLATFORM": [],
+  "DEVICE": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": [],
+  "BLOCKER": "false"
+}', false);
 
