@@ -26,17 +26,27 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 
 
 ## Initial setup
-* Update ./nginx/conf.d/default.conf file by replacing demo.qaprosoft.com with real server_name or IP address. Also specify valid resolver host(s)
-* Update ./variables.env file by replacing demo.qaprosoft.com with real server_name or IP address 
-* Optional: update default credentials if neccessary
+* Clone [qps-infra](https://github.com/qaprosoft/qps-infra). Optionally create your private repo for it to have flixibly migrated infrastructure
+* Goto qps-infra folder and launch setup.sh script providing your hostname or ip address as argument
+'''
+cd qps-infra
+./setup.sh myhost.domain.com
+'''
+* Optional: update default credentials if neccessary (strongly recommended for publicly available environments)
+* If you changed ZAFIRA_RABBITMQ_USER and ZAFIRA_RABBITMQ_PASS please update them in config/definitions.json as well
 * Optional: adjust docker-compose.yml file by removing unused services. By default it contains:
-  nginx, postgres, zafira, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq  
-* Update username, password in definitions.json for RabbitMQ if you are not using default qpsdemo/qpsdemo user
+  nginx, postgres, zafira/zafira-ui/zafira-batch, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
+* Execute ./start.sh to start all containers
+* Open http://myhost.domain.com to get access to direct links to the sub-components: zafira, jenkins etc
 
 
 ## Services start/stop/restart
 * Use ./stop.sh script to stop everything
-* User ./start.sh to start all containers
+* Opional: it is recommended to remove old containers during restart
+'''
+docker-compose rm -g
+'''
+* Use ./start.sh to start all containers
 
 
 ## Env details
@@ -45,7 +55,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 * [Selenium Grid](http://demo.qaprosoft.com/grid/console)
 * [Zafira Reporting Tool](http://demo.qaprosoft.com/zafira)
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
-
+  Note: admin/qaprosoft are hardcoded sonarqube credentials and they can be updated inside Sonar Adminisration panel
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
