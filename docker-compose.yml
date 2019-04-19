@@ -51,6 +51,8 @@ services:
     restart: always
   zafira-ui:
     image: qaprosoft/zafira-ui:1.3
+    env_file:
+      - variables.env
     depends_on:
       - "zafira"
   jenkins-master:
@@ -178,5 +180,3 @@ services:
     ports:
       - "4445:4445"
     restart: always
-#TODO:
-#also describe workaround to increase vm.max_map_count=262144 appending it to /etc/sysctl.conf

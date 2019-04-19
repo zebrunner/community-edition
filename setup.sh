@@ -11,15 +11,22 @@ if [ $# -lt 1 ]; then
     exit -1
 fi
 
+echo generating variables.env...
 sed 's/demo.qaprosoft.com/'$1'/g' variables.env.original > variables.env
+echo generating ./nginx/conf.d/default.conf...
 sed 's/demo.qaprosoft.com/'$1'/g' ./nginx/conf.d/default.conf.original > ./nginx/conf.d/default.conf
 
 
 if [[ ! -d esdata ]]; then
+    echo creating esdata folder for elastic search...
+    echo WARNING! Increase vm.max_map_count=262144 appending it to /etc/sysctl.conf on Linux Ubuntu
+    echo your current value is `sysctl vm.max_map_count`
     mkdir esdata
 fi
 
 if [[ ! -d jenkins ]]; then
+    echo creating jenkins folder...
     mkdir jenkins
 fi
 
+echo Setup finished successfully using $HOST_NAME hostname.
