@@ -51,7 +51,7 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "userId": "1",
   "dashboardName": "User Performance",
   "currentUserId": "1"
-}', NULL, 3);
+}', NULL, 7);
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('TEST CASE STABILITY (%)', 'PIE', NULL, NULL, false, NULL, '{
   "userId": "1",
   "dashboardName": "Stability",
