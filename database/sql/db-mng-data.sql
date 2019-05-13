@@ -2,7 +2,7 @@ SET SCHEMA 'management';
 
 INSERT INTO tenancies (name) VALUES ('zafira');
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (1, 'TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicates your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (1, 'TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicate that your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECT": multiJoin(PROJECT, projects),
@@ -122,30 +122,30 @@ SELECT
     "type": "radio"
   },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TOTAL_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
-    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
     "multiple": true
   },
   "FEATURE": {
-    "valuesQuery": "SELECT DISTINCT FEATURE FROM TOTAL_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
     "multiple": true
   }
-}', '', '2019-04-18 11:52:37.937109', '2019-04-09 12:38:01.466911', '{
+}', '', '2019-05-13 10:28:17.881423', '2019-04-09 12:38:01.466911', '{
   "PERSONAL": "true",
   "currentUserId": 1,
   "PROJECT": [],
@@ -155,10 +155,14 @@ SELECT
   "FEATURE": [],
   "PLATFORM": ["*"]
 }', false);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (2, 'TEST CASE STABILITY TREND', 'Test case stability trend on monthly basis.', 'LINE', 'SELECT
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (2, 'TEST CASE STABILITY TREND', 'Test case stability trend on a monthly basis.', 'LINE', 'SELECT
       STABILITY as "STABILITY",
-      100 - OMISSION - KNOWN_FAILURE - ABORTED as "FAILURE",
-      100 - KNOWN_FAILURE - ABORTED as "OMISSION",
+      FAILURE as "FAILURE",
+      OMISSION as "OMISSION",
+      KNOWN_FAILURE as "KNOWN ISSUE",
+      INTERRUPT as "INTERRUPT",
       to_char(date_trunc(''month'', TESTED_AT), ''YYYY-MM'') AS "TESTED_AT"
   FROM TEST_CASE_HEALTH_VIEW
   WHERE TEST_CASE_ID = ''${testCaseId}''
@@ -177,12 +181,16 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         "TESTED_AT",
         "STABILITY",
         "FAILURE",
-        "OMISSION"
+        "OMISSION",
+        "KNOWN ISSUE",
+        "INTERRUPT"
     ],
     "color": [
         "#61c8b3",
         "#e76a77",
-        "#fddb7a"
+        "#fddb7a",
+        "#9f5487",
+        "#6dbbe7"
     ],
     "xAxis": {
         "type": "category",
@@ -192,11 +200,44 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
     "series": [
         {
             "type": "line",
-            "z": 3,
+            "z": 5,
+            "stack": "Stack",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
+                        "type": "default"
+                    }
+                }
+            },
+            "lineStyle": {
+                "width": 1
+            }
+        },
+        {
+            "type": "line",
+            "z": 4,
+            "stack": "Stack",
+            "itemStyle": {
+                "normal": {
+                    "areaStyle": {
+                        "opacity": 0.8,
+                        "type": "default"
+                    }
+                }
+            },
+            "lineStyle": {
+                "width": 1
+            }
+        },
+        {
+            "type": "line",
+            "z": 3,
+            "stack": "Stack",
+            "itemStyle": {
+                "normal": {
+                    "areaStyle": {
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -208,10 +249,11 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         {
             "type": "line",
             "z": 2,
+            "stack": "Stack",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -223,10 +265,11 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         {
             "type": "line",
             "z": 1,
+            "stack": "Stack",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -237,10 +280,13 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         }
     ]
 }', '{
-}', '', '2019-04-16 08:14:05.858325', '2019-04-09 15:01:19.572092', '{
+}
+', '', '2019-05-13 10:25:55.164779', '2019-04-09 15:01:19.572092', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (3, 'PASS RATE', 'Pass rate percent with extra grouping by project, owner etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (3, 'PASS RATE (%)', 'Pass rate percent with an extra grouping by project, owner, etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PLATFORM": join(PLATFORM),
@@ -253,9 +299,11 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   "LANGUAGE": join(LANGUAGE),
   "JOB_NAME": join(JOB_NAME),
   "PRIORITY": join(PRIORITY),
-  "FEATURE": join(FEATURE)
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK)
 }>
-<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES, PARENT_JOB, PARENT_BUILD) />
 <#global VIEW = getView(PERIOD) />
 
 SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
@@ -275,7 +323,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
     @return - generated WHERE clause
   -->
-<#function generateMultipleWhereClause map>
+<#function generateMultipleWhereClause map, PARENT_JOB, PARENT_BUILD>
  <#local result = "" />
  <#list map?keys as key>
      <#if map[key] != "" >
@@ -289,6 +337,27 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
      </#if>
  </#list>
+
+
+ <#if PERIOD != "Total">
+  <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  </#if>
+ </#if>
+
  <#if result?length != 0>
   <#local result = " WHERE " + result/>
  </#if>
@@ -483,32 +552,37 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
       "LANGUAGE",
       "JOB_NAME",
       "PRIORITY",
-      "FEATURE"
+      "FEATURE",
+      "TASK"
       ],
     "required": true
   },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TOTAL_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
-    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
     "multiple": true
   },
   "FEATURE": {
-    "valuesQuery": "SELECT DISTINCT FEATURE FROM TOTAL_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
   },
   "Separator": {
@@ -517,27 +591,35 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     "required": false
   },
   "DEVICE": {
-    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL",
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
   },
   "APP_VERSION": {
-    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL",
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
     "multiple": true
   },
   "LOCALE": {
-    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL",
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
     "multiple": true
   },
   "LANGUAGE": {
-    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE != ''''",
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
   },
   "JOB_NAME": {
-    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME <> '''' AND NAME IS NOT NULL",
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME IS NOT NULL AND NAME <> '''';",
     "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
   }
 }
-', '', '2019-04-18 11:58:18.094722', '2019-03-27 08:38:47.112148', '{
+', '', '2019-05-13 10:24:53.236555', '2019-03-27 08:38:47.112148', '{
   "GROUP_BY": "PLATFORM",
   "PROJECT": [],
   "USER": [],
@@ -552,43 +634,123 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   "JOB_NAME": [],
   "PRIORITY": [],
   "FEATURE": [],
-  "PERIOD": "Last 30 Days"
+  "TASK": [],
+  "PERIOD": "Last 24 Hours",
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": ""
 }
 ', false);
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (4, 'TOTAL JIRA TICKETS', 'Number of discovered and registered bugs by automation', 'TABLE', '<#global MULTIPLE_VALUES = {
-  "PROJECTS.NAME": multiJoin(PROJECT, projects)
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (4, 'APPLICATION ISSUES (BLOCKERS) COUNT', 'A number of unique application bugs discovered and submitted by automation.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PLATFORM": join(PLATFORM),
+  "OWNER_USERNAME": join(USER),
+  "PROJECT": multiJoin(PROJECT, projects),
+  "DEVICE": join(DEVICE),
+  "ENV": join(ENV),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK)
 }>
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
 
-SELECT
-      PROJECTS.NAME AS "PROJECT",
-      COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
-  FROM TEST_WORK_ITEMS
-      INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID
-      INNER JOIN TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID
-      INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+  SELECT PROJECT AS "PROJECT",
+      COUNT(DISTINCT BUG) AS "COUNT"
+  FROM ${VIEW}
   ${WHERE_MULTIPLE_CLAUSE}
-  GROUP BY "PROJECT"
-  ORDER BY "COUNT" DESC;
+  GROUP BY PROJECT
 
 
-    <#--
+  <#--
     Generates WHERE clause for multiple choosen parameters
     @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
     @return - generated WHERE clause
   -->
 <#function generateMultipleWhereClause map>
- <#local result = "WHERE WORK_ITEMS.TYPE=''BUG'' " />
+ <#local result = "" />
+
+  <#if BLOCKER="true">
+   <#local result = " (KNOWN_ISSUE > 0) AND (TEST_BLOCKER=TRUE) "/>
+ <#else>
+   <#local result = " (KNOWN_ISSUE > 0)" />
+ </#if>
+
  <#list map?keys as key>
      <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+       <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+       <#continue>
+      </#if>
       <#if result?length != 0>
        <#local result = result + " AND "/>
       </#if>
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
      </#if>
  </#list>
-<#return result>
+
+  <#if PERIOD != "Total">
+  <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  </#if>
+ </#if>
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "TOTAL_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
 </#function>
 
 <#--
@@ -609,15 +771,111 @@ SELECT
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>', '{"columns": ["PROJECT", "COUNT"]}', '{
+  "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Total"
+      ],
+    "required": true
+  },
+  "BLOCKER": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME IS NOT NULL AND NAME <> '''';",
+    "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
   }
-}', '', '2019-04-18 14:44:38.306478', '2019-04-09 15:54:48.757347', '{
-  "PROJECT": []
-}', false);
+}
+', '', '2019-05-13 10:23:58.551598', '2019-04-09 15:54:48.757347', '{
+  "GROUP_BY": "PLATFORM",
+  "PROJECT": [],
+  "USER": [],
+  "PLATFORM": [],
+  "PLATFORM_VERSION": [],
+  "BROWSER_VERSION": [],
+  "DEVICE": [],
+  "ENV": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "TASK": [],
+  "PERIOD": "Last 7 Days",
+  "BLOCKER": "true",
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": "5"
+}
+', false);
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (5, 'PASS RATE TREND', 'Consolidated test status trend with ability to specify 10+ extra filters and grouping by hours, days, month etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (5, 'PASS RATE TREND', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -626,6 +884,7 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
   "PLATFORM": join(PLATFORM),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
@@ -674,6 +933,25 @@ SELECT
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
      </#if>
  </#list>
+
+ <#if PERIOD != "Total">
+  <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  </#if>
+ </#if>
 
  <#if result?length != 0 && PERSONAL == "true">
    <!-- add personal filter by currentUserId with AND -->
@@ -814,7 +1092,7 @@ SELECT
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -826,11 +1104,11 @@ SELECT
         {
             "type": "line",
             "smooth": false,
-            "stack": "Status1",
+            "stack": "Status",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -842,10 +1120,11 @@ SELECT
         {
             "type": "line",
             "smooth": false,
+            "stack": "Status",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -857,10 +1136,11 @@ SELECT
         {
             "type": "line",
             "smooth": false,
+            "stack": "Status",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -872,10 +1152,11 @@ SELECT
         {
             "type": "line",
             "smooth": false,
+            "stack": "Status",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -887,10 +1168,11 @@ SELECT
         {
             "type": "line",
             "smooth": false,
+            "stack": "Status",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -902,10 +1184,11 @@ SELECT
         {
             "type": "line",
             "smooth": false,
+            "stack": "Status",
             "itemStyle": {
                 "normal": {
                     "areaStyle": {
-                        "opacity": 0.3,
+                        "opacity": 0.8,
                         "type": "default"
                     }
                 }
@@ -935,27 +1218,31 @@ SELECT
     "type": "radio"
   },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
-    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
     "multiple": true
   },
   "FEATURE": {
-    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
   },
   "Separator": {
@@ -964,28 +1251,36 @@ SELECT
     "required": false
   },
   "DEVICE": {
-    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
   },
   "APP_VERSION": {
-    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
     "multiple": true
   },
   "LOCALE": {
-    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
     "multiple": true
   },
   "LANGUAGE": {
-    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
   },
   "JOB_NAME": {
-    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME IS NOT NULL AND NAME <> '''';",
     "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
   }
 }
-', '', '2019-04-18 12:01:16.983811', '2019-04-12 09:54:38.556068', '{
-  "PERIOD": "Last 24 Hours",
+', '', '2019-05-13 10:25:08.036054', '2019-04-12 09:54:38.556068', '{
+  "PERIOD": "Last 30 Days",
   "PERSONAL": "true",
   "currentUserId": 1,
   "PROJECT": [],
@@ -993,14 +1288,19 @@ SELECT
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
+  "TASK": [],
   "PLATFORM": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": []
+  "JOB_NAME": [],
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": "6"
 }', false);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (6, 'TEST FAILURE COUNT', 'High level information about the similar errors.', 'TABLE', '
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (6, 'TEST FAILURE COUNT', 'High-level information about similar errors.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT ENV AS "ENV",
@@ -1055,11 +1355,13 @@ SELECT ENV AS "ENV",
       ],
     "required": true
   }
-}', '', '2019-04-18 14:36:01.613525', '2019-04-12 18:54:44.519344', '{
+}', '', '2019-05-13 10:27:34.854807', '2019-04-12 18:54:44.519344', '{
   "PERIOD": "Last 24 Hours",
   "hashcode": "38758212"
 }', true);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (7, 'MONTHLY TEST IMPLEMENTATION PROGRESS', 'Number of new automated cases per week.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (7, 'MONTHLY TEST IMPLEMENTATION PROGRESS', 'A number of new automated cases per week.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECTS.NAME": multiJoin(PROJECT, projects),
@@ -1177,20 +1479,22 @@ SELECT
     "type": "radio"
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   }
-}', '', '2019-04-18 11:19:32.197423', '2019-04-09 13:04:34.054318', '{
+}', '', '2019-05-13 10:24:20.574745', '2019-04-09 13:04:34.054318', '{
   "PROJECT": ["AURONIA", "UNKNOWN"],
   "PERSONAL": "true",
   "currentUserId": 1,
   "USER": []
 }', false);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (8, 'PASS RATE', 'Consolidated test status information with ability to specify 10+ extra filters including daily, weekly, monthly etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (8, 'PASS RATE', 'Consolidated test status information with the ability to specify 10+ extra filters including daily, weekly, monthly, etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1199,6 +1503,7 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
   "PLATFORM": join(PLATFORM),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
@@ -1275,6 +1580,25 @@ SELECT
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
     </#if>
  </#list>
+
+  <#if PERIOD != "Total">
+  <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  </#if>
+ </#if>
 
  <#if result?length != 0 && PERSONAL == "true">
    <!-- add personal filter by currentUserId with AND -->
@@ -1424,27 +1748,31 @@ SELECT
     "required": true
   },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
-    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
     "multiple": true
   },
   "FEATURE": {
-    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
   },
   "Separator": {
@@ -1453,26 +1781,34 @@ SELECT
     "required": false
   },
   "DEVICE": {
-    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
   },
   "APP_VERSION": {
-    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
     "multiple": true
   },
   "LOCALE": {
-    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
     "multiple": true
   },
   "LANGUAGE": {
-    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
   },
   "JOB_NAME": {
-    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME IS NOT NULL AND NAME <> '''';",
     "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
   }
-}', '', '2019-04-18 12:04:29.597225', '2019-04-08 15:59:40.214693', '{
+}', '', '2019-05-13 10:24:37.490566', '2019-04-08 15:59:40.214693', '{
   "PERIOD": "Last 30 Days",
   "PERSONAL": "false",
   "currentUserId": 2,
@@ -1481,15 +1817,20 @@ SELECT
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
+  "TASK": [],
   "PLATFORM": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": []
+  "JOB_NAME": [],
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": "6"
 }
 ', false);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (9, 'TESTS FAILURES', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (9, 'TESTS FAILURES BY REASON', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1498,6 +1839,8 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "BUG": join(BUG),
   "PLATFORM": join(PLATFORM),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
@@ -1510,11 +1853,14 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 
 SELECT count(*) AS "COUNT",
       ENV AS "ENV",
+      --TODO: add support for github issues somehow when ''/browse'' is not needed
+      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || BUG || ''" target="_blank">'' || BUG || ''</a>'' AS "BUG",
+      BUG_SUBJECT AS "SUBJECT",
       ''<a href="dashboards/'' || (select ID from dashboards where title=''Failures analysis'') || ''?hashcode='' || max(MESSAGE_HASHCODE)  || ''">Failures Analysis</a>'' AS "REPORT",
       substring(MESSAGE from 1 for 210) as "MESSAGE"
   FROM ${VIEW}
   ${WHERE_MULTIPLE_CLAUSE}
-  GROUP BY "ENV", substring(MESSAGE from 1 for 210)
+  GROUP BY "ENV", "BUG", "SUBJECT", substring(MESSAGE from 1 for 210)
   ORDER BY "COUNT" DESC
 
 
@@ -1525,6 +1871,11 @@ SELECT count(*) AS "COUNT",
   -->
 <#function generateMultipleWhereClause map>
  <#local result = "" />
+
+ <#if BLOCKER="true">
+   <#local result = " (KNOWN_ISSUE > 0) AND (TEST_BLOCKER=TRUE) "/>
+ </#if>
+
  <#list map?keys as key>
     <#if map[key] != "" >
       <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
@@ -1541,6 +1892,25 @@ SELECT count(*) AS "COUNT",
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
     </#if>
  </#list>
+
+ <#if PERIOD != "Total">
+  <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  </#if>
+ </#if>
 
  <#if result?length != 0 && PERSONAL == "true">
    <!-- add personal filter by currentUserId with AND -->
@@ -1609,7 +1979,7 @@ SELECT count(*) AS "COUNT",
   -->
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
-</#function>', '{"columns": ["COUNT", "ENV", "REPORT", "MESSAGE"]}', '{
+</#function>', '{"columns": ["COUNT", "ENV", "BUG", "SUBJECT", "REPORT", "MESSAGE"]}', '{
     "PERIOD": {
     "values": [
       "Last 24 Hours",
@@ -1628,28 +1998,44 @@ SELECT count(*) AS "COUNT",
     "required": true,
     "type": "radio"
   },
+  "BLOCKER": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TOTAL_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
-    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
     "multiple": true
   },
   "FEATURE": {
-    "valuesQuery": "SELECT DISTINCT FEATURE FROM TOTAL_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
     "multiple": true
   },
   "Separator": {
@@ -1658,53 +2044,71 @@ SELECT count(*) AS "COUNT",
     "required": false
   },
   "DEVICE": {
-    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
   },
   "APP_VERSION": {
-    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
     "multiple": true
   },
   "LOCALE": {
-    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
     "multiple": true
   },
   "LANGUAGE": {
-    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
   },
   "JOB_NAME": {
-    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME IS NOT NULL AND NAME <> '''';",
     "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
   }
-}', '', '2019-04-18 12:05:39.510314', '2019-04-12 15:12:14.804581', '{
+}', '{"legend": ["COUNT", "ENV", "BUG", "SUBJECT", "REPORT", "MESSAGE"]}', '2019-05-10 23:13:27.904029', '2019-04-12 15:12:14.804581', '{
   "PERIOD": "Last 24 Hours",
-  "PERSONAL": "true",
+  "PERSONAL": "false",
   "currentUserId": 1,
   "PROJECT": [],
-  "USER": ["anonymous"],
+  "USER": [],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
+  "TASK": [],
+  "BUG": [],
   "PLATFORM": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": []
+  "JOB_NAME": [],
+  "BLOCKER": "false",
+  "PARENT_JOB": "",
+  "PARENT_BUILD": ""
 }', false);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (10, 'TEST FAILURE DETAILS', 'All tests/jobs with the similar failure.', 'TABLE', '
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (10, 'TEST FAILURE DETAILS', 'All tests/jobs with a similar failure.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT count(*) as "COUNT",
       ENV AS "ENV",
+      --TODO: add support for github issues somehow when ''/browse'' is not needed
+      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || BUG || ''" target="_blank">'' || BUG || ''</a>'' AS "BUG",
+      BUG_SUBJECT AS "SUBJECT",
       TEST_INFO_URL AS "REPORT"
   FROM ${VIEW}
   WHERE substring(Message from 1 for 210)  IN (
       SELECT substring(Message from 1 for 210)
       FROM ${VIEW}
       WHERE MESSAGE_HASHCODE=''${hashcode}'')
-  GROUP BY "ENV", "REPORT", substring(Message from 1 for 210)
+  GROUP BY "ENV", "BUG", "SUBJECT", "REPORT", substring(Message from 1 for 210)
   ORDER BY "COUNT" DESC, "ENV"
 
 <#--
@@ -1739,7 +2143,7 @@ SELECT count(*) as "COUNT",
  </#switch>
  <#return result>
 </#function>
-', '{"columns": ["ENV", "REPORT"]}', '{
+', '{"columns": ["ENV", "REPORT", "BUG", "SUBJECT"]}', '{
     "PERIOD": {
     "values": [
       "Last 24 Hours",
@@ -1749,10 +2153,11 @@ SELECT count(*) as "COUNT",
       ],
     "required": true
   }
-}', '', '2019-04-16 08:14:05.858325', '2019-04-12 19:20:37.515495', '{
+}', '', '2019-05-13 10:27:49.47342', '2019-04-12 19:20:37.515495', '{
   "PERIOD": "Last 24 Hours",
-  "hashcode": "38758212"
+  "hashcode": "-1996341284"
 }', true);
+
 INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (11, 'TESTCASE INFO', 'Detailed test case information.', 'TABLE', 'SELECT
          TEST_CASES.TEST_CLASS || ''.'' || TEST_CASES.TEST_METHOD AS "TEST METHOD",
          TEST_SUITES.FILE_NAME AS "TEST SUITE",
@@ -1766,14 +2171,15 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
      WHERE TEST_CASES.ID = ''${testCaseId}''
 ', '{"columns": ["OWNER", "PROJECT", "TEST METHOD", "TEST SUITE", "CREATED AT"]}', '{
 
-}', '', '2019-04-18 14:43:45.345703', '2019-04-12 21:37:29.411124', '{
+}', '', '2019-04-18 20:36:00.045515', '2019-04-12 21:37:29.411124', '{
   "testCaseId": "1"
 }', true);
 
+
 INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (12, 'TEST CASE DURATION TREND', 'All kind of duration metrics per test case.', 'LINE', 'SELECT
-      AVG_TIME as "AVG TIME",
-      MAX_TIME as "MAX TIME",
-      MIN_TIME as "MIN TIME",
+      ROUND(AVG_TIME::numeric, 2) as "AVG TIME",
+      ROUND(MAX_TIME::numeric, 2) as "MAX TIME",
+      ROUND(MIN_TIME::numeric, 2) as "MIN TIME",
       to_char(date_trunc(''month'', TESTED_AT), ''YYYY-MM'') AS "TESTED_AT"
   FROM TEST_CASE_HEALTH_VIEW
   WHERE TEST_CASE_ID = ''${testCaseId}''
@@ -1816,10 +2222,12 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         }
     ]
 }', '{
-}', '', '2019-04-16 08:14:05.858325', '2019-04-09 15:09:23.010109', '{
+}', '', '2019-05-01 14:09:14.130991', '2019-04-09 15:09:23.010109', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (13, 'TEST CASE STABILITY', 'Aggregated stability metric for test case.', 'PIE', 'SELECT
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (13, 'TEST CASE STABILITY', 'Aggregated stability metric for a test case.', 'PIE', 'SELECT
   unnest(array[''STABILITY'',
                   ''FAILURE'',
                   ''OMISSION'',
@@ -1891,10 +2299,12 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
         }
     ]
 }', '{
-}', '', '2019-04-16 08:14:05.858325', '2019-04-09 14:52:48.600982', '{
+}', '', '2019-05-13 10:26:34.718292', '2019-04-09 14:52:48.600982', '{
   "testCaseId": "1"
 }', true);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (14, 'TESTS SUMMARY', 'Detailed information about passed, failed, skipped etc.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (14, 'TESTS SUMMARY', 'Detailed information about passed, failed, skipped, etc tests.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1964,6 +2374,24 @@ SELECT
    <#local result = " OWNER_ID=${currentUserId} "/>
  </#if>
 
+  <#if PERIOD != "Total">
+    <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+    <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+    </#if>
+  </#if>
 
  <#if result?length != 0>
   <#local result = " WHERE " + result/>
@@ -2045,27 +2473,27 @@ SELECT
     "type": "radio"
   },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
-    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
     "multiple": true
   },
   "FEATURE": {
-    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
     "multiple": true
   },
   "Separator": {
@@ -2074,27 +2502,35 @@ SELECT
     "required": false
   },
   "DEVICE": {
-    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
   },
   "APP_VERSION": {
-    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
     "multiple": true
   },
   "LOCALE": {
-    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
     "multiple": true
   },
   "LANGUAGE": {
-    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
   },
   "JOB_NAME": {
-    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME IS NOT NULL AND NAME <> '''';",
     "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
   }
 }', '{"legend": ["OWNER", "PASS", "FAIL", "DEFECT", "SKIP", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}
-', '2019-04-18 14:44:15.942558', '2019-04-09 17:06:51.739459', '{
+', '2019-05-13 10:28:36.587561', '2019-04-09 17:06:51.739459', '{
   "PERIOD": "Last 24 Hours",
   "PERSONAL": "true",
   "currentUserId": 1,
@@ -2103,6 +2539,8 @@ SELECT
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": "6",
   "PLATFORM": [],
   "DEVICE": [],
   "APP_VERSION": [],
@@ -2110,7 +2548,8 @@ SELECT
   "LANGUAGE": [],
   "JOB_NAME": []
 }', false);
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (15, 'KNOWN ISSUES AND BLOCKERS', 'Detailed information about known issues and blockers', 'TABLE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (15, 'APPLICATION ISSUES (BLOCKERS) DETAILS', 'Detailed information about known issues and blockers.', 'TABLE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECT": multiJoin(PROJECT, projects),
@@ -2118,6 +2557,8 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "BUG": join(BUG),
   "PLATFORM": join(PLATFORM),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
@@ -2129,6 +2570,10 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 <#global VIEW = getView(PERIOD) />
 
 SELECT
+      --TODO: add support for github issues somehow when ''/browse'' is not needed
+      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || BUG || ''" target="_blank">'' || BUG || ''</a>'' AS "BUG",
+      BUG_SUBJECT AS "SUBJECT",
+      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || TASK || ''" target="_blank">'' || TASK || ''</a>'' AS "TASK",
       PROJECT AS "PROJECT",
       ENV AS "ENV",
       OWNER_USERNAME AS "OWNER",
@@ -2173,6 +2618,25 @@ SELECT
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
     </#if>
  </#list>
+
+  <#if PERIOD != "Total">
+  <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  </#if>
+ </#if>
 
  <#if result?length != 0 && PERSONAL == "true">
    <!-- add personal filter by currentUserId with AND -->
@@ -2236,7 +2700,7 @@ SELECT
   -->
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
-</#function>', '{"columns": ["PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '{
+</#function>', '{"columns": ["BUG", "SUBJECT", "TASK", "PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '{
     "PERIOD": {
     "values": [
       "Last 24 Hours",
@@ -2263,50 +2727,66 @@ SELECT
     "type": "radio"
   },
   "PROJECT": {
-    "valuesQuery": "SELECT DISTINCT PROJECT FROM LAST30DAYS_VIEW ORDER BY 1",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
-    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM LAST30DAYS_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM LAST30DAYS_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
-    "valuesQuery": "SELECT DISTINCT PRIORITY FROM LAST30DAYS_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
     "multiple": true
   },
   "FEATURE": {
-    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
     "multiple": true
   },
   "DEVICE": {
-    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
   },
   "APP_VERSION": {
-    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
     "multiple": true
   },
   "LOCALE": {
-    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
     "multiple": true
   },
   "LANGUAGE": {
-    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
   },
   "JOB_NAME": {
-    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME IS NOT NULL AND NAME <> '''';",
     "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
   }
-}', '{"legend": ["PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '2019-04-18 16:01:29.716692', '2019-04-18 15:12:31.727154', '{
+}', '{"legend": ["BUG", "SUBJECT", "TASK", "PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '2019-05-10 15:19:40.90221', '2019-04-18 15:12:31.727154', '{
   "PERIOD": "Last 24 Hours",
   "PERSONAL": "false",
   "currentUserId": 1,
@@ -2315,12 +2795,120 @@ SELECT
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
+  "TASK": [],
+  "BUG": [],
   "PLATFORM": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
   "JOB_NAME": [],
-  "BLOCKER": "false"
+  "BLOCKER": "false",
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": "6"
 }', false);
 
+
+INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (16, 'TEST CASES BY STABILITY', 'Shows all test cases with low stability percent rate per appropriate period (default - less than 10%).', 'TABLE', '
+<#--
+  1. for "Last 24 Hours" or "Nightly" calculate stability on the fly using appropriate views
+  2. for Monthly select STABILITY from TEST_CASE_HEALTH_VIEW for current month
+  3. for Total calculate avg(STABILITY) overall by TEST_CASE_HEALTH_VIEW view data
+  Note: all filters the rest
+  -->
+
+<#switch PERIOD>
+  <#case "Last 24 Hours">
+    SELECT
+      STABILITY_URL AS "TEST METHOD",
+      ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+    FROM LAST24HOURS_VIEW
+    GROUP BY "TEST METHOD"
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+  <#case "Last 7 Days">
+    SELECT
+      STABILITY_URL AS "TEST METHOD",
+      ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+    FROM LAST7DAYS_VIEW
+    GROUP BY "TEST METHOD"
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+  <#case "Last 14 Days">
+    SELECT
+      STABILITY_URL AS "TEST METHOD",
+      ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+    FROM LAST14DAYS_VIEW
+    GROUP BY "TEST METHOD"
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+  <#case "Last 30 Days">
+    SELECT
+      STABILITY_URL AS "TEST METHOD",
+      ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+    FROM LAST30DAYS_VIEW
+    GROUP BY "TEST METHOD"
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+  <#case "Nightly">
+    SELECT
+      STABILITY_URL AS "TEST METHOD",
+      ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+    FROM NIGHTLY_VIEW
+    GROUP BY "TEST METHOD"
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+  <#case "Weekly">
+    SELECT
+      STABILITY_URL AS "TEST METHOD",
+      ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+    FROM WEEKLY_VIEW
+    GROUP BY "TEST METHOD"
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+  <#case "Monthly">
+    SELECT STABILITY_URL AS "TEST METHOD",
+      AVG(STABILITY) AS "STABILITY"
+    FROM TEST_CASE_HEALTH_VIEW
+      WHERE TESTED_AT = date_trunc(''month'', current_date)
+    GROUP BY "TEST METHOD"
+    HAVING AVG(STABILITY) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+  <#case "Total">
+    SELECT STABILITY_URL AS "TEST METHOD",
+      AVG(STABILITY) AS "STABILITY"
+    FROM TEST_CASE_HEALTH_VIEW
+    GROUP BY "TEST METHOD"
+    HAVING AVG(STABILITY) < ${PERCENT}
+    ORDER BY "STABILITY", "TEST METHOD"
+    <#break>
+ </#switch>
+
+', '{"columns": ["TEST METHOD", "STABILITY"]}', '{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Weekly",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Monthly",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERCENT": {
+    "value": "10",
+    "required": true
+  }
+}', '', '2019-05-13 10:27:12.670165', '2019-05-02 08:40:40.991813', '{
+  "PERIOD": "Weekly",
+  "PERCENT": 50
+}', false);
