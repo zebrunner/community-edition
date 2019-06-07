@@ -36,7 +36,7 @@ services:
       - "redis"
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.0.52
+    image: qaprosoft/zafira:4.0.56
     env_file:
       - variables.env
     #Uncomment only for debugging Zafira
@@ -57,7 +57,7 @@ services:
       - "zafira"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:4.0
+    image: qaprosoft/jenkins-master:4.2
     env_file:
      - variables.env
     volumes:

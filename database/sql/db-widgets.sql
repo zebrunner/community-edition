@@ -249,10 +249,13 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "currentUserId": "1"
 }', '{
   "OWNER": true,
+  "SUITE": false,
   "PASS": true,
   "FAIL": true,
   "DEFECT": false,
   "SKIP": true,
+  "ABORT": false,
+  "QUEUE": false,
   "TOTAL": true,
   "PASSED (%)": true,
   "FAILED (%)": false,
@@ -261,6 +264,7 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "QUEUED (%)": false,
   "FAIL RATE (%)": false
 }', 14);
+
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('PERSONAL TOTAL TESTS (MAN-HOURS)', 'BAR', NULL, NULL, false, 'Monthly personal automation ROI by tests execution. 160+ hours for UI tests indicate that your execution ROI is very good.', '{
   "PERSONAL": "true",
   "PROJECT": [],
