@@ -132,7 +132,7 @@ services:
      - "30000-30009:30000-30009"
     restart: always
   selenium-hub:
-    image: qaprosoft/selenium-hub:3.2
+    image: qaprosoft/selenium-hub:3.3
     env_file:
      - variables.env
     environment:
