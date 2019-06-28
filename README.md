@@ -2,7 +2,6 @@ QPS Infrastructure
 ==================
 
 [![zafira pulls](https://img.shields.io/docker/pulls/qaprosoft/zafira.svg?label=zafira%20pulls)](https://hub.docker.com/r/qaprosoft/zafira/)
-[![zafira-batch pulls](https://img.shields.io/docker/pulls/qaprosoft/zafira-batch.svg?label=zafira-batch%20pulls)](https://hub.docker.com/r/qaprosoft/zafira-batch/)
 [![rabbitmq pulls](https://img.shields.io/docker/pulls/qaprosoft/rabbitmq.svg?label=rabbitmq%20pulls)](https://hub.docker.com/r/qaprosoft/rabbitmq/)
 [![jenkins-master pulls](https://img.shields.io/docker/pulls/qaprosoft/jenkins-master.svg?label=jenkins-master%20pulls)](https://hub.docker.com/r/qaprosoft/jenkins-master/)
 [![jenkins-slave pulls](https://img.shields.io/docker/pulls/qaprosoft/jenkins-slave.svg?label=jenkins-slave%20pulls)](https://hub.docker.com/r/qaprosoft/jenkins-slave/)
@@ -47,7 +46,7 @@ cd qps-infra
 * Optional: update default credentials if neccessary (strongly recommended for publicly available environments)
   Note: If you changed ZAFIRA_RABBITMQ_USER and ZAFIRA_RABBITMQ_PASS please update them in config/definitions.json as well
 * Optional: adjust docker-compose.yml file by removing unused services. By default it contains:
-  nginx, postgres, zafira/zafira-ui/zafira-batch, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
+  nginx, postgres, zafira/zafira-ui, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
 * Execute ./start.sh to start all containers
 * Open http://myhost.domain.com to get access to direct links to the sub-components: zafira, jenkins etc
 
