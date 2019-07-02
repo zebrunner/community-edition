@@ -22,6 +22,8 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 * [Initial setup](#initial-setup)
 * [Services start/stop/restart](#services-startstoprestart)
 * [Env details](#env-details)
+* [Documentation and free support](#documentation-and-free-support)
+## 
 * [License](#license)
 
 
@@ -68,6 +70,12 @@ docker-compose rm -g
 * [Zafira Reporting Tool](http://demo.qaprosoft.com/zafira)
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
   Note: admin/qaprosoft are hardcoded sonarqube credentials and they can be updated inside Sonar Adminisration panel
+  
+## Documentation and free support
+* [Zafira manual](http://qaprosoft.github.io/zafira)
+* [Carina manual](http://qaprosoft.github.io/carina)
+* [Demo project](https://github.com/qaprosoft/carina-demo)
+* [Telegram channel](https://t.me/qps_infra)
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
