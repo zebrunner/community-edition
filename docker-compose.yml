@@ -26,15 +26,6 @@ services:
     env_file:
      - variables.env
     restart: always
-  zafira-batch:
-    image: qaprosoft/zafira-batch:latest
-    env_file:
-      - variables.env
-    depends_on:
-      - "db"
-      - "rabbitmq"
-      - "redis"
-    restart: always
   zafira:
     image: qaprosoft/zafira:4.0.60
     env_file:
