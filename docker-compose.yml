@@ -27,7 +27,7 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.0.60
+    image: qaprosoft/zafira:4.0.62
     env_file:
       - variables.env
     #Uncomment only for debugging Zafira
