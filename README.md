@@ -34,7 +34,7 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
   ubuntu:~/tools/qps-infra$ id
   uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),102(netdev),999(docker
   ```
-* Install [docker](http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/) and [docker-composer](https://docs.docker.com/compose/install/#install-compose)
+* Install docker ([Ubuntu](http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/), [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/)) and [docker-composer](https://docs.docker.com/compose/install/#install-compose)
 
 
 ## Initial setup
