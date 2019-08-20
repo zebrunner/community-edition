@@ -27,7 +27,7 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.0.63
+    image: qaprosoft/zafira:1.279-SNAPSHOT
     env_file:
       - variables.env
     #Uncomment only for debugging Zafira
@@ -43,7 +43,7 @@ services:
       - "redis"
     restart: always
   zafira-ui:
-    image: qaprosoft/zafira-ui:1.14
+    image: qaprosoft/zafira-ui:1.17
     env_file:
       - variables.env
     depends_on:
