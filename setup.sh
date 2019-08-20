@@ -31,4 +31,9 @@ if [[ ! -d jenkins ]]; then
     mkdir jenkins
 fi
 
+if [ ! -d assets ]; then
+  echo creating folder to store zafira assets...
+  mkdir -p assets;
+fi
+
 echo Setup finished successfully using $HOST_NAME hostname.
