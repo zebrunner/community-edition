@@ -27,12 +27,14 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.0.63
+    image: qaprosoft/zafira:4.0.68
     env_file:
       - variables.env
     #Uncomment only for debugging Zafira
 #    environment:
 #      - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
+    volumes:
+      - ./assets:/opt/assets
     ports:
       - "8002:8000"
     depends_on:
@@ -41,14 +43,14 @@ services:
       - "redis"
     restart: always
   zafira-ui:
-    image: qaprosoft/zafira-ui:1.14
+    image: qaprosoft/zafira-ui:1.18
     env_file:
       - variables.env
     depends_on:
       - "zafira"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:4.4
+    image: qaprosoft/jenkins-master:4.5
     env_file:
      - variables.env
     volumes:
