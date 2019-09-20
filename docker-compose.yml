@@ -27,7 +27,7 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.1.69
+    image: qaprosoft/zafira:4.1.72
     env_file:
       - variables.env
     #Uncomment only for debugging Zafira
@@ -99,9 +99,11 @@ services:
      - "db"
     restart: always
   redis:
-    image: redis:4.0.11
+    image: redis:5.0.5
+    volumes:
+     - ./config/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
-    - 6379:6379
+     - 6379:6379
     restart: always
   rabbitmq:
     image: qaprosoft/rabbitmq
