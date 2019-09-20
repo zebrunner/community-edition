@@ -3,7 +3,7 @@
 docker-compose stop
 docker-compose rm -f
 
-docker rm -f $(docker ps -a -q)
+docker rm -fv $(docker ps -a -q)
 docker rmi -f $(docker images -q)
 
 rm -rf ./jenkins/*
