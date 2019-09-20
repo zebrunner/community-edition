@@ -50,10 +50,11 @@ services:
       - "zafira"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:4.5
+    image: qaprosoft/jenkins-master:4.6
     env_file:
      - variables.env
     volumes:
+     # to add extra plugins follow this steps: https://github.com/qaprosoft/jenkins-master/releases/tag/4.6
      - ./jenkins:/var/jenkins_home
      - $HOME/.ssh:/var/jenkins_home/.ssh
      - $HOME/.m2:/var/jenkins_home/.m2
