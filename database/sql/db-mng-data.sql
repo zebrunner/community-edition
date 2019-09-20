@@ -2989,6 +2989,11 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
     "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
   "PLATFORM": {
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
@@ -3012,11 +3017,6 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   "TASK": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
-  },
-  "Separator": {
-    "value": "Below params are not applicable for Total period!",
-    "type": "title",
-    "required": false
   },
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
