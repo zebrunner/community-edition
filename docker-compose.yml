@@ -3,10 +3,10 @@ services:
   nginx:
     image: nginx
     volumes:
-     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-     - ./nginx/conf.d:/etc/nginx/conf.d
-     - ./nginx/html:/usr/share/nginx/html
-     - ./selenoid/video:/usr/share/nginx/video
+     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+     - ./nginx/conf.d:/etc/nginx/conf.d:ro
+     - ./nginx/html:/usr/share/nginx/html:ro
+     - ./selenoid/video:/usr/share/nginx/video:rw
     ports:
      - "80:80"
     depends_on:
