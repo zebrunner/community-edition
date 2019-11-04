@@ -126,11 +126,13 @@ services:
      - "30000-30009:30000-30009"
     restart: always
   selenium-hub:
-    image: qaprosoft/selenium-hub:3.4
+    image: qaprosoft/selenium-hub:4.0
     env_file:
      - variables.env
     environment:
      - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
+    ports:
+     - 4446:4444
     restart: always
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
