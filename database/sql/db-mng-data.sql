@@ -1063,7 +1063,7 @@ SELECT
 </#function>', '{
     "grid": {
         "right": "4%",
-        "left": "4%",
+        "left": "6%",
         "top": "8%",
         "bottom": "8%"
     },
