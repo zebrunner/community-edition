@@ -6,6 +6,7 @@ services:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
      - ./nginx/conf.d:/etc/nginx/conf.d:ro
      - ./nginx/html:/usr/share/nginx/html:ro
+     - ./nginx/htpasswd:/usr/share/nginx/htpasswd:ro
      - ./selenoid/video:/usr/share/nginx/video:rw
     ports:
      - "80:80"
@@ -126,7 +127,7 @@ services:
      - "30000-30009:30000-30009"
     restart: always
   selenium-hub:
-    image: qaprosoft/selenium-hub:4.0
+    image: qaprosoft/selenium-hub:3.4
     env_file:
      - variables.env
     environment:
