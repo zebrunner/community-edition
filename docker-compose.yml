@@ -6,6 +6,7 @@ services:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
      - ./nginx/conf.d:/etc/nginx/conf.d:ro
      - ./nginx/html:/usr/share/nginx/html:ro
+     - ./nginx/htpasswd:/usr/share/nginx/htpasswd:ro
      - ./selenoid/video:/usr/share/nginx/video:rw
     ports:
      - "80:80"
@@ -27,7 +28,7 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.1.78
+    image: qaprosoft/zafira:4.1.79
     env_file:
       - variables.env
     #Uncomment only for debugging Zafira
@@ -43,7 +44,7 @@ services:
       - "redis"
     restart: always
   zafira-ui:
-    image: qaprosoft/zafira-ui:1.24
+    image: qaprosoft/zafira-ui:1.25
     env_file:
       - variables.env
     depends_on:
