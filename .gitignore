@@ -7,3 +7,4 @@ empty.txt
 nginx/conf.d/default.conf
 grid-router/quota/demo.xml
 variables.env
+nginx/html/node_modules/

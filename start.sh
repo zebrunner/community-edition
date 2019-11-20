@@ -19,4 +19,4 @@ docker pull selenoid/vnc:firefox_66.0
 docker pull selenoid/video-recorder:latest-release
 
 #-------------- START EVERYTHING ------------------------------
-docker-compose up -d
+docker-compose --verbose up -t 180
