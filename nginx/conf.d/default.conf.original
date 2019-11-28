@@ -31,7 +31,7 @@ upstream mcloud_server {
 }
 
 upstream zebrunner_server {
-    server moon.zebrunner.com:4444 max_fails=0;
+    server hub.zebrunner.com:4444 max_fails=0;
 }
 
 upstream aerokube_server {
