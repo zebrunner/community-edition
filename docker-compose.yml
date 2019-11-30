@@ -54,6 +54,8 @@ services:
     image: qaprosoft/jenkins-master:4.8
     env_file:
      - variables.env
+    environment:
+      - "JAVA_OPTS=-Dhudson.model.ParametersAction.keepUndefinedParameters=true"
     volumes:
      # to add extra plugins follow this steps: https://github.com/qaprosoft/jenkins-master/releases/tag/4.6
      - ./jenkins:/var/jenkins_home
