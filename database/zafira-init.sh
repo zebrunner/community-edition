@@ -54,7 +54,7 @@ then
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SELENIUM_ENABLED' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SELENIUM_ENABLED';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SELENIUM_URL' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SELENIUM_URL';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SELENIUM_USER' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SELENIUM_USER';"
-    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SELENIUM_PASS' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SELENIUM_PASSWORD';"
+    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SELENIUM_PASSWORD' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SELENIUM_PASSWORD';"
 fi
 
 if [ "$ZAFIRA_MCLOUD_ENABLED" == true ];
@@ -62,7 +62,7 @@ then
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_MCLOUD_ENABLED' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='MCLOUD_ENABLED';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_MCLOUD_URL' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='MCLOUD_URL';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_MCLOUD_USER' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='MCLOUD_USER';"
-    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_MCLOUD_PASS' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='MCLOUD_PASSWORD';"
+    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_MCLOUD_PASSWORD' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='MCLOUD_PASSWORD';"
 fi
 
 if [ "$ZAFIRA_AEROKUBE_ENABLED" == true ];
@@ -70,7 +70,7 @@ then
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_AEROKUBE_ENABLED' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='AEROKUBE_ENABLED';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_AEROKUBE_URL' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='AEROKUBE_URL';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_AEROKUBE_USER' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='AEROKUBE_USER';"
-    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_AEROKUBE_PASS' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='AEROKUBE_PASSWORD';"
+    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_AEROKUBE_PASSWORD' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='AEROKUBE_PASSWORD';"
 fi
 
 if [ "$ZAFIRA_BROWSERSTACK_ENABLED" == true ];
@@ -78,7 +78,7 @@ then
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_BROWSERSTACK_ENABLED' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='BROWSERSTACK_ENABLED';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_BROWSERSTACK_URL' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SBROWSERSTACK_URL';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_BROWSERSTACK_USER' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='BROWSERSTACK_USER';"
-    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_BROWSERSTACK_PASS' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='BROWSERSTACK_PASSWORD';"
+    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_BROWSERSTACK_PASSWORD' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='BROWSERSTACK_PASSWORD';"
 fi
 
 if [ "$ZAFIRA_SAUCELABS_ENABLED" == true ];
@@ -86,5 +86,5 @@ then
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SAUCELABS_ENABLED' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SAUCELABS_ENABLED';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SAUCELABS_URL' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SAUCELABS_URL';"
     psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SAUCELABS_USER' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SAUCELABS_USER';"
-    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SAUCELABS_PASS' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SAUCELABS_PASSWORD';"
+    psql --username $POSTGRES_USER -c "update zafira.integration_settings ise set value='$ZAFIRA_SAUCELABS_PASSWORD' from zafira.integration_params ip where ise.integration_param_id=ip.id and ip.name='SAUCELABS_PASSWORD';"
 fi
