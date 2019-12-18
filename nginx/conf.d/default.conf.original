@@ -96,6 +96,11 @@ server {
         }
     }
 
+    # temp rule to continue support for /zafira context root and redirect to the new /app address
+    location /zafira {
+       rewrite ^/zafira$ http://demo.qaprosoft.com/app/ permanent;
+    }
+
     #Zafira instance
     location /app {
       proxy_pass http://zafira-ui_server/app/;
