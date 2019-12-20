@@ -56,7 +56,8 @@ services:
     volumes:
      # to add extra plugins follow this steps: https://github.com/qaprosoft/jenkins-master/releases/tag/4.6
      - ./jenkins:/var/jenkins_home
-     - $HOME/.m2:/var/jenkins_home/.m2
+##    share .m2 folder only when neede with valid rwx permissions for everyone!
+#     - $HOME/.m2:/var/jenkins_home/.m2
     ports:
      - "50000:50000"
     restart: always
@@ -68,8 +69,9 @@ services:
      - JENKINS_SLAVE_NAME=jenkins-slave-api
      - JENKINS_SLAVE_WORKERS=5
      - JENKINS_SLAVE_LABELS=qps-slave api qa
-    volumes:
-     - $HOME/.m2:/root/.m2
+#    volumes:
+##    share .m2 folder only when neede with valid rwx permissions for everyone!
+#     - $HOME/.m2:/root/.m2
     ports:
      - "8001:8000"
     depends_on:
@@ -83,8 +85,9 @@ services:
      - JENKINS_SLAVE_NAME=jenkins-slave-web
      - JENKINS_SLAVE_WORKERS=3
      - JENKINS_SLAVE_LABELS=qps-slave web qa
-    volumes:
-     - $HOME/.m2:/root/.m2
+#    volumes:
+##    share .m2 folder only when neede with valid rwx permissions for everyone!
+#     - $HOME/.m2:/root/.m2
     ports:
      - "8000:8000"
     depends_on:
