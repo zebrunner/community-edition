@@ -13,8 +13,10 @@ if [ ! -f variables.env ] || [ ! -f ./nginx/conf.d/default.conf.original ]; then
 fi
 
 # pull required docker images
-docker pull selenoid/vnc:chrome_73.0
-docker pull selenoid/vnc:firefox_66.0
+docker pull selenoid/vnc:chrome_78.0
+docker pull selenoid/vnc:chrome_77.0
+docker pull selenoid/vnc:firefox_71.0
+docker pull selenoid/vnc:firefox_70.0
 
 docker pull selenoid/video-recorder:latest-release
 
