@@ -1,12 +1,5 @@
 <?xml version="1.0"?>
 <qa:browsers xmlns:qa="urn:config.gridrouter.qatools.ru">
-  <browser name="QPS-HUB" defaultVersion="*">
-    <version number="*">
-        <region name="mcloud">
-            <host name="selenium-hub" port="4444" count="100"/>
-        </region>
-    </version>
-  </browser>
   <browser name="chrome" defaultVersion="73.0">
     <version number="73.0">
       <region name="stage">

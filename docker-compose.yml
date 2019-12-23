@@ -28,12 +28,9 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.1.79
+    image: qaprosoft/zafira:4.1.82
     env_file:
       - variables.env
-    #Uncomment only for debugging Zafira
-#    environment:
-#      - "JAVA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"
     volumes:
       - ./assets:/opt/assets
     ports:
@@ -44,20 +41,23 @@ services:
       - "redis"
     restart: always
   zafira-ui:
-    image: qaprosoft/zafira-ui:1.25
+    image: qaprosoft/zafira-ui:1.29
     env_file:
       - variables.env
     depends_on:
       - "zafira"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:4.7
+    image: qaprosoft/jenkins-master:4.8
     env_file:
      - variables.env
+    environment:
+      - "JAVA_OPTS=-Dhudson.model.ParametersAction.keepUndefinedParameters=true"
     volumes:
      # to add extra plugins follow this steps: https://github.com/qaprosoft/jenkins-master/releases/tag/4.6
      - ./jenkins:/var/jenkins_home
-     - $HOME/.m2:/var/jenkins_home/.m2
+##    share .m2 folder only when neede with valid rwx permissions for everyone!
+#     - $HOME/.m2:/var/jenkins_home/.m2
     ports:
      - "50000:50000"
     restart: always
@@ -69,8 +69,9 @@ services:
      - JENKINS_SLAVE_NAME=jenkins-slave-api
      - JENKINS_SLAVE_WORKERS=5
      - JENKINS_SLAVE_LABELS=qps-slave api qa
-    volumes:
-     - $HOME/.m2:/root/.m2
+#    volumes:
+##    share .m2 folder only when neede with valid rwx permissions for everyone!
+#     - $HOME/.m2:/root/.m2
     ports:
      - "8001:8000"
     depends_on:
@@ -84,8 +85,9 @@ services:
      - JENKINS_SLAVE_NAME=jenkins-slave-web
      - JENKINS_SLAVE_WORKERS=3
      - JENKINS_SLAVE_LABELS=qps-slave web qa
-    volumes:
-     - $HOME/.m2:/root/.m2
+#    volumes:
+##    share .m2 folder only when neede with valid rwx permissions for everyone!
+#     - $HOME/.m2:/root/.m2
     ports:
      - "8000:8000"
     depends_on:
@@ -127,11 +129,11 @@ services:
      - "30000-30009:30000-30009"
     restart: always
   selenium-hub:
-    image: qaprosoft/selenium-hub:3.4
+    image: qaprosoft/selenium-hub:3.5.1
     env_file:
      - variables.env
-    environment:
-     - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
+#    environment:
+#     - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
     ports:
      - 4446:4444
     restart: always

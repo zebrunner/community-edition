@@ -18,16 +18,32 @@ upstream rabbitmq_server {
     server rabbitmq:15674 max_fails=0;
 }
 
-upstream ggr_server {
-    server ggr:4444 max_fails=0;
-}
-
 upstream elasticsearch_server {
     server elasticsearch:9200 max_fails=0;
 }
 
-upstream selenium_hub {
+upstream ggr_server {
+    server ggr:4444 max_fails=0;
+}
+
+upstream mcloud_server {
     server selenium-hub:4444 max_fails=0;
+}
+
+upstream zebrunner_server {
+    server hub.zebrunner.com:4444 max_fails=0;
+}
+
+upstream aerokube_server {
+    server browsers.aerokube.com:4444 max_fails=0;
+}
+
+upstream browserstack_server {
+    server hub-cloud.browserstack.com max_fails=0;
+}
+
+upstream saucelabs_server {
+    server ondemand.saucelabs.com max_fails=0;
 }
 
   types {
@@ -67,14 +83,6 @@ server {
     #charset koi8-r;
     access_log  /var/log/nginx/default.access.log main;
     error_log   /var/log/nginx/default.error.log warn;
-
-#    location /wd/ {
-#      proxy_pass http://selenium_hub;
-#    }
-
-    location /grid/ {
-      proxy_pass http://selenium_hub;
-    }
 
     location /jenkins {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -160,6 +168,173 @@ server {
 
     location /video {
         root   /usr/share/nginx;
+    }
+
+# IMPORTANT!!! make sure to generate secure GGR credentials and put them into the INFRA_HOME/nginx/htpasswd/<name>.htpasswd
+# TODO: provide valid link onto the help howto secure this site
+# internal hub providers integration
+    # GoGridRoute
+    location  ~ ^/ggr/(.*)$ {
+      auth_basic "Private GoGridRoute Selenium Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/ggr.htpasswd;
+
+      # base64 encoded string of the default "demo:demo" credentials. Don't forget to update if you change it on GGR layer!
+      proxy_set_header Authorization "Basic ZGVtbzpkZW1v";
+
+      proxy_pass              http://ggr_server/$1;
+      proxy_http_version      1.1;
+      proxy_set_header        Connection "";
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_connect_timeout   10;
+      proxy_send_timeout      300;
+      proxy_read_timeout      300;
+      proxy_buffers           32 64m;
+      proxy_buffer_size       64k;
+      proxy_next_upstream    error timeout http_502 http_503 http_504;
+      client_max_body_size    64m;
+      client_body_buffer_size 64m;
+      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
+      add_header Access-Control-Allow-Origin "*";
+      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
+      add_header Access-Control-Allow-Credentials "true";
+    }
+
+    # MCloud
+    location  ~ ^/mcloud/(.*)$ {
+      auth_basic "Private MCloud Selenium Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/mcloud.htpasswd;
+
+      proxy_pass              http://mcloud_server/$1;
+      proxy_http_version      1.1;
+      proxy_set_header        Connection "";
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_connect_timeout   10;
+      proxy_send_timeout      300;
+      proxy_read_timeout      300;
+      proxy_buffers           32 64m;
+      proxy_buffer_size       64k;
+      proxy_next_upstream    error timeout http_502 http_503 http_504;
+      client_max_body_size    64m;
+      client_body_buffer_size 64m;
+      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
+      add_header Access-Control-Allow-Origin "*";
+      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
+      add_header Access-Control-Allow-Credentials "true";
+    }
+
+
+
+# external hub providers integration
+    # ZEBRUNNER
+    location  ~ ^/zebrunner/(.*)$ {
+      auth_basic "External Zebrunner Selenium Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/zebrunner.htpasswd;
+
+      proxy_set_header Authorization "Basic ZEBRUNNER_TOKEN";
+
+      proxy_pass              https://zebrunner_server/$1;
+      proxy_http_version      1.1;
+      proxy_set_header        Connection "";
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_connect_timeout   10;
+      proxy_send_timeout      300;
+      proxy_read_timeout      300;
+      proxy_buffers           32 64m;
+      proxy_buffer_size       64k;
+      proxy_next_upstream    error timeout http_502 http_503 http_504;
+      client_max_body_size    64m;
+      client_body_buffer_size 64m;
+      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
+      add_header Access-Control-Allow-Origin "*";
+      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
+      add_header Access-Control-Allow-Credentials "true";
+    }
+
+    # Aerokube
+    location  ~ ^/aerokube/(.*)$ {
+      auth_basic "External Aerokube Selenium Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/aerokube.htpasswd;
+
+      proxy_set_header Authorization "Basic AEROKUBE_TOKEN";
+
+      proxy_pass              https://aerokube_server/$1;
+      proxy_http_version      1.1;
+      proxy_set_header        Connection "";
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_connect_timeout   10;
+      proxy_send_timeout      300;
+      proxy_read_timeout      300;
+      proxy_buffers           32 64m;
+      proxy_buffer_size       64k;
+      proxy_next_upstream    error timeout http_502 http_503 http_504;
+      client_max_body_size    64m;
+      client_body_buffer_size 64m;
+      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
+      add_header Access-Control-Allow-Origin "*";
+      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
+      add_header Access-Control-Allow-Credentials "true";
+    }
+
+    # BrowserStack
+    location  ~ ^/browserstack/(.*)$ {
+      auth_basic "External Browserstack Selenium Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/browserstack.htpasswd;
+
+      proxy_set_header Authorization "Basic BROWSERSTACK_TOKEN";
+
+      proxy_pass              http://browserstack_server/$1;
+      proxy_http_version      1.1;
+      proxy_set_header        Connection "";
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_connect_timeout   10;
+      proxy_send_timeout      300;
+      proxy_read_timeout      300;
+      proxy_buffers           32 64m;
+      proxy_buffer_size       64k;
+      proxy_next_upstream    error timeout http_502 http_503 http_504;
+      client_max_body_size    64m;
+      client_body_buffer_size 64m;
+      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
+      add_header Access-Control-Allow-Origin "*";
+      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
+      add_header Access-Control-Allow-Credentials "true";
+    }
+
+    # SauceLabs - not tested yet
+    location  ~ ^/saucelabs/(.*)$ {
+      auth_basic "External SauceLabs Selenium Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/saucelabs.htpasswd;
+
+      proxy_set_header Authorization "Basic SAUCELABS_TOKEN";
+
+      proxy_pass              http://saucelabs_server/$1;
+      proxy_http_version      1.1;
+      proxy_set_header        Connection "";
+      proxy_set_header        Host $host;
+      proxy_set_header        X-Real-IP $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_connect_timeout   10;
+      proxy_send_timeout      300;
+      proxy_read_timeout      300;
+      proxy_buffers           32 64m;
+      proxy_buffer_size       64k;
+      proxy_next_upstream    error timeout http_502 http_503 http_504;
+      client_max_body_size    64m;
+      client_body_buffer_size 64m;
+      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
+      add_header Access-Control-Allow-Origin "*";
+      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
+      add_header Access-Control-Allow-Credentials "true";
     }
 
 #  location / { 
