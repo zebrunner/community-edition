@@ -3,7 +3,7 @@ SET SCHEMA 'management';
 INSERT INTO tenancies (name) VALUES ('zafira');
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (1, 'TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicate that your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS EXECUTION ROI (MAN-HOURS)', 'Monthly team/personal automation ROI by tests execution. 160+ hours per person for UI tests indicate that your execution ROI is very good.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
@@ -159,7 +159,7 @@ SELECT
 }', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (2, 'TEST CASE STABILITY TREND', 'Test case stability trend on a monthly basis.', 'LINE', 'SELECT
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST CASE STABILITY TREND', 'Test case stability trend on a monthly basis.', 'LINE', 'SELECT
       STABILITY as "STABILITY",
       FAILURE as "FAILURE",
       OMISSION as "OMISSION",
@@ -288,7 +288,7 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (3, 'PASS RATE (%)', 'Pass rate percent with an extra grouping by project, owner, etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (%)', 'Pass rate percent with an extra grouping by project, owner, etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
 
 <#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
@@ -308,12 +308,24 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 <#global VIEW = getView(PERIOD) />
 
 SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
-      round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED",
-      round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE",
-      round (100.0 * sum( QUEUED) / sum(TOTAL), 0)::integer AS "QUEUED",
-      0 - round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED",
-      0 - round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED",
-      0 - round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED"
+      CASE
+        WHEN sum( PASSED ) != 0 THEN sum( PASSED )
+      END AS "PASSED",
+      CASE
+        WHEN sum( KNOWN_ISSUE ) != 0 THEN sum( KNOWN_ISSUE )
+      END AS "KNOWN ISSUE",
+      CASE
+        WHEN sum( QUEUED ) != 0 THEN sum( QUEUED )
+      END AS "QUEUED",
+      CASE
+        WHEN sum( FAILED ) != 0 THEN 0 - sum( FAILED )
+      END AS "FAILED",
+      CASE
+        WHEN sum( SKIPPED ) != 0 THEN  0 - sum( SKIPPED )
+      END AS "SKIPPED",
+      CASE
+        WHEN sum( ABORTED ) != 0 THEN 0 - sum( ABORTED )
+      END AS "ABORTED"
   FROM ${VIEW}
   ${WHERE_MULTIPLE_CLAUSE}
   GROUP BY "GROUP_FIELD"
@@ -418,122 +430,199 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   -->
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
-</#function>', '{
-    "tooltip": {
-        "trigger": "axis",
-        "axisPointer": {
-            "type": "shadow"
-        }
+</#function>', 'setTimeout( function() {
+
+  const dimensions = ["GROUP_FIELD","PASSED","FAILED","SKIPPED","KNOWN ISSUE","QUEUED","ABORTED"];
+  let note = true;
+
+  const createSource = () => {
+    let source = [];
+    let amount = dataset.length;
+    for (let i = 0; i < amount; i++) {
+      let sourceData = [];
+      dimensions.forEach((value, index) => sourceData.push(dataset[i][value]));
+      source.push(sourceData);
+    }
+    return source;
+  };
+
+  let numberDataSource = createSource();
+  let percentDataSource = [];
+
+  const createPercentSource = (value, total) => {
+    let temporaryArr = [];
+    value.map( a => {
+      if (typeof a === "number")  a = Math.round(100 * a / total , 0);
+			temporaryArr.push(a);
+    });
+    percentDataSource.push(temporaryArr);
+  };
+
+  getTotalValue = (value) => {
+    let total = 0;
+    value.map( a => {
+      if (typeof a === "number") total += a > 0 ? a : a * -1
+    });
+    return total;
+  };
+
+  numberDataSource.forEach((value) => {
+    let total = getTotalValue(value);
+    createPercentSource(value, total);
+  });
+
+  formatterFunc = (params, index, plus) => {
+    let total = getTotalValue(params.value);
+    let controlValue = params.value[index] * 100 / total;
+    controlValue = controlValue > 0 ? controlValue : controlValue * -1;
+    if (controlValue > 5) return `${params.value[index]}${plus ? "%" : ""}`;
+    else return '';
+  };
+
+  let option = {
+    title: {
+      text: "Note: click on bar to show absolute numbers",
+      textStyle: {
+        color: "grey",
+        fontWeight: "100",
+        fontSize: 14
+      },
+      right: "5%",
+      top: "94%"
     },
-    "legend": {
-        "data": [
-            "PASSED",
-            "FAILED",
-            "SKIPPED",
-            "KNOWN ISSUE",
-            "QUEUED",
-            "ABORTED"
-        ]
-    },
-    "grid": {
-        "left": "5%",
-        "right": "5%",
-        "bottom": "3%",
-        "containLabel": true
-    },
-    "xAxis": [
-        {
-            "type": "value"
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "shadow"
         }
-    ],
-    "yAxis": [
-        {
-            "type": "category",
-            "axisTick": {
-                "show": false
-            }
-        }
-    ],
-    "color": [
+      },
+      legend: {},
+      grid: {
+        show: true,
+        top: 40,
+        left: "5%",
+        right: "5%",
+        bottom: 20,
+        containLabel: true
+      },
+      xAxis: [{
+          type: "value"
+        }],
+      yAxis: [{
+          type: "category",
+          axisTick: {
+            show: false
+          }
+        }],
+      color: [
         "#61c8b3",
         "#e76a77",
         "#fddb7a",
         "#9f5487",
         "#6dbbe7",
         "#b5b5b5"
-    ],
-    "dimensions": [
-        "GROUP_FIELD",
-        "PASSED",
-        "FAILED",
-        "SKIPPED",
-        "KNOWN ISSUE",
-        "QUEUED",
-        "ABORTED"
-    ],
-    "series": [
+      ],
+      dataset: {
+        source: percentDataSource
+      },
+      dimensions: dimensions,
+      series: [
         {
-            "type": "bar",
-            "stack": "stack",
-            "label": {
-                "normal": {
-                    "show": true,
-                    "position": "inside"
-                }
+          type: "bar",
+          name: "PASSED",
+          stack: "stack",
+          label: {
+            normal: {
+              show: true,
+              position: "inside",
+              formatter: (params) => formatterFunc(params, 1, note)
             }
+          }
         },
         {
-            "type": "bar",
-            "stack": "stack",
-            "label": {
-                "normal": {
-                    "show": true,
-                    "position": "left"
-                }
+          type: "bar",
+          name: "FAILED",
+          stack: "stack",
+          label: {
+            normal: {
+                show: true,
+                position: "inside",
+                formatter: (params) => formatterFunc(params, 2, note)
             }
+          }
         },
         {
-            "type": "bar",
-            "stack": "stack",
-            "label": {
-                "normal": {
-                    "show": true,
-                    "position": "left"
-                }
+          type: "bar",
+          name: "SKIPPED",
+          stack: "stack",
+          label: {
+            normal: {
+                show: true,
+                position: "inside",
+                formatter: (params) => formatterFunc(params, 3, note)
             }
+          }
         },
         {
-            "type": "bar",
-            "stack": "stack",
-            "label": {
-                "normal": {
-                    "show": true,
-                    "position": "inside"
-                }
+          type: "bar",
+          name: "KNOWN ISSUE",
+          stack: "stack",
+          label: {
+            normal: {
+                show: true,
+                position: "inside",
+                formatter: (params) => formatterFunc(params, 4, note)
             }
+          }
         },
         {
-            "type": "bar",
-            "stack": "stack",
-            "label": {
-                "normal": {
-                    "show": true,
-                    "position": "inside"
-                }
+          type: "bar",
+          name: "QUEUED",
+          stack: "stack",
+          label: {
+            normal: {
+                show: true,
+                position: "inside",
+                formatter: (params) => formatterFunc(params, 5, note)
             }
+          }
         },
         {
-            "type": "bar",
-            "stack": "stack",
-            "label": {
-                "normal": {
-                    "show": true,
-                    "position": "left"
-                }
+          type: "bar",
+          name: "ABORTED",
+          stack: "stack",
+          label: {
+            normal: {
+                show: true,
+                position:"left",
+                formatter: (params) => formatterFunc(params, 6, note)
             }
+          }
         }
-    ]
-}', '{
+      ]
+  };
+
+  const changeValue = (text, source) => {
+    chart.setOption({
+      dataset: {
+        source: source
+      },
+      title: {
+        text: text
+      }
+    });
+  };
+
+  chart.on("click", function (event) {
+    let text = `Note: click on bar to show ${!note ? "absolute numbers" : "numbers in percent"}`;
+    note = !note
+    if (!note) changeValue(text, numberDataSource);
+    else changeValue(text, percentDataSource);
+  });
+
+  chart.setOption(option);
+  angular.element($window).on("resize", onResize);
+}, 1000)', '{
   "PERIOD": {
     "values": [
       "Last 24 Hours",
@@ -649,7 +738,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
 ', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (4, 'APPLICATION ISSUES (BLOCKERS) COUNT', 'A number of unique application bugs discovered and submitted by automation.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('APPLICATION ISSUES (BLOCKERS) COUNT', 'A number of unique application bugs discovered and submitted by automation.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
 
 <#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
@@ -884,7 +973,7 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 ', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (5, 'PASS RATE TREND', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE TREND', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1060,138 +1149,73 @@ SELECT
   -->
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
-</#function>', '{
+</#function>', 'let lineRow = {
+    "type": "line",
+    "smooth": false,
+    "stack": "Status",
+    "itemStyle": {
+      "normal": {
+        "areaStyle": {
+            "opacity": 0.8,
+            "type": "default"
+        }
+      }
+    },
+    "lineStyle": {
+      "width": 1
+    }
+};
+
+let series = [];
+  for (var i = 0; i < 6 ; i++) {
+    series.push(lineRow);
+  };
+
+let option = {
     "grid": {
-        "right": "4%",
-        "left": "6%",
+        "right": "8%",
+        "left": "10%",
         "top": "8%",
         "bottom": "8%"
     },
     "legend": {},
     "tooltip": {
-        "trigger": "axis"
+        "trigger": "axis",
+        "extraCssText": "transform: translateZ(0);"
     },
-    "dimensions": [
-        "CREATED_AT",
-        "PASSED",
-        "FAILED",
-        "SKIPPED",
-        "KNOWN ISSUE",
-        "ABORTED",
-        "QUEUED"
-    ],
     "color": [
-        "#61c8b3",
         "#e76a77",
+        "#6dbbe7",
         "#fddb7a",
-        "#9f5487",
         "#b5b5b5",
-        "#6dbbe7"
+        "#61c8b3",
+        "#9f5487"
     ],
     "xAxis": {
         "type": "category",
         "boundaryGap": false
     },
-    "yAxis": {},
-    "series": [
-        {
-            "type": "line",
-            "smooth": false,
-            "stack": "Status",
-            "itemStyle": {
-                "normal": {
-                    "areaStyle": {
-                        "opacity": 0.8,
-                        "type": "default"
-                    }
-                }
-            },
-            "lineStyle": {
-                "width": 1
-            }
-        },
-        {
-            "type": "line",
-            "smooth": false,
-            "stack": "Status",
-            "itemStyle": {
-                "normal": {
-                    "areaStyle": {
-                        "opacity": 0.8,
-                        "type": "default"
-                    }
-                }
-            },
-            "lineStyle": {
-                "width": 1
-            }
-        },
-        {
-            "type": "line",
-            "smooth": false,
-            "stack": "Status",
-            "itemStyle": {
-                "normal": {
-                    "areaStyle": {
-                        "opacity": 0.8,
-                        "type": "default"
-                    }
-                }
-            },
-            "lineStyle": {
-                "width": 1
-            }
-        },
-        {
-            "type": "line",
-            "smooth": false,
-            "stack": "Status",
-            "itemStyle": {
-                "normal": {
-                    "areaStyle": {
-                        "opacity": 0.8,
-                        "type": "default"
-                    }
-                }
-            },
-            "lineStyle": {
-                "width": 1
-            }
-        },
-        {
-            "type": "line",
-            "smooth": false,
-            "stack": "Status",
-            "itemStyle": {
-                "normal": {
-                    "areaStyle": {
-                        "opacity": 0.8,
-                        "type": "default"
-                    }
-                }
-            },
-            "lineStyle": {
-                "width": 1
-            }
-        },
-        {
-            "type": "line",
-            "smooth": false,
-            "stack": "Status",
-            "itemStyle": {
-                "normal": {
-                    "areaStyle": {
-                        "opacity": 0.8,
-                        "type": "default"
-                    }
-                }
-            },
-            "lineStyle": {
-                "width": 1
-            }
+    "yAxis": {
+      axisLabel : {
+        formatter: (value) => {
+          if(value == 0) return value
+          if(value >= 1000000000) return `${(value/1000000000).toFixed(2)}B`
+          else if(value >= 1000000) return `${(value/1000000).toFixed(2)}M`
+          else if (value >= 1000) return `${(value/1000).toFixed(2)}K`
+          else return value
         }
-    ]
-}', '{
+      }
+    },
+    "series": series
+};
+
+window.onresize = function(event) {
+  const leftCorner = chart.getWidth() < 700 ? "10%" : "8%";
+  option.grid.left = leftCorner;
+  chart.setOption(option);
+};
+
+chart.setOption(option);', '{
     "PERIOD": {
     "values": [
       "Last 24 Hours",
@@ -1291,7 +1315,7 @@ SELECT
 }', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (6, 'TEST FAILURE COUNT', 'High-level information about similar errors.', 'TABLE', '
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST FAILURE COUNT', 'High-level information about similar errors.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT ENV AS "ENV",
@@ -1355,7 +1379,7 @@ SELECT ENV AS "ENV",
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (7, 'MONTHLY TEST IMPLEMENTATION PROGRESS', 'A number of new automated cases per month.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('MONTHLY TEST IMPLEMENTATION PROGRESS', 'A number of new automated cases per month.', 'BAR', '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECTS.NAME": multiJoin(PROJECT, projects),
@@ -1488,7 +1512,7 @@ SELECT
 }', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (8, 'PASS RATE', 'Consolidated test status information with the ability to specify 10+ extra filters including daily, weekly, monthly, etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE', 'Consolidated test status information with the ability to specify 10+ extra filters including daily, weekly, monthly, etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1826,7 +1850,7 @@ SELECT
 ', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (9, 'TESTS FAILURES BY REASON', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS FAILURES BY REASON', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -1975,7 +1999,7 @@ SELECT count(*) AS "COUNT",
   -->
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
-</#function>', '{"columns": ["COUNT", "ENV", "BUG", "SUBJECT", "REPORT", "MESSAGE"]}', '{
+</#function>', '{"columns": ["COUNT", "ENV", "REPORT", "MESSAGE", "BUG", "SUBJECT"]}', '{
     "PERIOD": {
     "values": [
       "Last 24 Hours",
@@ -2098,7 +2122,7 @@ SELECT count(*) AS "COUNT",
 }', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (10, 'TEST FAILURE DETAILS', 'All tests/jobs with a similar failure.', 'TABLE', '
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST FAILURE DETAILS', 'All tests/jobs with a similar failure.', 'TABLE', '
 <#global VIEW = getView(PERIOD) />
 
 SELECT count(*) as "COUNT",
@@ -2166,7 +2190,7 @@ SELECT count(*) as "COUNT",
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (11, 'TESTCASE INFO', 'Detailed test case information.', 'TABLE', 'SELECT
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTCASE INFO', 'Detailed test case information.', 'TABLE', 'SELECT
          TEST_CASES.TEST_CLASS || ''.'' || TEST_CASES.TEST_METHOD AS "TEST METHOD",
          TEST_SUITES.FILE_NAME AS "TEST SUITE",
          USERS.USERNAME AS "OWNER",
@@ -2184,7 +2208,7 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (12, 'TEST CASE DURATION TREND', 'All kind of duration metrics per test case.', 'LINE', 'SELECT
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST CASE DURATION TREND', 'All kind of duration metrics per test case.', 'LINE', 'SELECT
       ROUND(AVG_TIME::numeric, 2) as "AVG TIME",
       ROUND(MAX_TIME::numeric, 2) as "MAX TIME",
       ROUND(MIN_TIME::numeric, 2) as "MIN TIME",
@@ -2235,7 +2259,7 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (13, 'TEST CASE STABILITY', 'Aggregated stability metric for a test case.', 'PIE', 'SELECT
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST CASE STABILITY', 'Aggregated stability metric for a test case.', 'PIE', 'SELECT
   unnest(array[''STABILITY'',
                   ''FAILURE'',
                   ''OMISSION'',
@@ -2312,7 +2336,7 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (14, 'TESTS SUMMARY', 'Detailed information about passed, failed, skipped, etc tests.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS SUMMARY', 'Detailed information about passed, failed, skipped, etc tests.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -2579,7 +2603,7 @@ SELECT
   "PARENT_BUILD": ""
 }', false);
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (15, 'APPLICATION ISSUES (BLOCKERS) DETAILS', 'Detailed information about known issues and blockers.', 'TABLE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('APPLICATION ISSUES (BLOCKERS) DETAILS', 'Detailed information about known issues and blockers.', 'TABLE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECT": multiJoin(PROJECT, projects),
@@ -2841,7 +2865,7 @@ SELECT
 }', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (16, 'TEST CASES BY STABILITY', 'Shows all test cases with low stability percent rate per appropriate period (default - less than 10%).', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST CASES BY STABILITY', 'Shows all test cases with low stability percent rate per appropriate period (default - less than 10%).', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
 <#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
   "OWNER_USERNAME": join(USER),
@@ -2874,9 +2898,9 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   ${WHERE_MULTIPLE_CLAUSE}
   GROUP BY "PROJECT", "TEST METHOD"
   <#if PERIOD == "Monthly" || PERIOD = "Total">
-    HAVING AVG(STABILITY) < ${PERCENT}
+    HAVING AVG(STABILITY) <= ${PERCENT}
   <#else>
-    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) < ${PERCENT}
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) <= ${PERCENT}
   </#if>
   ORDER BY "PROJECT", "TEST METHOD", "STABILITY"
 
@@ -3057,4 +3081,745 @@ INSERT INTO WIDGET_TEMPLATES (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PA
   "TASK": []
 }', false);
 
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('MILESTONE DETAILS', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'OTHER','<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB"] >
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+<#global GROUP_AND_ORDER_BY = getGroupBy(PERIOD, PARENT_JOB) />
+SELECT
+      ${GROUP_AND_ORDER_BY} AS "CREATED_AT",
+      sum( PASSED ) AS "PASSED",
+      sum( FAILED ) AS "FAILED",
+      sum( SKIPPED ) AS "SKIPPED",
+      sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
+      sum( ABORTED ) AS "ABORTED",
+      sum( QUEUED ) AS "QUEUED"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY ${GROUP_AND_ORDER_BY}
+  ORDER BY ${GROUP_AND_ORDER_BY};
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+<#local result = "" />
+<#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+      <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+</#list>
+<#if result?length != 0 && PERSONAL == "true">
+  <!-- add personal filter by currentUserId with AND -->
+  <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+<#elseif result?length == 0 && PERSONAL == "true">
+  <!-- add personal filter by currentUserId without AND -->
+  <#local result = " OWNER_ID=${currentUserId} "/>
+</#if>
+<#if PERIOD != "Total">
+  <#if PARENT_JOB != "">
+      <#if result?length != 0>
+      <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+  </#if>
+ </#if>
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getGroupBy Period, parentJob>
+  <#local result = "" />
+  <#if parentJob != "">
+    <#local result = "UPSTREAM_JOB_BUILD_NUMBER" />
+  <#else>
+    <#local result = getCreatedAt(PERIOD) />
+  </#if>
+ <#return result>
+</#function>
+<#--
+    Retrieves actual CREATED_BY grouping  by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getCreatedAt value>
+  <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+  <#switch value>
+    <#case "Last 24 Hours">
+      <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''MM-DD HH24:MI'')" />
+      <#break>
+    <#case "Nightly">
+      <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''HH24:MI'')" />
+      <#break>
+    <#case "Last 7 Days">
+    <#case "Last 14 Days">
+    <#case "Last 30 Days">
+    <#case "Weekly">
+    <#case "Monthly">
+      <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+      <#break>
+    <#case "Total">
+      <#local result = "to_char(date_trunc(''month'', CREATED_AT), ''YYYY-MM'')" />
+      <#break>
+  </#switch>
+  <#return result>
+</#function>
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+  <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' , '
+setTimeout(function() {
+  const created = dataset[0].CREATED_AT.toString();
+  const lastCount = dataset.length - 1;
+  const lastValue = dataset[lastCount].CREATED_AT.toString();
+  
+  let dataSource = [["CREATED_AT"], ["PASSED"], ["FAILED"], ["SKIPPED"], ["QUEUED"], ["ABORTED"], ["KNOWN ISSUE"]];
+  
+  const createDatasetSource = () => {
+    let amount = dataset.length;
+    for (let i = 0; i < amount; i++) {
+      dataSource.forEach((value, index) => {
+        let valueName = value[0];
+        let pushValue = dataset[i][valueName];
+        if (valueName === "CREATED_AT") value.push(pushValue.toString());
+        else value.push(pushValue);
+      })
+    }
+    return dataSource;
+  };
+  
+  let grid, legend, pieStyle, title;
+  
+  customStyle = () => {
+    const screenWidth = window.innerWidth;
+    const rich = (fontSize, padding, fontWeight) => {
+      return {
+        PASSED:{ color: "#61c8b3", fontSize, fontWeight },
+        FAILED:{ color: "#e76a77", fontSize, fontWeight },
+        SKIPPED:{ color: "#fddb7a", fontSize, fontWeight},
+        QUEUED:{ color: "#6dbbe7", fontSize, fontWeight },
+        ABORTED:{ color: "#b5b5b5", fontSize, fontWeight },
+        KNOWN_ISSUE:{ color: "#9f5487", fontSize, fontWeight },
+        BUILD:{ color: "#0a0a0a", fontSize, padding, fontWeight: 700 }
+      }
+    };
+    
+    grid = {
+      top: "8%",
+      left: "27%",
+      right: "3%",
+      bottom: "17%"
+    };
+    legend = {
+      orient: "vertical",
+      x: "left",
+      y: "center",
+      left: "1%",
+      icon: "roundRect",
+      textStyle: {
+        fontSize: 12
+      }
+    };
+    title = {
+      show: true,
+      right: "3%",
+      top: 0,
+      textStyle: {
+        rich: rich(12, [0, 0, 0, 50], 500)
+      }
+    };
+    pieStyle = {
+      radius: "70%",
+      center: ["15%", "47%"]
+    };
+    if (screenWidth > 1250) grid.left = "30%";
+    else grid.left = "35%";
+    if (chart._dom.clientWidth === 280 || screenWidth < 481) {
+      grid.top = "50%";
+      grid.left = 30;
+      grid.right = 15;
+      grid.bottom = "15%";
+      legend.x = "left";
+      legend.y = "top";
+      legend.top = 10;
+      legend.itemGap = 2;
+      legend.itemWidth = 10;
+      legend.itemHeight = 7;
+      legend.textStyle.fontSize = 7;
+      title.right = "3%",
+      title.top = "40%";
+      title.textStyle.rich = rich(6);
+      pieStyle.radius = "40%";
+      pieStyle.center = ["60%", "23%"];
+      if (screenWidth < 481) {
+        legend.itemGap = 5;
+        legend.textStyle.fontSize = 10;
+        pieStyle.center = ["60%", "23%"];
+        title.right = "3%",
+        title.right = "2.5%";
+        title.top = "43%";
+        title.textStyle.rich = rich(8, [0, 0, 0, 20], 400);
+      }
+    }
+  }
+  customStyle();
+  
+  const changeTitle = (value = lastCount) => {
+    let titleValue = "";
+    let name = "";
+    let total = 0;
+    let newDataObj = {};
+    
+    for (const testName in dataset[value]){
+      if (testName === "CREATED_AT") continue;
+      total +=  dataset[value][testName];
+    }
+    
+    for (let i = 0; i < dataSource.length; i++){
+      newDataObj[dataSource[i][0]] = dataset[value][dataSource[i][0]]
+    }
+    
+    Object.entries(newDataObj).forEach(([key, value]) => {
+      if (value === 0) return;
+      if (key === "CREATED_AT") return name = typeof value == "number"? `{BUILD|Build: ${value}}` : `{BUILD|Date: ${value}}`;
 
+      let parameter = key === "KNOWN ISSUE" ? "KNOWN_ISSUE" : key;
+      persentValue = (value * 100 / total).toFixed(2);
+      titleValue += ` {${parameter}|${key}: ${persentValue}%;}`;
+    });
+    
+    titleValue += name;
+    
+    chart.setOption({
+      title:{
+        text: titleValue
+      }
+    })
+  };
+  changeTitle();
+  
+let colors = ["#61c8b3", "#e76a77", "#fddb7a", "#6dbbe7", "#b5b5b5", "#9f5487"];
+let lineRow = {
+    type: "line",
+    smooth: false,
+    seriesLayoutBy: "row",
+    stack: "Status",
+    itemStyle: {
+      normal: {
+        areaStyle: {
+          opacity: 0.8,
+          type: "default"
+        }
+      }
+    }
+  };
+  
+  let pie = {
+    type: "pie",
+    id: "pie",
+    radius: pieStyle.radius,
+    center:  pieStyle.center,
+    label: { show: false },
+    encode: {
+      itemName: "CREATED_AT",
+      value: lastValue,
+      tooltip: lastValue
+    },
+    selectedMode : true,
+    emphasis: {
+      label: {
+        show: true,
+        formatter: "{b}: {d}%"
+      }
+    }
+  };
+  
+  let series = [];
+  for (var i = 0; i < dataSource.length - 1 ; i++) {
+    series.push(lineRow);
+  };
+  series.push(pie);
+
+  let option = {
+        title: title,
+        grid: grid,
+        color: colors,
+        legend: legend,
+        tooltip: {
+            trigger: "axis",
+            showDelay: 1
+        },
+        dataZoom: [
+          {
+            startValue: created,
+            bottom: "0",
+            height : "25px"
+          },
+          {
+            type: "inside"
+          }
+        ],
+        dataset: {
+          source: createDatasetSource()
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false
+        },
+        yAxis: {
+          gridIndex: 0
+        },
+        series: series
+    };
+    
+    chart.on("updateAxisPointer", (event) => {
+        let xAxisInfo = event.axesInfo[0];
+        if (xAxisInfo) {
+            let dimension = xAxisInfo.value + 1;
+            chart.setOption({
+                series: {
+                  id: "pie",
+                  label: {
+                    formatter: "{b}: ({d}%)"
+                  },
+                  encode: {
+                    value: dimension,
+                    tooltip: dimension
+                  }
+                }
+            });
+            changeTitle(dimension - 1);
+        }
+    });
+    
+    chart.setOption(option);
+    angular.element($window).on("resize", onResize);
+}, 1000)' , '{
+  "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Nightly",
+      "Weekly",
+      "Monthly",
+      "Total"
+      ]
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "type": "radio",
+    "required": true
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
+  }
+}', '{
+  "PERIOD": "Last 30 Days",
+  "PERSONAL": "false",
+  "currentUserId": 1,
+  "PROJECT": [],
+  "USER": ["anonymous"],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "TASK": [],
+  "PLATFORM": [],
+  "DEVICE": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": "",
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": ""
+}', false);
+
+
+
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS FAILURES BY SUITE', 'Shows all test cases with failures count per appropriate period and possibility to view detailed information for each suite/test.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "TEST_SUITE_FILE": join(TEST_SUITE_FILE),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+  SELECT
+      TEST_SUITE_FILE AS "SUITE",
+      TEST_METHOD_NAME AS "NAME",
+      --STABILITY_URL as "NAME",
+      SUM(FAILED) AS "FAILURES COUNT",
+      SUM(TOTAL) AS "TOTAL COUNT",
+      ROUND(SUM(FAILED)*100/COUNT(*)) AS "FAILURE %"
+    FROM ${VIEW}
+    ${WHERE_MULTIPLE_CLAUSE}
+    GROUP BY TEST_SUITE_FILE, TEST_METHOD_NAME--, STABILITY_URL
+    HAVING SUM(FAILED) > 0
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+  <#if PERIOD != "Total">
+    <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+    <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+    </#if>
+  </#if>
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+  <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '{"columns": ["SUITE", "NAME", "FAILURES COUNT", "TOTAL COUNT", "FAILURE %"]}', '{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Nightly",
+      "Weekly",
+      "Monthly",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "TEST_SUITE_FILE": {
+    "valuesQuery": "SELECT DISTINCT(FILE_NAME) FROM TEST_SUITES WHERE FILE_NAME IS NOT NULL AND FILE_NAME <> '' ORDER BY 1;",
+    "multiple": true,
+    "required": true
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '' ORDER BY 1;",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '' ORDER BY 1;",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '' ORDER BY 1;",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '' ORDER BY 1;",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '';",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '';",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '';",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
+  }
+}', '{
+  "PERIOD": "Last 7 Days",
+  "PERSONAL": "false",
+  "GROUP_BY": "TEST_SUITE_NAME",
+  "TEST_SUITE_FILE":[],
+  "currentUserId": 1,
+  "PROJECT": [],
+  "USER": ["anonymous"],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "PLATFORM": [],
+  "DEVICE": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": "",
+  "PARENT_JOB": "",
+  "PARENT_BUILD": ""
+}', false);
