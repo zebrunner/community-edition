@@ -1,0 +1,10 @@
+site_name: QPS-Infra
+
+pages:
+    - Overview: index.md
+    - FAQ: faq.md
+
+theme:
+  name: 'material'
+repo_url: https://github.com/qaprosoft/qps-infra
+repo_name: Github
