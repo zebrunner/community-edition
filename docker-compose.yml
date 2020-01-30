@@ -28,7 +28,7 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.1.83
+    image: qaprosoft/zafira:4.1.85
     env_file:
       - variables.env
     volumes:
@@ -41,14 +41,14 @@ services:
       - "redis"
     restart: always
   zafira-ui:
-    image: qaprosoft/zafira-ui:1.30
+    image: qaprosoft/zafira-ui:1.33
     env_file:
       - variables.env
     depends_on:
       - "zafira"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:4.8
+    image: qaprosoft/jenkins-master:4.9
     env_file:
      - variables.env
     environment:
