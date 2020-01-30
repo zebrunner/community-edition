@@ -1,0 +1,11 @@
+SET SCHEMA 'zafira';
+
+select check_version(123);
+
+INSERT INTO SETTINGS (NAME, VALUE, TOOL) VALUES
+    ('TESTRAIL_URL', '', 'TESTRAIL'),
+    ('TESTRAIL_ENABLED', false, 'TESTRAIL'),
+    ('QTEST_URL', '', 'QTEST'),
+    ('QTEST_ENABLED', false, 'QTEST');
+
+select add_version(123);

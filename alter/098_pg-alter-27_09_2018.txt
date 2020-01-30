@@ -1,0 +1,6 @@
+set schema 'zafira';
+select check_version(98);
+
+ALTER TABLE TESTS ADD COLUMN CI_TEST_ID VARCHAR(50) NULL;
+
+select add_version(98);

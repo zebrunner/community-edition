@@ -1,0 +1,12 @@
+set schema 'zafira';
+select check_version(91);
+
+ALTER TABLE zafira.test_runs ADD config_id int NULL;
+ALTER TABLE zafira.test_runs
+ADD CONSTRAINT test_runs_test_configs_id_fk
+    FOREIGN KEY (CONFIG_ID)
+    REFERENCES TEST_CONFIGS (ID)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+select add_version(91);

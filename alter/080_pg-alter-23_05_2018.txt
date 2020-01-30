@@ -1,0 +1,9 @@
+set schema 'zafira';
+
+select check_version(80);
+
+INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
+	('GOOGLE_CLIENT_SECRET_ORIGIN', '', 'GOOGLE'),
+  	('GOOGLE_ENABLED', false, 'GOOGLE');
+
+select add_version(80);

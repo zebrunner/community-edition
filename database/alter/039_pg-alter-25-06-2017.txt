@@ -1,0 +1,12 @@
+set schema 'zafira';
+--INSERT INTO GROUPS (NAME, ROLE) VALUES ('General Admins Group', 'ROLE_ADMIN');
+--INSERT INTO GROUPS (NAME, ROLE) VALUES ('General Users Group', 'ROLE_USER');
+
+--add ROLE_USER permissions for everyone
+INSERT INTO USER_GROUPS (GROUP_ID, USER_ID)  (
+	SELECT USERS.ID FROM USERS, 
+	SELECT GROUPS.ID FROM GROUPS WHERE ROLE='ROLE_USER')
+);
+
+
+

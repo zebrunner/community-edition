@@ -1,0 +1,6 @@
+set schema 'zafira';
+select check_version(96);
+
+ALTER TABLE USERS ADD COLUMN STATUS VARCHAR(20) NOT NULL DEFAULT 'ACTIVE';
+
+select add_version(96);

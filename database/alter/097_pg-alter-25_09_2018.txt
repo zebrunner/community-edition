@@ -1,0 +1,6 @@
+set schema 'zafira';
+select check_version(97);
+
+ALTER TABLE INVITATIONS ADD COLUMN SOURCE VARCHAR(20) NOT NULL;
+
+select add_version(97);

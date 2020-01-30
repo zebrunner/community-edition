@@ -1,0 +1,7 @@
+SET SCHEMA 'zafira';
+
+select check_version(105);
+
+ALTER TABLE TEST_RUNS DROP COLUMN IF EXISTS DRIVER_MODE;
+
+select add_version(105);

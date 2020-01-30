@@ -1,0 +1,6 @@
+INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
+	('EMAIL_HOST', '', 'EMAIL'),
+	('EMAIL_PORT', '', 'EMAIL'),
+	('EMAIL_USER', '', 'EMAIL'),
+	('EMAIL_PASSWORD', '', 'EMAIL'),
+	('EMAIL_ENABLED', 'true', 'EMAIL');

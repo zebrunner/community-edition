@@ -1,0 +1,275 @@
+set schema 'management';
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+
+<#global MULTIPLE_VALUES = {
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "OWNER_USERNAME": join(USER),
+  "PROJECT": multiJoin(PROJECT, projects),
+  "DEVICE": join(DEVICE),
+  "ENV": join(ENV),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK)
+}>
+
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES, PARENT_JOB, PARENT_BUILD) />
+<#global VIEW = getView(PERIOD) />
+
+SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
+      sum( PASSED ) AS "PASSED",
+      sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
+      sum( QUEUED ) AS "QUEUED",
+      0 - sum( FAILED ) AS "FAILED",
+      0 - sum( SKIPPED ) AS "SKIPPED",
+      0 - sum( ABORTED ) AS "ABORTED"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "GROUP_FIELD"
+  ORDER BY "GROUP_FIELD" DESC
+
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map, PARENT_JOB, PARENT_BUILD>
+ <#local result = "" />
+ <#list map?keys as key>
+     <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+       <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+       <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+     </#if>
+ </#list>
+
+
+ <#if PERIOD != "Total">
+  <#if PARENT_JOB != "" && PARENT_BUILD != "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
+        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  </#if>
+ </#if>
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+ <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME = 'PASS RATE (%)';
+
+
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG = '
+setTimeout( function() {
+  const dimensions = ["GROUP_FIELD", "PASSED", "FAILED", "SKIPPED", "KNOWN ISSUE", "QUEUED", "ABORTED"];
+  let note = true;
+
+  const createSource = () => {
+    let source = [];
+    
+    for (let i = 0; i < dataset.length; i++) {
+      let sourceData = [];
+      dimensions.forEach((value, index) => sourceData.push(dataset[i][value]));
+      source.push(sourceData);
+    };
+    
+    return source;
+  };
+
+  let numberDataSource = createSource();
+  let percentDataSource = [];
+
+  const createPercentSource = (value, total) => {
+    let temporaryArr = [];
+    
+    value.map( a => {
+      if (typeof a === "number")  a = Math.round(100 * a / total , 0);
+      temporaryArr.push(a);
+    });
+    
+    percentDataSource.push(temporaryArr);
+  };
+  
+  const getTotalValue = (value) => {
+    let total = 0;
+    value.map( a => {
+      if (typeof a === "number") total += a > 0 ? a : a * -1;
+    });
+    return total;
+  };
+
+  numberDataSource.forEach((value) => {
+    let total = getTotalValue(value);
+    createPercentSource(value, total);
+  });
+
+  const formatterFunc = (params, index) => {
+    let total = getTotalValue(params.value);
+    let controlValue = params.value[index] * 100 / total;
+    controlValue = controlValue > 0 ? controlValue : controlValue * -1;
+    if (controlValue > 5) return `${params.value[index]}${note ? "%" : ""}`;
+    else return "";
+  };
+  
+  let series = [];
+  for (var i = 0; i < 6 ; i++) {
+    let index = i + 1;
+    let seriesBar = {
+      type: "bar",
+      name: dimensions[index],
+      stack: "stack",
+      label: {
+        normal: {
+          show: true,
+          position: "inside",
+          formatter: (params) =>  formatterFunc(params, index)
+        }
+      }
+    }
+    series.push(seriesBar);
+  };
+
+  let option = {
+    title: {
+      text: "Note: click on bar to show absolute numbers",
+      textStyle: {
+        color: "grey",
+        fontWeight: "100",
+        fontSize: 14
+      },
+      right: "5%",
+      top: "94%"
+    },
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow"
+      }
+    },
+    legend: {},
+    grid: {
+      show: true,
+      top: 40,
+      left: "5%",
+      right: "5%",
+      bottom: 20,
+      containLabel: true
+    },
+    xAxis: [{
+        type: "value",
+        min: "-100",
+        max: "100"
+      }],
+    yAxis: [{
+        type: "category",
+        axisTick: {
+          show: false
+        }
+      }],
+    color: [
+      "#61c8b3",
+      "#e76a77",
+      "#fddb7a",
+      "#9f5487",
+      "#6dbbe7",
+      "#b5b5b5"
+    ],
+    dataset: {
+      source: percentDataSource
+    },
+    dimensions: dimensions,
+    series: series
+  };
+  
+  const changeValue = (text, source, { min, max } ) => {
+    chart.setOption({
+      dataset: { source },
+      title: { text },
+      xAxis: [{ min, max }],
+    });
+  };
+
+  chart.on("click", (event) => {
+    let text = `Note: click on bar to show ${!note ? "absolute numbers" : "numbers in percent"}`;
+    note = !note
+    if (!note) changeValue(text, numberDataSource, { min: null, max: null });
+    else changeValue(text, percentDataSource, { min:-100, max:100 });
+  });
+  
+  chart.setOption(option);
+  angular.element($window).on("resize", onResize);
+}, 1000)' WHERE NAME = 'PASS RATE (%)';

@@ -1,0 +1,9 @@
+SET SCHEMA 'zafira';
+
+-- to alter test_case we have-to remove all default views, alter below table and re-create ../sql/db-view.sql again
+
+select check_version(115);
+
+ALTER TABLE TEST_CASES ALTER COLUMN TEST_METHOD TYPE varchar(255);
+
+select add_version(115);

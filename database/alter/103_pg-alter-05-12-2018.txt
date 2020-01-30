@@ -1,0 +1,8 @@
+SET SCHEMA 'zafira';
+
+select check_version(103);
+
+-- IMPORTANT!!! ALL VIEWS SHOULD BE RECREATED MANUALLY USING ../sql/db-views.sql 
+-- IMPORTANT!!! ALL WIDGETS SHOULD BE RECREATED MANUALLY USING ../sql/db-widgets.sql 
+
+select add_version(103);

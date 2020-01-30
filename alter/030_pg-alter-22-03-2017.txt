@@ -1,0 +1,45 @@
+set schema 'zafira';
+ALTER TABLE jobs SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE jobs SET (autovacuum_vacuum_threshold = 1000);
+ALTER TABLE jobs SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE jobs SET (autovacuum_analyze_threshold = 1000);
+
+
+ALTER TABLE test_cases SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE test_cases SET (autovacuum_vacuum_threshold = 5000);
+ALTER TABLE test_cases SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE test_cases SET (autovacuum_analyze_threshold = 5000);
+
+ALTER TABLE test_configs SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE test_configs SET (autovacuum_vacuum_threshold = 1000);
+ALTER TABLE test_configs SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE test_configs SET (autovacuum_analyze_threshold = 1000);
+
+
+ALTER TABLE test_runs SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE test_runs SET (autovacuum_vacuum_threshold = 50000);
+ALTER TABLE test_runs SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE test_runs SET (autovacuum_analyze_threshold = 50000);
+
+
+ALTER TABLE test_suites SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE test_suites SET (autovacuum_vacuum_threshold = 1000);
+ALTER TABLE test_suites SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE test_suites SET (autovacuum_analyze_threshold = 1000);
+
+
+ALTER TABLE test_work_items SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE test_work_items SET (autovacuum_vacuum_threshold = 50000);
+ALTER TABLE test_work_items SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE test_work_items SET (autovacuum_analyze_threshold = 50000);
+
+
+ALTER TABLE tests SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE tests SET (autovacuum_vacuum_threshold = 500000);
+ALTER TABLE tests SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE tests SET (autovacuum_analyze_threshold = 500000);
+
+ALTER TABLE users SET (autovacuum_vacuum_scale_factor = 0.0);
+ALTER TABLE users SET (autovacuum_vacuum_threshold = 100);
+ALTER TABLE users SET (autovacuum_analyze_scale_factor = 0.0);
+ALTER TABLE users SET (autovacuum_analyze_threshold = 100);

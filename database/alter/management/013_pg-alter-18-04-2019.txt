@@ -1,0 +1,271 @@
+set schema 'management';
+
+UPDATE WIDGET_TEMPLATES SET NAME = 'TESTS IMPLEMENTATION PROGRESS' WHERE NAME = 'MONTHLY TEST IMPLEMENTATION PROGRESS';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL = '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECTS.NAME": multiJoin(PROJECT, projects),
+  "USERS.USERNAME": join(USER)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global CREATED_AT = getCreatedAt(PERIOD) />
+<#global GROUP_AND_ORDER_BY = getGroupAndOrder(PERIOD) />
+
+SELECT
+      ${CREATED_AT} AS "CREATED_AT",
+      count(*) AS "AMOUNT"
+    FROM TEST_CASES
+    INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+    INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID = USERS.ID
+    ${WHERE_MULTIPLE_CLAUSE}
+    ${GROUP_AND_ORDER_BY}
+
+
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+  <#local result = "" />
+
+   <#if PERIOD == "Nightly">
+    <#local result = result + "TEST_CASES.CREATED_AT >= current_date"/>
+  <#elseif PERIOD == "Last 24 Hours">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''hour'', current_date - interval ''24'' hour)"/>
+  <#elseif PERIOD == "Weekly">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''week'', current_date)  - interval ''2'' day"/>
+  <#elseif PERIOD == "Last 7 Days">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''7'' day)"/>
+  <#elseif PERIOD == "Last 14 Days">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''14'' day)"/>
+  <#elseif PERIOD == "Last 30 Days">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''30'' day)"/>
+  <#elseif PERIOD == "Monthly" >
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''month'', current_date)"/>
+  </#if>
+
+  <#list map?keys as key>
+      <#if map[key] != "" >
+        <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+          <#-- Ignore non supported filters for Personal chart: USER -->
+          <#continue>
+        </#if>
+        <#if result?length != 0>
+        <#local result = result + " AND "/>
+        </#if>
+        <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+      </#if>
+</#list>
+
+  <#if result?length != 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId with AND -->
+    <#local result = result + " AND USERS.ID=${currentUserId} "/>
+  <#elseif result?length == 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId without AND -->
+    <#local result = " USERS.ID=${currentUserId} "/>
+  </#if>
+
+
+  <#if result?length != 0>
+    <#local result = " WHERE " + result/>
+  </#if>
+  <#return result>
+</#function>
+
+<#--
+    Retrieves actual CREATED_BY grouping  by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getCreatedAt value>
+  <#local result = "to_char(date_trunc(''day'', TEST_CASES.CREATED_AT), ''MM/DD'')" />
+  <#switch value>
+    <#case "Last 24 Hours">
+    <#case "Nightly">
+      <#local result = "to_char(date_trunc(''hour'', TEST_CASES.CREATED_AT), ''HH24:MI'')" />
+      <#break>
+    <#case "Last 7 Days">
+    <#case "Weekly">
+    <#case "Last 14 Days">
+      <#local result = "to_char(date_trunc(''day'', TEST_CASES.CREATED_AT), ''MM/DD'')" />
+      <#break>
+    <#case "Last 30 Days">
+    <#case "Monthly">
+      <#local result = "to_char(date_trunc(''week'', TEST_CASES.CREATED_AT), ''MM/DD'')" />
+      <#break>
+    <#case "Total">
+      <#local result = "to_char(date_trunc(''quarter'', TEST_CASES.CREATED_AT), ''YYYY-" + ''"Q"'' + "Q'')" />
+      <#break>
+  </#switch>
+  <#return result>
+</#function>
+
+<#function getGroupAndOrder value>
+  <#local result = "GROUP BY 1 ORDER BY 1;" />
+  <#switch value>
+    <#case "Last 24 Hours">
+    <#case "Last 7 Days">
+    <#case "Last 14 Days">
+    <#case "Last 30 Days">
+      <#local result = "GROUP BY 1, to_char(date_trunc(''week'', TEST_CASES.CREATED_AT), ''YY/MM/DD'')
+        ORDER BY to_char(date_trunc(''week'', TEST_CASES.CREATED_AT), ''YY/MM/DD'');" />
+      <#break>
+  </#switch>
+  <#return result>
+</#function>
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME = 'TESTS IMPLEMENTATION PROGRESS';
+
+
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG='
+let data = [], invisibleData = [], xAxisData = [], lineData = [];
+let invisibleDataStep = 0, lineDataStep = 0;
+
+dataset.map(({CREATED_AT, AMOUNT}) => {
+  xAxisData.push(CREATED_AT);
+  data.push(AMOUNT);  //used in second bar series for building
+  invisibleData.push(invisibleDataStep);  //used in first bar series for creating step-effect
+  lineDataStep += AMOUNT;
+  lineData.push(lineDataStep); //used in line series for creating dashed-line
+  invisibleDataStep += AMOUNT; //the first element must be 0
+});
+  
+option = {
+  grid: {
+    right: "2%",
+    left: "4%",
+    top: "8%",
+    bottom: "8%"
+    },
+  tooltip : {
+    trigger: "axis",
+    axisPointer : {            
+      type : "shadow"        
+    },
+    formatter: function (params) {
+      let total = params[2]; // pick params.total
+      return total.name + "<br/>" + "Total" + " : " + total.value;
+    },
+    extraCssText: "transform: translateZ(0);"
+  },
+  color: ["#7fbae3", "#7fbae3"],
+  xAxis: {
+    type : "category",
+    splitLine: {
+      show: false
+    },
+    data : xAxisData
+  },
+  yAxis: {
+    type : "value"
+  },
+  series: [
+    {
+      type: "bar",
+      stack: "line",
+      itemStyle: {
+        normal: {
+          barBorderColor: "rgba(0,0,0,0)",
+          color: "rgba(127, 186, 227, 0.1)"
+        },
+        emphasis: {
+          barBorderColor: "rgba(0,0,0,0)",
+          color: "rgba(127, 186, 227, 0.1)"
+        }
+      },
+      data: invisibleData
+      },
+      {
+        type: "bar",
+        stack: "line",
+        label: {
+          normal: {
+            show: true,
+            distance: -15,
+            position: "top",
+            color: "black",
+             formatter: (params) => {
+              if (params.dataIndex === 0) return "";
+              return params.value;
+            }
+          }
+        },
+        data: data
+      },
+      {
+        type: "line",
+        smooth: true,
+        label: {
+          normal: {
+            show: true
+          }
+        },
+        lineStyle: {
+          color: "rgba(0,0,0,0)" // default invisible
+        },
+        data: lineData
+      }
+    ]
+};
+chart.setOption(option);' WHERE NAME='TESTS IMPLEMENTATION PROGRESS';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+  "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Nightly",
+      "Weekly",
+      "Monthly",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '' ORDER BY 1;",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
+    "multiple": true
+  }
+}' WHERE NAME = 'TESTS IMPLEMENTATION PROGRESS';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG_SAMPLE='{
+  "PERIOD": "Last 24 Hours",
+  "PROJECT": ["AURONIA", "UNKNOWN"],
+  "PERSONAL": "true",
+  "currentUserId": 1,
+  "USER": []
+}' WHERE NAME = 'TESTS IMPLEMENTATION PROGRESS';

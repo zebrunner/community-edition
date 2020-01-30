@@ -1,0 +1,7 @@
+set schema 'zafira';
+
+select check_version(82);
+
+SELECT CRON.SCHEDULE ('0 7 * * *', $$DELETE FROM ZAFIRA.TEST_ARTIFACTS WHERE TEST_ARTIFACTS.EXPIRES_AT < CURRENT_DATE$$);
+
+select add_version(82);

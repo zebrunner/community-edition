@@ -1,0 +1,22 @@
+set schema 'zafira';
+select check_version(89);
+
+UPDATE zafira.widgets set sql =
+'set schema ''zafira'';
+    SELECT
+        SUM(PASSED) as "PASSED",
+        SUM(FAILED) AS "FAILED",
+        SUM(SKIPPED) AS "SKIPPED",
+        SUM(IN_PROGRESS) AS "IN PROGRESS",
+        SUM(ABORTED) AS "ABORTED",
+        SUM(QUEUED) AS "QUEUED",
+        SUM(TOTAL) AS "TOTAL",
+        date_trunc(''month'', TESTED_AT) AS "CREATED_AT"
+    FROM TOTAL_VIEW
+    WHERE PROJECT LIKE ANY (''{#{project}}'')
+    AND TESTED_AT < date_trunc(''month'', current_date)
+    GROUP BY "CREATED_AT"
+    ORDER BY "CREATED_AT"'
+    WHERE TITLE = 'TOTAL TESTS (BY MONTH)';
+
+select add_version(89);

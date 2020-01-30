@@ -1,0 +1,8 @@
+SET SCHEMA 'zafira';
+
+select check_version(111);
+
+alter table test_runs
+add slack_channels varchar(255);
+
+select add_version(111);

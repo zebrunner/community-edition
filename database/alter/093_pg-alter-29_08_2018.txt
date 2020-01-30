@@ -1,0 +1,7 @@
+set schema 'zafira';
+select check_version(93);
+
+ALTER TABLE USERS ALTER COLUMN COVER_PHOTO_URL TYPE TEXT;
+ALTER TABLE SETTINGS ALTER COLUMN VALUE TYPE TEXT;
+
+select add_version(93);

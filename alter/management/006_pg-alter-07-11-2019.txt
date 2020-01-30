@@ -1,0 +1,129 @@
+set schema 'management';
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+<#global MULTIPLE_VALUES = {
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "OWNER_USERNAME": join(USER),
+  "PROJECT": multiJoin(PROJECT, projects),
+  "DEVICE": join(DEVICE),
+  "ENV": join(ENV),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK)
+}>
+
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+<#--
+  1. for "Last 24 Hours" or "Nightly" calculate stability on the fly using appropriate views
+  2. for Monthly select STABILITY from TEST_CASE_HEALTH_VIEW for current month
+  3. for Total calculate avg(STABILITY) overall by TEST_CASE_HEALTH_VIEW view data
+  Note: all filters the rest
+  -->
+
+  SELECT
+    PROJECT AS "PROJECT",
+    STABILITY_URL AS "TEST METHOD",
+    ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "PROJECT", "TEST METHOD"
+  <#if PERIOD == "Monthly" || PERIOD = "Total">
+    HAVING AVG(STABILITY) <= ${PERCENT}
+  <#else>
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) <= ${PERCENT}
+  </#if>
+  ORDER BY "PROJECT", "TEST METHOD", "STABILITY"
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+
+  <#if PERIOD == "Monthly">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "TESTED_AT = date_trunc(''month'', current_date)"/>
+  </#if>
+
+ <#list map?keys as key>
+     <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+       <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+       <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+     </#if>
+ </#list>
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "TEST_CASE_HEALTH_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Monthly">
+  <#case "Total">
+    <#local result = "TEST_CASE_HEALTH_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>'	WHERE NAME='TEST CASES BY STABILITY';

@@ -1,0 +1,8 @@
+SET SCHEMA 'zafira';
+
+select check_version(124);
+
+ALTER TABLE SCM ADD COLUMN LOGIN varchar(255);
+ALTER TABLE SCM ADD COLUMN API_VERSION varchar(255);
+
+select add_version(124);
