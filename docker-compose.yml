@@ -67,7 +67,8 @@ services:
      - variables.env
     environment:
      - JENKINS_SLAVE_NAME=jenkins-slave-api
-     - JENKINS_SLAVE_WORKERS=5
+     - JENKINS_SLAVE_WORKERS=3
+     - JENKINS_SLAVE_LABELS=qps-slave api qa
     volumes:
      - $HOME/.m2:/root/.m2
      - /var/run/docker.sock:/var/run/docker.sock
@@ -82,7 +83,7 @@ services:
      - variables.env
     environment:
      - JENKINS_SLAVE_NAME=jenkins-slave-web
-     - JENKINS_SLAVE_WORKERS=3
+     - JENKINS_SLAVE_WORKERS=2
      - JENKINS_SLAVE_LABELS=qps-slave web qa
     volumes:
      - $HOME/.m2:/root/.m2
