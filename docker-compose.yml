@@ -62,7 +62,7 @@ services:
      - "50000:50000"
     restart: always
   jenkins-slave-api:
-    image: qaprosoft/jenkins-slave:dnf
+    image: qaprosoft/jenkins-slave
     env_file:
      - variables.env
     environment:
@@ -78,7 +78,7 @@ services:
      - "jenkins-master"
     restart: always
   jenkins-slave-web:
-    image: qaprosoft/jenkins-slave:dnf
+    image: qaprosoft/jenkins-slave
     env_file:
      - variables.env
     environment:
