@@ -70,6 +70,7 @@ services:
      - JENKINS_SLAVE_LABELS=qps-slave api qa docker
     volumes:
      - $HOME/.m2:/root/.m2
+     - /var/run/docker.sock:/var/run/docker.sock
     ports:
      - "8001:8000"
     depends_on:
