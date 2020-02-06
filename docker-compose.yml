@@ -57,7 +57,6 @@ services:
      # to add extra plugins follow this steps: https://github.com/qaprosoft/jenkins-master/releases/tag/4.6
      - ./jenkins:/var/jenkins_home
      - $HOME/.m2:/var/jenkins_home/.m2
-     - /var/run/docker.sock:/var/run/docker.sock
     ports:
      - "50000:50000"
     restart: always
@@ -68,10 +67,9 @@ services:
     environment:
      - JENKINS_SLAVE_NAME=jenkins-slave-api
      - JENKINS_SLAVE_WORKERS=3
-     - JENKINS_SLAVE_LABELS=qps-slave api qa
+     - JENKINS_SLAVE_LABELS=qps-slave api qa docker
     volumes:
      - $HOME/.m2:/root/.m2
-     - /var/run/docker.sock:/var/run/docker.sock
     ports:
      - "8001:8000"
     depends_on:
@@ -87,7 +85,6 @@ services:
      - JENKINS_SLAVE_LABELS=qps-slave web qa
     volumes:
      - $HOME/.m2:/root/.m2
-     - /var/run/docker.sock:/var/run/docker.sock
     ports:
      - "8000:8000"
     depends_on:
