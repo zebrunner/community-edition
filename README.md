@@ -46,7 +46,7 @@ cd qps-infra
 ./setup.sh myhost.domain.com
 ```
 * Optional: update default credentials if neccessary (strongly recommended for publicly available environments)
-  Note: If you changed ZAFIRA_RABBITMQ_USER and ZAFIRA_RABBITMQ_PASS please update them in config/definitions.json as well
+  Note: If you changed ZAFIRA_RABBITMQ_USER and ZAFIRA_RABBITMQ_PASS please update them in config/definitions.json and config/logstash.conf files as well
 * Optional: adjust docker-compose.yml file by removing unused services. By default it contains:
   nginx, postgres, zafira/zafira-ui, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
 * Execute ./start.sh to start all containers
