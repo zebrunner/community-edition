@@ -910,6 +910,26 @@ CREATE UNIQUE INDEX LAUNCHER_CALLBACK_REFERENCE_UNIQUE ON launcher_callbacks (re
 CREATE TRIGGER update_timestamp_launcher_callback BEFORE INSERT OR UPDATE ON launcher_callbacks FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
 
 
+DROP TABLE IF EXISTS test_sessions;
+CREATE TABLE test_sessions (
+   id SERIAL,
+   session_id VARCHAR(255) NOT NULL,
+   version VARCHAR(255) NOT NULL,
+   started_at TIMESTAMP NOT NULL,
+   ended_at TIMESTAMP NULL,
+   duration INT NULL,
+   os_name VARCHAR(255) NOT NULL,
+   browser_name VARCHAR(255) NOT NULL,
+   test_name VARCHAR(255) NULL,
+   build_number VARCHAR(255) NULL,
+   status VARCHAR(20) NOT NULL,
+   modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (id)
+);
+CREATE TRIGGER update_timestamp_test_sessions BEFORE INSERT OR UPDATE ON test_sessions FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
+
+
 CREATE OR REPLACE FUNCTION check_version(INTEGER) RETURNS VOID AS
 $$
 DECLARE

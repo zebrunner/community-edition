@@ -40,5 +40,26 @@
                 }
             }
         }
+    },
+    "opera": {
+        "default": "66.0",
+        "versions": {
+            "66.0": {
+                "image": "selenoid/vnc:opera_66.0",
+                "port": "4444",
+                "path": "/",
+                "tmpfs": {
+                    "/tmp": "size=128m"
+                }
+            },
+            "65.0": {
+                "image": "selenoid/vnc:opera_65.0",
+                "port": "4444",
+                "path": "/",
+                "tmpfs": {
+                    "/tmp": "size=128m"
+                }
+            }
+        }
     }
 }
