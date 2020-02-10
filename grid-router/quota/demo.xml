@@ -3,36 +3,36 @@
   <browser name="chrome" defaultVersion="78.0">
     <version number="78.0">
       <region name="stage">
-        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+        <host name="selenoid" port="4444" count="5" vnc="ws://selenoid:4444/vnc"/>
       </region>
     </version>
     <version number="77.0">
       <region name="stage">
-        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+        <host name="selenoid" port="4444" count="5" vnc="ws://selenoid:4444/vnc"/>
       </region>
     </version>
   </browser>
   <browser name="firefox" defaultVersion="71.0">
     <version number="71.0">
       <region name="stage">
-        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+        <host name="selenoid" port="4444" count="5" vnc="ws://selenoid:4444/vnc"/>
       </region>
     </version>
     <version number="70.0">
       <region name="stage">
-        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+        <host name="selenoid" port="4444" count="5" vnc="ws://selenoid:4444/vnc"/>
       </region>
     </version>
   </browser>
   <browser name="opera" defaultVersion="66.0">
     <version number="66.0">
       <region name="stage">
-        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+        <host name="selenoid" port="4444" count="5" vnc="ws://selenoid:4444/vnc"/>
       </region>
     </version>
     <version number="65.0">
       <region name="stage">
-        <host name="demo.qaprosoft.com" port="4445" count="5" vnc="ws://demo.qaprosoft.com:4445/vnc"/>
+        <host name="selenoid" port="4444" count="5" vnc="ws://selenoid:4444/vnc"/>
       </region>
     </version>
   </browser>
