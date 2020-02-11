@@ -1,10 +1,27 @@
 #!/bin/bash
 
-docker-compose stop
+flag=true
+for arg in "$@"
+do
+  case $arg in
+    "--help" | "-h")
+      echo "For help visit telegram chanal https://t.me/qps_infra"
+      ;;
 
-if [ "$1" == "--keep-containers" ]; then
-    echo "Containers were kept"
-else
-    echo "Containers were deleted"
-    docker-compose rm -fv
+    "--keep-containers" | "-k")
+      echo "Containers were kept"
+      flag=false
+      ;;
+  *)
+    echo "There's no such parameter" + $arg
+    ;;
+esac
+done
+
+if $flag; then
+  docker-compose rm -fv
+  echo "Containers were deleted"
 fi
+
+docker-compose stop
+echo "qps-infra was stoped"
