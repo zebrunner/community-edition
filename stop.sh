@@ -4,9 +4,9 @@ KEEP_CONTAINERS=true
 
 echo_help() {
   echo "
-      Flags:\n
-      --remove-containers | -rm    remove containers\n
-      For more help visit telegram chanal https://t.me/qps_infra"
+      Flags:
+          --remove-containers | -rm    remove containers
+      For more help visit telegram channel https://t.me/qps_infra"
 }
 
 for arg in "$@"
