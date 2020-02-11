@@ -5,7 +5,10 @@ for arg in "$@"
 do
   case $arg in
     "--help" | "-h")
-      echo "For help visit telegram chanal https://t.me/qps_infra"
+      echo "
+      Flags:\n
+      --keep-containers, -k    keep containers\n
+      For more help visit telegram chanal https://t.me/qps_infra"
       ;;
 
     "--keep-containers" | "-k")
@@ -18,10 +21,10 @@ do
 esac
 done
 
+docker-compose stop
+echo "qps-infra was stopped"
+
 if $flag; then
   docker-compose rm -fv
   echo "Containers were deleted"
 fi
-
-docker-compose stop
-echo "qps-infra was stoped"
