@@ -2,14 +2,18 @@
 
 KEEP_CONTAINERS=true
 
+echo_help() {
+  echo "
+      Flags:\n
+      --remove-containers | -rm    remove containers\n
+      For more help visit telegram chanal https://t.me/qps_infra"
+}
+
 for arg in "$@"
 do
   case $arg in
     --help | -h)
-      echo "
-      Flags:\n
-      --remove-containers | -rm    remove containers\n
-      For more help visit telegram chanal https://t.me/qps_infra";
+      echo_help;
       shift
       ;;
     --remove-containers | -rm)
@@ -18,6 +22,7 @@ do
       ;;
     *)
       echo "There's no such parameter" $arg
+      echo_help
       ;;
 esac
 done
