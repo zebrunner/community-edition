@@ -22,11 +22,11 @@ do
 esac
 done
 
-#docker-compose stop
+docker-compose stop
 echo "qps-infra was stopped"
 
 echo $KEEP_CONTAINERS
 if ! $KEEP_CONTAINERS ; then
-#  docker-compose rm -fv
+  docker-compose rm -fv
   echo "Containers were deleted"
 fi
