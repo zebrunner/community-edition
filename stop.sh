@@ -1,31 +1,32 @@
 #!/bin/bash
 
-
-keep_containers = true
+KEEP_CONTAINERS=true
 
 for arg in "$@"
 do
   case $arg in
-    "--help" | "-h")
+    --help | -h)
       echo "
       Flags:\n
-      --remove, -rm    remove containers\n
-      For more help visit telegram chanal https://t.me/qps_infra"
+      --remove-containers | -rm    remove containers\n
+      For more help visit telegram chanal https://t.me/qps_infra";
+      shift
       ;;
-
-    "--remove" | "-rm")
-      $keep_containers = false
+    --remove-containers | -rm)
+      KEEP_CONTAINERS=false;
+      shift
       ;;
     *)
-      echo "There's no such parameter" + $arg
+      echo "There's no such parameter" $arg
       ;;
 esac
 done
 
-docker-compose stop
+#docker-compose stop
 echo "qps-infra was stopped"
 
-if [ !$keep_containers ]; then
-  docker-compose rm -fv
+echo $KEEP_CONTAINERS
+if ! $KEEP_CONTAINERS ; then
+#  docker-compose rm -fv
   echo "Containers were deleted"
 fi
