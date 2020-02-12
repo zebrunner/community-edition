@@ -6,7 +6,7 @@ echo_help() {
   echo "
       Flags:
           --keep-containers | -k    keep containers
-      For more help visit telegram channel https://t.me/qps_infra"
+      For more help join telegram channel https://t.me/qps_infra"
       exit 0
   }
 
