@@ -31,7 +31,8 @@ done
 docker-compose stop
 echo "qps-infra was stopped"
 
-if [ ! $KEEP_CONTAINERS ] ; then
+if [ ! $KEEP_CONTAINERS ]
+then
   docker-compose rm -fv
   echo "Containers were deleted"
 fi
