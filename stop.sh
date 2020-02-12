@@ -7,7 +7,8 @@ echo_help() {
       Flags:
           --keep-containers | -k    keep containers
       For more help visit telegram channel https://t.me/qps_infra"
-}
+      exit 0
+  }
 
 for arg in "$@"
 do
