@@ -1,11 +1,11 @@
 #!/bin/bash
 
-KEEP_CONTAINERS=true
+KEEP_CONTAINERS=false
 
 echo_help() {
   echo "
       Flags:
-          --remove-containers | -rm    remove containers
+          --keep-containers | -k    keep containers
       For more help visit telegram channel https://t.me/qps_infra"
 }
 
@@ -16,8 +16,8 @@ do
       echo_help;
       shift
       ;;
-    --remove-containers | -rm)
-      KEEP_CONTAINERS=false;
+    --keep-containers | -k)
+      KEEP_CONTAINERS=true;
       shift
       ;;
     *)
@@ -30,7 +30,7 @@ done
 docker-compose stop
 echo "qps-infra was stopped"
 
-if ! $KEEP_CONTAINERS ; then
+if [ ! $KEEP_CONTAINERS ] ; then
   docker-compose rm -fv
   echo "Containers were deleted"
 fi
