@@ -2,8 +2,8 @@
 	"rabbit_version": "3.6.14",
 	"users": [
 		{
-			"name": "qpsdemo",
-			"password": "qpsdemo",
+			"name": "qpsinfra",
+			"password": "Welcome123",
 			"tags": "administrator"
 		}
 	],
@@ -14,7 +14,7 @@
 	],
 	"permissions": [
 		{
-			"user": "qpsdemo",
+			"user": "qpsinfra",
 			"vhost": "/",
 			"configure": ".*",
 			"write": ".*",

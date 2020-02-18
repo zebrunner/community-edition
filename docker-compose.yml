@@ -95,14 +95,14 @@ services:
     depends_on:
      - "jenkins-master"
     restart: always
-  sonarqube:
-    image: qaprosoft/sonarqube
-    env_file:
-     - variables.env
-    command: -Dsonar.web.context=/sonarqube
-    depends_on:
-     - "db"
-    restart: always
+#  sonarqube:
+#    image: qaprosoft/sonarqube
+#    env_file:
+#     - variables.env
+#    command: -Dsonar.web.context=/sonarqube
+#    depends_on:
+#     - "db"
+#    restart: always
   redis:
     image: redis:5.0.5
     volumes:
@@ -122,14 +122,14 @@ services:
 #     - 61613:61613
      - 5672:5672
     restart: always
-  ftp:
-    image: qaprosoft/pure-ftpd:latest
-    env_file:
-     - variables.env
-    ports:
-     - "21:21"
-     - "30000-30009:30000-30009"
-    restart: always
+#  ftp:
+#    image: qaprosoft/pure-ftpd:latest
+#    env_file:
+#    - variables.env
+#    ports:
+#     - "21:21"
+#     - "30000-30009:30000-30009"
+#    restart: always
   selenium-hub:
     image: qaprosoft/selenium-hub:3.5.1
     env_file:
