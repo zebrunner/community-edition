@@ -7,11 +7,14 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 
 <#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "PROJECT": multiJoin(PROJECT, projects),
   "OWNER_USERNAME": join(USER),
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
-  "FEATURE": join(FEATURE)
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "BUG": join(BUG)  
 }>
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
 
@@ -87,7 +90,8 @@ SELECT
         "top": -5
     },
     "tooltip": {
-        "trigger": "axis"
+        "trigger": "axis",
+        "extraCssText": "transform: translateZ(0);"
     },
     "dimensions": [
         "CREATED_AT",
@@ -131,6 +135,10 @@ SELECT
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
+    "multiple": true
+  },
   "USER": {
     "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
@@ -146,6 +154,14 @@ SELECT
   "FEATURE": {
     "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
     "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
   }
 }', '', '2019-05-13 10:28:17.881423', '2019-04-09 12:38:01.466911', '{
   "PERSONAL": "true",
@@ -155,7 +171,10 @@ SELECT
   "ENV": ["DEMO", "PROD"],
   "PRIORITY": [],
   "FEATURE": [],
-  "PLATFORM": ["*"]
+  "PLATFORM": ["*"],
+  "BROWSER":[],
+  "TASK": [],
+  "BUG": []
 }', false);
 
 
@@ -177,7 +196,8 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     },
     "legend": {},
     "tooltip": {
-        "trigger": "axis"
+        "trigger": "axis",
+        "extraCssText": "transform: translateZ(0);"
     },
     "dimensions": [
         "TESTED_AT",
@@ -288,10 +308,11 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (%)', 'Pass rate percent with an extra grouping by project, owner, etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (BAR)', 'Pass rate percent with an extra grouping by project, owner, etc.', 'BAR', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
 
 <#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "OWNER_USERNAME": join(USER),
   "PROJECT": multiJoin(PROJECT, projects),
   "DEVICE": join(DEVICE),
@@ -301,7 +322,8 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "LANGUAGE": join(LANGUAGE),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
-  "TASK": join(TASK)
+  "TASK": join(TASK),
+  "BUG": join(BUG)
 }>
 
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES, PARENT_JOB, PARENT_BUILD) />
@@ -310,7 +332,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
       sum( PASSED ) AS "PASSED",
       sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
-      sum( QUEUED ) AS "QUEUED",
+      --sum( QUEUED ) AS "QUEUED",
       0 - sum( FAILED ) AS "FAILED",
       0 - sum( SKIPPED ) AS "SKIPPED",
       0 - sum( ABORTED ) AS "ABORTED"
@@ -339,25 +361,28 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
      </#if>
  </#list>
 
+<#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
 
- <#if PERIOD != "Total">
-  <#if PARENT_JOB != "" && PARENT_BUILD != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
-  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
-        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+ <#if PERIOD != "Total" && PARENT_JOB != "" && PARENT_BUILD == "LATEST">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
             SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
             FROM TEST_RUNS INNER JOIN
               JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
             WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PERIOD != "Total" && PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
   </#if>
- </#if>
 
  <#if result?length != 0>
   <#local result = " WHERE " + result/>
@@ -418,10 +443,18 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   -->
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
-</#function>', 'setTimeout( function() {
-  const dimensions = ["GROUP_FIELD", "PASSED", "FAILED", "SKIPPED", "KNOWN ISSUE", "QUEUED", "ABORTED"];
+</#function>', 'setTimeout(() => {
+  const dimensions = [
+    "GROUP_FIELD",
+    "PASSED",
+    "FAILED",
+    "SKIPPED",
+    "KNOWN ISSUE",
+  // "QUEUED",
+    "ABORTED"
+  ];
   let note = true;
-
+  
   const createSource = () => {
     let source = [];
     
@@ -470,7 +503,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   };
   
   let series = [];
-  for (var i = 0; i < 6 ; i++) {
+  for (var i = 0; i < dimensions.length - 1 ; i++) {
     let index = i + 1;
     let seriesBar = {
       type: "bar",
@@ -502,7 +535,8 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
       trigger: "axis",
       axisPointer: {
         type: "shadow"
-      }
+      },
+      extraCssText: "transform: translateZ(0)"
     },
     legend: {},
     grid: {
@@ -529,7 +563,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
       "#e76a77",
       "#fddb7a",
       "#9f5487",
-      "#6dbbe7",
+      // "#6dbbe7",
       "#b5b5b5"
     ],
     dataset: {
@@ -539,6 +573,9 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     series: series
   };
   
+  chart.setOption(option);
+  angular.element($window).on("resize", onResize);
+  
   const changeValue = (text, source, { min, max } ) => {
     chart.setOption({
       dataset: { source },
@@ -546,16 +583,13 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
       xAxis: [{ min, max }],
     });
   };
-
+  
   chart.on("click", (event) => {
     let text = `Note: click on bar to show ${!note ? "absolute numbers" : "numbers in percent"}`;
     note = !note
     if (!note) changeValue(text, numberDataSource, { min: null, max: null });
     else changeValue(text, percentDataSource, { min:-100, max:100 });
   });
-  
-  chart.setOption(option);
-  angular.element($window).on("resize", onResize);
 }, 1000)', '{
   "PERIOD": {
     "values": [
@@ -573,6 +607,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   "GROUP_BY": {
     "values": [
       "PLATFORM",
+      "BROWSER",
       "OWNER_USERNAME",
       "PROJECT",
       "DEVICE",
@@ -595,6 +630,10 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
+    "multiple": true
+  },
   "USER": {
     "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
@@ -615,11 +654,19 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
   },
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },  
   "Separator": {
     "value": "Below params are not applicable for Total period!",
     "type": "title",
     "required": false
-  },
+  },  
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
@@ -640,10 +687,6 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
     "value": "",
     "required": false
   },
-  "PARENT_JOB": {
-    "value": "",
-    "required": false
-  },
   "PARENT_BUILD": {
     "value": "",
     "required": false
@@ -655,6 +698,7 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   "USER": [],
   "PLATFORM": [],
   "PLATFORM_VERSION": [],
+  "BROWSER": [],
   "BROWSER_VERSION": [],
   "DEVICE": [],
   "ENV": [],
@@ -664,18 +708,17 @@ SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
-  "PERIOD": "Total",
+  "BUG": [],
+  "PERIOD": "Monthly",
   "JOB_NAME": "",
-  "PARENT_JOB": "",
-  "PARENT_BUILD": ""
-}
-', false);
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": "LATEST"
+}', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('APPLICATION ISSUES (BLOCKERS) COUNT', 'A number of unique application bugs discovered and submitted by automation.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
-
-<#global MULTIPLE_VALUES = {
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('APPLICATION ISSUES (BLOCKERS) COUNT', 'A number of unique application bugs discovered and submitted by automation.', 'TABLE', '<#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "OWNER_USERNAME": join(USER),
   "PROJECT": multiJoin(PROJECT, projects),
   "DEVICE": join(DEVICE),
@@ -703,50 +746,50 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     @return - generated WHERE clause
   -->
 <#function generateMultipleWhereClause map>
- <#local result = "" />
+  <#local result = "" />
 
   <#if BLOCKER="true">
    <#local result = " (KNOWN_ISSUE > 0) AND (TEST_BLOCKER=TRUE) "/>
- <#else>
+  <#else>
    <#local result = " (KNOWN_ISSUE > 0)" />
- </#if>
+  </#if>
 
- <#list map?keys as key>
-     <#if map[key] != "" >
-      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
-       <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
-       <#continue>
-      </#if>
+  <#list map?keys as key>
+    <#if map[key] != "" >
       <#if result?length != 0>
        <#local result = result + " AND "/>
       </#if>
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
-     </#if>
- </#list>
+    </#if>
+  </#list>
 
-  <#if PERIOD != "Total">
-  <#if PARENT_JOB != "" && PARENT_BUILD != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
-  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
-        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+ 
+ <#if PERIOD != "Total" && PARENT_JOB != "" && PARENT_BUILD?lower_case == "latest">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
             SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
             FROM TEST_RUNS INNER JOIN
               JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
             WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PERIOD != "Total" && PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
   </#if>
- </#if>
 
- <#if result?length != 0>
-  <#local result = " WHERE " + result/>
- </#if>
- <#return result>
+  <#if result?length != 0>
+    <#local result = " WHERE " + result/>
+  </#if>
+  <#return result>
 </#function>
 
 <#--
@@ -755,7 +798,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     @return - actual view name
   -->
 <#function getView value>
- <#local result = "TOTAL_VIEW" />
+ <#local result = "LAST24HOURS_VIEW" />
  <#switch value>
   <#case "Last 24 Hours">
     <#local result = "LAST24HOURS_VIEW" />
@@ -808,8 +851,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
       "Last 30 Days",
       "Nightly",
       "Weekly",
-      "Monthly",
-      "Total"
+      "Monthly"
       ],
     "required": true
   },
@@ -827,6 +869,10 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   },
   "PLATFORM": {
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -848,11 +894,6 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "TASK": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
-  },
-  "Separator": {
-    "value": "Below params are not applicable for Total period!",
-    "type": "title",
-    "required": false
   },
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
@@ -889,6 +930,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "USER": [],
   "PLATFORM": [],
   "PLATFORM_VERSION": [],
+  "BROWSER": [],
   "BROWSER_VERSION": [],
   "DEVICE": [],
   "ENV": [],
@@ -897,17 +939,16 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "LANGUAGE": [],
   "PRIORITY": [],
   "FEATURE": [],
-  "TASK": [],
-  "PERIOD": "Last 7 Days",
-  "BLOCKER": "true",
+  "BUG": [],
+  "PERIOD": "Monthly",
+  "BLOCKER": "false",
   "JOB_NAME": "",
-  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
-  "PARENT_BUILD": ""
-}
-', false);
+  "PARENT_JOB": "nightly_regression",
+  "PARENT_BUILD": "LATEST"
+}', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE TREND', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (LINE)', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'LINE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -917,7 +958,9 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
   "TASK": join(TASK),
+  "BUG": join(BUG),
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
   "LOCALE": join(LOCALE),
@@ -928,13 +971,13 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 <#global GROUP_AND_ORDER_BY = getGroupBy(PERIOD, PARENT_JOB) />
 
 SELECT
-      ${GROUP_AND_ORDER_BY} AS "CREATED_AT",
-      sum( PASSED ) AS "PASSED",
-      sum( FAILED ) AS "FAILED",
-      sum( SKIPPED ) AS "SKIPPED",
-      sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
-      sum( ABORTED ) AS "ABORTED",
-      sum( QUEUED ) AS "QUEUED"
+    ${GROUP_AND_ORDER_BY} AS "CREATED_AT",
+    sum( PASSED ) AS "PASSED",
+    sum( FAILED ) AS "FAILED",
+    sum( SKIPPED ) AS "SKIPPED",
+    sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
+    sum( ABORTED ) AS "ABORTED",
+    sum( QUEUED ) AS "QUEUED"
   FROM ${VIEW}
   ${WHERE_MULTIPLE_CLAUSE}
   GROUP BY ${GROUP_AND_ORDER_BY}
@@ -950,7 +993,6 @@ SELECT
  <#list map?keys as key>
      <#if map[key] != "" >
       <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
-        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
         <#continue>
       </#if>
       <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
@@ -972,15 +1014,13 @@ SELECT
    <#local result = " OWNER_ID=${currentUserId} "/>
  </#if>
 
- <#if PERIOD != "Total">
   <#if PARENT_JOB != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
   </#if>
- </#if>
-
+ 
  <#if result?length != 0>
   <#local result = " WHERE " + result/>
  </#if>
@@ -1098,7 +1138,7 @@ SELECT
     "lineStyle": {
       "width": 1
     }
-};
+}
 
 let series = [];
   for (var i = 0; i < 6 ; i++) {
@@ -1112,7 +1152,9 @@ let option = {
         "top": "8%",
         "bottom": "8%"
     },
-    "legend": {},
+    "legend": {
+      "icon": "roundRect"
+    },
     "tooltip": {
         "trigger": "axis",
         "extraCssText": "transform: translateZ(0);"
@@ -1130,8 +1172,12 @@ let option = {
         "boundaryGap": false
     },
     "yAxis": {},
-    "series": series
-};
+    "series": series,
+    "defaultSize": {
+      "height": 8,
+      "width": 11
+    }
+}
 
 window.onresize = function(event) {
   const leftCorner = chart.getWidth() < 700 ? "10%" : "8%";
@@ -1140,7 +1186,7 @@ window.onresize = function(event) {
 };
 
 chart.setOption(option);', '{
-    "PERIOD": {
+  "PERIOD": {
     "values": [
       "Last 24 Hours",
       "Last 7 Days",
@@ -1169,6 +1215,10 @@ chart.setOption(option);', '{
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
+    "multiple": true
+  },
   "USER": {
     "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
@@ -1188,12 +1238,20 @@ chart.setOption(option);', '{
   "TASK": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
   },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },  
   "Separator": {
     "value": "Below params are not applicable for Total period!",
     "type": "title",
     "required": false
-  },
+  },  
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
@@ -1213,23 +1271,21 @@ chart.setOption(option);', '{
   "JOB_NAME": {
     "value": "",
     "required": false
-  },
-  "PARENT_JOB": {
-    "value": "",
-    "required": false
   }
 }
 ', '', '2019-05-21 22:32:29.254337', '2019-04-12 09:54:38.556068', '{
-  "PERIOD": "Last 30 Days",
+  "PERIOD": "Total",
   "PERSONAL": "false",
   "currentUserId": 1,
   "PROJECT": [],
-  "USER": ["anonymous"],
+  "USER": [],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "PLATFORM": [],
+  "BROWSER":[],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
@@ -1344,7 +1400,9 @@ SELECT
   <#elseif PERIOD == "Last 30 Days">
     <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''30'' day)"/>
   <#elseif PERIOD == "Monthly" >
-    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''month'', current_date)"/>
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''week'', current_date)"/>
+  <#elseif PERIOD == "Total" >
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''month'', current_date)"/>    
   </#if>
 
   <#list map?keys as key>
@@ -1547,7 +1605,7 @@ chart.setOption(option);', '{
     "type": "radio"
   },
   "PROJECT": {
-    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '' ORDER BY 1;",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -1555,16 +1613,15 @@ chart.setOption(option);', '{
     "multiple": true
   }
 }', '', '2019-05-13 13:17:40.339082', '2019-04-09 13:04:34.054318', '{
-  "PERIOD": "Last 24 Hours",
-  "PROJECT": ["AURONIA", "UNKNOWN"],
-  "PERSONAL": "true",
+  "PERIOD": "Total",
+  "PROJECT": ["UNKNOWN"],
+  "PERSONAL": "false",
   "currentUserId": 1,
   "USER": []
 }', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE', 'Consolidated test status information with the ability to specify 10+ extra filters including daily, weekly, monthly, etc period.', 'PIE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
-<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (PIE)', 'Consolidated test status information with the ability to specify 10+ extra filters including daily, weekly, monthly, etc period.', 'PIE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECT": multiJoin(PROJECT, projects),
@@ -1573,7 +1630,9 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
   "TASK": join(TASK),
+  "BUG": join(BUG),
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
   "LOCALE": join(LOCALE),
@@ -1634,10 +1693,6 @@ SELECT
  <#local result = "" />
  <#list map?keys as key>
     <#if map[key] != "" >
-      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
-        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
-        <#continue>
-      </#if>
       <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
         <#-- Ignore non supported filters for Personal chart: USER -->
         <#continue>
@@ -1649,24 +1704,28 @@ SELECT
     </#if>
  </#list>
 
-  <#if PERIOD != "Total">
-  <#if PARENT_JOB != "" && PARENT_BUILD != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
-  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
-        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+ 
+  <#if PARENT_JOB != "" && PARENT_BUILD?lower_case == "latest">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
             SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
             FROM TEST_RUNS INNER JOIN
               JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
             WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
   </#if>
- </#if>
 
  <#if result?length != 0 && PERSONAL == "true">
    <!-- add personal filter by currentUserId with AND -->
@@ -1712,9 +1771,6 @@ SELECT
   <#case "Monthly">
     <#local result = "MONTHLY_VIEW" />
     <#break>
-  <#case "Total">
-    <#local result = "TOTAL_VIEW" />
-    <#break>
  </#switch>
  <#return result>
 </#function>
@@ -1738,7 +1794,8 @@ SELECT
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>
 
-', '{
+', '
+option = {
     "legend": {
         "orient": "vertical",
         "x": "left",
@@ -1754,7 +1811,8 @@ SELECT
         "axisPointer": {
             "type": "shadow"
         },
-        "formatter": "{b0}<br>{d0}%"
+        "formatter": "{b0}<br>{d0}%",
+        "extraCssText": "transform: translateZ(0);"
     },
     "color": [
         "#ffffff",
@@ -1796,7 +1854,8 @@ SELECT
             ]
         }
     ]
-}', '{
+}
+chart.setOption(option);', '{
     "PERIOD": {
     "values": [
       "Last 24 Hours",
@@ -1805,8 +1864,7 @@ SELECT
       "Last 30 Days",
       "Nightly",
       "Weekly",
-      "Monthly",
-      "Total"
+      "Monthly"
       ],
     "required": true
   },
@@ -1824,6 +1882,10 @@ SELECT
   },
   "PLATFORM": {
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -1845,12 +1907,20 @@ SELECT
   "TASK": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
   },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },  
   "Separator": {
     "value": "Below params are not applicable for Total period!",
     "type": "title",
     "required": false
-  },
+  },  
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
@@ -1871,16 +1941,12 @@ SELECT
     "value": "",
     "required": false
   },
-  "PARENT_JOB": {
-    "value": "",
-    "required": false
-  },
   "PARENT_BUILD": {
     "value": "",
     "required": false
   }
 }', '', '2019-05-21 22:34:53.751114', '2019-04-08 15:59:40.214693', '{
-  "PERIOD": "Last 30 Days",
+  "PERIOD": "Monthly",
   "PERSONAL": "false",
   "currentUserId": 2,
   "PROJECT": [],
@@ -1889,20 +1955,20 @@ SELECT
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "PLATFORM": [],
+  "BROWSER":[],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
   "JOB_NAME": "",
   "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
-  "PARENT_BUILD": "6"
-}
-', false);
+  "PARENT_BUILD": "LATEST"
+}', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS FAILURES BY REASON', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
-<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS FAILURES BY REASON', 'Summarized information about tests failures grouped by reason.', 'TABLE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
   "PROJECT": multiJoin(PROJECT, projects),
@@ -1913,6 +1979,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "TASK": join(TASK),
   "BUG": join(BUG),
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
   "LOCALE": join(LOCALE),
@@ -1923,15 +1990,14 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 
 SELECT count(*) AS "COUNT",
       ENV AS "ENV",
-      --TODO: add support for github issues somehow when ''/browse'' is not needed
-      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || BUG || ''" target="_blank">'' || BUG || ''</a>'' AS "BUG",
+      ''<a href=${JIRA_URL}'' || ''/'' || BUG || '' target="_blank">'' || BUG || ''</a>'' AS "BUG",
       BUG_SUBJECT AS "SUBJECT",
       ''<a href="dashboards/'' || (select ID from dashboards where title=''Failures analysis'') || ''?hashcode='' || max(MESSAGE_HASHCODE)  || ''">Failures Analysis</a>'' AS "REPORT",
       substring(MESSAGE from 1 for 210) as "MESSAGE"
   FROM ${VIEW}
   ${WHERE_MULTIPLE_CLAUSE}
   GROUP BY "ENV", "BUG", "SUBJECT", substring(MESSAGE from 1 for 210)
-  HAVING count(*) > ${ERROR_COUNT}
+  HAVING count(*) >= ${ERROR_COUNT}
   ORDER BY "COUNT" DESC
 
 
@@ -1949,10 +2015,6 @@ SELECT count(*) AS "COUNT",
 
  <#list map?keys as key>
     <#if map[key] != "" >
-      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
-        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
-        <#continue>
-      </#if>
       <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
         <#-- Ignore non supported filters for Personal chart: USER -->
         <#continue>
@@ -1964,24 +2026,28 @@ SELECT count(*) AS "COUNT",
     </#if>
  </#list>
 
- <#if PERIOD != "Total">
-  <#if PARENT_JOB != "" && PARENT_BUILD != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
-  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
-        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+ 
+ <#if PARENT_JOB != "" && PARENT_BUILD == "LATEST">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
             SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
             FROM TEST_RUNS INNER JOIN
               JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
             WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
   </#if>
- </#if>
 
  <#if result?length != 0 && PERSONAL == "true">
    <!-- add personal filter by currentUserId with AND -->
@@ -2051,7 +2117,7 @@ SELECT count(*) AS "COUNT",
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>', '{"columns": ["COUNT", "ENV", "REPORT", "MESSAGE", "BUG", "SUBJECT"]}', '{
-    "PERIOD": {
+  "PERIOD": {
     "values": [
       "Last 24 Hours",
       "Last 7 Days",
@@ -2059,8 +2125,7 @@ SELECT count(*) AS "COUNT",
       "Last 30 Days",
       "Nightly",
       "Weekly",
-      "Monthly",
-      "Total"
+      "Monthly"
       ],
     "required": true
   },
@@ -2080,9 +2145,13 @@ SELECT count(*) AS "COUNT",
     "required": true,
     "type": "radio"
   },
+  "JIRA_URL": {
+    "value": "https://mycompany.atlassian.net/browse",
+    "required": true
+  },  
   "ERROR_COUNT": {
     "value": "0",
-    "required": false
+    "required": true
   },
   "PROJECT": {
     "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
@@ -2090,6 +2159,10 @@ SELECT count(*) AS "COUNT",
   },
   "PLATFORM": {
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -2111,16 +2184,20 @@ SELECT count(*) AS "COUNT",
   "TASK": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
-  },
+  },  
   "BUG": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
     "multiple": true
   },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },  
   "Separator": {
     "value": "Below params are not applicable for Total period!",
     "type": "title",
     "required": false
-  },
+  },  
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
@@ -2141,10 +2218,6 @@ SELECT count(*) AS "COUNT",
     "value": "",
     "required": false
   },
-  "PARENT_JOB": {
-    "value": "",
-    "required": false
-  },
   "PARENT_BUILD": {
     "value": "",
     "required": false
@@ -2162,14 +2235,16 @@ SELECT count(*) AS "COUNT",
   "TASK": [],
   "BUG": [],
   "PLATFORM": [],
+  "BROWSER":[],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
   "BLOCKER": "false",
   "JOB_NAME": "",
-  "PARENT_JOB": "",
-  "PARENT_BUILD": ""
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
+  "PARENT_BUILD": "",
+  "JIRA_URL": "https://mycompany.atlassian.net/browse"
 }', false);
 
 
@@ -2178,8 +2253,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 
 SELECT count(*) as "COUNT",
       ENV AS "ENV",
-      --TODO: add support for github issues somehow when ''/browse'' is not needed
-      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || BUG || ''" target="_blank">'' || BUG || ''</a>'' AS "BUG",
+      ''<a href=${JIRA_URL}'' || ''/'' || BUG || '' target="_blank">'' || BUG || ''</a>'' AS "BUG",
       BUG_SUBJECT AS "SUBJECT",
       TEST_INFO_URL AS "REPORT"
   FROM ${VIEW}
@@ -2222,8 +2296,8 @@ SELECT count(*) as "COUNT",
  </#switch>
  <#return result>
 </#function>
-', '{"columns": ["ENV", "REPORT", "BUG", "SUBJECT"]}', '{
-    "PERIOD": {
+', '{"legend": ["ENV", "REPORT", "BUG", "SUBJECT"]}', '{
+  "PERIOD": {
     "values": [
       "Last 24 Hours",
       "Last 7 Days",
@@ -2234,10 +2308,15 @@ SELECT count(*) as "COUNT",
       "Monthly"
       ],
     "required": true
-  }
+  },
+  "JIRA_URL": {
+    "value": "https://mycompany.atlassian.net/browse",
+    "required": true
+  }   
 }', '', '2019-05-15 17:29:04.476357', '2019-04-12 19:20:37.515495', '{
   "PERIOD": "Last 24 Hours",
-  "hashcode": "-1996341284"
+  "hashcode": "-1996341284",
+  "JIRA_URL": "https://mycompany.atlassian.net/browse"
 }', true);
 
 
@@ -2275,7 +2354,8 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     },
     "legend": {},
     "tooltip": {
-        "trigger": "axis"
+        "trigger": "axis",
+        "extraCssText": "transform: translateZ(0);"
     },
     "dimensions": [
         "TESTED_AT",
@@ -2340,7 +2420,8 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
         "axisPointer": {
             "type": "shadow"
         },
-        "formatter": "{b0}<br>{d0}%"
+        "formatter": "{b0}<br>{d0}%",
+        "extraCssText": "transform: translateZ(0);"
     },
     "color": [
         "#61c8b3",
@@ -2387,7 +2468,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 }', true);
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS SUMMARY', 'Detailed information about passed, failed, skipped, etc tests.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS SUMMARY', 'Detailed information about passed, failed, skipped, etc tests.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_BUILD"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -2396,7 +2477,10 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "ENV": join(ENV),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "BUG": join(BUG),
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
   "LOCALE": join(LOCALE),
@@ -2411,6 +2495,8 @@ SELECT
         <#elseif GROUP_BY="TEST_SUITE_NAME">
           ''<a href="tests/runs/'' || TEST_RUN_ID || ''">'' || TEST_SUITE_NAME || ''</a>'' AS "SUITE",
           ${GROUP_BY} AS "${GROUP_BY}",
+        <#elseif GROUP_BY="APP_VERSION">
+          APP_VERSION AS "BUILD",
         </#if>
         SUM(PASSED) AS "PASS",
         SUM(FAILED) AS "FAIL",
@@ -2431,9 +2517,10 @@ SELECT
       GROUP BY OWNER_ID, OWNER_USERNAME
     <#elseif GROUP_BY="TEST_SUITE_NAME">
       GROUP BY TEST_RUN_ID, TEST_SUITE_NAME
+    <#elseif GROUP_BY="APP_VERSION">
+      GROUP BY APP_VERSION
     </#if>
     ORDER BY 1
-
 
 
 <#--
@@ -2468,23 +2555,27 @@ SELECT
    <#local result = " OWNER_ID=${currentUserId} "/>
  </#if>
 
-  <#if PERIOD != "Total">
-    <#if PARENT_JOB != "" && PARENT_BUILD != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
-    <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
-        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+ 
+ <#if PARENT_JOB != "" && PARENT_BUILD == "LATEST">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
             SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
             FROM TEST_RUNS INNER JOIN
               JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
             WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
     </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
   </#if>
 
  <#if result?length != 0>
@@ -2522,9 +2613,6 @@ SELECT
   <#case "Monthly">
     <#local result = "MONTHLY_VIEW" />
     <#break>
-  <#case "Total">
-    <#local result = "TOTAL_VIEW" />
-    <#break>
  </#switch>
  <#return result>
 </#function>
@@ -2546,7 +2634,7 @@ SELECT
   -->
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
-</#function>', '{"columns": ["OWNER", "SUITE", "PASS", "FAIL", "DEFECT", "SKIP", "ABORT", "QUEUE", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}
+</#function>', '{"columns": ["OWNER", "SUITE", "BUILD", "PASS", "FAIL", "DEFECT", "SKIP", "ABORT", "QUEUE", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"], "defaultSize": {"height": 20, "width": 2}}
 ', '{
     "PERIOD": {
     "values": [
@@ -2556,15 +2644,15 @@ SELECT
       "Last 30 Days",
       "Nightly",
       "Weekly",
-      "Monthly",
-      "Total"
+      "Monthly"
       ],
     "required": true
   },
   "GROUP_BY": {
     "values": [
       "OWNER_USERNAME",
-      "TEST_SUITE_NAME"
+      "TEST_SUITE_NAME",
+      "APP_VERSION"
       ],
     "required": true
   },
@@ -2584,6 +2672,10 @@ SELECT
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
     "multiple": true
   },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
+    "multiple": true
+  },
   "USER": {
     "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
     "multiple": true
@@ -2600,11 +2692,18 @@ SELECT
     "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
     "multiple": true
   },
-  "Separator": {
-    "value": "Below params are not applicable for Total period!",
-    "type": "title",
-    "required": false
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
   },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },  
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
@@ -2625,26 +2724,25 @@ SELECT
     "value": "",
     "required": false
   },
-  "PARENT_JOB": {
-    "value": "",
-    "required": false
-  },
   "PARENT_BUILD": {
     "value": "",
     "required": false
   }
-}', '{"legend": ["OWNER", "SUITE", "PASS", "FAIL", "DEFECT", "SKIP", "ABORT", "QUEUE", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}
+}', '{"legend": ["OWNER", "SUITE", "BUILD", "PASS", "FAIL", "DEFECT", "SKIP", "ABORT", "QUEUE", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}
 ', '2019-05-22 13:52:34.963878', '2019-04-09 17:06:51.739459', '{
-  "PERIOD": "Nightly",
+  "PERIOD": "Monthly",
   "GROUP_BY": "TEST_SUITE_NAME",
   "PERSONAL": "false",
   "currentUserId": 1,
   "PROJECT": [],
-  "USER": ["anonymous"],
+  "USER": [],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
+  "TASK": [],
+  "BUG": [],
   "PLATFORM": [],
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
@@ -2665,6 +2763,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "TASK": join(TASK),
   "BUG": join(BUG),
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
   "LOCALE": join(LOCALE),
@@ -2674,10 +2773,9 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 <#global VIEW = getView(PERIOD) />
 
 SELECT
-      --TODO: add support for github issues somehow when ''/browse'' is not needed
-      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || BUG || ''" target="_blank">'' || BUG || ''</a>'' AS "BUG",
+      ''<a href=${JIRA_URL}'' || ''/'' || BUG || '' target="_blank">'' || BUG || ''</a>'' AS "BUG",
       BUG_SUBJECT AS "SUBJECT",
-      ''<a href="'' || (select VALUE from settings where name=''JIRA_URL'') || ''/browse/'' || TASK || ''" target="_blank">'' || TASK || ''</a>'' AS "TASK",
+      ''<a href=${JIRA_URL}'' || ''/'' || TASK || '' target="_blank">'' || TASK || ''</a>'' AS "TASK",
       PROJECT AS "PROJECT",
       ENV AS "ENV",
       OWNER_USERNAME AS "OWNER",
@@ -2723,24 +2821,28 @@ SELECT
     </#if>
  </#list>
 
-  <#if PERIOD != "Total">
-  <#if PARENT_JOB != "" && PARENT_BUILD != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
-  <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
-        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+ 
+ <#if PARENT_JOB != "" && PARENT_BUILD == "LATEST">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
             SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
             FROM TEST_RUNS INNER JOIN
               JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
             WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
   </#if>
- </#if>
 
  <#if result?length != 0 && PERSONAL == "true">
    <!-- add personal filter by currentUserId with AND -->
@@ -2805,7 +2907,7 @@ SELECT
 <#function multiJoin array1=[] array2=[]>
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>', '{"columns": ["BUG", "SUBJECT", "TASK", "PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '{
-    "PERIOD": {
+  "PERIOD": {
     "values": [
       "Last 24 Hours",
       "Last 7 Days",
@@ -2833,12 +2935,20 @@ SELECT
     "required": true,
     "type": "radio"
   },
+  "JIRA_URL": {
+    "value": "https://mycompany.atlassian.net/browse",
+    "required": true
+  },    
   "PROJECT": {
     "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -2894,7 +3004,7 @@ SELECT
     "required": false
   }
 }', '{"legend": ["BUG", "SUBJECT", "TASK", "PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '2019-05-21 22:38:51.220713', '2019-04-18 15:12:31.727154', '{
-  "PERIOD": "Last 24 Hours",
+  "PERIOD": "Last 30 Days",
   "PERSONAL": "false",
   "currentUserId": 1,
   "PROJECT": [],
@@ -2905,20 +3015,26 @@ SELECT
   "TASK": [],
   "BUG": [],
   "PLATFORM": [],
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
   "BLOCKER": "false",
   "JOB_NAME": "",
-  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
-  "PARENT_BUILD": "6"
+  "PARENT_JOB": "",
+  "PARENT_BUILD": "",
+  "JIRA_URL": "https://mycompany.atlassian.net/browse"
 }', false);
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST CASES BY STABILITY', 'Shows all test cases with low stability percent rate per appropriate period (default - less than 10%).', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TEST CASES BY STABILITY', 'Shows all test cases with low stability percent rate per appropriate period (default - less than 10%).', 'TABLE', '
+<#-- TODO: remove PARENT_JOB from IGNORE_TOTAL_PARAMS as only TEST_CASE_HEALTH_VIEW could have PARENT_JOB/UPSTREAM_JOB_NAME argument-->
+<#global IGNORE_TOTAL_PARAMS = ["LOWER(PLATFORM)", "OWNER_USERNAME", "ENV", "PRIORITY", "FEATURE", "TASK", "DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "PARENT_JOB", "JOB_NAME"] >
+
 <#global MULTIPLE_VALUES = {
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "OWNER_USERNAME": join(USER),
   "PROJECT": multiJoin(PROJECT, projects),
   "DEVICE": join(DEVICE),
@@ -2928,7 +3044,8 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "LANGUAGE": join(LANGUAGE),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
-  "TASK": join(TASK)
+  "TASK": join(TASK),
+  "BUG": join(BUG)
 }>
 
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
@@ -2971,18 +3088,26 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     <#local result = result + "TESTED_AT = date_trunc(''month'', current_date)"/>
   </#if>
 
- <#list map?keys as key>
-     <#if map[key] != "" >
+  <#list map?keys as key>
+    <#if map[key] != "" >
       <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
-       <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
-       <#continue>
+      <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
       </#if>
       <#if result?length != 0>
        <#local result = result + " AND "/>
       </#if>
+
+      <#if PARENT_JOB != "">
+        <#if result?length != 0>
+          <#local result = result + " AND "/>
+        </#if>
+        <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+      </#if>   
+
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
-     </#if>
- </#list>
+    </#if>
+  </#list>
 
  <#if result?length != 0>
   <#local result = " WHERE " + result/>
@@ -3066,11 +3191,18 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   },
   "Separator": {
     "value": "Below params are not applicable for Total period!",
-    "type": "title",
-    "required": false
+    "type": "title"
   },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },   
   "PLATFORM": {
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -3091,6 +3223,10 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   },
   "TASK": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
     "multiple": true
   },
   "DEVICE": {
@@ -3114,26 +3250,30 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     "required": false
   }
 }', '', '2019-05-21 22:39:53.577361', '2019-05-02 08:40:40.991813', '{
-  "PERIOD": "Last 7 Days",
+  "PERIOD": "Total",
   "PROJECT": [],
   "PERCENT": 50,
   "USER": [],
-  "PLATFORM": [],
+  "PLATFORM": ["chrome"],
   "PLATFORM_VERSION": [],
+  "BROWSER": [],
   "BROWSER_VERSION": [],
   "DEVICE": [],
   "ENV": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
+  "PARENT_JOB": "Carina-Demo-Regression-Pipeline",
   "JOB_NAME": "",
-  "PRIORITY": [],
+  "PRIORITY": ["P0"],
   "FEATURE": [],
-  "TASK": []
+  "TASK": [],
+  "BUG": []
 }', false);
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('MILESTONE DETAILS', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'OTHER','<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (PIE + LINE)', 'Consolidated test status trend with the ability to specify 10+ extra filters and grouping by hours, days, month, etc.', 'OTHER','
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
 <#global MULTIPLE_VALUES = {
   "PROJECT": multiJoin(PROJECT, projects),
   "OWNER_USERNAME": join(USER),
@@ -3141,7 +3281,9 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
   "TASK": join(TASK),
+  "BUG": join(BUG),
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
   "LOCALE": join(LOCALE),
@@ -3150,6 +3292,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
 <#global VIEW = getView(PERIOD) />
 <#global GROUP_AND_ORDER_BY = getGroupBy(PERIOD, PARENT_JOB) />
+
 SELECT
       ${GROUP_AND_ORDER_BY} AS "CREATED_AT",
       sum( PASSED ) AS "PASSED",
@@ -3162,44 +3305,42 @@ SELECT
   ${WHERE_MULTIPLE_CLAUSE}
   GROUP BY ${GROUP_AND_ORDER_BY}
   ORDER BY ${GROUP_AND_ORDER_BY};
+
   <#--
     Generates WHERE clause for multiple choosen parameters
     @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
     @return - generated WHERE clause
   -->
 <#function generateMultipleWhereClause map>
-<#local result = "" />
-<#list map?keys as key>
-    <#if map[key] != "" >
-      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
-        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
-        <#continue>
-      </#if>
+ <#local result = "" />
+ <#list map?keys as key>
+     <#if map[key] != "" >
       <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
         <#-- Ignore non supported filters for Personal chart: USER -->
         <#continue>
       </#if>
       <#if result?length != 0>
-      <#local result = result + " AND "/>
+       <#local result = result + " AND "/>
       </#if>
       <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
-    </#if>
-</#list>
-<#if result?length != 0 && PERSONAL == "true">
-  <!-- add personal filter by currentUserId with AND -->
-  <#local result = result + " AND OWNER_ID=${currentUserId} "/>
-<#elseif result?length == 0 && PERSONAL == "true">
-  <!-- add personal filter by currentUserId without AND -->
-  <#local result = " OWNER_ID=${currentUserId} "/>
-</#if>
-<#if PERIOD != "Total">
-  <#if PARENT_JOB != "">
-      <#if result?length != 0>
-      <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
-  </#if>
+     </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
  </#if>
+
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+
  <#if result?length != 0>
   <#local result = " WHERE " + result/>
  </#if>
@@ -3240,9 +3381,6 @@ SELECT
     <#case "Monthly">
       <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
       <#break>
-    <#case "Total">
-      <#local result = "to_char(date_trunc(''month'', CREATED_AT), ''YYYY-MM'')" />
-      <#break>
   </#switch>
   <#return result>
 </#function>
@@ -3274,9 +3412,6 @@ SELECT
     <#break>
   <#case "Monthly">
     <#local result = "MONTHLY_VIEW" />
-    <#break>
-  <#case "Total">
-    <#local result = "TOTAL_VIEW" />
     <#break>
  </#switch>
  <#return result>
@@ -3317,7 +3452,7 @@ setTimeout(function() {
     }
     return dataSource;
   };
-  
+
   let grid, legend, pieStyle, title;
   
   customStyle = () => {
@@ -3456,13 +3591,15 @@ let lineRow = {
       tooltip: lastValue
     },
     selectedMode : true,
-    emphasis: {
       label: {
         show: true,
-        formatter: "{b}: {d}%"
+        position: "inside",
+        formatter: (params) => {
+          if(params.percent <= 2) return "";
+          return `${params.value[params.encode.value[0]]} \n (${params.percent}%)`
+        }
       }
-    }
-  };
+  }
   
   let series = [];
   for (var i = 0; i < dataSource.length - 1 ; i++) {
@@ -3477,7 +3614,8 @@ let lineRow = {
         legend: legend,
         tooltip: {
             trigger: "axis",
-            showDelay: 1
+            showDelay: 1,
+            "extraCssText": "transform: translateZ(0);"
         },
         dataZoom: [
           {
@@ -3501,7 +3639,7 @@ let lineRow = {
         },
         series: series
     };
-    
+  
     chart.on("updateAxisPointer", (event) => {
         let xAxisInfo = event.axesInfo[0];
         if (xAxisInfo) {
@@ -3510,7 +3648,10 @@ let lineRow = {
                 series: {
                   id: "pie",
                   label: {
-                    formatter: "{b}: ({d}%)"
+                     formatter: (params) => {
+                    if(params.percent <= 2) return "";
+                    return `${params.value[params.encode.value[0]]} \n (${params.percent}%)`
+                    }
                   },
                   encode: {
                     value: dimension,
@@ -3533,9 +3674,9 @@ let lineRow = {
       "Last 30 Days",
       "Nightly",
       "Weekly",
-      "Monthly",
-      "Total"
-      ]
+      "Monthly"
+    ],
+    "required": true
   },
   "PERSONAL": {
     "values": [
@@ -3551,6 +3692,10 @@ let lineRow = {
   },
   "PLATFORM": {
     "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -3572,12 +3717,19 @@ let lineRow = {
   "TASK": {
     "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
     "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
   },
-  "Separator": {
-    "value": "Below params are not applicable for Total period!",
-    "type": "title",
+  "JOB_NAME": {
+    "value": "",
     "required": false
   },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },    
   "DEVICE": {
     "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
@@ -3593,30 +3745,20 @@ let lineRow = {
   "LANGUAGE": {
     "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
-  },
-  "JOB_NAME": {
-    "value": "",
-    "required": false
-  },
-  "PARENT_JOB": {
-    "value": "",
-    "required": false
-  },
-  "PARENT_BUILD": {
-    "value": "",
-    "required": false
   }
 }', '{
-  "PERIOD": "Last 30 Days",
+  "PERIOD": "Monthly",
   "PERSONAL": "false",
-  "currentUserId": 1,
+  "currentUserId": 2,
   "PROJECT": [],
   "USER": ["anonymous"],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "PLATFORM": [],
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
@@ -3628,7 +3770,8 @@ let lineRow = {
 
 
 
-INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS FAILURES BY SUITE', 'Shows all test cases with failures count per appropriate period and possibility to view detailed information for each suite/test.', 'TABLE', '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] >
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('TESTS FAILURES BY SUITE', 'Shows all test cases with failures count per appropriate period and possibility to view detailed information for each suite/test.', 'TABLE', '
+<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_BUILD"] >
 <#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
 
 <#global MULTIPLE_VALUES = {
@@ -3638,7 +3781,10 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "TEST_SUITE_FILE": join(TEST_SUITE_FILE),
   "PRIORITY": join(PRIORITY),
   "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "BUG": join(BUG),
   "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
   "DEVICE": join(DEVICE),
   "APP_VERSION": join(APP_VERSION),
   "LOCALE": join(LOCALE),
@@ -3647,7 +3793,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
 <#global VIEW = getView(PERIOD) />
 
-  SELECT
+  SELECT 
       TEST_SUITE_FILE AS "SUITE",
       TEST_METHOD_NAME AS "NAME",
       --STABILITY_URL as "NAME",
@@ -3659,7 +3805,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     GROUP BY TEST_SUITE_FILE, TEST_METHOD_NAME--, STABILITY_URL
     HAVING SUM(FAILED) > 0
 
-
+    
 <#--
     Generates WHERE clause for multiple choosen parameters
     @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
@@ -3692,23 +3838,28 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
    <#local result = " OWNER_ID=${currentUserId} "/>
  </#if>
 
-  <#if PERIOD != "Total">
-    <#if PARENT_JOB != "" && PARENT_BUILD != "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "'' AND UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>
-    <#elseif PARENT_JOB != "" && PARENT_BUILD == "">
-      <#if result?length != 0>
-       <#local result = result + " AND "/>
-      </#if>
-      <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB +
-        "'' AND UPSTREAM_JOB_BUILD_NUMBER = (
+
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+ 
+ <#if PARENT_JOB != "" && PARENT_BUILD == "LATEST">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
             SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
             FROM TEST_RUNS INNER JOIN
               JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
             WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
     </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
   </#if>
 
  <#if result?length != 0>
@@ -3746,9 +3897,6 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   <#case "Monthly">
     <#local result = "MONTHLY_VIEW" />
     <#break>
-  <#case "Total">
-    <#local result = "TOTAL_VIEW" />
-    <#break>
  </#switch>
  <#return result>
 </#function>
@@ -3779,8 +3927,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
       "Last 30 Days",
       "Nightly",
       "Weekly",
-      "Monthly",
-      "Total"
+      "Monthly"
       ],
     "required": true
   },
@@ -3793,16 +3940,20 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     "type": "radio"
   },
   "TEST_SUITE_FILE": {
-    "valuesQuery": "SELECT DISTINCT(FILE_NAME) FROM TEST_SUITES WHERE FILE_NAME IS NOT NULL AND FILE_NAME <> '' ORDER BY 1;",
+    "valuesQuery": "SELECT DISTINCT(FILE_NAME) FROM TEST_SUITES WHERE FILE_NAME IS NOT NULL AND FILE_NAME <> '''' ORDER BY 1;",
     "multiple": true,
     "required": true
-  },
+  },  
   "PROJECT": {
-    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '' ORDER BY 1;",
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PLATFORM": {
-    "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '' ORDER BY 1;",
+    "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
     "multiple": true
   },
   "USER": {
@@ -3810,7 +3961,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     "multiple": true
   },
   "ENV": {
-    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '' ORDER BY 1;",
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
     "multiple": true
   },
   "PRIORITY": {
@@ -3821,32 +3972,35 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
     "multiple": true
   },
-  "Separator": {
-    "value": "Below params are not applicable for Total period!",
-    "type": "title",
-    "required": false
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
   },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },  
   "DEVICE": {
-    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '' ORDER BY 1;",
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
     "multiple": true
   },
   "APP_VERSION": {
-    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '';",
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
     "multiple": true
   },
   "LOCALE": {
-    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '';",
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
     "multiple": true
   },
   "LANGUAGE": {
-    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '';",
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
     "multiple": true
   },
   "JOB_NAME": {
-    "value": "",
-    "required": false
-  },
-  "PARENT_JOB": {
     "value": "",
     "required": false
   },
@@ -3855,7 +4009,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
     "required": false
   }
 }', '{
-  "PERIOD": "Last 7 Days",
+  "PERIOD": "Monthly",
   "PERSONAL": "false",
   "GROUP_BY": "TEST_SUITE_NAME",
   "TEST_SUITE_FILE":[],
@@ -3866,6 +4020,9 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "PRIORITY": [],
   "FEATURE": [],
   "PLATFORM": [],
+  "BROWSER": [],
+  "TASK": [],
+  "BUG": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
@@ -3873,4 +4030,274 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
   "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": ""
+}', false);
+
+
+
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (CALENDAR)', 'Calendar view of the pass rate per month, quarter or year.', 'OTHER', '
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+
+SELECT 
+    to_char(created_at, ''YYYY-MM-DD'') as "date",
+    ROUND(sum(passed)*100/sum(total)) AS "value",
+    ''${PASSED_VALUE}'' as "passed"
+    FROM total_view
+    ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY 1
+  ORDER BY 1
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+
+<#function generateMultipleWhereClause map>
+  <#local result = "" />
+    <#if PERIOD?length = 4 || PERIOD = "YEAR">
+      <#if PERIOD = "YEAR">
+        <#local result = result + " to_char(created_at, ''YYYY'') " + " LIKE to_char(CURRENT_DATE, ''YYYY'')"/>
+      <#else>
+        <#local result = result + " to_char(created_at, ''YYYY'') " + " LIKE ''${PERIOD}''"/>
+      </#if>
+    <#elseif PERIOD != "MONTH" && PERIOD?substring(5, 6) == "Q" || PERIOD = "QUARTER" >
+      <#if PERIOD = "QUARTER">
+        <#local result = result + " to_char(created_at, ''YYYY-Q'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-Q'')"/>
+      <#else>
+        <#local result = result + " to_char(created_at, ''YYYY'') || ''-Q'' || to_char(created_at, ''Q'') " + " LIKE ''${PERIOD}''"/>
+      </#if>
+    <#else>
+      <#if PERIOD = "MONTH">
+        <#local result = result + " to_char(created_at, ''YYYY-MM'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-MM'')"/>
+      <#else>
+        <#local result = result + " to_char(created_at, ''YYYY-MM'') " + " LIKE ''${PERIOD}''"/>
+      </#if>
+    </#if>
+
+  <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+
+      <#if result?length != 0>
+        <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+  </#list>
+
+  <#if result?length != 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId with AND -->
+    <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+  <#elseif result?length == 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId without AND -->
+    <#local result = " OWNER_ID=${currentUserId} "/>
+  </#if>
+
+  <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+  </#if>
+
+  <#if result?length != 0>
+    <#local result = " WHERE " + result/>
+  </#if>
+  <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '
+const data = [];
+const range = () => {
+  let ranges = new Set();
+
+  dataset.forEach(({date, value}) => {
+    const d = new Date(date);
+    const range =  d.getFullYear() + "-" + (d.getMonth() + 1);
+    const newDate = range + "-" +  d.getDate();
+
+    ranges.add(range);
+    data.push(new Array(newDate, value));
+  });
+
+  let temporary = [];
+  for (let value of ranges) temporary.push(value);
+
+  return [temporary[0], data[data.length -1][0]]
+};
+
+const color = () => {
+    const red = "#e76a77";
+    const yellow = "#fddb7a";
+    const green = "#61c8b3";
+    const colorArrLenght = 20;
+    const greenValue = dataset[0].passed || 75;
+    let colors = [];
+
+    const creatorColorArr = (color, count) => {
+      for (var i = 0; i < Math.round(count); i++) colors.push(color);
+    }
+
+    let passed = colorArrLenght - (colorArrLenght*greenValue/100);
+    let aboard = (colorArrLenght - passed)/3;
+    let failed = colorArrLenght - passed - aboard
+
+    creatorColorArr(green, passed);
+    creatorColorArr(yellow, aboard);
+    creatorColorArr(red, failed);
+
+    return colors.reverse()
+};
+
+
+let option = {
+    tooltip: {
+      position: "top",
+      formatter: (p) => p.data[1] + "%",
+      "extraCssText": "transform: translateZ(0);"
+    },
+    visualMap: {
+      min: 0,
+      max: 100,
+      calculable: true,
+      orient: "vertical",
+      bottom: 20,
+      right:20,
+      inRange: {
+        color: color(),
+        symbolSize: [10, 100]
+      } 
+    },
+    calendar: {
+      left: 40,
+      right: 80,
+      top: 50,
+      bottom:20,
+      orient: "horizontal",
+      range: range(),
+      cellSize: 30,
+      dayLabel: {
+        nameMap: "en",
+        firstDay: 1, // start on Monday
+        margin: 5
+      },
+      yearLabel:{
+        position: "top"
+      },
+      itemStyle: {
+        color: ["white"],
+        borderWidth: 1,
+        borderColor: "#ccc"
+      }
+    },
+    series: [{
+      type: "heatmap",
+      coordinateSystem: "calendar",
+      calendarIndex: 0,
+      label: {
+        show: true,
+        formatter: function (params) {
+            let d = echarts.number.parseDate(params.value[0]);
+            return d.getDate();
+        },
+        color: "#000"
+      },
+      data: data
+    }]
+};
+
+chart.setOption(option);', '{
+  "PERIOD": {
+    "valuesQuery": "SELECT ''YEAR'' UNION SELECT ''QUARTER'' UNION SELECT ''MONTH'' UNION SELECT DISTINCT to_char(created_at, ''YYYY'') FROM total_view UNION SELECT DISTINCT to_char(created_at, ''YYYY'') || ''-Q'' || to_char(created_at, ''Q'') FROM total_view UNION SELECT DISTINCT to_char(created_at, ''YYYY-MM'') FROM total_view ORDER BY 1 DESC;",
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [ 
+      "false",
+      "true" 
+    ],
+    "required": true,
+    "type": "radio"
+  },
+  "PASSED_VALUE":{
+    "value": 75,
+    "required": false
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  }
+}', '{
+  "PERIOD": "MONTH",
+  "PASSED_VALUE": "75",
+  "PERSONAL": "false",
+  "currentUserId": 1,
+  "PROJECT": [],
+  "USER": ["anonymous"],
+  "PLATFORM": [],
+  "BROWSER": [],
+  "FEATURE": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "PARENT_JOB": ""
 }', false);
