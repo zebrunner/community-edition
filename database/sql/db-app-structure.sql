@@ -363,7 +363,6 @@ CREATE TABLE IF NOT EXISTS test_runs (
   known_issue BOOLEAN NOT NULL DEFAULT FALSE,
   blocker BOOLEAN NOT NULL DEFAULT FALSE,
   env VARCHAR(50) NULL,
-  platform VARCHAR(30) NULL,
   app_version VARCHAR(255) NULL,
   started_at TIMESTAMP NULL,
   elapsed INT NULL,
