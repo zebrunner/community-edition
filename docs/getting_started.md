@@ -83,5 +83,5 @@ Save changes in variables.env
 * Go to Github -> select or create Repository
 * Open Pull requests
 * Create new Pull request
-* -> Verify in Jenkins->repository that onPullRequest-carina-demo,onPullRequest-carina-demo-trigger jobs should be scanned 
+* -> Verify in Jenkins/repository that onPullRequest-carina-demo,onPullRequest-carina-demo-trigger jobs should be scanned 
 
