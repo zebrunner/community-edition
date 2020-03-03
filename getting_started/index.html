@@ -253,9 +253,66 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Getting Started
+      </label>
+    
     <a href="./" title="Getting Started" class="md-nav__link md-nav__link--active">
       Getting Started
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#software-prerequisites" title="Software prerequisites" class="md-nav__link">
+    Software prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initial-setup" title="Initial setup" class="md-nav__link">
+    Initial setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#services-startstoprestart" title="Services start/stop/restart" class="md-nav__link">
+    Services start/stop/restart
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#env-details" title="Env details" class="md-nav__link">
+    Env details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-and-free-support" title="Documentation and free support" class="md-nav__link">
+    Documentation and free support
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -289,6 +346,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#software-prerequisites" title="Software prerequisites" class="md-nav__link">
+    Software prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initial-setup" title="Initial setup" class="md-nav__link">
+    Initial setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#services-startstoprestart" title="Services start/stop/restart" class="md-nav__link">
+    Services start/stop/restart
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#env-details" title="Env details" class="md-nav__link">
+    Env details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-and-free-support" title="Documentation and free support" class="md-nav__link">
+    Documentation and free support
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -303,6 +404,59 @@
                 
                 
                 <h1 id="qps-infra-getting-started">QPS-Infra - Getting started</h1>
+<h2 id="software-prerequisites">Software prerequisites</h2>
+<ul>
+<li>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc.
+  Note: to verify the current user uid/gid, execute
+  <code>id
+  uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),102(netdev),999(docker</code></li>
+<li>Install docker (<a href="http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/">Ubuntu 16.04</a>, <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04">Ubuntu 18.04</a>, <a href="https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/">MacOS</a>) and <a href="https://docs.docker.com/compose/install/#install-compose">docker-composer</a></li>
+</ul>
+<h2 id="initial-setup">Initial setup</h2>
+<ul>
+<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a>. You can also create your private repo to migrate the infrastructure easily</li>
+<li>Go to the qps-infra folder and launch the setup.sh script providing your hostname or ip address as an argument</li>
+</ul>
+<pre><code>git clone https://github.com/qaprosoft/qps-infra.git
+cd qps-infra
+./setup.sh myhost.domain.com
+</code></pre>
+
+<ul>
+<li>Optional: update default credentials if neccessary (strongly recommended for publicly available environments)
+  Note: If you changed RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well</li>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains:
+  nginx, postgres, zafira/zafira-ui, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch</li>
+<li>Execute ./start.sh to start all containers</li>
+<li>Open http://myhost.domain.com to access direct links to the sub-components: Zafira, Jenkins, etc.</li>
+</ul>
+<h2 id="services-startstoprestart">Services start/stop/restart</h2>
+<ul>
+<li>Use ./stop.sh script to stop everything</li>
+<li>Opional: it is recommended to remove old containers during the restart</li>
+<li>Use ./start.sh to start all containers</li>
+</ul>
+<pre><code>./stop.sh
+docker-compose rm -g
+./start.sh
+</code></pre>
+
+<h2 id="env-details">Env details</h2>
+<ul>
+<li>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</li>
+<li><a href="http://demo.qaprosoft.com/jenkins">Jenkins</a></li>
+<li><a href="http://demo.qaprosoft.com/grid/console">Selenium Grid</a></li>
+<li><a href="http://demo.qaprosoft.com/zafira">Zafira Reporting Tool</a></li>
+<li><a href="http://demo.qaprosoft.com/sonarqube">SonarQube</a>
+  Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Adminisration panel</li>
+</ul>
+<h2 id="documentation-and-free-support">Documentation and free support</h2>
+<ul>
+<li><a href="http://qaprosoft.github.io/zafira">Zafira manual</a></li>
+<li><a href="http://qaprosoft.github.io/carina">Carina manual</a></li>
+<li><a href="https://github.com/qaprosoft/carina-demo">Demo project</a></li>
+<li><a href="https://t.me/qps_infra">Telegram channel</a></li>
+</ul>
                 
                   
                 
