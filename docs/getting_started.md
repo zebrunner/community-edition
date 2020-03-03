@@ -31,7 +31,6 @@ cd qps-infra
 * Use ./start.sh to start all containers
 ```
 ./stop.sh
-docker-compose rm -g
 ./start.sh
 ```
 
@@ -43,9 +42,5 @@ docker-compose rm -g
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
   Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Adminisration panel
   
-## Documentation and free support
-* [Zafira manual](http://qaprosoft.github.io/zafira)
-* [Carina manual](http://qaprosoft.github.io/carina)
-* [Demo project](https://github.com/qaprosoft/carina-demo)
-* [Telegram channel](https://t.me/qps_infra)
+
 
