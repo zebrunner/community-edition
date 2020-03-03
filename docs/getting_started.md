@@ -24,6 +24,24 @@ cd qps-infra
 * Execute ./start.sh to start all containers
 * Open http://myhost.domain.com to access direct links to the sub-components: Zafira, Jenkins, etc.
 
+## Additional setup
+* Create secret value for AUTH_TOKEN_SECRET and encode to Base64 format via tool for encoding. 
+* Note: AUTH_TOKEN_SECRET= value is by application for encryption of sensitive settings (such as passwords, integration settings, etc) and thus should not be set to default one.
+* Create secret value for CRYPTO_SALT
+* Note: CRYPTO_SALT= It should be randomized alpha-numeric string.
+
+```
+cd qps-infra
+nano variables.env
+```
+* Set new secret value for AUTH_TOKEN_SECRET
+* Set new secret value for CRYTPO_SALT
+* Save changes in variables.env
+
+```
+./start.sh
+```
+
 
 ## Services start/stop/restart
 * Use ./stop.sh script to stop everything
@@ -42,5 +60,5 @@ cd qps-infra
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
   Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Adminisration panel
   
-
+## Before 
 
