@@ -23,12 +23,9 @@ QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is 
 * [Services start/stop/restart](#services-startstoprestart)
 * [Env details](#env-details)
 * [Documentation and free support](#documentation-and-free-support)
-## 
-* [License](#license)
-
-
 
 ## License
+* [License](#license)
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 Documentation and Site - [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/deed.en_US)
