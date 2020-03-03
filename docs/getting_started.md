@@ -60,5 +60,26 @@ nano variables.env
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
   Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Adminisration panel
   
-## Before 
+# Start via Jenkins
 
+## Update Jenkins credentials 
+* Open Jenkins by the url of your env.
+* Open Credentials in the left menu
+* Update Username and Password for "ghprbhook-token"
+* Note: Enter Password value of "Git token access" that was generated before for this user
+
+## Register Organization
+* Open Jenkins by the url of your env.
+* Open Management_Jobs folder
+* Click "RegisterOrganization"
+* Click "Build with Parameters"
+* Set "folderName" value
+* Click "Build"
+
+## Register Repository
+* Open Jenkins by the url of your env.
+* Open organization folder
+* Click "RegisterRepository"
+* Click "Build with Parameters"
+* Set "repo" value 
+* Click "Build"
