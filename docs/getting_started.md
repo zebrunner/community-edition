@@ -79,10 +79,9 @@ Save changes in variables.env
 * Open Jenkins -> Credentials
 * Update Username and Password for "ghprbhook-token" credentials
 
-## Run PullRequest Job(s)
+## Run onPullRequest Job(s)
 * Go to Github -> select or create Repository
 * Open Pull requests
 * Create new Pull request
-* Open Jenkins->repository
-* -> onPullRequest-carina-demo,	onPullRequest-carina-demo-trigger jobs should be scanned
+* -> Verify in Jenkins->repository that onPullRequest-carina-demo,onPullRequest-carina-demo-trigger jobs should be scanned 
 
