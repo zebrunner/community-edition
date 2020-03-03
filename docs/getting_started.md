@@ -59,16 +59,20 @@ Save changes in variables.env
 ## Register Organization
 * Open Jenkins->Management_Jobs folder.
 * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
--> New folder is created with default content
+* -> New folder is created with default content
 
 
 ## Register Repository
 * Open your organization folder
 * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as default repo to scan)
--> Repository should be scanned and TestNG jobs created
+* -> Repository should be scanned and TestNG jobs created
 
 ## Run Job(s)
-* TBD
+* Open scanned repository
+* Run a job from the list e.g. "Web-Demo-Single-Driver-Test"
+* -> Job should be passed 
+* Open Zafira e.g. http://demo.qaprosoft.com/zafira ->Test runs
+* -> Test run result is present
 
 ## onPullRequest and onPush event setup
 ### Setup GitHub PullRequest plugin 
