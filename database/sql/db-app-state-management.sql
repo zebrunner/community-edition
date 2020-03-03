@@ -113,4 +113,44 @@ INSERT INTO databasechangelog(
      current_timestamp,
      1,
      'EXECUTED'
+ ),
+ (
+     '011_remove_google_integration',
+     'brutskov',
+     'classpath:db/changelog.yml',
+     current_timestamp,
+     1,
+     'EXECUTED'
+ ),
+ (
+     '012_test_sessions_tracking_table',
+     'brutskov',
+     'classpath:db/changelog.yml',
+     current_timestamp,
+     1,
+     'EXECUTED'
+ ),
+ (
+     '013_add_test_session_status_column',
+     'brutskov',
+     'classpath:db/changelog.yml',
+     current_timestamp,
+     1,
+     'EXECUTED'
+ ),
+ (
+     '014_add_launcher_presets_launchers_on_delete',
+     'brutskov',
+     'classpath:db/changelog.yml',
+     current_timestamp,
+     1,
+     'EXECUTED'
+ ),
+ (
+     '015_add_default_runs_view_preference',
+     'itsvirko',
+     'classpath:db/changelog.yml',
+     current_timestamp,
+     1,
+     'EXECUTED'
  );

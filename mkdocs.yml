@@ -2,6 +2,7 @@ site_name: QPS-Infra
 
 pages:
     - Overview: index.md
+    - Getting Started: getting_started.md
     - FAQ: faq.md
 
 theme:

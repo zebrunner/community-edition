@@ -15,8 +15,6 @@ echo generating variables.env...
 sed 's/demo.qaprosoft.com/'$1'/g' variables.env.original > variables.env
 echo generating ./nginx/conf.d/default.conf...
 sed 's/demo.qaprosoft.com/'$1'/g' ./nginx/conf.d/default.conf.original > ./nginx/conf.d/default.conf
-echo generating GGR quota file ./grid-router/quota/demo.xml
-sed 's/demo.qaprosoft.com/'$1'/g' ./grid-router/quota/demo.xml.original > ./grid-router/quota/demo.xml
 
 
 if [[ ! -d esdata ]]; then

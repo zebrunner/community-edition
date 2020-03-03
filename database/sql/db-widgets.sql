@@ -16,18 +16,20 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "Separator": "Below params are not applicable for Total period!",
+  "BROWSER":[],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "userId": "1",
   "dashboardName": "Personal",
-  "currentUserId": "1"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE'));
+   "currentUserId": "1"
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('LAST 7 DAYS PERSONAL', 'PIE', NULL, NULL, false, 'Consolidated personal information for last 7 days', '{
   "PERIOD": "Last 7 Days",
   "PERSONAL": "true",
@@ -38,26 +40,29 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "Separator": "Below params are not applicable for Total period!",
+  "BROWSER":[],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "userId": "1",
   "dashboardName": "Personal",
   "currentUserId": "1"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE'));
-INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('MONTHLY TEST IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON)', 'BAR', NULL, NULL, false, 'A number of new automated cases per month.', '{
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)'));
+INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('MONTHLY TESTS IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON)', 'BAR', NULL, NULL, false, 'A number of new automated cases per month.', '{
   "PERSONAL": "true",
+  "PERIOD": "Total",
   "USER": [],
   "PROJECT": [],
   "userId": "1",
   "dashboardName": "User Performance",
   "currentUserId": "1"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'MONTHLY TEST IMPLEMENTATION PROGRESS'));
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'TESTS IMPLEMENTATION PROGRESS'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('TEST CASE STABILITY (%)', 'PIE', NULL, NULL, false, 'Aggregated stability metric for a test case.', '{
   "userId": "1",
   "dashboardName": "Stability",
@@ -73,21 +78,21 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
-  "Separator": "Below params are not applicable for Total period!",
+  "BUG": [],
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
-  "PARENT_JOB": "",
-  "PARENT_BUILD": "",
+  "JOB_NAME": "",
   "testCaseId": "1",
   "dashboardName": "General"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE TREND'));
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (LINE)'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('LAST 24 HOURS PERSONAL FAILURES', 'TABLE', NULL, NULL, false, 'Summarized personal information about tests failures grouped by reason.', '{
   "PERIOD": "Last 24 Hours",
   "PERSONAL": "true",
   "BLOCKER": "false",
+  "ERROR_COUNT": 0,
   "PROJECT": [],
   "PLATFORM": [],
   "USER": [],
@@ -96,14 +101,15 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "FEATURE": [],
   "TASK": [],
   "BUG": [],
-  "Separator": "Below params are not applicable for Total period!",
+  "BROWSER":[],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
+  "JIRA_URL": "",
   "userId": "1",
   "dashboardName": "Personal",
   "currentUserId": "1"
@@ -135,18 +141,20 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "Separator": "Below params are not applicable for Total period!",
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "userId": "1",
   "dashboardName": "Personal",
   "currentUserId": "1"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE'));
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('30 DAYS TESTS PERSONAL TREND', 'LINE', NULL, NULL, false, 'Consolidated personal test status trend for last 30 days', '{
   "PERIOD": "Last 30 Days",
   "PERSONAL": "true",
@@ -157,18 +165,20 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
+  "BROWSER": [],
   "Separator": "Below params are not applicable for Total period!",
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "userId": "1",
   "dashboardName": "Personal",
   "currentUserId": "1"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE TREND'));
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (LINE)'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('TOTAL PERSONAL TESTS TREND', 'LINE', NULL, NULL, false, 'Totally consolidated personal test status trend.', '{
   "PERIOD": "Total",
   "PERSONAL": "true",
@@ -179,18 +189,20 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
+  "BROWSER": [],
   "Separator": "Below params are not applicable for Total period!",
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "userId": "1",
   "dashboardName": "User Performance",
   "currentUserId": "1"
-}', NULL,(SELECT id FROM management.widget_templates WHERE name = 'PASS RATE TREND'));
+}', NULL,(SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (LINE)'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('LAST 24 HOURS FAILURE COUNT', 'TABLE', NULL, NULL, false, 'High-level information about similar errors for last 24 hours.', '{
   "PERIOD": "Last 24 Hours",
   "userId": "1",
@@ -208,9 +220,9 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "dashboardName": "Failures analysis",
   "currentUserId": "1"
 }', NULL, (SELECT id FROM management.widget_templates WHERE name = 'TEST FAILURE DETAILS'));
-INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('30 DAYS PASS RATE BY PLATFORM (%)', 'BAR', NULL, NULL, false, 'Pass rate percent by platform for last 30 days.', '{
+INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('30 DAYS PASS RATE BY PROJECT (%)', 'BAR', NULL, NULL, false, 'Pass rate percent by platform for last 30 days.', '{
   "PERIOD": "Last 30 Days",
-  "GROUP_BY": "PLATFORM",
+  "GROUP_BY": "PROJECT",
   "PROJECT": [],
   "PLATFORM": [],
   "USER": [],
@@ -218,38 +230,48 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "Separator": "Below params are not applicable for Total period!",
+  "PLATFORM_VERSION": [],
+  "BROWSER": [],
+  "BROWSER_VERSION": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "hashcode": "1893229022",
   "dashboardName": "General"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (%)'));
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (BAR)'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('30 DAYS TEST DETAILS', 'TABLE', NULL, NULL, false, 'Detailed information about passed, failed, skipped, etc tests for last 30 days.', '{
   "PERIOD": "Last 30 Days",
+  "GROUP_BY": "OWNER_USERNAME",
   "PERSONAL": "false",
   "PROJECT": [],
   "USER": [],
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
-  "": "Below params are not not applicable for Total period!",
+  "TASK": [],
+  "BUG": [],
   "PLATFORM": [],
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
+  "PARENT_JOB": "",
+  "PARENT_BUILD": "",
   "userId": "1",
   "dashboardName": "General",
   "currentUserId": "1"
 }', '{
   "OWNER": true,
   "SUITE": false,
+  "BUILD": false,
   "PASS": true,
   "FAIL": true,
   "DEFECT": false,
@@ -273,6 +295,9 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "ENV": [],
   "PRIORITY": [],
   "FEATURE": [],
+  "BROWSER":[],
+  "TASK": [],
+  "BUG": [],
   "hashcode": "1893229022",
   "dashboardName": "User Performance"
 }', NULL, (SELECT id FROM management.widget_templates WHERE name = 'TESTS EXECUTION ROI (MAN-HOURS)'));
@@ -286,18 +311,20 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "Separator": "Below params are not applicable for Total period!",
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "userId": "1",
   "dashboardName": "General",
   "currentUserId": "1"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE'));
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)'));
 INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_CONFIG, LEGEND_CONFIG, WIDGET_TEMPLATE_ID) VALUES ('PERSONAL TOTAL RATE', 'PIE', NULL, NULL, false, 'Totally consolidated personal test status information.', '{
   "PERIOD": "Total",
   "PERSONAL": "true",
@@ -308,17 +335,19 @@ INSERT INTO WIDGETS (TITLE, TYPE, SQL, MODEL, REFRESHABLE, DESCRIPTION, PARAMS_C
   "PRIORITY": [],
   "FEATURE": [],
   "TASK": [],
+  "BUG": [],
   "Separator": "Below params are not applicable for Total period!",
+  "BROWSER": [],
   "DEVICE": [],
   "APP_VERSION": [],
   "LOCALE": [],
   "LANGUAGE": [],
-  "JOB_NAME": [],
+  "JOB_NAME": "",
   "PARENT_JOB": "",
   "PARENT_BUILD": "",
   "hashcode": "1893229022",
   "dashboardName": "User Performance"
-}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE'));
+}', NULL, (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)'));
 
 
 INSERT INTO DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, POSITION, SIZE, LOCATION) VALUES (1, 16, NULL, NULL, '{"x":0,"y":22,"width":4,"height":11}');

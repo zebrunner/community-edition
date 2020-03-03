@@ -1,4 +1,8 @@
 version: '3'
+networks:
+  default:
+    external:
+      name: qps-infra
 services:
   nginx:
     image: nginx
@@ -28,7 +32,7 @@ services:
      - variables.env
     restart: always
   zafira:
-    image: qaprosoft/zafira:4.1.83
+    image: qaprosoft/zafira:4.1.89
     env_file:
       - variables.env
     volumes:
@@ -41,14 +45,14 @@ services:
       - "redis"
     restart: always
   zafira-ui:
-    image: qaprosoft/zafira-ui:1.30
+    image: qaprosoft/zafira-ui:1.35
     env_file:
       - variables.env
     depends_on:
       - "zafira"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:4.8
+    image: qaprosoft/jenkins-master:4.9.1
     env_file:
      - variables.env
     environment:
@@ -66,10 +70,11 @@ services:
      - variables.env
     environment:
      - JENKINS_SLAVE_NAME=jenkins-slave-api
-     - JENKINS_SLAVE_WORKERS=5
-     - JENKINS_SLAVE_LABELS=qps-slave api qa
+     - JENKINS_SLAVE_WORKERS=3
+     - JENKINS_SLAVE_LABELS=qps-slave api qa docker
     volumes:
      - $HOME/.m2:/root/.m2
+     - /var/run/docker.sock:/var/run/docker.sock
     ports:
      - "8001:8000"
     depends_on:
@@ -81,7 +86,7 @@ services:
      - variables.env
     environment:
      - JENKINS_SLAVE_NAME=jenkins-slave-web
-     - JENKINS_SLAVE_WORKERS=3
+     - JENKINS_SLAVE_WORKERS=2
      - JENKINS_SLAVE_LABELS=qps-slave web qa
     volumes:
      - $HOME/.m2:/root/.m2
@@ -165,7 +170,8 @@ services:
      - "4444:4444"
     restart: always
   selenoid:
-    network_mode: bridge
+    networks:
+      default: null
     image: aerokube/selenoid:latest-release
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -173,7 +179,5 @@ services:
       - $PWD/selenoid/video/:/opt/selenoid/video/
     environment:
       - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video/
-    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-listen", ":4445", "-timeout", "3m0s"]
-    ports:
-      - "4445:4445"
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-timeout", "3m0s", "-container-network", "qps-infra"]
     restart: always

@@ -363,7 +363,6 @@ CREATE TABLE IF NOT EXISTS test_runs (
   known_issue BOOLEAN NOT NULL DEFAULT FALSE,
   blocker BOOLEAN NOT NULL DEFAULT FALSE,
   env VARCHAR(50) NULL,
-  platform VARCHAR(30) NULL,
   app_version VARCHAR(255) NULL,
   started_at TIMESTAMP NULL,
   elapsed INT NULL,
@@ -883,7 +882,7 @@ CREATE TABLE IF NOT EXISTS launcher_presets (
     CONSTRAINT fk_LAUNCHER_PRESET_LAUNCHERS1
         FOREIGN KEY (launcher_id)
             REFERENCES LAUNCHERS (id)
-            ON DELETE NO ACTION
+            ON DELETE CASCADE
             ON UPDATE NO ACTION);
 CREATE UNIQUE INDEX LAUNCHER_PRESET_LAUNCHER_ID_NAME_UNIQUE ON launcher_presets (name, launcher_id);
 CREATE UNIQUE INDEX LAUNCHER_PRESET_REFERENCE_UNIQUE ON launcher_presets (reference);
@@ -903,11 +902,31 @@ CREATE TABLE IF NOT EXISTS launcher_callbacks (
   CONSTRAINT fk_LAUNCHER_CALLBACK_LAUNCHER_PRESETS1
       FOREIGN KEY (launcher_preset_id)
           REFERENCES LAUNCHER_PRESETS (ID)
-          ON DELETE NO ACTION
+          ON DELETE CASCADE
           ON UPDATE NO ACTION);
 CREATE UNIQUE INDEX LAUNCHER_CALLBACK_CI_RUN_ID_UNIQUE ON launcher_callbacks (ci_run_id);
 CREATE UNIQUE INDEX LAUNCHER_CALLBACK_REFERENCE_UNIQUE ON launcher_callbacks (reference);
 CREATE TRIGGER update_timestamp_launcher_callback BEFORE INSERT OR UPDATE ON launcher_callbacks FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
+
+
+DROP TABLE IF EXISTS test_sessions;
+CREATE TABLE test_sessions (
+   id SERIAL,
+   session_id VARCHAR(255) NOT NULL,
+   version VARCHAR(255) NOT NULL,
+   started_at TIMESTAMP NOT NULL,
+   ended_at TIMESTAMP NULL,
+   duration INT NULL,
+   os_name VARCHAR(255) NOT NULL,
+   browser_name VARCHAR(255) NOT NULL,
+   test_name VARCHAR(255) NULL,
+   build_number VARCHAR(255) NULL,
+   status VARCHAR(20) NOT NULL,
+   modified_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (id)
+);
+CREATE TRIGGER update_timestamp_test_sessions BEFORE INSERT OR UPDATE ON test_sessions FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
 
 
 CREATE OR REPLACE FUNCTION check_version(INTEGER) RETURNS VOID AS

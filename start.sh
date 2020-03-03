@@ -12,11 +12,15 @@ if [ ! -f variables.env ] || [ ! -f ./nginx/conf.d/default.conf.original ]; then
     exit -1
 fi
 
+docker network create qps-infra
+
 # pull required docker images
 docker pull selenoid/vnc:chrome_78.0
 docker pull selenoid/vnc:chrome_77.0
 docker pull selenoid/vnc:firefox_71.0
 docker pull selenoid/vnc:firefox_70.0
+docker pull selenoid/vnc:opera_66.0
+docker pull selenoid/vnc:opera_65.0
 
 docker pull selenoid/video-recorder:latest-release
 
