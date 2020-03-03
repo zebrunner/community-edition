@@ -17,35 +17,29 @@ git clone https://github.com/qaprosoft/qps-infra.git
 cd qps-infra
 ./setup.sh myhost.domain.com
 ```
-* Optional: update default credentials if neccessary (strongly recommended for publicly available environments)
-  Note: If you changed RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well
 * Optional: adjust docker-compose.yml file by removing unused services. By default, it contains:
   nginx, postgres, zafira/zafira-ui, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
-* Execute ./start.sh to start all containers
-* Open http://myhost.domain.com to access direct links to the sub-components: Zafira, Jenkins, etc.
 
-## Additional setup
-* Create secret value for AUTH_TOKEN_SECRET and encode to Base64 format via tool for encoding. 
-* Note: AUTH_TOKEN_SECRET= value is by application for encryption of sensitive settings (such as passwords, integration settings, etc) and thus should not be set to default one.
-* Create secret value for CRYPTO_SALT
-* Note: CRYPTO_SALT= It should be randomized alpha-numeric string.
-
+### Security setup  (strongly recommended for publicly available environments)
+* Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)
+* Regenerate CRYPTO_SALT value (it should be randomized alpha-numeric string)
+* Optional: update default credentials if neccessary
+  Note: If you changed RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well  
 ```
 cd qps-infra
 nano variables.env
 ```
-* Set new secret value for AUTH_TOKEN_SECRET
-* Set new secret value for CRYTPO_SALT
-* Save changes in variables.env
-
+Set new secret value for AUTH_TOKEN_SECRET
+Set new secret value for CRYTPO_SALT
+...
+Save changes in variables.env
 ```
 ./start.sh
 ```
-
+* Open http://myhost.domain.com to access direct links to the sub-components: Zafira, Jenkins, etc.
 
 ## Services start/stop/restart
 * Use ./stop.sh script to stop everything
-* Opional: it is recommended to remove old containers during the restart
 * Use ./start.sh to start all containers
 ```
 ./stop.sh
@@ -60,26 +54,23 @@ nano variables.env
 * [SonarQube](http://demo.qaprosoft.com/sonarqube)
   Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Adminisration panel
   
-# Start via Jenkins
-
-## Update Jenkins credentials 
-* Open Jenkins by the url of your env.
-* Open Credentials in the left menu
-* Update Username and Password for "ghprbhook-token"
-* Note: Enter Password value of "Git token access" that was generated before for this user
+# Jenkins Setup
 
 ## Register Organization
-* Open Jenkins by the url of your env.
-* Open Management_Jobs folder
-* Click "RegisterOrganization"
-* Click "Build with Parameters"
-* Set "folderName" value
-* Click "Build"
+* Open Jenkins->Management_Jobs folder.
+* Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
+-> New folder is created with default content
+
 
 ## Register Repository
-* Open Jenkins by the url of your env.
-* Open organization folder
-* Click "RegisterRepository"
-* Click "Build with Parameters"
-* Set "repo" value 
-* Click "Build"
+* Open your organization folder
+* Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as default repo to scan)
+-> Repository should be scanned and TestNG jobs created
+
+## Run Job(s)
+* TBD
+
+## onPullRequest and onPush event setup
+### Setup GitHub PullRequest plugin 
+* Open Jenkins -> Credentials
+* Update Username and Password for "ghprbhook-token" credentials
