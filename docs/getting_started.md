@@ -17,7 +17,7 @@ git clone https://github.com/qaprosoft/qps-infra.git
 cd qps-infra
 ./setup.sh myhost.domain.com
 ```
-* Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such groups of services:
+* Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
   * NGiNX WebServer
   * Reporting toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash
   * CI: jenkins-master, jenkins-slave-web, jenkins-slave-api
