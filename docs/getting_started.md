@@ -17,8 +17,14 @@ git clone https://github.com/qaprosoft/qps-infra.git
 cd qps-infra
 ./setup.sh myhost.domain.com
 ```
-* Optional: adjust docker-compose.yml file by removing unused services. By default, it contains:
-  nginx, postgres, zafira/zafira-ui, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
+* Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such groups of services:
+  * NGiNX WebServer
+  * Reporting toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash
+  * CI: jenkins-master, jenkins-slave-web, jenkins-slave-api
+  * Selenium web and mobile: selenium hub, ggr, selenoid
+  * Sonarqube: sonarqube, ftp, 
+  * Local storage: ftp
+Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.
 
 ### Security setup  (strongly recommended for publicly available environments)
 * Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)
