@@ -24,7 +24,7 @@ cd qps-infra
   * Selenium web and mobile: selenium hub, ggr, selenoid
   * Sonarqube: sonarqube
   * Local storage: ftp
-  Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.
+<br>Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.
 
 ### Security setup  (strongly recommended for publicly available environments)
 * Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)
