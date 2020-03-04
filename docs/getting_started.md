@@ -17,35 +17,81 @@ git clone https://github.com/qaprosoft/qps-infra.git
 cd qps-infra
 ./setup.sh myhost.domain.com
 ```
-* Optional: update default credentials if neccessary (strongly recommended for publicly available environments)
-  Note: If you changed RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well
-* Optional: adjust docker-compose.yml file by removing unused services. By default, it contains:
-  nginx, postgres, zafira/zafira-ui, jenkins-master, jenkins-slave, selenium hub, sonarqube, rabbitmq, elasticsearch
-* Execute ./start.sh to start all containers
-* Open http://myhost.domain.com to access direct links to the sub-components: Zafira, Jenkins, etc.
+* Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
+  * NGiNX WebServer: nginx
+  * Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash
+  * CI: jenkins-master, jenkins-slave-web, jenkins-slave-api
+  * Web and mobile selenium hubs: selenium hub, ggr, selenoid
+  * Local storage: ftp
+  * Sonarqube: sonarqube
+<br>Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.
 
-
-## Services start/stop/restart
-* Use ./stop.sh script to stop everything
-* Opional: it is recommended to remove old containers during the restart
-* Use ./start.sh to start all containers
+## Security setup  (strongly recommended for publicly available environments)
+* Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)
+* Regenerate CRYPTO_SALT value (it should be randomized alpha-numeric string)
+* Update default credentials in variables.env
+  Note: If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well  
+  
+## Start services
 ```
-./stop.sh
-docker-compose rm -g
 ./start.sh
 ```
 
 ## Env details
 * After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
-* [Jenkins](http://demo.qaprosoft.com/jenkins)
-* [Selenium Grid](http://demo.qaprosoft.com/grid/console)
-* [Zafira Reporting Tool](http://demo.qaprosoft.com/zafira)
-* [SonarQube](http://demo.qaprosoft.com/sonarqube)
-  Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Adminisration panel
+* [Jenkins - http://demo.qaprosoft.com/jenkins](http://demo.qaprosoft.com/jenkins)
+* [Selenium Grid - http://demo.qaprosoft.com/mcloud/grid/console](http://demo.qaprosoft.com/mcloud/grid/console)
+* [Zafira Reporting Tool - http://demo.qaprosoft.com/app](http://demo.qaprosoft.com/app)
+* [SonarQube - http://demo.qaprosoft.com/sonarqube](http://demo.qaprosoft.com/sonarqube)
+  Note: Use your host domain address or IP.
+  Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel
   
-## Documentation and free support
-* [Zafira manual](http://qaprosoft.github.io/zafira)
-* [Carina manual](http://qaprosoft.github.io/carina)
-* [Demo project](https://github.com/qaprosoft/carina-demo)
-* [Telegram channel](https://t.me/qps_infra)
+## Jenkins Setup
 
+### Register Organization
+* Open Jenkins->Management_Jobs folder.
+* Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
+* -> New folder is created with default content
+
+### Register Repository
+* Open your organization folder
+* Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as default repo to scan)
+* -> Repository should be scanned and TestNG jobs created
+
+### Run Job(s)
+* Open scanned repository
+* Run a job from the list e.g. "Web-Demo-Single-Driver-Test"
+* -> Job should be passed 
+* Open Zafira e.g. http://demo.qaprosoft.com/app ->Test runs
+* -> Test run result is present
+
+## onPullRequest Job/Event setup
+
+### Setup GitHub PullRequest plugin 
+* Open Jenkins -> Credentials
+* Update Username and Password for "ghprbhook-token" credentials
+
+### Trigger onPullRequest Job(s)
+* Go to your GitHub repository
+* Create new Pull Request
+* -> Verify in Jenkins that onPullRequest-<repo>,onPullRequest-<repo>-trigger jobs launched and succeed
+
+## onPush Job/Event setup
+
+### Setup GitHub WebHook
+* Go to your GitHub repository
+* Click "Settings" tab
+* Click "Webhooks" menu option
+* Click "Add webhook" button
+* Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field
+* Select application/json in "Content Type" field
+* Tick "Send me everything." option
+* Click "Add webhook" button
+
+### Trigger onPush Job(s)
+* -> After any push or merge into the master onPush-<repo> job is launched, suites scanned, TestNG jobs created
+
+
+## Enjoy!
+
+* Join [Telegram channel](https://t.me/qps_infra) in case of any question
