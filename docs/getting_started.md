@@ -22,9 +22,9 @@ cd qps-infra
   * Reporting toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash
   * CI: jenkins-master, jenkins-slave-web, jenkins-slave-api
   * Selenium web and mobile: selenium hub, ggr, selenoid
-  * Sonarqube: sonarqube, ftp, 
+  * Sonarqube: sonarqube
   * Local storage: ftp
-Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.
+  Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.
 
 ### Security setup  (strongly recommended for publicly available environments)
 * Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)
