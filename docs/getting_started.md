@@ -29,8 +29,8 @@ cd qps-infra
 ### Security setup  (strongly recommended for publicly available environments)
 * Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)
 * Regenerate CRYPTO_SALT value (it should be randomized alpha-numeric string)
-* Optional: update default credentials if neccessary
-  Note: If you changed RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well  
+* Update default credentials if neccessary
+  Note: If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well  
 ```
 cd qps-infra
 nano variables.env
