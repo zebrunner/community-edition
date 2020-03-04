@@ -1385,9 +1385,7 @@ SELECT
   <#elseif PERIOD == "Last 30 Days">
     <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''30'' day)"/>
   <#elseif PERIOD == "Monthly" >
-    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''week'', current_date)"/>
-  <#elseif PERIOD == "Total" >
-    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''month'', current_date)"/>    
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''week'', current_date)"/>  
   </#if>
 
   <#list map?keys as key>
