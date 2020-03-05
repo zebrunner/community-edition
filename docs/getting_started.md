@@ -74,7 +74,7 @@ cd qps-infra
 ### Trigger onPullRequest Job(s)
 * Go to your GitHub repository
 * Create new Pull Request
-* -> Verify in Jenkins that onPullRequest-<repo>,onPullRequest-<repo>-trigger jobs launched and succeed
+* -> Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed
 
 ## onPush Job/Event setup
 
@@ -89,7 +89,7 @@ cd qps-infra
 * Click "Add webhook" button
 
 ### Trigger onPush Job(s)
-* -> After any push or merge into the master onPush-<repo> job is launched, suites scanned, TestNG jobs created
+* -> After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
 
 
 ## Enjoy!
