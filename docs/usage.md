@@ -39,7 +39,7 @@
 
 1.Tap on Register Organization
 
-Expected Result:
+  Expected Result:
 
 Pipeline RegisterOrganization is opened
 
@@ -49,7 +49,7 @@ Pipeline RegisterOrganization is opened
 
 4.Tap Build
 
-Expected Result:
+  Expected Result:
 
 Organization is registered and new folder e.g. okamara appears in Jenkins(http://54.193.74.120/jenkins/)
 
