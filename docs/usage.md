@@ -1,10 +1,10 @@
 # QPS-Infra - Getting started Use Cases
 ## 1:Update Jenkins credentials
-*  Preconditions:
+* ## Preconditions:
 
   Jenkins is installed and started
  
-* Steps:
+* ## Steps:
 
 1.Open Jenkins
 
@@ -24,7 +24,7 @@
 
 
 ## 2:RegisterOrganization
-*  Preconditions:
+* ## Preconditions:
 
 1.Jenkins is started          
 
@@ -34,7 +34,7 @@
 
 4.Open Management_Jobs folder e.g.http://54.193.74.120/jenkins/job/Management_Jobs/
 
-* Steps:   
+* ## Steps: 
                                                       
 
 1.Tap on Register Organization
@@ -68,11 +68,11 @@ rm -rf ./jenkins/.groovy/grapes
 * Expected Result: Pipeline RegisterOrganization is done
 
 ## 3:RegisterRepository
-*  Preconditions:
+* ## Preconditions:
 
 Open my organization that was created e.g. jenkins/okamara
 
-* Steps:   
+* ## Steps:  
 
 1.Tap RegisterRepository
 
