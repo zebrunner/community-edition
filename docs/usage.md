@@ -103,6 +103,57 @@ onPullRequest-carina-demo
 onPullRequest-carina-demo
 
 
+## 4:Create fork via Github
+* ## Preconditions:
+Github account is created for you
+
+* ## Steps:  
+
+1.Sign in to Github with your user account https://github.com/
+
+2.Open My profile
+
+3.Go to qaprosoft/carina-demo
+
+4.Tap Fork
+
+5.Verify that okamara/carina-demo repository is created
+
+  * Expected Result:okamara/carina-demo repository is created
+
+## 5:Configure Webhook via GitHub
+* ## Preconditions:
+
+Instruction is here http://54.193.74.120/jenkins/job/okamara/job/carina-demo/job/onPullRequest-carina-demo-trigger/
+
+or 
+Open https://github.com
+
+* ## Steps:  
+
+1.Sign in with your user account
+
+2.Open created before your repository e.g. okamara/carina-demo https://github.com/okamara/carina-demo
+
+3.Open Settings
+
+4.Open Webhooks in menu
+
+5.Tap Add Webhook
+
+6.Enter Payload URL e.g. http://54.193.74.120/jenkins/ghprbhook/
+
+7.Select application/x-www-form-urlencoded in "Content Type" field
+
+8.Select "Let me select individual events" with "Issue comments" and "Pull requests enabled" option
+
+9.Click "Add webhook" button
+
+  * Expected Result:Webhook is created
+  
+  
+
+
 
 
 
