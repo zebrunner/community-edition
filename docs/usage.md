@@ -1,6 +1,6 @@
 # QPS-Infra - Getting started Use Cases
 ## 1:Update Jenkins credentials
-* # Preconditions:
+*  Preconditions:
 
   Jenkins is installed and started
  
