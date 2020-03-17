@@ -4,7 +4,6 @@
 
   Jenkins is installed and started
   
- 
   ```
 * Steps
 
