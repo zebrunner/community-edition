@@ -34,7 +34,9 @@
 
 4.Open Management_Jobs folder e.g.http://54.193.74.120/jenkins/job/Management_Jobs/
 
-* Steps:
+* Steps:                                                   * Expected Result
+
+1.Tap on Register Organization                              Pipeline RegisterOrganization is opened
 
 
 
