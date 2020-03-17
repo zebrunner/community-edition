@@ -151,7 +151,163 @@ Open https://github.com
 
   * Expected Result:Webhook is created
   
-  
+## 6:Send Pull request via github  
+* ## Preconditions:
+
+Open jenkins/configure e.g. http://54.193.74.120/jenkins/configure
+
+* ## Steps:
+
+1.Go to GitHub Pull Request Builder
+
+2.Add check mark to Test adding comment to Pull Request
+
+3.Set in Issue ID of Pull request from Git e.g.
+test for jenkins #1 https://github.com/okamara/carina-demo/pull/1 enter “1”
+
+4.Enter Comment to post e.g. “Comment”
+
+5.Tap “Comment to Issue”
+
+6.Verify that comment is set via Pull request
+
+## 7:Close/Restart Pull request via github
+* ## Preconditions:
+Open pull request in GitHub https://github.com/okamara/carina-demo/pull/1
+
+* ## Steps:
+
+1.Tap “Close pull request”
+
+2.Tap “Reopen pull request”
+
+3.Verify that carina-demo jobs run is done on e.g. 1. http://54.193.74.120/jenkins/job/okamara/job/carina-demo/
+
+* Expected Result:The following jobs are run onPullRequest-carina-demo-trigger and 
+onPullRequest-carina-demo 
+
+##  Workaround to run jobs without errors(.m2 folder)
+* ## Preconditions:
+
+If onPullRequest-carina-demo and onPullRequest-carina-demo-trigger job run with errors like e.g.
+[ERROR] Could not create local repository at /var/jenkins_home/.m2/repository -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+
+* ## Steps:
+
+1.Run the following commands via terminal:
+sudo chown -R ubuntu:ubuntu ~/.m2
+sudo chmod -R a+rws ~/.m2
+./stop.sh
+docker-compose rm -fv
+./start.sh
+
+2.Stop/Resend pull request via github and verify that jobs onPullRequest-carina-demo and onPullRequest-carina-demo-trigger run without errors
+ 
+## Workaround for "Error grabbing Grapes"(.m2) during create organization or start jobs
+* ## Preconditions:
+
+If onPullRequest-carina-demo and onPullRequest-carina-demo-trigger job run with errors like e.g.
+[ERROR] General error during conversion: Error grabbing Grapes -- [download failed: org.beanshell#bsh;2.0b4!bsh.jar]
+
+* ## Steps:
+
+1.remove completely $HOME/.m2/repository and QPS_HONE/jenkins/.groovy/grapes content to allow jenkins to redownload everything from scratch
+
+Run the following commands via terminal:
+./stop.sh
+sudo rm -rf ~/.m2/repository
+cd ~/tools/qps-infra
+rm -rf ./jenkins/.groovy/grapes
+./start.sh
+
+## 8:Run Web-Demo-Test job(should be failed)
+* ## Preconditions:
+
+Jenkins is started
+Organization is created
+Repo is registered
+
+* ## Steps:
+
+1.Go to qaprosoft/carina-demo and start Web-Demo-Test
+
+* Expected Result:Pipeline Web-Demo-Test is opened
+
+2.Click Build with Parameters and run Build
+
+* Expected Result: Pipeline Web-Demo-Test is started
+
+3.Open Jenkins and verify that web tests are running in web node
+
+4.Open Build History in Web-Demo-Test and select Zafira Report
+
+* Expected Result:Zafira report Web-demo-test in opened
+
+5.Verify that Web-Demo-Test should be failed
+
+6.Click "Logs" and verify that the report had status "failed"
+
+## 9:Run API-Demo-Test job(should be passed)
+* ## Preconditions:
+
+Jenkins is started
+Organization is created
+Repo is registered
+
+* ## Steps:
+
+1.Go to qaprosoft/carina-demo and start API-Demo-Test job
+
+* Expected Result:Pipeline API-Demo-Test job is opened
+
+2.Click Build with Parameters and run Build
+
+* Expected Result:Pipeline API-Demo-Test job is started
+
+3.Open Jenkins and verify that web tests are running in web node
+
+4.Open Build History in API-Demo-Test and select Zafira Report
+
+* Expected Result:
+
+5.Click "Logs" and verify that the report looks correctly
+
+## 10:Run nightly_regression job(should be passed)
+* ## Preconditions:
+
+Jenkins is started
+Organization is created
+Repo is registered
+
+* ## Steps:
+
+1.Go to qaprosoft/carina-demo and start nightly_regression job
+
+* Expected Result:Nightly_regression job is opened
+
+2.Click Build with Parameters and run Build
+
+* Expected Result:Pipeline Nightly_regression is started
+
+3.Open Jenkins and verify that web tests are running in web node
+
+4.Go to qaprosoft/carina-demo and verify that API-Demo-Test, API-DataProvider, SOAP-Demo,Tags-Demo-Test,API-CustomParams, Web-Demo-Single-Driver are completed and Passed.
+Web-Demo-Test is completed and failed.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
