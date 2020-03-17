@@ -298,6 +298,28 @@ Repo is registered
 4.Go to qaprosoft/carina-demo and verify that API-Demo-Test, API-DataProvider, SOAP-Demo,Tags-Demo-Test,API-CustomParams, Web-Demo-Single-Driver are completed and Passed.
 Web-Demo-Test is completed and failed.
 
+## 11:Run full_regression job(need to stop mobile jobs to complete this task)
+* ## Preconditions:
+
+Jenkins is started
+Organization is created
+Repo is registered
+
+* ## Steps:
+
+1.Go to qaprosoft/carina-demo and start full_regression job
+
+* Expected Result:Full_regression job is opened
+
+2.Click Build with Parameters and run Build
+
+* Expected Result:Pipeline full_regression job is started
+
+3.Open Jenkins and verify that web tests are running in web node
+
+4.Go to qaprosoft/carina-demo and verify that API-Demo-Test, API-DataProvider-Classes, SOAP-Demo, Tags-Demo-Test, API-CustomParams, Web-Demo-Single-Driver-Test, Mobile-Android-Demo-Test, Mobile-iOS-Demo-Test are completed and Passed.
+Web-Demo-Test, API-DataProvider-Classes are completed and failed.
+
 
 
 
