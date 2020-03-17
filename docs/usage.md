@@ -67,6 +67,44 @@ rm -rf ./jenkins/.groovy/grapes
 
 * Expected Result: Pipeline RegisterOrganization is done
 
+## 3:RegisterRepository
+*  Preconditions:
+
+Open my organization that was created e.g. jenkins/okamara
+
+* Steps:   
+
+1.Tap RegisterRepository
+
+* Expected Result:Pipeline RegisterRepository page is opened
+
+2.Verify that the following values are preset up in the fields:
+scmHost - github.com,
+scmOrg is entered e.g. okamara,
+branch - master,
+pipelineLibrary - QPS-Pipeline,
+runnerClass - com.qaprosoft.jenkins.pipeline.runner.maven.QARunner
+
+* Expected Result:The following values are preset up in the fields: scmHost - github.com, scmOrg is entered e.g. okamara , branch - master, pipelineLibrary - QPS-Pipeline, runnerClass - com.qaprosoft.jenkins.pipeline.runner.maven.QARunner
+
+3.Enter scmuser - e.g. okamara,
+scmTocken - enter your token (should be generated on 
+gihub for your user),
+repo - e.g. ”carina-demo”
+
+4.Tap Build
+
+* Expected Result:Build is successful
+
+5.Verify that jenkins/okamara/carina-demo/ contains jobs: onPullRequest-carina-demo-trigger and 
+onPullRequest-carina-demo
+
+* Expected Result:jenkins/okamara/carina-demo/ contains jobs: onPullRequest-carina-demo-trigger and 
+onPullRequest-carina-demo
+
+
+
+
 
 
 
