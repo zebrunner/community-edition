@@ -43,6 +43,20 @@ Expected Result:
 
 Pipeline RegisterOrganization is opened
 
+2.Tap Build with Parameters in right top menu
+
+3.Enter folder name - select your name e.g. okamara
+
+4.Tap Build
+
+Expected Result:
+
+Organization is registered and new folder e.g. okamara appears in Jenkins(http://54.193.74.120/jenkins/)
+
+5.If error appears in console 
+A: remove completely $HOME/.m2/repository and QPS_HONE/jenkins/.groovy/grapes content to allow jenkins to redownload everything from scratch
+
+
 
 
 
