@@ -56,6 +56,27 @@ Organization is registered and new folder e.g. okamara appears in Jenkins(http:/
 5.If error appears in console 
 A: remove completely $HOME/.m2/repository and QPS_HONE/jenkins/.groovy/grapes content to allow jenkins to redownload everything from scratch
 
+Expected Result:
+
+Go to step 6-8
+
+6.Open Terminal and run the following commands:
+sudo rm -rf ~/.m2/repository
+cd ~/qps-infra
+rm -rf ./jenkins/.groovy/grapes
+
+7.Restart Jenking in web via url e.g. http://54.193.74.120/jenkins/restart
+
+Expected Result:
+
+Jenkins is restarted
+
+8.Repeat Register organization steps 1-4
+
+Expected Result:
+
+Pipeline RegisterOrganization is done
+
 
 
 
