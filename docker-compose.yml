@@ -52,7 +52,7 @@ services:
       - "zafira"
     restart: always
   jenkins-master:
-    image: qaprosoft/jenkins-master:4.9.1
+    image: qaprosoft/jenkins-master:4.10.1
     env_file:
      - variables.env
     environment:
