@@ -126,6 +126,8 @@ services:
     image: qaprosoft/pure-ftpd:latest
     env_file:
      - variables.env
+    volumes:
+    - $PWD/selenoid/video:/usr/share/ftp:rw
     ports:
      - "21:21"
      - "30000-30009:30000-30009"
