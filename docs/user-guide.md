@@ -9,11 +9,12 @@ These parameters are:
 <b>jenkinsJobType </b> – This property tells Jenkins what type of job it is. This field can take a “web” or “api” value.
 If value set to “api” – Jenkins knows that there is no need to use web browser for run this Test Suite.
 If value set to “web” – Jenkins will use web browser to run the Test. Chrome browser will be used by default.
+</br>
 <b> jenkinsEmail </b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite will be emailed to. 
 </br>
 <b> jenkinsFailedEmail </b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite that contains failures will be emailed to. 
 </br>
-<b>jenkinsRegressionPipeline </b>- This property takes a comma separated string of the various pipelines that a specific Test Suite will be attached to. (i.e. nightly_regression_cron, full_regression_cron). This would end up creating two pipeline jobs inside of Jenkins. 
+<b>jenkinsRegressionPipeline </b> - This property takes a comma separated string of the various pipelines that a specific Test Suite will be attached to. (i.e. nightly_regression_cron, full_regression_cron). This would end up creating two pipeline jobs inside of Jenkins. 
 </br>
 <b>jenkinsEnvironments </b> - This property takes a comma separated string of the various environments that will be tested for that particular suite. (i.e. PROD, QA,DEV,STAGE,BETA, etc...) 
 </br>
@@ -45,6 +46,7 @@ Jenkins Pipeline Job - this is a job that can be created for each suite and can 
 ```
 3. Commit and merge.
 4. You will see "Job1" Job after Scan is finished (automatic or manual). 
+</br>
 <b> Example: </b>
 ```
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
