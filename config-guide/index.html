@@ -31,21 +31,21 @@
       
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
-      <link rel="shortcut icon" href="/assets/images/favicon.png">
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
     
     
       
-        <title>QPS-Infra</title>
+        <title>Configuration Guide - QPS-Infra</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/application.451f80e5.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.451f80e5.css">
       
       
     
     
-      <script src="/assets/javascripts/modernizr.1aa3b519.js"></script>
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
     
     
       
@@ -54,7 +54,7 @@
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
     
-    <link rel="stylesheet" href="/assets/fonts/material-icons.css">
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
     
     
   </head>
@@ -90,12 +90,16 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
+      <a href="../#configuration-guide" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="/." title="QPS-Infra" class="md-header-nav__button md-logo">
+        <a href=".." title="QPS-Infra" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -112,7 +116,7 @@
                 QPS-Infra
               </span>
               <span class="md-header-nav__topic">
-                
+                Configuration Guide
               </span>
             
           
@@ -191,7 +195,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="/." title="QPS-Infra" class="md-nav__button md-logo">
+    <a href=".." title="QPS-Infra" class="md-nav__button md-logo">
       
         <i class="md-icon"></i>
       
@@ -229,7 +233,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/." title="Overview" class="md-nav__link">
+    <a href=".." title="Overview" class="md-nav__link">
       Overview
     </a>
   </li>
@@ -241,7 +245,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/getting_started.md" title="Getting Started" class="md-nav__link">
+    <a href="../getting_started.md" title="Getting Started" class="md-nav__link">
       Getting Started
     </a>
   </li>
@@ -253,7 +257,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/faq/" title="FAQ" class="md-nav__link">
+    <a href="../faq/" title="FAQ" class="md-nav__link">
       FAQ
     </a>
   </li>
@@ -266,12 +270,165 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#jenkins-setup" title="Jenkins Setup" class="md-nav__link">
+    Jenkins Setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#register-organization" title="Register Organization" class="md-nav__link">
+    Register Organization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#register-repository" title="Register Repository" class="md-nav__link">
+    Register Repository
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#onpullrequest-jobevent-setup" title="onPullRequest Job/Event setup" class="md-nav__link">
+    onPullRequest Job/Event setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-pullrequest-plugin" title="Setup GitHub PullRequest plugin" class="md-nav__link">
+    Setup GitHub PullRequest plugin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-onpullrequest-jobs" title="Trigger onPullRequest Job(s)" class="md-nav__link">
+    Trigger onPullRequest Job(s)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#onpush-jobevent-setup" title="onPush Job/Event setup" class="md-nav__link">
+    onPush Job/Event setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-webhook" title="Setup GitHub WebHook" class="md-nav__link">
+    Setup GitHub WebHook
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-onpush-jobs" title="Trigger onPush Job(s)" class="md-nav__link">
+    Trigger onPush Job(s)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
-
+                
+                  <a href="https://github.com/qaprosoft/qps-infra/edit/master/docs/config-guide.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <h1 id="configuration-guide">Configuration Guide</h1>
+<h2 id="jenkins-setup">Jenkins Setup</h2>
+<h3 id="register-organization">Register Organization</h3>
+<ul>
+<li>Open Jenkins-&gt;Management_Jobs folder.</li>
+<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName</li>
+<li>-&gt; New folder is created with default content</li>
+</ul>
+<h3 id="register-repository">Register Repository</h3>
+<ul>
+<li>Open your organization folder</li>
+<li>Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as default repo to scan)</li>
+<li>-&gt; Repository should be scanned and TestNG jobs created</li>
+</ul>
+<h3 id="onpullrequest-jobevent-setup">onPullRequest Job/Event setup</h3>
+<h4 id="setup-github-pullrequest-plugin">Setup GitHub PullRequest plugin</h4>
+<ul>
+<li>Open Jenkins -&gt; Credentials</li>
+<li>Update Username and Password for "ghprbhook-token" credentials</li>
+</ul>
+<h4 id="trigger-onpullrequest-jobs">Trigger onPullRequest Job(s)</h4>
+<ul>
+<li>Go to your GitHub repository</li>
+<li>Create new Pull Request</li>
+<li>-&gt; Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed</li>
+</ul>
+<h3 id="onpush-jobevent-setup">onPush Job/Event setup</h3>
+<h4 id="setup-github-webhook">Setup GitHub WebHook</h4>
+<ul>
+<li>Go to your GitHub repository</li>
+<li>Click "Settings" tab</li>
+<li>Click "Webhooks" menu option</li>
+<li>Click "Add webhook" button</li>
+<li>Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field</li>
+<li>Select application/json in "Content Type" field</li>
+<li>Tick "Send me everything." option</li>
+<li>Click "Add webhook" button</li>
+</ul>
+<h4 id="trigger-onpush-jobs">Trigger onPush Job(s)</h4>
+<ul>
+<li>-&gt; After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
+</ul>
+                
+                  
+                
+              
               
                 
 
@@ -304,9 +461,9 @@
       
     </div>
     
-      <script src="/assets/javascripts/application.583bbe55.js"></script>
+      <script src="../assets/javascripts/application.583bbe55.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:"/"}})</script>
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
     
     
