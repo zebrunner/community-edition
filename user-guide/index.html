@@ -646,7 +646,9 @@ When that is specified if a prior job has had an error while running the next jo
 <pre><code>&lt;parameter name=&quot;scheduling&quot; value=&quot;H 2 * * *&quot; /&gt; 
 </code></pre>
 
-<p>Note: As a value provide regular Jenkins Cron expression.To prganize multiple schedules use "\n" as separator:</p>
+<ul>
+<li>Note: As a value provide regular Jenkins Cron expression.To prganize multiple schedules use "\n" as separator:</li>
+</ul>
 <pre><code>&lt;parameter name=&quot;scheduling&quot; value=&quot;H 2 * * *\nH 10 * * *&quot; /&gt; 
 </code></pre>
 
@@ -685,8 +687,8 @@ When that is specified if a prior job has had an error while running the next jo
 <ul>
 <li>Commit and merge.</li>
 <li>After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline cron job is created in Jenkins.</li>
-<li>Every time you run Carina-Demo-Regression-Pipeline job it should start your suite xml child job twice for DEMO and PROD environments using appropriate branches.
-Note: Any param values pairs can be provided. Comma separated - for single job params. Semicolon separated for multiple child job params.</li>
+<li>Every time you run Carina-Demo-Regression-Pipeline job it should start your suite xml child job twice for DEMO and PROD environments using appropriate branches.</li>
+<li>Note: Any param values pairs can be provided. Comma separated - for single job params. Semicolon separated for multiple child job params.</li>
 </ul>
 <h4 id="run-a-cron">Run a Cron</h4>
 <p>Steps:</p>
