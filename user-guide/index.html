@@ -632,12 +632,12 @@ When that is specified if a prior job has had an error while running the next jo
 </ul>
 <h4 id="run-a-job">Run a Job</h4>
 <p>Steps:</p>
-<ol>
+<ul>
 <li>Login to Jenkins</li>
 <li>Go to organization/repository and open a Job</li>
 <li>Click Build with Parameters and run Build </li>
 <li>When Job is Completed analyze published reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
-</ol>
+</ul>
 <h4 id="schedule-a-job">Schedule a Job</h4>
 <ul>
 <li>Open TestNG suite xml file</li>
@@ -654,11 +654,11 @@ When that is specified if a prior job has had an error while running the next jo
 <li>Commit and merge.</li>
 </ul>
 <h4 id="delete-a-job">Delete a Job</h4>
-<ol>
+<ul>
 <li>Delete TestNG suite xml file</li>
 <li>Commit and merge.</li>
 <li>Ask your administrator to remove the Job on Jenkins.</li>
-</ol>
+</ul>
 <h3 id="cron-jobslayer-of-testing">Cron Jobs(Layer of testing)</h3>
 <p>Jenkins Pipeline Cron - this is a job that can include different suites/jobs and can be executed on demand or by schedule.</p>
 <h4 id="create-a-cron">Create a Cron</h4>
@@ -690,13 +690,13 @@ Note: Any param values pairs can be provided. Comma separated - for single job p
 </ul>
 <h4 id="run-a-cron">Run a Cron</h4>
 <p>Steps:</p>
-<ol>
+<ul>
 <li>Go to organization/repository and open a Cron Job
 Note: There is a "CRON" view for such kind of jobs</li>
 <li>Click Build with Parameters and run Build </li>
 <li>Cron Job should trigger children jobs according to desired configuration matrix</li>
 <li>When Cron Job is Completed analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
-</ol>
+</ul>
 <h4 id="schedule-a-cron">Schedule a Cron</h4>
 <ul>
 <li>Open any child TestNG suite xml file </li>
@@ -711,11 +711,11 @@ Note: There is a "CRON" view for such kind of jobs</li>
 <li>After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.</li>
 </ul>
 <h4 id="delete-a-cron">Delete a Cron</h4>
-<ol>
+<ul>
 <li>Open each TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.</li>
 <li>Commit and merge.</li>
 <li>Ask your administrator to delete Cron job in Jenkins</li>
-</ol>
+</ul>
                 
                   
                 
