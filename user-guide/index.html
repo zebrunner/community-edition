@@ -615,10 +615,10 @@ When that is specified if a prior job has had an error while running the next jo
 <h3 id="test-jobs-apiwebmobile">Test Jobs (API/Web/Mobile)</h3>
 <p>Jenkins Pipeline Job - this is a job that can be created for each suite and can be executed on demand or by schedule. </p>
 <h4 id="create-a-job">Create a Job</h4>
-<ol>
+<ul>
 <li>Open TestNG suite xml file</li>
 <li>Fill the bunch of necessary parameters in your xml:</li>
-</ol>
+</ul>
 <pre><code>&lt;parameter name=&quot;suiteOwner&quot; value=&quot;qpsdemo&quot;/&gt;
 &lt;parameter name=&quot;jenkinsJobName&quot; value=&quot;Job1&quot;/&gt;
 &lt;parameter name=&quot;jenkinsJobType&quot; value=&quot;api&quot;/&gt;
@@ -626,10 +626,10 @@ When that is specified if a prior job has had an error while running the next jo
 &lt;parameter name=&quot;jenkinsEnvironments&quot; value=&quot;DEMO&quot;/&gt; 
 </code></pre>
 
-<ol>
+<ul>
 <li>Commit and merge.</li>
 <li>You will see "Job1" Job after Scan is finished (automatic or manual). </li>
-</ol>
+</ul>
 <h4 id="run-a-job">Run a Job</h4>
 <p>Steps:</p>
 <ol>
@@ -639,10 +639,10 @@ When that is specified if a prior job has had an error while running the next jo
 <li>When Job is Completed analyze published reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
 </ol>
 <h4 id="schedule-a-job">Schedule a Job</h4>
-<ol>
+<ul>
 <li>Open TestNG suite xml file</li>
 <li>Fill the bunch of necessary parameters in your xml if they are absent:</li>
-</ol>
+</ul>
 <pre><code>&lt;parameter name=&quot;scheduling&quot; value=&quot;H 2 * * *&quot; /&gt; 
 </code></pre>
 
@@ -650,9 +650,9 @@ When that is specified if a prior job has had an error while running the next jo
 <pre><code>&lt;parameter name=&quot;scheduling&quot; value=&quot;H 2 * * *\nH 10 * * *&quot; /&gt; 
 </code></pre>
 
-<ol>
+<ul>
 <li>Commit and merge.</li>
-</ol>
+</ul>
 <h4 id="delete-a-job">Delete a Job</h4>
 <ol>
 <li>Delete TestNG suite xml file</li>
@@ -662,32 +662,32 @@ When that is specified if a prior job has had an error while running the next jo
 <h3 id="cron-jobslayer-of-testing">Cron Jobs(Layer of testing)</h3>
 <p>Jenkins Pipeline Cron - this is a job that can include different suites/jobs and can be executed on demand or by schedule.</p>
 <h4 id="create-a-cron">Create a Cron</h4>
-<ol>
+<ul>
 <li>Open each TestNG suite xml file(s) </li>
 <li>Declare "jenkinsRegressionPipeline" property in xml:</li>
-</ol>
+</ul>
 <pre><code>&lt;parameter name=&quot;jenkinsRegressionPipeline&quot; value=&quot;nightly_regression, full_regression&quot;/&gt;
 </code></pre>
 
-<ol>
+<ul>
 <li>Commit and merge.</li>
 <li>After Scan is finished (automatic or manual) nightly_regression, full_regression crons are created in Jenkins.</li>
-</ol>
+</ul>
 <h5 id="how-to-set-up-configuration-matrix">How to Set up Configuration Matrix</h5>
-<ol>
+<ul>
 <li>Open TestNG suite xml file </li>
 <li>Declare "jenkinsRegressionMatrix" property in xml:</li>
-</ol>
+</ul>
 <pre><code>&lt;parameter name=&quot;jenkinsRegressionPipeline&quot; value=&quot;Carina-Demo-Regression-Pipeline&quot;/&gt;
 &lt;parameter name=&quot;jenkinsRegressionMatrix&quot; value=&quot;env: DEMO, branch: master; env:PROD, branch: prod&quot;/&gt;
 </code></pre>
 
-<ol>
+<ul>
 <li>Commit and merge.</li>
 <li>After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline cron job is created in Jenkins.</li>
 <li>Every time you run Carina-Demo-Regression-Pipeline job it should start your suite xml child job twice for DEMO and PROD environments using appropriate branches.
 Note: Any param values pairs can be provided. Comma separated - for single job params. Semicolon separated for multiple child job params.</li>
-</ol>
+</ul>
 <h4 id="run-a-cron">Run a Cron</h4>
 <p>Steps:</p>
 <ol>
@@ -698,18 +698,18 @@ Note: There is a "CRON" view for such kind of jobs</li>
 <li>When Cron Job is Completed analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
 </ol>
 <h4 id="schedule-a-cron">Schedule a Cron</h4>
-<ol>
+<ul>
 <li>Open any child TestNG suite xml file </li>
 <li>Declare "jenkinsRegressionScheduling" parameter :</li>
-</ol>
+</ul>
 <pre><code>&lt;parameter name=&quot;jenkinsRegressionPipeline&quot; value=&quot;Carina-Demo-Regression-Pipeline&quot;/&gt;
 &lt;parameter name=&quot;jenkinsRegressionScheduling&quot; value=&quot;H 2 * * *&quot; /&gt; 
 </code></pre>
 
-<ol>
+<ul>
 <li>Commit and merge.</li>
 <li>After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.</li>
-</ol>
+</ul>
 <h4 id="delete-a-cron">Delete a Cron</h4>
 <ol>
 <li>Open each TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.</li>
