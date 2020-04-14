@@ -629,20 +629,8 @@ When that is specified if a prior job has had an error while running the next jo
 <ol>
 <li>Commit and merge.</li>
 <li>You will see "Job1" Job after Scan is finished (automatic or manual). 
-</br>
-Example:</li>
+</br></li>
 </ol>
-<pre><code>&lt;!DOCTYPE suite SYSTEM &quot;http://testng.org/testng-1.0.dtd&quot;&gt;
-&lt;suite verbose=&quot;1&quot; name=&quot;Demo Tests - API Sample&quot; parallel=&quot;tests&quot; annotations=&quot;JDK&quot;&gt;
-    &lt;parameter name=&quot;suiteOwner&quot; value=&quot;qpsdemo&quot;/&gt;
-    &lt;parameter name=&quot;zafira_project&quot; value=&quot;UNKNOWN&quot;/&gt;
-    &lt;parameter name=&quot;jenkinsJobName&quot; value=&quot;Job1&quot;/&gt;
-    &lt;parameter name=&quot;jenkinsJobType&quot; value=&quot;api&quot;/&gt;
-        &lt;parameter name=&quot;jenkinsEmail&quot; value=&quot;test@qaprosoft.com&quot;/&gt;
-    &lt;parameter name=&quot;jenkinsEnvironments&quot; value=&quot;DEMO&quot;/&gt;
-&lt;/suite&gt;
-</code></pre>
-
 <h4 id="run-a-job">Run a Job</h4>
 <p>Steps:</p>
 <ol>
