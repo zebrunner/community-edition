@@ -304,6 +304,59 @@
     Register Repository
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#onpullrequest-jobevent-setup" title="onPullRequest Job/Event setup" class="md-nav__link">
+    onPullRequest Job/Event setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-pullrequest-plugin" title="Setup GitHub PullRequest plugin" class="md-nav__link">
+    Setup GitHub PullRequest plugin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-onpullrequest-jobs" title="Trigger onPullRequest Job(s)" class="md-nav__link">
+    Trigger onPullRequest Job(s)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#onpush-jobevent-setup" title="onPush Job/Event setup" class="md-nav__link">
+    onPush Job/Event setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-webhook" title="Setup GitHub WebHook" class="md-nav__link">
+    Setup GitHub WebHook
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -392,6 +445,59 @@
     Register Repository
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#onpullrequest-jobevent-setup" title="onPullRequest Job/Event setup" class="md-nav__link">
+    onPullRequest Job/Event setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-pullrequest-plugin" title="Setup GitHub PullRequest plugin" class="md-nav__link">
+    Setup GitHub PullRequest plugin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-onpullrequest-jobs" title="Trigger onPullRequest Job(s)" class="md-nav__link">
+    Trigger onPullRequest Job(s)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#onpush-jobevent-setup" title="onPush Job/Event setup" class="md-nav__link">
+    onPush Job/Event setup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-github-webhook" title="Setup GitHub WebHook" class="md-nav__link">
+    Setup GitHub WebHook
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -441,26 +547,32 @@
 </ul>
 </li>
 </ul>
-<p>##### onPullRequest Job/Event setup</p>
-<p>###### Setup GitHub PullRequest plugin 
-     * Open Jenkins -&gt; Credentials
-     * Update Username and Password for "ghprbhook-token" credentials</p>
-<p>###### Trigger onPullRequest Job(s)
-     * Go to your GitHub repository
-     * Create new Pull Request
-        * Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed</p>
-<p>##### onPush Job/Event setup</p>
-<p>###### Setup GitHub WebHook
-     * Go to your GitHub repository
-     * Click "Settings" tab
-     * Click "Webhooks" menu option
-     * Click "Add webhook" button
-     * Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field
-     * Select application/json in "Content Type" field
-     * Tick "Send me everything." option
-     * Click "Add webhook" button</p>
+<h5 id="onpullrequest-jobevent-setup">onPullRequest Job/Event setup</h5>
+<h6 id="setup-github-pullrequest-plugin">Setup GitHub PullRequest plugin</h6>
+<ul>
+<li>Open Jenkins -&gt; Credentials</li>
+<li>Update Username and Password for "ghprbhook-token" credentials</li>
+</ul>
+<h6 id="trigger-onpullrequest-jobs">Trigger onPullRequest Job(s)</h6>
+<ul>
+<li>Go to your GitHub repository</li>
+<li>Create new Pull Request
+        * Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed</li>
+</ul>
+<h5 id="onpush-jobevent-setup">onPush Job/Event setup</h5>
+<h6 id="setup-github-webhook">Setup GitHub WebHook</h6>
+<ul>
+<li>Go to your GitHub repository</li>
+<li>Click "Settings" tab</li>
+<li>Click "Webhooks" menu option</li>
+<li>Click "Add webhook" button</li>
+<li>Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field</li>
+<li>Select application/json in "Content Type" field</li>
+<li>Tick "Send me everything." option</li>
+<li>Click "Add webhook" button</li>
+</ul>
 <p>###### Trigger onPush Job(s)
-     *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</p>
+   *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</p>
                 
                   
                 
