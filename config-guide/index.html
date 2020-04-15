@@ -284,8 +284,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#jenkins-setup" title="Jenkins Setup" class="md-nav__link">
-    Jenkins Setup
+  <a href="#organization-setup" title="Organization Setup" class="md-nav__link">
+    Organization Setup
   </a>
   
     <nav class="md-nav">
@@ -296,14 +296,16 @@
     Register Organization
   </a>
   
-</li>
+    <nav class="md-nav">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#register-repository" title="Register Repository" class="md-nav__link">
     Register Repository
   </a>
   
-</li>
+    <nav class="md-nav">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#onpullrequest-jobevent-setup" title="onPullRequest Job/Event setup" class="md-nav__link">
@@ -351,6 +353,16 @@
   <a href="#trigger-onpush-jobs" title="Trigger onPush Job(s)" class="md-nav__link">
     Trigger onPush Job(s)
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -420,8 +432,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#jenkins-setup" title="Jenkins Setup" class="md-nav__link">
-    Jenkins Setup
+  <a href="#organization-setup" title="Organization Setup" class="md-nav__link">
+    Organization Setup
   </a>
   
     <nav class="md-nav">
@@ -432,14 +444,16 @@
     Register Organization
   </a>
   
-</li>
+    <nav class="md-nav">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#register-repository" title="Register Repository" class="md-nav__link">
     Register Repository
   </a>
   
-</li>
+    <nav class="md-nav">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#onpullrequest-jobevent-setup" title="onPullRequest Job/Event setup" class="md-nav__link">
@@ -499,6 +513,16 @@
     </nav>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
       
       
@@ -520,33 +544,33 @@
                 
                 
                 <h1 id="configuration-guide">Configuration Guide</h1>
-<h2 id="jenkins-setup">Jenkins Setup</h2>
+<h2 id="organization-setup">Organization Setup</h2>
 <h3 id="register-organization">Register Organization</h3>
 <ul>
 <li>Open Jenkins-&gt;Management_Jobs folder.</li>
-<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName</li>
-<li>-&gt; New folder is created with default content</li>
+<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
+ -&gt; New folder is created with default content</li>
 </ul>
-<h3 id="register-repository">Register Repository</h3>
+<h4 id="register-repository">Register Repository</h4>
 <ul>
 <li>Open your organization folder</li>
 <li>Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)</li>
 <li>-&gt; Repository should be scanned and TestNG jobs created</li>
 </ul>
-<h3 id="onpullrequest-jobevent-setup">onPullRequest Job/Event setup</h3>
-<h4 id="setup-github-pullrequest-plugin">Setup GitHub PullRequest plugin</h4>
+<h5 id="onpullrequest-jobevent-setup">onPullRequest Job/Event setup</h5>
+<h6 id="setup-github-pullrequest-plugin">Setup GitHub PullRequest plugin</h6>
 <ul>
 <li>Open Jenkins -&gt; Credentials</li>
 <li>Update Username and Password for "ghprbhook-token" credentials</li>
 </ul>
-<h4 id="trigger-onpullrequest-jobs">Trigger onPullRequest Job(s)</h4>
+<h6 id="trigger-onpullrequest-jobs">Trigger onPullRequest Job(s)</h6>
 <ul>
 <li>Go to your GitHub repository</li>
 <li>Create new Pull Request</li>
 <li>-&gt; Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed</li>
 </ul>
-<h3 id="onpush-jobevent-setup">onPush Job/Event setup</h3>
-<h4 id="setup-github-webhook">Setup GitHub WebHook</h4>
+<h5 id="onpush-jobevent-setup">onPush Job/Event setup</h5>
+<h6 id="setup-github-webhook">Setup GitHub WebHook</h6>
 <ul>
 <li>Go to your GitHub repository</li>
 <li>Click "Settings" tab</li>
@@ -557,7 +581,7 @@
 <li>Tick "Send me everything." option</li>
 <li>Click "Add webhook" button</li>
 </ul>
-<h4 id="trigger-onpush-jobs">Trigger onPush Job(s)</h4>
+<h6 id="trigger-onpush-jobs">Trigger onPush Job(s)</h6>
 <ul>
 <li>-&gt; After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
 </ul>
