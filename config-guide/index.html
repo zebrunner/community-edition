@@ -548,14 +548,18 @@
 <h3 id="register-organization">Register Organization</h3>
 <ul>
 <li>Open Jenkins-&gt;Management_Jobs folder.</li>
-<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
- -&gt; New folder is created with default content</li>
+<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName<ul>
+<li>New folder is created with default content</li>
+</ul>
+</li>
 </ul>
 <h4 id="register-repository">Register Repository</h4>
 <ul>
 <li>Open your organization folder</li>
-<li>Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)</li>
-<li>-&gt; Repository should be scanned and TestNG jobs created</li>
+<li>Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)<ul>
+<li>Repository should be scanned and TestNG jobs created</li>
+</ul>
+</li>
 </ul>
 <h5 id="onpullrequest-jobevent-setup">onPullRequest Job/Event setup</h5>
 <h6 id="setup-github-pullrequest-plugin">Setup GitHub PullRequest plugin</h6>
@@ -566,8 +570,10 @@
 <h6 id="trigger-onpullrequest-jobs">Trigger onPullRequest Job(s)</h6>
 <ul>
 <li>Go to your GitHub repository</li>
-<li>Create new Pull Request</li>
-<li>-&gt; Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed</li>
+<li>Create new Pull Request<ul>
+<li>Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed</li>
+</ul>
+</li>
 </ul>
 <h5 id="onpush-jobevent-setup">onPush Job/Event setup</h5>
 <h6 id="setup-github-webhook">Setup GitHub WebHook</h6>
@@ -583,7 +589,7 @@
 </ul>
 <h6 id="trigger-onpush-jobs">Trigger onPush Job(s)</h6>
 <ul>
-<li>-&gt; After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
+<li>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
 </ul>
                 
                   
