@@ -476,16 +476,20 @@ cd qps-infra
 ./setup.sh myhost.domain.com
 </code></pre>
 
-<p>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
-      * NGiNX WebServer: nginx
-      * Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash
-      * CI: jenkins-master, jenkins-slave-web, jenkins-slave-api
-      * Web and mobile selenium hubs: selenium hub, ggr, selenoid
-      * Local storage: ftp
-      * Sonarqube: sonarqube</p>
-<blockquote>
+<ul>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:<ul>
+<li>NGiNX WebServer: nginx</li>
+<li>Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash</li>
+<li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api</li>
+<li>Web and mobile selenium hubs: selenium hub, ggr, selenoid</li>
+<li>Local storage: ftp</li>
+<li>Sonarqube: sonarqube<blockquote>
 <p>Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.</p>
 </blockquote>
+</li>
+</ul>
+</li>
+</ul>
 <h2 id="security-setup-strongly-recommended-for-publicly-available-environments">Security setup  (strongly recommended for publicly available environments)</h2>
 <ul>
 <li>Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)</li>
