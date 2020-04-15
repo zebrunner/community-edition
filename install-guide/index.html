@@ -477,14 +477,13 @@ cd qps-infra
 </code></pre>
 
 <ul>
-<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
-</br><ul>
-<li>NGiNX WebServer: nginx</li>
-<li>Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash</li>
-<li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api</li>
-<li>Web and mobile selenium hubs: selenium hub, ggr, selenoid</li>
-<li>Local storage: ftp</li>
-<li>Sonarqube: sonarqube<blockquote>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</br><ul>
+<li>NGiNX WebServer: nginx </li>
+<li>Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash </li>
+<li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api </li>
+<li>Web and mobile selenium hubs: selenium hub, ggr, selenoid </li>
+<li>Local storage: ftp </li>
+<li>Sonarqube: sonarqube <blockquote>
 <p>Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.</p>
 </blockquote>
 </li>
