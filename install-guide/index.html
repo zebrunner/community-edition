@@ -307,8 +307,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enjoy" title="Enjoy!" class="md-nav__link">
-    Enjoy!
+  <a href="#troubleshooting" title="Troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support-channel" title="Support Channel" class="md-nav__link">
+    Support Channel
   </a>
   
 </li>
@@ -416,8 +423,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#enjoy" title="Enjoy!" class="md-nav__link">
-    Enjoy!
+  <a href="#troubleshooting" title="Troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support-channel" title="Support Channel" class="md-nav__link">
+    Support Channel
   </a>
   
 </li>
@@ -444,10 +458,12 @@
                 <h1 id="installation-guide">Installation Guide</h1>
 <h2 id="software-prerequisites">Software prerequisites</h2>
 <ul>
-<li>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc.
-  Note: to verify the current user uid/gid, execute
+<li>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc.<blockquote>
+<p>Note: to verify the current user uid/gid, execute
   <code>id
-  uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),102(netdev),999(docker</code></li>
+  uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),102(netdev),999(docker</code></p>
+</blockquote>
+</li>
 <li>Install docker (<a href="http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/">Ubuntu 16.04</a>, <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04">Ubuntu 18.04</a>, <a href="https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/">MacOS</a>) and <a href="https://docs.docker.com/compose/install/#install-compose">docker-composer</a></li>
 </ul>
 <h2 id="initial-setup">Initial setup</h2>
@@ -467,15 +483,19 @@ cd qps-infra
 <li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api</li>
 <li>Web and mobile selenium hubs: selenium hub, ggr, selenoid</li>
 <li>Local storage: ftp</li>
-<li>Sonarqube: sonarqube
-<br>Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.</li>
+<li>Sonarqube: sonarqube<blockquote>
+<p>Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.</p>
+</blockquote>
+</li>
 </ul>
 <h2 id="security-setup-strongly-recommended-for-publicly-available-environments">Security setup  (strongly recommended for publicly available environments)</h2>
 <ul>
 <li>Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)</li>
 <li>Regenerate CRYPTO_SALT value (it should be randomized alpha-numeric string)</li>
-<li>Update default credentials in variables.env
-  Note: If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well  </li>
+<li>Update default credentials in variables.env<blockquote>
+<p>Note: If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well  </p>
+</blockquote>
+</li>
 </ul>
 <h2 id="start-services">Start services</h2>
 <pre><code>./start.sh
@@ -487,11 +507,14 @@ cd qps-infra
 <li><a href="http://demo.qaprosoft.com/jenkins">Jenkins - http://demo.qaprosoft.com/jenkins</a></li>
 <li><a href="http://demo.qaprosoft.com/mcloud/grid/console">Selenium Grid - http://demo.qaprosoft.com/mcloud/grid/console</a></li>
 <li><a href="http://demo.qaprosoft.com/app">Zafira Reporting Tool - http://demo.qaprosoft.com/app</a></li>
-<li><a href="http://demo.qaprosoft.com/sonarqube">SonarQube - http://demo.qaprosoft.com/sonarqube</a>
-  Note: Use your host domain address or IP.
-  Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</li>
+<li><a href="http://demo.qaprosoft.com/sonarqube">SonarQube - http://demo.qaprosoft.com/sonarqube</a><blockquote>
+<p>Note: Use your host domain address or IP.
+Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
+</blockquote>
+</li>
 </ul>
-<h2 id="enjoy">Enjoy!</h2>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h2 id="support-channel">Support Channel</h2>
 <ul>
 <li>Join <a href="https://t.me/qps_infra">Telegram channel</a> in case of any question</li>
 </ul>
