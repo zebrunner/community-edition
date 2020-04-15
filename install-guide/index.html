@@ -476,14 +476,13 @@ cd qps-infra
 ./setup.sh myhost.domain.com
 </code></pre>
 
-<p></ul> Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
-    <li> NGiNX WebServer: nginx
-    <li> Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash
-    <li> CI: jenkins-master, jenkins-slave-web, jenkins-slave-api
-    <li> Web and mobile selenium hubs: selenium hub, ggr, selenoid
-    <li> Local storage: ftp
-    <li> Sonarqube: sonarqube
-</ul></p>
+<p>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
+      * NGiNX WebServer: nginx
+      * Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash
+      * CI: jenkins-master, jenkins-slave-web, jenkins-slave-api
+      * Web and mobile selenium hubs: selenium hub, ggr, selenoid
+      * Local storage: ftp
+      * Sonarqube: sonarqube</p>
 <blockquote>
 <p>Note: It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.</p>
 </blockquote>
@@ -502,7 +501,7 @@ cd qps-infra
 
 <h2 id="env-details">Env details</h2>
 <ul>
-<li>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</li>
+<li>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:<ul>
 <li><a href="http://demo.qaprosoft.com/jenkins">Jenkins - http://demo.qaprosoft.com/jenkins</a></li>
 <li><a href="http://demo.qaprosoft.com/mcloud/grid/console">Selenium Grid - http://demo.qaprosoft.com/mcloud/grid/console</a></li>
 <li><a href="http://demo.qaprosoft.com/app">Zafira Reporting Tool - http://demo.qaprosoft.com/app</a></li>
@@ -510,6 +509,8 @@ cd qps-infra
 <p>Note: Use your host domain address or IP.
 Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
 </blockquote>
+</li>
+</ul>
 </li>
 </ul>
 <h2 id="troubleshooting">Troubleshooting</h2>
