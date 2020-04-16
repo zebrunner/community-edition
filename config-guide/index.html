@@ -311,6 +311,19 @@
     Set up "GitHub Pull Request Builder":
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-the-integration-with-github-through-the-jenkins-ui" title="Test the integration with Github through the Jenkins UI" class="md-nav__link">
+    Test the integration with Github through the Jenkins UI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -493,6 +506,19 @@
     Set up "GitHub Pull Request Builder":
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-the-integration-with-github-through-the-jenkins-ui" title="Test the integration with Github through the Jenkins UI" class="md-nav__link">
+    Test the integration with Github through the Jenkins UI
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -613,14 +639,15 @@
                 
                 <h1 id="configuration-guide">Configuration Guide</h1>
 <h2 id="scm-integration">SCM Integration</h2>
-<p>For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default: 
-    * Manage jenkins -&gt; Configure system
-    * Global properties -&gt; Add property
-        * GITHUB_API_URL -&gt; https://$GITHUB_HOST/api/v3
-        * GITHUB_HOST -&gt; github.mydomain.com
-        * GITHUB_HTML_URL -&gt; https://$GITHUB_HOST/$GITHUB_ORGANIZATION
-        * GITHUB_ORGANIZATION -&gt; myorganization
-        * GITHUB_SSH_URL -&gt; git@$GITHUB_HOST:$GITHUB_ORGANIZATION</p>
+<p>For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure    will use them immediately by default:</p>
+<pre><code>* Manage jenkins -&gt; Configure system
+* Global properties -&gt; Add property
+    * GITHUB_API_URL -&gt; https://$GITHUB_HOST/api/v3
+    * GITHUB_HOST -&gt; github.mydomain.com
+    * GITHUB_HTML_URL -&gt; https://$GITHUB_HOST/$GITHUB_ORGANIZATION
+    * GITHUB_ORGANIZATION -&gt; myorganization
+    * GITHUB_SSH_URL -&gt; git@$GITHUB_HOST:$GITHUB_ORGANIZATION
+</code></pre>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true" title="Enterprise" /></p>
 <h4 id="onpullrequest-jobevent-setup">onPullRequest Job/Event setup</h4>
 <h5 id="setup-github-pullrequest-plugin">Setup GitHub PullRequest plugin</h5>
@@ -646,10 +673,12 @@
 </blockquote>
 </li>
 </ul>
-<p>###### Test the integration with Github through the Jenkins UI
-   *  Set Credentials -&gt; Test basic connection to GitHub
-   *  Set Repository owner/name -&gt; Test Permissions to a Repository
-   *  Set Issue ID/Comment -&gt; Test adding comment to Pull Request</p>
+<h6 id="test-the-integration-with-github-through-the-jenkins-ui">Test the integration with Github through the Jenkins UI</h6>
+<ul>
+<li>Set Credentials -&gt; Test basic connection to GitHub</li>
+<li>Set Repository owner/name -&gt; Test Permissions to a Repository</li>
+<li>Set Issue ID/Comment -&gt; Test adding comment to Pull Request</li>
+</ul>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/TestGithub.png?raw=true" title="TestGithub" /> </p>
 <h5 id="send-pull-request-to-launch-onpullrequest-jobs">Send Pull request to launch onPullRequest Job(s)</h5>
 <ul>
