@@ -497,28 +497,85 @@
                 
                 <h1 id="installation-guide">Installation Guide</h1>
 <h2 id="hardware-requirementsprerequisites">Hardware requirements/prerequisites</h2>
-<p>Recommended:
+<p><strong>Recommended:</strong>
 * Linux Ubuntu (8+ core, 32RAM, SSD 512Gb+)</p>
 <h3 id="mcloud-hardware-requirements">MCloud hardware requirements</h3>
+<p><strong>CPU</strong>
+<em> product: Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz
+</em> vendor: Intel Corp.
+<em> physical id: 4b
+</em> bus info: cpu@0
+<em> version: Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz
+</em> serial: To Be Filled By O.E.M.
+<em> slot: LGA1151
+</em> size: 2462MHz
+<em> capacity: 4005MHz
+</em> width: 64 bits
+<em> clock: 100MHz
+<strong>Motherboard</strong>
+</em> SMBIOS 3.0.0 present.
+<em> Handle 0x0002, DMI type 2, 15 bytes
+</em> Base Board Information
+  * Manufacturer: ASUSTeK COMPUTER INC.
+  * Product Name: PRIME H270M-PLUS
+  * Version: Rev X.0x
+  * Serial Number: 161292411902325
+  * Asset Tag: Default string
+<em> Features:
+  * Board is a hosting board
+  * Board is replaceable
+</em> Location In Chassis: Default string
+<em> Chassis Handle: 0x0003
+</em> Type: Motherboard
+<em> Contained Object Handles: 0
+<strong>RAM</strong>
+</em> X2 - Kingston 16GB 2133 MHz
+* Array Handle: 0x0042
+  * Error Information Handle: Not Provided
+  * Total Width: 64 bits
+  * Data Width: 64 bits
+  * Size: 16384 MB
+  * Form Factor: DIMM
+  * Set: None
+  * Locator: ChannelA-DIMM2
+  * Bank Locator: BANK 1
+  * Type: DDR4
+  * Type Detail: Synchronous
+  * Speed: 2133 MHz
+  * Manufacturer: Kingston
+  * Serial Number: 193A2FD5
+  * Asset Tag: 9876543210
+  * Part Number: 9905625-065.A00G    
+  * Rank: 2
+  * Configured Clock Speed: 2133 MHz
+  * Minimum Voltage: 1.2 V
+  * Maximum Voltage: 1.2 V
+  * Configured Voltage: 1.2 V
+  <strong>SSD</strong>
+  * Model Number:       KINGSTON SHFS37A480G                    
+  * Serial Number:      50026B726900792F    
+  * Firmware Revision:  603ABBF0
+  * Transport:          Serial, ATA8-AST, SATA 1.0a, SATA II Extensions, SATA Rev 2.5, SATA Rev 2.6, SATA Rev 3.0</p>
 <h2 id="software-requirementsprerequisites">Software requirements/prerequisites</h2>
 <ul>
 <li>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc.<blockquote>
 <p>Note: to verify the current user uid/gid, execute
   <code>id
-  uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),102(netdev),999(docker</code>
-<ul>
+  uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),102(netdev),999(docker</code></p>
+</blockquote>
+</li>
+</ul>
+<hr />
+<p><ul>
   <li> Install docker 
   <ul>
     <li> <a href="http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/">Ubuntu 16.04</a>
      <li> <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04">Ubuntu 18.04</a>
      <li> <a href="https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/">MacOS</a>
   </ul>
-</ul></p>
-</blockquote>
-</li>
-<li>Install docker-composer
- <a href="https://docs.docker.com/compose/install/#install-compose">docker-composer</a></li>
+ <li> Install docker-composer
 </ul>
+ <a href="https://docs.docker.com/compose/install/#install-compose">docker-composer</a></p>
 <h2 id="initial-setup">Initial setup</h2>
 <ul>
 <li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a>. You can also create your private repo to migrate the infrastructure easily</li>
