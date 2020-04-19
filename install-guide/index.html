@@ -486,13 +486,13 @@ cd qps-infra
 </code></pre>
 
 <ul>
-<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</li>
-<li>NGiNX WebServer: nginx </li>
-<li>Reporting Services: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash </li>
-<li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api </li>
-<li>Web and mobile selenium hubs: selenium hub, ggr, selenoid </li>
-<li>Local storage: ftp </li>
-<li>Sonarqube: sonarqube </li>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
+  NGiNX WebServer: nginx 
+  Reporting Services: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash 
+  CI: jenkins-master, jenkins-slave-web, jenkins-slave-api 
+  Web and mobile selenium hubs: selenium hub, ggr, selenoid 
+  Local storage: ftp 
+  Sonarqube: sonarqube </li>
 </ul>
 <blockquote>
 <p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
@@ -517,14 +517,14 @@ cd qps-infra
 </code></pre>
 
 <ul>
-<li>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</li>
-<li><a href="http://demo.qaprosoft.com">1st Page - http://demo.qaprosoft.com</a></li>
-<li><a href="http://demo.qaprosoft.com/jenkins">Jenkins - http://demo.qaprosoft.com/jenkins</a></li>
-<li><a href="http://demo.qaprosoft.com/mcloud/grid/console">Selenium Grid - http://demo.qaprosoft.com/mcloud/grid/console</a></li>
-<li><a href="http://demo.qaprosoft.com/app">Zafira Reporting Tool - http://demo.qaprosoft.com/app</a></li>
-<li><a href="http://demo.qaprosoft.com/sonarqube">SonarQube - http://demo.qaprosoft.com/sonarqube</a><blockquote>
-<p>Note: Use your host domain address or IP.
-Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
+<li>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
+  <a href="http://demo.qaprosoft.com">1st Page - http://demo.qaprosoft.com</a>
+  <a href="http://demo.qaprosoft.com/jenkins">Jenkins - http://demo.qaprosoft.com/jenkins</a>
+  <a href="http://demo.qaprosoft.com/mcloud/grid/console">Selenium Grid - http://demo.qaprosoft.com/mcloud/grid/console</a>
+  <a href="http://demo.qaprosoft.com/app">Zafira Reporting Tool - http://demo.qaprosoft.com/app</a>
+  <a href="http://demo.qaprosoft.com/sonarqube">SonarQube - http://demo.qaprosoft.com/sonarqube</a><blockquote>
+<p>Use your host domain address or IP.
+admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
 </blockquote>
 </li>
 </ul>
@@ -600,7 +600,7 @@ Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updat
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.lang": "en", "clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.config.separator": "[\\s\\-]+", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.config.separator": "[\\s\\-]+", "search.result.one": "1 matching document", "search.result.none": "No matching documents", "search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.lang": "en"}</script>
       
       <script>
         app = initialize({
