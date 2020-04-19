@@ -257,6 +257,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#disableremove-service" class="md-nav__link">
+    Disable/Remove service
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     Troubleshooting
   </a>
@@ -373,6 +380,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#disableremove-service" class="md-nav__link">
+    Disable/Remove service
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     Troubleshooting
   </a>
@@ -463,9 +477,21 @@
 </blockquote>
 </li>
 <li>
-<p>[Optional] adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</p>
+<p>[Optional] adjust docker-compose.yml file removing/disabling unused services.</p>
+</li>
+<li>
+<p>Secure your encryption block</p>
+</li>
+<li>
+<p>Start services<br>
+  <code>./start.sh</code></p>
+</li>
+<li>
+<p>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</p>
 </li>
 </ol>
+<h2 id="disableremove-service">Disable/Remove service</h2>
+<p>By default, it contains such group of services:</p>
 <table>
 <thead>
 <tr>
@@ -504,21 +530,11 @@
 </tr>
 </tbody>
 </table>
+<p>Open docker-composer.yml and comment/remove all unused containers.</p>
 <blockquote>
-<p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
+<p>Make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)
+Current solution is applicable only till qps-infra v.4</p>
 </blockquote>
-<ol>
-<li>
-<p>1Secure your encryption block</p>
-</li>
-<li>
-<p>Start services<br>
-  <code>./start.sh</code></p>
-</li>
-<li>
-<p>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</p>
-</li>
-</ol>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
@@ -591,7 +607,7 @@
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copied": "Copied to clipboard", "search.result.none": "No matching documents", "search.config.separator": "[\\s\\-]+"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.one": "1 matching document", "search.result.none": "No matching documents", "search.result.placeholder": "Type to start searching", "search.config.separator": "[\\s\\-]+", "search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.lang": "en", "clipboard.copy": "Copy to clipboard"}</script>
       
       <script>
         app = initialize({
