@@ -455,12 +455,16 @@
 </ul>
 <h2 id="initial-setup">Initial setup</h2>
 <ol>
-<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a> and launch the setup.sh script providing your hostname as an argument:<br>
-  <code>git clone https://github.com/qaprosoft/qps-infra.git &amp;&amp; cd qps-infra &amp;&amp; ./setup.sh myhost.domain.com</code><blockquote>
+<li>
+<p>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a> and launch the setup.sh script providing your hostname as an argument:<br>
+  <code>git clone https://github.com/qaprosoft/qps-infra.git &amp;&amp; cd qps-infra &amp;&amp; ./setup.sh myhost.domain.com</code></p>
+<blockquote>
 <p>Use public ip address if you don't have registered DNS hostname yet</p>
 </blockquote>
 </li>
-<li>[Optional] adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</li>
+<li>
+<p>[Optional] adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</p>
+</li>
 </ol>
 <table>
 <thead>
@@ -498,36 +502,23 @@
 <td>Embedded mobile selenium hub</td>
 <td>selenium-hub</td>
 </tr>
-<tr>
-<td>&gt; It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</td>
-<td></td>
-</tr>
-<tr>
-<td>3. Secure your encryption block</td>
-<td></td>
-</tr>
-<tr>
-<td>4. Start services<br></td>
-<td></td>
-</tr>
-<tr>
-<td>```</td>
-<td></td>
-</tr>
-<tr>
-<td>./start.sh</td>
-<td></td>
-</tr>
-<tr>
-<td>```</td>
-<td></td>
-</tr>
-<tr>
-<td>5. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</td>
-<td></td>
-</tr>
 </tbody>
 </table>
+<blockquote>
+<p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
+</blockquote>
+<ol>
+<li>
+<p>Secure your encryption block</p>
+</li>
+<li>
+<p>Start services<br>
+  <code>./start.sh</code></p>
+</li>
+<li>
+<p>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</p>
+</li>
+</ol>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
@@ -600,7 +591,7 @@
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.one": "1 matching document", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.placeholder": "Type to start searching", "search.config.lang": "en", "search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.other": "# matching documents"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.separator": "[\\s\\-]+", "search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.result.none": "No matching documents", "search.config.lang": "en", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document"}</script>
       
       <script>
         app = initialize({
