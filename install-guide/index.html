@@ -542,34 +542,38 @@ admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated ins
 <table>
 <thead>
 <tr>
-<th>Components</th>
-<th>URL</th>
+<th>Layer</th>
+<th>Containers</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1st Page</td>
-<td><a href="http://demo.qaprosoft.com">http://demo.qaprosoft.com</a></td>
+<td>NGiNX WebServer</td>
+<td>nginx</td>
 </tr>
 <tr>
-<td>Jenkins</td>
-<td><a href="http://demo.qaprosoft.com/jenkins">http://demo.qaprosoft.com/jenkins</a></td>
+<td>Reporting Services</td>
+<td>postgres, zafira, zafira-ui, rabbitmq, elasticsearch, redis, logstash</td>
 </tr>
 <tr>
-<td>Zebrunner Insights</td>
-<td><a href="http://demo.qaprosoft.com/app">http://demo.qaprosoft.com/app</a></td>
+<td>CI (Jenkins)</td>
+<td>jenkins-master, jenkins-slave-web, jenkins-slave-api</td>
 </tr>
 <tr>
-<td>SonarQube</td>
-<td><a href="http://demo.qaprosoft.com/sonarqube">http://demo.qaprosoft.com/sonarqube</a></td>
+<td>Local Storage</td>
+<td>ftp</td>
 </tr>
 <tr>
-<td>Web Selenium Hub</td>
-<td><a href="http://demo:demo@demo.qaprosoft.com/ggr/wd/hub">http://demo:demo@demo.qaprosoft.com/ggr/wd/hub</a></td>
+<td>Code Analysis</td>
+<td>sonarqube</td>
 </tr>
 <tr>
-<td>Mobile Selenium Hub</td>
-<td><a href="http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub">http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub</a></td>
+<td>Embedded web selenium hub</td>
+<td>ggr, selenoid</td>
+</tr>
+<tr>
+<td>Embedded mobile selenium hub</td>
+<td>selenium-hub</td>
 </tr>
 </tbody>
 </table>
@@ -649,7 +653,7 @@ admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated ins
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.pipeline": "trimmer, stopWordFilter", "search.result.none": "No matching documents", "search.result.placeholder": "Type to start searching", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+", "clipboard.copy": "Copy to clipboard", "search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "search.result.one": "1 matching document"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copied": "Copied to clipboard", "search.result.none": "No matching documents", "search.config.separator": "[\\s\\-]+", "search.result.other": "# matching documents", "clipboard.copy": "Copy to clipboard", "search.result.one": "1 matching document", "search.result.placeholder": "Type to start searching", "search.config.lang": "en"}</script>
       
       <script>
         app = initialize({
