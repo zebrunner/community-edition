@@ -257,20 +257,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#security-setup-strongly-recommended-for-publicly-available-environments" class="md-nav__link">
-    Security setup  (strongly recommended for publicly available environments)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#start-services" class="md-nav__link">
-    Start services
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     Troubleshooting
   </a>
@@ -387,20 +373,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#security-setup-strongly-recommended-for-publicly-available-environments" class="md-nav__link">
-    Security setup  (strongly recommended for publicly available environments)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#start-services" class="md-nav__link">
-    Start services
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     Troubleshooting
   </a>
@@ -476,29 +448,38 @@
 <li>Install docker-composer <a href="https://docs.docker.com/compose/install/#install-compose">docker-composer</a></li>
 </ul>
 <h2 id="initial-setup">Initial setup</h2>
-<ul>
-<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a></li>
-<li>Go to the qps-infra folder and launch the setup.sh script providing your hostname or ip address as an argument</li>
-</ul>
+<ol>
+<li>
+<p>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a></p>
+</li>
+<li>
+<p>Go to the qps-infra folder and launch the setup.sh script providing your hostname or ip address as an argument</p>
+</li>
+</ol>
 <pre><code>git clone https://github.com/qaprosoft/qps-infra.git
 cd qps-infra
 ./setup.sh myhost.domain.com
 </code></pre>
 
-<ul>
-<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
-  NGiNX WebServer: nginx 
-  Reporting Services: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash 
-  CI: jenkins-master, jenkins-slave-web, jenkins-slave-api 
-  Web and mobile selenium hubs: selenium hub, ggr, selenoid 
-  Local storage: ftp 
-  Sonarqube: sonarqube </li>
-</ul>
+<ol>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</li>
+<li>NGiNX WebServer: nginx </li>
+<li>Reporting Services: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash </li>
+<li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api </li>
+<li>Web and mobile selenium hubs: selenium hub, ggr, selenoid </li>
+<li>Local storage: ftp </li>
+<li>
+<p>Sonarqube: sonarqube </p>
 <blockquote>
 <p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
 </blockquote>
-<h2 id="security-setup-strongly-recommended-for-publicly-available-environments">Security setup  (strongly recommended for publicly available environments)</h2>
-<ul>
+</li>
+<li>
+<p>Secure your encryption block</p>
+<blockquote>
+<p>Strongly recommended for publicly available environments!</p>
+</blockquote>
+</li>
 <li>Generate new AUTH_TOKEN_SECRET and put into in variables.env<blockquote>
 <p>Use https://passwordsgenerator.net to generate and https://www.base64encode.org/ to encode (Randomized and base64 encoded string)</p>
 </blockquote>
@@ -507,16 +488,20 @@ cd qps-infra
 <p>Use https://passwordsgenerator.net/ to generate it (randomized alpha-numeric string)</p>
 </blockquote>
 </li>
-<li>Update default credentials in variables.env<blockquote>
+<li>
+<p>Update default credentials in variables.env</p>
+<blockquote>
 <p>If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well</p>
 </blockquote>
 </li>
-</ul>
-<h2 id="start-services">Start services</h2>
+<li>
+<p>Start services</p>
+</li>
+</ol>
 <pre><code>./start.sh
 </code></pre>
 
-<ul>
+<ol>
 <li>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
   <a href="http://demo.qaprosoft.com">1st Page - http://demo.qaprosoft.com</a>
   <a href="http://demo.qaprosoft.com/jenkins">Jenkins - http://demo.qaprosoft.com/jenkins</a>
@@ -527,7 +512,7 @@ cd qps-infra
 admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
 </blockquote>
 </li>
-</ul>
+</ol>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
@@ -600,7 +585,7 @@ admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated ins
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.config.separator": "[\\s\\-]+", "search.result.one": "1 matching document", "search.result.none": "No matching documents", "search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.lang": "en"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.placeholder": "Type to start searching", "search.config.lang": "en", "search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.separator": "[\\s\\-]+"}</script>
       
       <script>
         app = initialize({
