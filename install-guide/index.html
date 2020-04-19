@@ -482,7 +482,7 @@
 </blockquote>
 <h3 id="software-requirements">Software requirements</h3>
 <ul>
-<li>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc.</li>
+<li>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc</li>
 <li>Install docker (<a href="http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/">Ubuntu 16.04</a>, <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04">Ubuntu 18.04</a> or <a href="https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/">MacOS</a>)<blockquote>
 <p>MacOS is <b>not recommended</b> for production usage!</p>
 </blockquote>
@@ -491,7 +491,7 @@
 </ul>
 <h2 id="initial-setup">Initial setup</h2>
 <ul>
-<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a>.</li>
+<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a></li>
 <li>Go to the qps-infra folder and launch the setup.sh script providing your hostname or ip address as an argument</li>
 </ul>
 <pre><code>git clone https://github.com/qaprosoft/qps-infra.git
@@ -500,29 +500,29 @@ cd qps-infra
 </code></pre>
 
 <ul>
-<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</br></li>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</li>
 <li>NGiNX WebServer: nginx </li>
 <li>Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash </li>
 <li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api </li>
 <li>Web and mobile selenium hubs: selenium hub, ggr, selenoid </li>
 <li>Local storage: ftp </li>
 <li>Sonarqube: sonarqube <blockquote>
-<p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s).</p>
+<p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
 </blockquote>
 </li>
 </ul>
 <h2 id="security-setup-strongly-recommended-for-publicly-available-environments">Security setup  (strongly recommended for publicly available environments)</h2>
 <ul>
-<li>Generate new AUTH_TOKEN_SECRET for production environment<blockquote>
-<p>It should be base64 encoded value based on randomized string</p>
+<li>Generate new AUTH_TOKEN_SECRET and put into in variables.env<blockquote>
+<p>Use https://passwordsgenerator.net to generate and https://www.base64encode.org/ to encode (Randomized and base64 encoded string)</p>
 </blockquote>
 </li>
-<li>Generate new CRYPTO_SALT value<blockquote>
-<p>It should be randomized alpha-numeric string)</p>
+<li>Generate new CRYPTO_SALT and put into in variables.env<blockquote>
+<p>Use https://passwordsgenerator.net/ to generate it (randomized alpha-numeric string)</p>
 </blockquote>
 </li>
 <li>Update default credentials in variables.env<blockquote>
-<p>If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well </p>
+<p>If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well</p>
 </blockquote>
 </li>
 </ul>
@@ -616,7 +616,7 @@ Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updat
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.one": "1 matching document", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.placeholder": "Type to start searching", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.other": "# matching documents", "search.config.lang": "en", "search.result.one": "1 matching document"}</script>
       
       <script>
         app = initialize({
