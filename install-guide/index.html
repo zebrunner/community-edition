@@ -482,13 +482,15 @@
 <li>
 <p>Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env</p>
 <blockquote>
-<p>Strongly recommended for publicly available environments!
-Use https://passwordsgenerator.net to generate and https://www.base64encode.org/ to encode AUTH_TOKEN_SECRET (Randomized and base64 encoded string)
-Use https://passwordsgenerator.net/ to generate CRYPTO_SALT (randomized alpha-numeric string)</p>
+<p>Strongly recommended for publicly available environments!</p>
 </blockquote>
 </li>
+<li>Use https://passwordsgenerator.net to generate and https://www.base64encode.org/ to encode AUTH_TOKEN_SECRET (Randomized and base64 encoded string)</li>
 <li>
-<p>Update default credentials in variables.env</p>
+<p>Use https://passwordsgenerator.net/ to generate CRYPTO_SALT (randomized alpha-numeric string)</p>
+</li>
+<li>
+<p>1Update default credentials in variables.env</p>
 <blockquote>
 <p>If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well</p>
 </blockquote>
@@ -617,7 +619,7 @@ Use https://passwordsgenerator.net/ to generate CRYPTO_SALT (randomized alpha-nu
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "clipboard.copy": "Copy to clipboard", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.placeholder": "Type to start searching"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.lang": "en", "search.result.one": "1 matching document", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.other": "# matching documents", "clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard"}</script>
       
       <script>
         app = initialize({
