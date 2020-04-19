@@ -211,6 +211,40 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    Purpose
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audience" class="md-nav__link">
+    Audience
+  </a>
+  
+    <nav class="md-nav" aria-label="Audience">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assumed-knowledge" class="md-nav__link">
+    Assumed Knowledge
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#license" class="md-nav__link">
     License
   </a>
@@ -298,6 +332,40 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#purpose" class="md-nav__link">
+    Purpose
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audience" class="md-nav__link">
+    Audience
+  </a>
+  
+    <nav class="md-nav" aria-label="Audience">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assumed-knowledge" class="md-nav__link">
+    Assumed Knowledge
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#license" class="md-nav__link">
     License
   </a>
@@ -330,10 +398,28 @@
 <a href="https://hub.docker.com/r/qaprosoft/jenkins-master/"><img alt="jenkins-master pulls" src="https://img.shields.io/docker/pulls/qaprosoft/jenkins-master.svg?label=jenkins-master%20pulls" /></a>
 <a href="https://hub.docker.com/r/qaprosoft/jenkins-slave/"><img alt="jenkins-slave pulls" src="https://img.shields.io/docker/pulls/qaprosoft/jenkins-slave.svg?label=jenkins-slave%20pulls" /></a>
 <a href="https://hub.docker.com/r/qaprosoft/postgres/"><img alt="postgres pulls" src="https://img.shields.io/docker/pulls/qaprosoft/postgres.svg?label=postgres%20pulls" /></a></p>
-<p>QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is integrated by default with <a href="http://www.carina-core.io">carina-core</a> open source framework and uses Jenkins as a CI Tool.</p>
+<h2 id="purpose">Purpose</h2>
+<p>Welcome to the QPS Infra Tutorial. This manual is designed to help you install, configure and maintain your system, and to optimize and extend or re-configure it to meet the changing needs of your business. </p>
+<blockquote>
+<p>In short, the aim of this manual is to explain the tasks involved in administering qps-infra system</p>
+</blockquote>
+<h2 id="audience">Audience</h2>
+<p>This guide is written for all levels of administrators, from those who is responsible for deployment and setup, to those who oversee the entire system and its usage. In addition, some information from user Guide is intended for TestOps engineers who want to build effective Test Automation process.</p>
+<h3 id="assumed-knowledge">Assumed Knowledge</h3>
+<p>Installation and Configuration guides are for administrator who install, deploy and Manage Q{S infra products. It assumes the following knowledge
+ * Docker platform and docker compose orchestration tool skills
+ * UNIX/Linux administration skills
+ * Security and server administration skills
+ * Understanding of your organization's security infrastructure, including authentication providers such as LDAP, and use of SSL
+ * Understanding of your organization's network environment and port usage</p>
+<h2 id="overview">Overview</h2>
+<p>QPS-Infra is a dockerized QA infrastructure solution for effective Test Automation and Reporting. It is integrated by default with <a href="http://www.carina-core.io">carina-core</a> open source framework and uses Jenkins as a CI Tool.</p>
 <ul>
 <li>
-<p>QPS-Infra is built on top of popular docker solutions, it includes Postgres database, <a href="https://zebrunner.github.io/documentation/">Zebrunner Insights</a> - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, RabbitMQ, etc.</p>
+<p>QPS-Infra is built on top of popular docker solutions, it includes Postgres database, <a href="https://zebrunner.github.io/documentation/">Zebrunner Insights</a> - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, RabbitMQ, etc. </p>
+<blockquote>
+<p>In additions easily intergated with 3rd party devices/browsers farms like: <a href="https://mobiletesting.farm/">MCloud</a>, <a href="https://www.browserstack.com/">Browserstack</a>, <a href="https://saucelabs.com/">SauceLabs</a> etc</p>
+</blockquote>
 </li>
 <li>
 <p>All components are deployed under NGINX WebServer which can be configured in a fully secured environment</p>
@@ -399,7 +485,7 @@
     </div>
     
       <script src="assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "search.result.placeholder": "Type to start searching", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.result.other": "# matching documents", "search.config.separator": "[\\s\\-]+", "search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.one": "1 matching document"}</script>
+      <script src="assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.one": "1 matching document", "search.config.lang": "en", "clipboard.copy": "Copy to clipboard", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter"}</script>
       
       <script>
         app = initialize({
