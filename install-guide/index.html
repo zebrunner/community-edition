@@ -482,9 +482,7 @@
 <li>
 <p>Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env</p>
 <blockquote>
-<p>Strongly recommended for publicly available environments!
-AUTH_TOKEN_SECRET is randomized and base64 encoded string
-CRYPTO_SALT is randomized alpha-numeric string</p>
+<p>Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string</p>
 </blockquote>
 </li>
 <li>
@@ -501,6 +499,15 @@ CRYPTO_SALT is randomized alpha-numeric string</p>
 <p>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</p>
 </li>
 </ol>
+<p><a href="http://demo.qaprosoft.com">1st Page - http://demo.qaprosoft.com</a>
+  <a href="http://demo.qaprosoft.com/jenkins">Jenkins - http://demo.qaprosoft.com/jenkins</a>
+  <a href="http://demo.qaprosoft.com/mcloud/grid/console">Selenium Grid - http://demo.qaprosoft.com/mcloud/grid/console</a>
+  <a href="http://demo.qaprosoft.com/app">Zafira Reporting Tool - http://demo.qaprosoft.com/app</a>
+  <a href="http://demo.qaprosoft.com/sonarqube">SonarQube - http://demo.qaprosoft.com/sonarqube</a></p>
+<blockquote>
+<p>Use your host domain address or IP.
+admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
+</blockquote>
 <h2 id="disableremove-components">Disable/Remove component(s)</h2>
 <p>QPS-Infra contains such layers of services:</p>
 <table>
@@ -617,7 +624,7 @@ CRYPTO_SALT is randomized alpha-numeric string</p>
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.none": "No matching documents", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+", "search.result.one": "1 matching document", "clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.placeholder": "Type to start searching", "search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.pipeline": "trimmer, stopWordFilter", "search.result.other": "# matching documents", "search.result.none": "No matching documents", "clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.result.one": "1 matching document", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.config.lang": "en"}</script>
       
       <script>
         app = initialize({
