@@ -500,17 +500,15 @@ cd qps-infra
 </code></pre>
 
 <ul>
-<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</br><ul>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</br></li>
 <li>NGiNX WebServer: nginx </li>
 <li>Reporting Toolset: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash </li>
 <li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api </li>
 <li>Web and mobile selenium hubs: selenium hub, ggr, selenoid </li>
 <li>Local storage: ftp </li>
 <li>Sonarqube: sonarqube <blockquote>
-<p>It has sense to disable whole group. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment services.</p>
+<p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s).</p>
 </blockquote>
-</li>
-</ul>
 </li>
 </ul>
 <h2 id="security-setup-strongly-recommended-for-publicly-available-environments">Security setup  (strongly recommended for publicly available environments)</h2>
@@ -612,7 +610,7 @@ Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updat
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.one": "1 matching document", "search.result.placeholder": "Type to start searching", "search.config.separator": "[\\s\\-]+", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "clipboard.copied": "Copied to clipboard", "search.result.none": "No matching documents"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.lang": "en", "search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copy": "Copy to clipboard", "search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document", "search.config.separator": "[\\s\\-]+"}</script>
       
       <script>
         app = initialize({
