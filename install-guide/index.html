@@ -460,24 +460,74 @@
 <p>Use public ip address if you don't have registered DNS hostname yet</p>
 </blockquote>
 </li>
-<li>[Optional] adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
-| Layer                         | Containers                                                            |
-|------------------------------ |---------------------------------------------------------------------- |
-| NGiNX WebServer               | nginx                                                                 |
-| Reporting Services            | postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash  |
-| CI (Jenkins)                  | jenkins-master, jenkins-slave-web, jenkins-slave-api                  |
-| Local Storage                 | ftp                                                                   |
-| Code Analysis                 | sonarqube                                                             |
-| Embedded web selenium hub     | ggr, selenoid                                                         |
-| Embedded mobile selenium hub  | selenium-hub                                                          |<blockquote>
-<p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
-</blockquote>
-</li>
-<li>Secure your encryption block</li>
-<li>Start services<br>
-  <code>./start.sh</code></li>
-<li>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</li>
+<li>[Optional] adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</li>
 </ol>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Containers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NGiNX WebServer</td>
+<td>nginx</td>
+</tr>
+<tr>
+<td>Reporting Services</td>
+<td>postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash</td>
+</tr>
+<tr>
+<td>CI (Jenkins)</td>
+<td>jenkins-master, jenkins-slave-web, jenkins-slave-api</td>
+</tr>
+<tr>
+<td>Local Storage</td>
+<td>ftp</td>
+</tr>
+<tr>
+<td>Code Analysis</td>
+<td>sonarqube</td>
+</tr>
+<tr>
+<td>Embedded web selenium hub</td>
+<td>ggr, selenoid</td>
+</tr>
+<tr>
+<td>Embedded mobile selenium hub</td>
+<td>selenium-hub</td>
+</tr>
+<tr>
+<td>&gt; It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</td>
+<td></td>
+</tr>
+<tr>
+<td>3. Secure your encryption block</td>
+<td></td>
+</tr>
+<tr>
+<td>4. Start services<br></td>
+<td></td>
+</tr>
+<tr>
+<td>```</td>
+<td></td>
+</tr>
+<tr>
+<td>./start.sh</td>
+<td></td>
+</tr>
+<tr>
+<td>```</td>
+<td></td>
+</tr>
+<tr>
+<td>5. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
@@ -550,7 +600,7 @@
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.config.separator": "[\\s\\-]+", "search.result.none": "No matching documents"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.one": "1 matching document", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.placeholder": "Type to start searching", "search.config.lang": "en", "search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
