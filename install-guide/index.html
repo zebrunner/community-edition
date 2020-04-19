@@ -257,8 +257,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#disableremove-services" class="md-nav__link">
-    Disable/Remove services
+  <a href="#disableremove-components" class="md-nav__link">
+    Disable/Remove component(s)
   </a>
   
 </li>
@@ -380,8 +380,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#disableremove-services" class="md-nav__link">
-    Disable/Remove services
+  <a href="#disableremove-components" class="md-nav__link">
+    Disable/Remove component(s)
   </a>
   
 </li>
@@ -477,10 +477,21 @@
 </blockquote>
 </li>
 <li>
-<p>[Optional] adjust docker-compose.yml file removing/disabling unused services according to the <a href="#disableremove-services">steps</a>.</p>
+<p>[Optional] adjust docker-compose.yml file removing/disabling unused services according to the <a href="#disableremove-components">steps</a>.</p>
 </li>
 <li>
-<p>Secure your encryption block</p>
+<p>Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env</p>
+<blockquote>
+<p>Strongly recommended for publicly available environments!
+Use https://passwordsgenerator.net to generate and https://www.base64encode.org/ to encode AUTH_TOKEN_SECRET (Randomized and base64 encoded string)
+Use https://passwordsgenerator.net/ to generate CRYPTO_SALT (randomized alpha-numeric string)</p>
+</blockquote>
+</li>
+<li>
+<p>Update default credentials in variables.env</p>
+<blockquote>
+<p>If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well</p>
+</blockquote>
 </li>
 <li>
 <p>Start services<br>
@@ -490,8 +501,8 @@
 <p>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</p>
 </li>
 </ol>
-<h2 id="disableremove-services">Disable/Remove services</h2>
-<p>By default, it contains such group of services:</p>
+<h2 id="disableremove-components">Disable/Remove component(s)</h2>
+<p>QPS-Infra contains such layers of services:</p>
 <table>
 <thead>
 <tr>
@@ -532,8 +543,7 @@
 </table>
 <p>Open docker-composer.yml and comment/remove all unused containers.</p>
 <blockquote>
-<p>Make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)
-Current solution is applicable only till qps-infra v.4</p>
+<p>Make sure to remove disabled services from depends_on directives in docker-compose.yml if any</p>
 </blockquote>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
@@ -607,7 +617,7 @@ Current solution is applicable only till qps-infra v.4</p>
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.one": "1 matching document", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.none": "No matching documents", "search.config.lang": "en"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "clipboard.copy": "Copy to clipboard", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.placeholder": "Type to start searching"}</script>
       
       <script>
         app = initialize({
