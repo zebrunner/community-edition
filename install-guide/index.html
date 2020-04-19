@@ -235,19 +235,6 @@
     Hardware requirements
   </a>
   
-    <nav class="md-nav" aria-label="Hardware requirements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mcloud-hardware-requirements" class="md-nav__link">
-    MCloud hardware requirements
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -385,19 +372,6 @@
     Hardware requirements
   </a>
   
-    <nav class="md-nav" aria-label="Hardware requirements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mcloud-hardware-requirements" class="md-nav__link">
-    MCloud hardware requirements
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -478,70 +452,15 @@
 <h2 id="system-requirements">System requirements</h2>
 <h3 id="hardware-requirements">Hardware requirements</h3>
 <p><strong>Recommended:</strong>
-<ul><li> Linux Ubuntu (8+ core, 32RAM, SSD 512Gb+)</ul></p>
-<h4 id="mcloud-hardware-requirements">MCloud hardware requirements</h4>
-<p><strong>CPU</strong>
-<ul>
-<li> product: Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz
-<li> vendor: Intel Corp.
-<li> physical id: 4b
-<li> bus info: cpu@0
-<li> version: Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz
-<li> serial: To Be Filled By O.E.M.
-<li> slot: LGA1151
-<li> size: 2462MHz
-<li> capacity: 4005MHz
-<li> width: 64 bits
-<li> clock: 100MHz
- </ul>
-<strong>Motherboard</strong>
-<ul>
-<li> SMBIOS 3.0.0 present.
-<li> Handle 0x0002, DMI type 2, 15 bytes
-<li> Base Board Information
-  <ul>
-   <li> Manufacturer: ASUSTeK COMPUTER INC.
-   <li> Product Name: PRIME H270M-PLUS
-   <li> Version: Rev X.0x
-   <li> Serial Number: 161292411902325
-   <li> Asset Tag: Default string
-  </ul>
-<li> Features:
-<ul><li> Board is a hosting board
-<li> Board is replaceable</ul> <br />
-<li> Location In Chassis: Default string
-<li> Chassis Handle: 0x0003
-<li> Type: Motherboard
-<li> Contained Object Handles: 0</ul>
-<strong>RAM</strong>
-<ul><li> X2 - Kingston 16GB 2133 MHz
-<li> Array Handle: 0x0042
- <ul> <li> Error Information Handle: Not Provided
-  <li> Total Width: 64 bits
-  <li> Data Width: 64 bits
-  <li> Size: 16384 MB
-  <li> Form Factor: DIMM
-  <li> Set: None
-  <li> Locator: ChannelA-DIMM2
-  <li> Bank Locator: BANK 1
-  <li> Type: DDR4
-  <li> Type Detail: Synchronous
-  <li> Speed: 2133 MHz
-  <li> Manufacturer: Kingston
-  <li> Serial Number: 193A2FD5
-  <li> Asset Tag: 9876543210
-  <li> Part Number: 9905625-065.A00G    
-  <li> Rank: 2
-  <li> Configured Clock Speed: 2133 MHz
-  <li> Minimum Voltage: 1.2 V
-  <li> Maximum Voltage: 1.2 V
-  <li> Configured Voltage: 1.2 V
- </ul> </ul>
- <strong>SSD</strong>
- <ul> <li> Model Number: KINGSTON SHFS37A480G                    
-  <li> Serial Number: 50026B726900792F    
-  <li> Firmware Revision: 603ABBF0
-  <li> Transport: Serial, ATA8-AST, SATA 1.0a, SATA II Extensions, SATA Rev 2.5, SATA Rev 2.6, SATA Rev 3.0   </ul></p>
+|                           | Requirements                  |
+|:-----------------------:  |---------------------------    |
+| <b>Operating System</b>   | Linux Ubuntu 16.04, 18.04     |
+| <b>       CPU      </b>   | 8+ Cores                      |
+| <b>      Memory    </b>   | 32 Gb RAM                     |
+| <b>    Free space  </b>   | SSD 128Gb+ of free space      |</p>
+<blockquote>
+<p>All in one standalone deployment supports up to 5 parallel executors for web and api tests. The most optimal EC2 instance type is t3.2xlarge with enabled "T2/T3 Unlimited" feature</p>
+</blockquote>
 <h3 id="software-requirements">Software requirements</h3>
 <ul>
 <li>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc.<blockquote>
@@ -684,7 +603,7 @@ Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updat
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "search.result.one": "1 matching document", "search.result.placeholder": "Type to start searching", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+", "search.result.none": "No matching documents", "clipboard.copy": "Copy to clipboard", "search.config.pipeline": "trimmer, stopWordFilter"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.none": "No matching documents", "search.config.lang": "en", "clipboard.copy": "Copy to clipboard", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document", "clipboard.copied": "Copied to clipboard"}</script>
       
       <script>
         app = initialize({
