@@ -492,11 +492,11 @@ cd qps-infra
 <li>CI: jenkins-master, jenkins-slave-web, jenkins-slave-api </li>
 <li>Web and mobile selenium hubs: selenium hub, ggr, selenoid </li>
 <li>Local storage: ftp </li>
-<li>Sonarqube: sonarqube <blockquote>
+<li>Sonarqube: sonarqube </li>
+</ul>
+<blockquote>
 <p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
 </blockquote>
-</li>
-</ul>
 <h2 id="security-setup-strongly-recommended-for-publicly-available-environments">Security setup  (strongly recommended for publicly available environments)</h2>
 <ul>
 <li>Generate new AUTH_TOKEN_SECRET and put into in variables.env<blockquote>
@@ -600,7 +600,7 @@ Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updat
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.none": "No matching documents", "search.config.separator": "[\\s\\-]+", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "clipboard.copy": "Copy to clipboard", "search.result.placeholder": "Type to start searching"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.pipeline": "trimmer, stopWordFilter", "search.result.one": "1 matching document", "clipboard.copy": "Copy to clipboard", "search.result.placeholder": "Type to start searching", "clipboard.copied": "Copied to clipboard", "search.result.other": "# matching documents", "search.config.separator": "[\\s\\-]+", "search.result.none": "No matching documents", "search.config.lang": "en"}</script>
       
       <script>
         app = initialize({
