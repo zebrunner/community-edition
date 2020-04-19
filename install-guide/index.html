@@ -480,13 +480,13 @@
 <p>[Optional] adjust docker-compose.yml file removing/disabling unused services according to the <a href="#disableremove-components">steps</a>.</p>
 </li>
 <li>
-<p>Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env</p>
+<p>[Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env</p>
 <blockquote>
 <p>Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string</p>
 </blockquote>
 </li>
 <li>
-<p>Update default credentials in variables.env</p>
+<p>[Optional] Update default credentials in variables.env</p>
 <blockquote>
 <p>If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well</p>
 </blockquote>
@@ -646,7 +646,7 @@ admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated ins
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.separator": "[\\s\\-]+", "clipboard.copy": "Copy to clipboard", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.config.lang": "en", "search.result.one": "1 matching document", "search.result.none": "No matching documents", "clipboard.copied": "Copied to clipboard", "search.config.pipeline": "trimmer, stopWordFilter"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.none": "No matching documents", "clipboard.copy": "Copy to clipboard", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document", "search.config.lang": "en", "clipboard.copied": "Copied to clipboard", "search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter"}</script>
       
       <script>
         app = initialize({
