@@ -455,9 +455,21 @@
 </ul>
 <h2 id="initial-setup">Initial setup</h2>
 <ol>
-<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a> and launch the setup.sh script providing your hostname or ip address as an argument:<br>
-  <code>git clone https://github.com/qaprosoft/qps-infra.git &amp;&amp; cd qps-infra &amp;&amp; ./setup.sh myhost.domain.com</code></li>
-<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:</li>
+<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a> and launch the setup.sh script providing your hostname as an argument:<br>
+  <code>git clone https://github.com/qaprosoft/qps-infra.git &amp;&amp; cd qps-infra &amp;&amp; ./setup.sh myhost.domain.com</code><blockquote>
+<p>Use public ip address if you don't have registered DNS hostname yet</p>
+</blockquote>
+</li>
+<li>Optional: adjust docker-compose.yml file by removing unused services. By default, it contains such group of services:
+  NGiNX WebServer: nginx 
+  Reporting Services: postgres, zafira/zafira-ui, rabbitmq, elasticsearch, redis, logstash 
+  CI: jenkins-master, jenkins-slave-web, jenkins-slave-api 
+  Web and mobile selenium hubs: selenium hub, ggr, selenoid 
+  Local storage: ftp 
+  Sonarqube: sonarqube <blockquote>
+<p>It has sense to disable/remove whole group of services. Also make sure to update depends_on in docker-compose and ./nginx/conf/default.conf to disable/comment service(s)</p>
+</blockquote>
+</li>
 <li>Secure your encryption block</li>
 <li>Start services<br>
   <code>./start.sh</code></li>
@@ -535,7 +547,7 @@
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.lang": "en", "search.result.placeholder": "Type to start searching", "clipboard.copied": "Copied to clipboard", "search.result.other": "# matching documents", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "clipboard.copy": "Copy to clipboard", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.none": "No matching documents", "search.config.lang": "en", "search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document"}</script>
       
       <script>
         app = initialize({
