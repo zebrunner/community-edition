@@ -513,10 +513,16 @@ cd qps-infra
 </ul>
 <h2 id="security-setup-strongly-recommended-for-publicly-available-environments">Security setup  (strongly recommended for publicly available environments)</h2>
 <ul>
-<li>Regenerate AUTH_TOKEN_SECRET for production environment. (It should be base64 encoded value based on randomized string)</li>
-<li>Regenerate CRYPTO_SALT value (it should be randomized alpha-numeric string)</li>
+<li>Generate new AUTH_TOKEN_SECRET for production environment<blockquote>
+<p>It should be base64 encoded value based on randomized string</p>
+</blockquote>
+</li>
+<li>Generate new CRYPTO_SALT value<blockquote>
+<p>It should be randomized alpha-numeric string)</p>
+</blockquote>
+</li>
 <li>Update default credentials in variables.env<blockquote>
-<p>Note: If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well  </p>
+<p>If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well </p>
 </blockquote>
 </li>
 </ul>
@@ -610,7 +616,7 @@ Note: admin/qaprosoft are hardcoded sonarqube credentials, and they can be updat
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.config.lang": "en", "search.result.none": "No matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copy": "Copy to clipboard", "search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document", "search.config.separator": "[\\s\\-]+"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.one": "1 matching document", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+"}</script>
       
       <script>
         app = initialize({
