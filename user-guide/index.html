@@ -217,6 +217,8 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
         User Guide
@@ -233,6 +235,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -243,21 +247,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#user-guide-draft" class="md-nav__link">
-    User Guide (Draft)
-  </a>
-  
-    <nav class="md-nav" aria-label="User Guide (Draft)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#how-to-use-these-features" class="md-nav__link">
     How to use these features?
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#test-jobs-apiwebmobile" class="md-nav__link">
     Test Jobs (API/Web/Mobile)
   </a>
@@ -297,8 +293,8 @@
     </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#cron-jobslayer-of-testing" class="md-nav__link">
     Cron Jobs(Layer of testing)
   </a>
@@ -351,23 +347,18 @@
     </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     Troubleshooting
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#support-channel" class="md-nav__link">
     Support Channel
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -404,6 +395,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -414,21 +407,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#user-guide-draft" class="md-nav__link">
-    User Guide (Draft)
-  </a>
-  
-    <nav class="md-nav" aria-label="User Guide (Draft)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#how-to-use-these-features" class="md-nav__link">
     How to use these features?
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#test-jobs-apiwebmobile" class="md-nav__link">
     Test Jobs (API/Web/Mobile)
   </a>
@@ -468,8 +453,8 @@
     </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#cron-jobslayer-of-testing" class="md-nav__link">
     Cron Jobs(Layer of testing)
   </a>
@@ -522,23 +507,18 @@
     </nav>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#troubleshooting" class="md-nav__link">
     Troubleshooting
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#support-channel" class="md-nav__link">
     Support Channel
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -562,10 +542,8 @@
                   
                 
                 
-                  <h1>User Guide</h1>
-                
-                <h2 id="user-guide-draft">User Guide (Draft)</h2>
-<h3 id="how-to-use-these-features">How to use these features?</h3>
+                <h1 id="user-guide-draft">User Guide (Draft)</h1>
+<h2 id="how-to-use-these-features">How to use these features?</h2>
 <p>To start there are a number of additional parameters that can be added to an existing Test Suite xml.
 These parameters are: 
 </br>
@@ -593,9 +571,9 @@ When that is specified if a prior job has had an error while running the next jo
 <b> jenkinsRegressionMatrix </b> - This property we use for creating configuration test matrix. 
 </br>
 <b> overrideFields </b> - This property takes any number of custom fields that need to be available at run-time for a job to run successfully.</p>
-<h3 id="test-jobs-apiwebmobile">Test Jobs (API/Web/Mobile)</h3>
+<h2 id="test-jobs-apiwebmobile">Test Jobs (API/Web/Mobile)</h2>
 <p>Jenkins Pipeline Job - this is a job that can be created for each suite and can be executed on demand or by schedule. </p>
-<h4 id="create-a-job">Create a Job</h4>
+<h3 id="create-a-job">Create a Job</h3>
 <ul>
 <li>Open TestNG suite xml file</li>
 <li>Fill the bunch of necessary parameters in your xml:</li>
@@ -611,7 +589,7 @@ When that is specified if a prior job has had an error while running the next jo
 <li>Commit and merge.</li>
 <li>You will see "Job1" Job after Scan is finished (automatic or manual). </li>
 </ul>
-<h4 id="run-a-job">Run a Job</h4>
+<h3 id="run-a-job">Run a Job</h3>
 <p>Steps:</p>
 <ul>
 <li>Login to Jenkins</li>
@@ -619,7 +597,7 @@ When that is specified if a prior job has had an error while running the next jo
 <li>Click Build with Parameters and run Build </li>
 <li>When Job is Completed analyze published reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
 </ul>
-<h4 id="schedule-a-job">Schedule a Job</h4>
+<h3 id="schedule-a-job">Schedule a Job</h3>
 <ul>
 <li>Open TestNG suite xml file</li>
 <li>Fill the bunch of necessary parameters in your xml if they are absent:</li>
@@ -636,15 +614,15 @@ When that is specified if a prior job has had an error while running the next jo
 <ul>
 <li>Commit and merge.</li>
 </ul>
-<h4 id="delete-a-job">Delete a Job</h4>
+<h3 id="delete-a-job">Delete a Job</h3>
 <ul>
 <li>Delete TestNG suite xml file</li>
 <li>Commit and merge.</li>
 <li>Ask your administrator to remove the Job on Jenkins.</li>
 </ul>
-<h3 id="cron-jobslayer-of-testing">Cron Jobs(Layer of testing)</h3>
+<h2 id="cron-jobslayer-of-testing">Cron Jobs(Layer of testing)</h2>
 <p>Jenkins Pipeline Cron - this is a job that can include different suites/jobs and can be executed on demand or by schedule.</p>
-<h4 id="create-a-cron">Create a Cron</h4>
+<h3 id="create-a-cron">Create a Cron</h3>
 <ul>
 <li>Open each TestNG suite xml file(s) </li>
 <li>Declare "jenkinsRegressionPipeline" property in xml:</li>
@@ -656,7 +634,7 @@ When that is specified if a prior job has had an error while running the next jo
 <li>Commit and merge.</li>
 <li>After Scan is finished (automatic or manual) nightly_regression, full_regression crons are created in Jenkins.</li>
 </ul>
-<h5 id="how-to-set-up-configuration-matrix">How to Set up Configuration Matrix</h5>
+<h4 id="how-to-set-up-configuration-matrix">How to Set up Configuration Matrix</h4>
 <ul>
 <li>Open TestNG suite xml file </li>
 <li>Declare "jenkinsRegressionMatrix" property in xml:</li>
@@ -673,7 +651,7 @@ When that is specified if a prior job has had an error while running the next jo
 </blockquote>
 </li>
 </ul>
-<h4 id="run-a-cron">Run a Cron</h4>
+<h3 id="run-a-cron">Run a Cron</h3>
 <p>Steps:</p>
 <ul>
 <li>Go to organization/repository and open a Cron Job<blockquote>
@@ -684,7 +662,7 @@ When that is specified if a prior job has had an error while running the next jo
 <li>Cron Job should trigger children jobs according to desired configuration matrix</li>
 <li>When Cron Job is Completed analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
 </ul>
-<h4 id="schedule-a-cron">Schedule a Cron</h4>
+<h3 id="schedule-a-cron">Schedule a Cron</h3>
 <ul>
 <li>Open any child TestNG suite xml file </li>
 <li>Declare "jenkinsRegressionScheduling" parameter :</li>
@@ -697,14 +675,14 @@ When that is specified if a prior job has had an error while running the next jo
 <li>Commit and merge.</li>
 <li>After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.</li>
 </ul>
-<h4 id="delete-a-cron">Delete a Cron</h4>
+<h3 id="delete-a-cron">Delete a Cron</h3>
 <ul>
 <li>Open each TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.</li>
 <li>Commit and merge.</li>
 <li>Ask your administrator to delete Cron job in Jenkins</li>
 </ul>
-<h3 id="troubleshooting">Troubleshooting</h3>
-<h3 id="support-channel">Support Channel</h3>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h2 id="support-channel">Support Channel</h2>
 <ul>
 <li>Join <a href="https://t.me/qps_infra">Telegram channel</a> in case of any question</li>
 </ul>
@@ -775,7 +753,7 @@ When that is specified if a prior job has had an error while running the next jo
     </div>
     
       <script src="../assets/javascripts/vendor.c51dfa35.min.js"></script>
-      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copied": "Copied to clipboard", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document", "search.result.none": "No matching documents", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+", "clipboard.copy": "Copy to clipboard"}</script>
+      <script src="../assets/javascripts/bundle.eaaa3931.min.js"></script><script id="__lang" type="application/json">{"search.result.placeholder": "Type to start searching", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.lang": "en", "search.result.other": "# matching documents", "clipboard.copy": "Copy to clipboard", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "search.result.one": "1 matching document", "search.result.none": "No matching documents"}</script>
       
       <script>
         app = initialize({
