@@ -1,6 +1,6 @@
-## User Guide (Draft)
+# User Guide (Draft)
 
-### How to use these features? 
+## How to use these features? 
 To start there are a number of additional parameters that can be added to an existing Test Suite xml.
 These parameters are: 
 </br>
@@ -30,10 +30,10 @@ When that is specified if a prior job has had an error while running the next jo
 <b> overrideFields </b> - This property takes any number of custom fields that need to be available at run-time for a job to run successfully.
 
 
-### Test Jobs (API/Web/Mobile)
+## Test Jobs (API/Web/Mobile)
 Jenkins Pipeline Job - this is a job that can be created for each suite and can be executed on demand or by schedule. 
 
-#### Create a Job
+### Create a Job
 
 * Open TestNG suite xml file
 * Fill the bunch of necessary parameters in your xml:
@@ -47,7 +47,7 @@ Jenkins Pipeline Job - this is a job that can be created for each suite and can 
 * Commit and merge.
 * You will see "Job1" Job after Scan is finished (automatic or manual). 
 
-#### Run a Job
+### Run a Job
 Steps:
 
 * Login to Jenkins
@@ -55,7 +55,7 @@ Steps:
 * Click Build with Parameters and run Build 
 * When Job is Completed analyze published reports/logs (Carina reports/Zafira reports/TestNG reports)
 
-#### Schedule a Job
+### Schedule a Job
 * Open TestNG suite xml file
 * Fill the bunch of necessary parameters in your xml if they are absent:
 ```
@@ -67,16 +67,16 @@ Steps:
 ```
 * Commit and merge.
 
-#### Delete a Job
+### Delete a Job
 
 * Delete TestNG suite xml file
 * Commit and merge.
 * Ask your administrator to remove the Job on Jenkins.
 
-### Cron Jobs(Layer of testing)
+## Cron Jobs(Layer of testing)
 Jenkins Pipeline Cron - this is a job that can include different suites/jobs and can be executed on demand or by schedule.
 
-#### Create a Cron
+### Create a Cron
 * Open each TestNG suite xml file(s) 
 * Declare "jenkinsRegressionPipeline" property in xml:
 ```
@@ -85,7 +85,7 @@ Jenkins Pipeline Cron - this is a job that can include different suites/jobs and
 * Commit and merge.
 * After Scan is finished (automatic or manual) nightly_regression, full_regression crons are created in Jenkins.
 
-##### How to Set up Configuration Matrix
+#### How to Set up Configuration Matrix
 * Open TestNG suite xml file 
 * Declare "jenkinsRegressionMatrix" property in xml:
 ```
@@ -97,7 +97,7 @@ Jenkins Pipeline Cron - this is a job that can include different suites/jobs and
 * Every time you run Carina-Demo-Regression-Pipeline job it should start your suite xml child job twice for DEMO and PROD environments using appropriate branches.
 > Note: Any param values pairs can be provided. Comma separated - for single job params. Semicolon separated for multiple child job params.
 
-#### Run a Cron
+### Run a Cron
 Steps:
 
 * Go to organization/repository and open a Cron Job
@@ -106,7 +106,7 @@ Steps:
 * Cron Job should trigger children jobs according to desired configuration matrix
 * When Cron Job is Completed analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)
 
-#### Schedule a Cron
+### Schedule a Cron
 * Open any child TestNG suite xml file 
 * Declare "jenkinsRegressionScheduling" parameter :
 ```
@@ -116,14 +116,14 @@ Steps:
 * Commit and merge.
 * After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.
 
-#### Delete a Cron
+### Delete a Cron
 
 * Open each TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.
 * Commit and merge.
 * Ask your administrator to delete Cron job in Jenkins
 
-### Troubleshooting
+## Troubleshooting
 
-### Support Channel
+## Support Channel
 
 * Join [Telegram channel](https://t.me/qps_infra) in case of any question
