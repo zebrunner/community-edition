@@ -1,4 +1,4 @@
-# Configuration Guide
+# Configuration Guide (Draft)
 ## SCM Integration
   For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure    will use them immediately by default:
  <ul>
