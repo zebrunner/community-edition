@@ -15,6 +15,7 @@ services:
       - sonarqube-extensions-volume:/opt/sonarqube/extensions:rw
     ports:
      - "9000:9000"
+    restart: always
 volumes:
   sonarqube-data-volume:
   sonarqube-logs-volume:
