@@ -28,11 +28,13 @@ do
 esac
 done
 
+docker-compose -f sonarqube/docker-compose.yml stop
 docker-compose stop
 echo "qps-infra was stopped"
 
 if ! $KEEP_CONTAINERS
 then
+  docker-compose -f sonarqube/docker-compose.yml rm -fv
   docker-compose rm -fv
   echo "Containers were deleted"
 else

@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 networks:
   default:
     external:
@@ -6,6 +6,7 @@ networks:
 services:
   nginx:
     image: nginx
+    container_name: qps-nginx
     volumes:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
      - ./nginx/conf.d:/etc/nginx/conf.d:ro
@@ -94,14 +95,6 @@ services:
      - "8000:8000"
     depends_on:
      - "jenkins-master"
-    restart: always
-  sonarqube:
-    image: qaprosoft/sonarqube
-    env_file:
-     - variables.env
-    command: -Dsonar.web.context=/sonarqube
-    depends_on:
-     - "db"
     restart: always
   redis:
     image: redis:5.0.5

@@ -25,4 +25,5 @@ docker pull selenoid/vnc:opera_65.0
 docker pull selenoid/video-recorder:latest-release
 
 #-------------- START EVERYTHING ------------------------------
+docker-compose -f sonarqube/docker-compose.yml up -d
 docker-compose up -d
