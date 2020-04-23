@@ -7,11 +7,10 @@ docker rm -fv $(docker ps -a -q)
 docker rmi -f $(docker images -q)
 
 # remove sonarqube data
-docker volume rm sonarqube_sonarqube-data-volume sonarqube_sonarqube-extensions-volume sonarqube_sonarqube-logs-volume
+docker volume rm sonarqube_data-volume sonarqube_extensions-volume sonarqube_logs-volume
 
 #remove jenkins data
-# TODO: think twice about .m2 removal. It might be useful to keep it even after clearing...
-docker volume rm jenkins-volume m2-volume
+docker volume rm jenkins_data-volume
 
 rm -rf ./pgdata/*
 
