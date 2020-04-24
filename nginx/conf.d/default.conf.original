@@ -1,18 +1,6 @@
-upstream zafira-ui_server {
-    server zafira-ui:80 max_fails=0;
-}
-
-upstream zafira_server {
-    server zafira:8080 max_fails=0;
-}
-
-upstream rabbitmq_server {
-    server rabbitmq:15674 max_fails=0;
-}
-
-upstream elasticsearch_server {
-    server elasticsearch:9200 max_fails=0;
-}
+#upstream elasticsearch_server {
+#    server elasticsearch:9200 max_fails=0;
+#}
 
 upstream ggr_server {
     server ggr:4444 max_fails=0;
@@ -84,43 +72,87 @@ server {
  
         if (!-f $request_filename) {
             set $upstream_jenkins jenkins-master:8080;
-	    #proxy_set_header Host jenkins-master;
 	    proxy_pass http://$upstream_jenkins;
             break;
         }
     }
 
-    # temp rule to continue support for /zafira context root and redirect to the new /app address
-    location /zafira {
-       rewrite ^/zafira$ http://demo.qaprosoft.com/app/ permanent;
-    }
-
-    #Zafira instance
     location /app {
-      proxy_pass http://zafira-ui_server/app/;
+      set $upstream_zebrunner 127.0.0.1:80;
+      proxy_set_header Host zebrunner-proxy;
+      proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection upgrade;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $http_x_real_ip;
-      proxy_set_header Host $host;
-      proxy_pass_header X-XSRF-TOKEN;
-      proxy_set_header Origin "";
     }
 
 
-    #Zafira web service instance
-    location /zafira-ws/ {
-      proxy_pass http://zafira_server/zafira-ws/;
+    location /(app|reporting-service|zafira-ws) {
+      set $upstream_zebrunner 127.0.0.1:80;
+      proxy_set_header Host zebrunner-proxy;
+      proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection upgrade;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $http_x_real_ip;
-      proxy_set_header Host $host;
-      proxy_pass_header X-XSRF-TOKEN;
-      proxy_set_header Origin "";  
     }
+
+
+#    # temp rule to continue support for /zafira context root and redirect to the new /app address
+#    location /zafira {
+#       rewrite ^/zafira$ http://demo.qaprosoft.com/app/ permanent;
+#    }
+
+#    location /app {
+#      set $upstream_reporting zebrunner-proxy:80;
+#      proxy_pass http://$upstream_reporting/app;
+#      proxy_http_version 1.1;
+#      proxy_set_header Upgrade $http_upgrade;
+#      proxy_set_header Connection upgrade;
+#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#      proxy_set_header X-Real-IP $http_x_real_ip;
+#      proxy_set_header Host $host;
+#      proxy_pass_header X-XSRF-TOKEN;
+#      proxy_set_header Origin "";
+#    }
+
+##TODO: removed deprecated /zafira-ws in 1.5 Zebrunner Insights
+#    #Reporting web service instance
+#    location /zafira-ws/ {
+#      set $upstream_reporting zebrunner-proxy:80;
+#      proxy_pass http://$upstream_reporting/zafira-ws/;
+#      proxy_http_version 1.1;
+##      proxy_set_header Upgrade $http_upgrade;
+##      proxy_set_header Connection upgrade;
+##      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+##      proxy_set_header X-Real-IP $http_x_real_ip;
+##      proxy_set_header Host $host;
+##      proxy_pass_header X-XSRF-TOKEN;
+##      proxy_set_header Origin "";
+#    }
+
+
+#    #Zafira instance
+#    location /app {
+#      proxy_pass http://zafira-ui_server/app/;
+#      proxy_http_version 1.1;
+#      proxy_set_header Upgrade $http_upgrade;
+#      proxy_set_header Connection upgrade;
+#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#      proxy_set_header X-Real-IP $http_x_real_ip;
+#      proxy_set_header Host $host;
+#      proxy_pass_header X-XSRF-TOKEN;
+#      proxy_set_header Origin "";
+#    }
+
+
+#    #Zafira web service instance
+#    location /zafira-ws/ {
+#      proxy_pass http://zafira_server/zafira-ws/;
+#      proxy_http_version 1.1;
+#      proxy_set_header Upgrade $http_upgrade;
+#      proxy_set_header Connection upgrade;
+#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#      proxy_set_header X-Real-IP $http_x_real_ip;
+#      proxy_set_header Host $host;
+#      proxy_pass_header X-XSRF-TOKEN;
+#      proxy_set_header Origin "";  
+#    }
 
     #GGR-WebSocket
     location /vnc {
@@ -136,25 +168,25 @@ server {
       proxy_set_header X-NginX-Proxy true;
     }
 
-    location /stomp {
-      proxy_pass http://rabbitmq_server;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection $connection_upgrade;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $http_x_real_ip;
-    }
+#    location /stomp {
+#      proxy_pass http://rabbitmq_server;
+#      proxy_http_version 1.1;
+#      proxy_set_header Upgrade $http_upgrade;
+#      proxy_set_header Connection $connection_upgrade;
+#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#      proxy_set_header X-Real-IP $http_x_real_ip;
+#    }
 
-    location /elasticsearch {
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection 'upgrade';
-      proxy_set_header Host $host;
-      proxy_cache_bypass $http_upgrade;
-
-      proxy_pass http://elasticsearch_server/$1/;
-      rewrite ^/elasticsearch/(.*)$ /$1 break;
-    }
+#    location /elasticsearch {
+#      proxy_http_version 1.1;
+#      proxy_set_header Upgrade $http_upgrade;
+#      proxy_set_header Connection 'upgrade';
+#      proxy_set_header Host $host;
+#      proxy_cache_bypass $http_upgrade;
+#
+#      proxy_pass http://elasticsearch_server/$1/;
+#      rewrite ^/elasticsearch/(.*)$ /$1 break;
+#    }
 
     location /video {
         root   /usr/share/nginx;
