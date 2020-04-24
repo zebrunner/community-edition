@@ -1,0 +1,232 @@
+
+select check_version(76);
+
+DO $$
+DECLARE stability_dashboard_id zafira.DASHBOARDS.id%TYPE;
+
+DECLARE average_stability_percent_id zafira.WIDGETS.id%TYPE;
+DECLARE average_stability_percent_sql zafira.WIDGETS.sql%TYPE;
+DECLARE average_stability_percent_model zafira.WIDGETS.model%TYPE;
+DECLARE test_case_info_id zafira.WIDGETS.id%TYPE;
+DECLARE test_case_info_sql zafira.WIDGETS.sql%TYPE;
+DECLARE test_case_info_model zafira.WIDGETS.model%TYPE;
+DECLARE stability_trend_id zafira.WIDGETS.id%TYPE;
+DECLARE stability_trend_sql zafira.WIDGETS.sql%TYPE;
+DECLARE stability_trend_model zafira.WIDGETS.model%TYPE;
+DECLARE test_execution_time_id zafira.WIDGETS.id%TYPE;
+DECLARE test_execution_time_sql zafira.WIDGETS.sql%TYPE;
+DECLARE test_execution_time_model zafira.WIDGETS.model%TYPE;
+
+BEGIN
+INSERT INTO zafira.DASHBOARDS (TITLE, HIDDEN, POSITION) VALUES ('Stability', TRUE, 8) RETURNING id INTO stability_dashboard_id;
+
+	average_stability_percent_sql :=
+	'set schema ''zafira'';
+    SELECT
+        unnest(array[''STABILITY'', ''FAILURE'', ''OMISSION'', ''KNOWN FAILURE'', ''INTERRUPT'']) AS "label",
+        unnest(array[''#109D5D'', ''#DC4437'', ''#FCBE1F'', ''#AA5C33'', ''#AAAAAA'']) AS "color",
+        unnest(array[ROUND(AVG(STABILITY)::numeric, 0),
+                     ROUND(AVG(FAILURE)::numeric, 0),
+                     ROUND(AVG(OMISSION)::numeric, 0),
+                     ROUND(AVG(KNOWN_FAILURE)::numeric, 0),
+                     ROUND(AVG(INTERRUPT)::numeric, 0)]) AS "value"
+    FROM TEST_CASE_HEALTH_VIEW
+    WHERE
+        TEST_CASE_ID = ''#{testCaseId}''
+    ORDER BY "value" DESC';
+
+	average_stability_percent_model :=
+	'{
+        "thickness": 20
+     }';
+
+    test_case_info_sql :=
+    	'SET SCHEMA ''zafira'';
+         SELECT
+         TEST_CASES.ID AS "ID",
+         TEST_CASES.TEST_CLASS AS "TEST CLASS",
+         TEST_CASES.TEST_METHOD AS "TEST METHOD",
+         TEST_SUITES.FILE_NAME AS "TEST SUITE",
+         USERS.USERNAME AS "OWNER",
+         TEST_CASES.CREATED_AT::date AS "CREATED AT"
+         FROM TEST_CASES
+         LEFT JOIN TEST_SUITES ON TEST_CASES.TEST_SUITE_ID = TEST_SUITES.ID
+         LEFT JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID = USERS.ID
+     WHERE TEST_CASES.ID = ''#{testCaseId}''';
+
+	test_case_info_model :=
+	'{
+         "columns": [
+             "ID",
+             "TEST CLASS",
+             "TEST METHOD",
+             "TEST SUITE",
+             "OWNER",
+             "CREATED AT"
+         ]
+     }';
+
+	stability_trend_sql :=
+	'set schema ''zafira'';
+    SELECT
+        STABILITY as "STABILITY",
+        100 - OMISSION - KNOWN_FAILURE - ABORTED as "FAILURE",
+        100 - KNOWN_FAILURE - ABORTED as "OMISSION",
+        date_trunc(''month'', TESTED_AT) AS "TESTED_AT"
+    FROM TEST_CASE_HEALTH_VIEW
+    WHERE TEST_CASE_ID = ''#{testCaseId}''
+    ORDER BY "TESTED_AT"';
+
+	stability_trend_model :=
+	'{
+        "series": [
+            {
+                "axis": "y",
+                "dataset": "dataset",
+                "key": "OMISSION",
+                "label": "OMISSION",
+                "interpolation": {
+                    "mode": "bundle",
+                    "tension": 1
+                },
+                "color": "#FDE9B4",
+                "thickness": "10px",
+                "type": [
+                    "line",
+                    "area"
+                ],
+                "id": "OMISSION",
+                "visible": true
+            },
+            {
+                "dataset": "dataset",
+                "key": "FAILURE",
+                "label": "FAILURE",
+                "interpolation": {
+                    "mode": "bundle",
+                    "tension": 1
+                },
+                "color": "#F2C3C0",
+                "thickness": "10px",
+                "type": [
+                    "line",
+                    "area"
+                ],
+                "id": "FAILURE",
+                "visible": true
+            },
+            {
+                "axis": "y",
+                "dataset": "dataset",
+                "key": "STABILITY",
+                "label": "STABILITY",
+                "interpolation": {
+                    "mode": "bundle",
+                    "tension": 1
+                },
+                "color": "#5CB85C",
+                "thickness": "10px",
+                "type": [
+                    "line",
+                    "area"
+                ],
+                "id": "STABILITY",
+                "visible": true
+            }
+        ],
+        "axes": {
+            "x": {
+                "key": "TESTED_AT",
+                "type": "date"
+            }
+        }
+    }';
+
+	test_execution_time_sql :=
+	'set schema ''zafira'';
+    SELECT
+        AVG_TIME as "AVG TIME",
+        MAX_TIME as "MAX TIME",
+        MIN_TIME as "MIN TIME",
+        date_trunc(''month'', TESTED_AT) AS "TESTED_AT"
+    FROM TEST_CASE_HEALTH_VIEW
+    WHERE TEST_CASE_ID = ''#{testCaseId}''
+    ORDER BY "TESTED_AT"';
+
+	test_execution_time_model :=
+	'{
+        "series": [
+            {
+                "dataset": "dataset",
+                "key": "MAX TIME",
+                "label": "MAX TIME",
+                "color": "#DC4437",
+                "thickness": "20px",
+                "type": [
+                    "line",
+                    "dot"
+                ],
+                "id": "MAX TIME",
+                "visible": true
+            },
+            {
+                "axis": "y",
+                "dataset": "dataset",
+                "key": "MIN TIME",
+                "label": "MIN TIME",
+                "color": "#5CB85C",
+                "thickness": "20px",
+                "type": [
+                    "line",
+                    "dot"
+                ],
+                "id": "MIN TIME",
+                "visible": true
+            },
+            {
+                "axis": "y",
+                "dataset": "dataset",
+                "key": "AVG TIME",
+                "label": "AVG TIME",
+                "color": "#3A87AD",
+                "thickness": "20px",
+                "type": [
+                    "line",
+                    "dot"
+                ],
+                "id": "AVG TIME",
+                "visible": true
+            }
+        ],
+        "axes": {
+            "x": {
+                "key": "TESTED_AT",
+                "type": "date"
+            }
+        }
+    }';
+
+    INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+		('STABILITY (%)', 'piechart', average_stability_percent_sql, average_stability_percent_model)
+	RETURNING id INTO average_stability_percent_id;
+    INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+		('TESTCASE INFO', 'table', test_case_info_sql, test_case_info_model)
+	RETURNING id INTO test_case_info_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+		('STABILITY TREND (%)', 'linechart', stability_trend_sql, stability_trend_model)
+	RETURNING id INTO stability_trend_id;
+	INSERT INTO zafira.WIDGETS (TITLE, TYPE, SQL, MODEL) VALUES
+		('TEST EXECUTION TIME DETAILS (sec)', 'linechart', test_execution_time_sql, test_execution_time_model)
+	RETURNING id INTO test_execution_time_id;
+
+    INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+		(stability_dashboard_id, average_stability_percent_id, '{"x":0,"y":0,"width":4,"height":11}');
+    INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+		(stability_dashboard_id, test_case_info_id, '{"x":4,"y":0,"width":8,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+		(stability_dashboard_id, stability_trend_id, '{"x":0,"y":11,"width":12,"height":11}');
+	INSERT INTO zafira.DASHBOARDS_WIDGETS (DASHBOARD_ID, WIDGET_ID, LOCATION) VALUES
+		(stability_dashboard_id, test_execution_time_id, '{"x":0,"y":22,"width":12,"height":11}');
+END$$;
+
+select add_version(76);

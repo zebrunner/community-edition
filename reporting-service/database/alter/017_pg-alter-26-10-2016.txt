@@ -1,0 +1,56 @@
+SET SCHEMA 'zafira';
+
+ALTER TABLE TEST_RUNS ADD COLUMN ENV VARCHAR(50) NULL;
+ALTER TABLE TEST_RUNS ADD COLUMN PLATFORM VARCHAR(30) NULL;
+
+
+DROP TRIGGER update_timestamp_test_runs ON zafira.test_runs;
+
+update test_runs as tr set
+    platform = c.platform
+from (
+    SELECT test_runs.id, CAST(unnest( xpath( '/value/text()', XMLPARSE (DOCUMENT value ))) AS text) AS "DEVICE" from (
+ select  id,
+ unnest( xpath( '/config/arg/key', XMLPARSE (DOCUMENT "test_runs"."config_xml" ) ) ) AS key,
+ unnest( xpath( '/config/arg/value', XMLPARSE (DOCUMENT "test_runs"."config_xml" )) ) AS value
+        FROM "zafira"."test_runs"
+        where "test_runs"."config_xml" <> ''
+ ) "a" inner join test_runs on "a".id = test_runs.id
+    where XMLSERIALIZE ( CONTENT "a".key AS text ) = '<key>mobile_platform_name</key>'
+) as c(id, platform)
+where c.id::text = tr.id::text;
+
+update test_runs as tr set
+    platform = c.platform
+from (
+    SELECT test_runs.id, CAST(unnest( xpath( '/value/text()', XMLPARSE (DOCUMENT value ))) AS text) AS "BROWSER" from (
+ select  id,
+ unnest( xpath( '/config/arg/key', XMLPARSE (DOCUMENT "test_runs"."config_xml" ) ) ) AS key,
+ unnest( xpath( '/config/arg/value', XMLPARSE (DOCUMENT "test_runs"."config_xml" )) ) AS value
+        FROM "zafira"."test_runs"
+        where "test_runs"."config_xml" <> ''
+ ) "a" inner join test_runs on "a".id = test_runs.id
+    where XMLSERIALIZE ( CONTENT "a".key AS text ) = '<key>browser</key>'
+) as c(id, platform)
+where c.id::text = tr.id::text;
+
+
+update test_runs as tr set
+    env = c.env
+from (
+    SELECT test_runs.id, CAST(unnest( xpath( '/value/text()', XMLPARSE (DOCUMENT value ))) AS text) AS "ENV" from (
+ select  id,
+ unnest( xpath( '/config/arg/key', XMLPARSE (DOCUMENT "test_runs"."config_xml" ) ) ) AS key,
+ unnest( xpath( '/config/arg/value', XMLPARSE (DOCUMENT "test_runs"."config_xml" )) ) AS value
+        FROM "zafira"."test_runs"
+        where "test_runs"."config_xml" <> ''
+ ) "a" inner join test_runs on "a".id = test_runs.id
+    where XMLSERIALIZE ( CONTENT "a".key AS text ) = '<key>env</key>'
+) as c(id, env)
+where c.id::text = tr.id::text;
+
+CREATE TRIGGER update_timestamp_test_runs
+  BEFORE INSERT OR UPDATE
+  ON zafira.test_runs
+  FOR EACH ROW
+  EXECUTE PROCEDURE zafira.update_timestamp();

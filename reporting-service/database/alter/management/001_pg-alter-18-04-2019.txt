@@ -1,0 +1,1672 @@
+set schema 'management';
+-- fix column display for the below widget template
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG='{"columns": ["PROJECT", "COUNT"]}' WHERE NAME='TOTAL JIRA TICKETS';
+
+-- adjust data params for multiJoin project(s) filters
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+
+SELECT
+      ROUND(SUM(TOTAL_SECONDS)/3600) AS "ACTUAL",
+      ROUND(SUM(TOTAL_ETA_SECONDS)/3600) AS "ETA",
+      to_char(CREATED_AT, ''YYYY-MM'') AS "CREATED_AT"
+  FROM TOTAL_VIEW
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "CREATED_AT"
+  ORDER BY "CREATED_AT";
+
+
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+     <#if map[key] != "" >
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+     </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='TESTS EXECUTION ROI (MAN-HOURS)';
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PLATFORM": join(PLATFORM),
+  "OWNER_USERNAME": join(USER),
+  "PROJECT": multiJoin(PROJECT, projects),
+  "DEVICE": join(DEVICE),
+  "ENV": join(ENV),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+SELECT lower(${GROUP_BY}) AS "GROUP_FIELD",
+      round (100.0 * sum( PASSED ) / sum(TOTAL), 0)::integer AS "PASSED",
+      round (100.0 * sum( KNOWN_ISSUE ) / sum(TOTAL), 0)::integer AS "KNOWN ISSUE",
+      round (100.0 * sum( QUEUED) / sum(TOTAL), 0)::integer AS "QUEUED",
+      0 - round (100.0 * sum( FAILED ) / sum(TOTAL), 0)::integer AS "FAILED",
+      0 - round (100.0 * sum( SKIPPED ) / sum(TOTAL), 0)::integer AS "SKIPPED",
+      0 - round (100.0 * sum( ABORTED) / sum(TOTAL), 0)::integer AS "ABORTED"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "GROUP_FIELD"
+  ORDER BY "GROUP_FIELD" DESC
+
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+     <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+       <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+       <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+     </#if>
+ </#list>
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "TOTAL_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='PASS RATE' AND TYPE='BAR';
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global MULTIPLE_VALUES = {
+  "PROJECTS.NAME": multiJoin(PROJECT, projects)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+
+SELECT
+      PROJECTS.NAME AS "PROJECT",
+      COUNT(DISTINCT WORK_ITEMS.JIRA_ID) AS "COUNT"
+  FROM TEST_WORK_ITEMS
+      INNER JOIN WORK_ITEMS ON TEST_WORK_ITEMS.WORK_ITEM_ID = WORK_ITEMS.ID
+      INNER JOIN TEST_CASES ON WORK_ITEMS.TEST_CASE_ID = TEST_CASES.ID
+      INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "PROJECT"
+  ORDER BY "COUNT" DESC;
+
+
+    <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "WHERE WORK_ITEMS.TYPE=''BUG'' " />
+ <#list map?keys as key>
+     <#if map[key] != "" >
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+     </#if>
+ </#list>
+<#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='TOTAL JIRA TICKETS';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "PLATFORM": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+<#global CREATED_AT = getCreatedAt(PERIOD) />
+
+SELECT
+      ${CREATED_AT} AS "CREATED_AT",
+      sum( PASSED ) AS "PASSED",
+      sum( FAILED ) AS "FAILED",
+      sum( SKIPPED ) AS "SKIPPED",
+      sum( KNOWN_ISSUE ) AS "KNOWN ISSUE",
+      sum( ABORTED ) AS "ABORTED",
+      sum( QUEUED ) AS "QUEUED",
+      sum( TOTAL ) AS "TOTAL"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "CREATED_AT"
+  ORDER BY "CREATED_AT";
+
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+     <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+     </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+
+<#--
+    Retrieves actual CREATED_BY grouping  by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getCreatedAt value>
+  <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''MM-DD HH24:MI'')" />
+    <#break>
+  <#case "Nightly">
+        <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''HH24:MI'')" />
+    <#break>
+  <#case "Last 7 Days">
+  <#case "Last 14 Days">
+  <#case "Last 30 Days">
+  <#case "Weekly">
+  <#case "Monthly">
+        <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+    <#break>
+  <#case "Total">
+        <#local result = "to_char(date_trunc(''month'', CREATED_AT), ''YYYY-MM'')" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+  <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='PASS RATE TREND';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECTS.NAME": multiJoin(PROJECT, projects),
+  "USERS.USERNAME": join(USER)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+
+SELECT
+      to_char(date_trunc(''month'', TEST_CASES.CREATED_AT), ''YYYY-MM'') AS "CREATED_AT",
+      count(*) AS "AMOUNT"
+  FROM TEST_CASES INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+  INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID=USERS.ID
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY 1
+  ORDER BY 1;
+
+
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+     <#if map[key] != "" >
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+     </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND USERS.ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " USERS.ID=${currentUserId} "/>
+ </#if>
+
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='MONTHLY TEST IMPLEMENTATION PROGRESS';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "PLATFORM": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+<#if PERSONAL == "true" >
+SELECT
+  unnest(array[OWNER_USERNAME,
+              ''PASSED'',
+              ''FAILED'',
+              ''SKIPPED'',
+              ''KNOWN ISSUE'',
+              ''QUEUED'',
+              ''ABORTED'']) AS "label",
+     unnest(
+      array[0,
+          sum(PASSED),
+          sum(FAILED),
+          sum(SKIPPED),
+          sum(KNOWN_ISSUE),
+          sum(QUEUED),
+          sum(ABORTED)]) AS "value"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY OWNER_USERNAME
+
+<#else>
+
+SELECT
+  unnest(array[''${PERIOD}'',
+              ''PASSED'',
+              ''FAILED'',
+              ''SKIPPED'',
+              ''KNOWN ISSUE'',
+              ''QUEUED'',
+              ''ABORTED'']) AS "label",
+     unnest(
+      array[0,
+          sum(PASSED),
+          sum(FAILED),
+          sum(SKIPPED),
+          sum(KNOWN_ISSUE),
+          sum(QUEUED),
+          sum(ABORTED)]) AS "value"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+</#if>
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+  <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='PASS RATE' AND TYPE='PIE';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "PLATFORM": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+SELECT count(*) AS "COUNT",
+      ENV AS "ENV",
+      ''<a href="dashboards/'' || (select ID from dashboards where title=''Failures analysis'') || ''?hashcode='' || max(MESSAGE_HASHCODE)  || ''">Failures Analysis</a>'' AS "REPORT",
+      substring(MESSAGE from 1 for 210) as "MESSAGE"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "ENV", substring(MESSAGE from 1 for 210)
+  ORDER BY "COUNT" DESC
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+
+ <#if result?length != 0>
+  <#local result = " WHERE MESSAGE IS NOT NULL AND " + result/>
+ <#else>
+  <#local result = " WHERE MESSAGE IS NOT NULL"/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='TESTS FAILURES';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "PLATFORM": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+SELECT
+        ''<a href="dashboards/'' || (select ID from dashboards where title=''Personal'') || ''?userId='' || OWNER_ID || ''">'' || OWNER_USERNAME || ''</a>'' AS "OWNER",
+        SUM(PASSED) AS "PASS",
+        SUM(FAILED) AS "FAIL",
+        SUM(KNOWN_ISSUE) AS "DEFECT",
+        SUM(SKIPPED) AS "SKIP",
+        sum( QUEUED ) AS "QUEUE",
+        SUM(TOTAL) AS "TOTAL"
+    FROM ${VIEW}
+    ${WHERE_MULTIPLE_CLAUSE}
+    GROUP BY OWNER_ID, OWNER_USERNAME
+    ORDER BY OWNER_USERNAME
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+  <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='TESTS SUMMARY';
+
+
+
+
+-- Adjust params adding "anonymous" user into any USERS filter obligatory
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TOTAL_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM TOTAL_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  }
+}' WHERE NAME='TESTS EXECUTION ROI (MAN-HOURS)';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+  "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Total"
+      ],
+    "required": true
+  },
+  "GROUP_BY": {
+    "values": [
+      "PLATFORM",
+      "OWNER_USERNAME",
+      "PROJECT",
+      "DEVICE",
+      "ENV",
+      "APP_VERSION",
+      "LOCALE",
+      "LANGUAGE",
+      "JOB_NAME",
+      "PRIORITY",
+      "FEATURE"
+      ],
+    "required": true
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TOTAL_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM TOTAL_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE != ''''",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT NAME FROM JOBS WHERE NAME <> '''' AND NAME IS NOT NULL",
+    "multiple": true
+  }
+}' WHERE NAME='PASS RATE' AND TYPE='BAR';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "multiple": true
+  }
+}' WHERE NAME='PASS RATE TREND';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "multiple": true
+  }
+}' WHERE NAME='MONTHLY TEST IMPLEMENTATION PROGRESS';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "type": "radio",
+    "required": true
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "multiple": true
+  }
+}' WHERE NAME='PASS RATE' AND TYPE='PIE';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM TOTAL_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM TOTAL_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "multiple": true
+  }
+}' WHERE NAME='TESTS FAILURES';
+
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG='{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM TOTAL_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM TOTAL_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TOTAL_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM TOTAL_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "multiple": true
+  }
+}' WHERE NAME='TESTS SUMMARY';
+
+
+-- Adjust TABLE queries
+UPDATE WIDGET_TEMPLATES SET SQL='SELECT
+         TEST_CASES.TEST_CLASS || ''.'' || TEST_CASES.TEST_METHOD AS "TEST METHOD",
+         TEST_SUITES.FILE_NAME AS "TEST SUITE",
+         USERS.USERNAME AS "OWNER",
+         PROJECTS.NAME AS "PROJECT",
+         TEST_CASES.CREATED_AT::date::text AS "CREATED AT"
+         FROM TEST_CASES
+         INNER JOIN TEST_SUITES ON TEST_CASES.TEST_SUITE_ID = TEST_SUITES.ID
+         INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID = USERS.ID
+         INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+     WHERE TEST_CASES.ID = ''${testCaseId}''' WHERE NAME='TESTCASE INFO';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL='<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME"] >
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "PLATFORM": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+SELECT
+        ''<a href="dashboards/'' || (select ID from dashboards where title=''Personal'') || ''?userId='' || OWNER_ID || ''">'' || OWNER_USERNAME || ''</a>'' AS "OWNER",
+        SUM(PASSED) AS "PASS",
+        SUM(FAILED) AS "FAIL",
+        SUM(KNOWN_ISSUE) AS "DEFECT",
+        SUM(SKIPPED) AS "SKIP",
+        sum( QUEUED ) AS "QUEUE",
+        SUM(TOTAL) AS "TOTAL",
+        round (100.0 * SUM(PASSED) / (SUM(TOTAL)), 0)::integer AS "PASSED (%)",
+        round (100.0 * SUM(FAILED) / (SUM(TOTAL)), 0)::integer AS "FAILED (%)",
+        round (100.0 * SUM(KNOWN_ISSUE) / (SUM(TOTAL)), 0)::integer AS "KNOWN ISSUE (%)",
+        round (100.0 * SUM(SKIPPED) / (SUM(TOTAL)), 0)::integer AS "SKIPPED (%)",
+        round (100.0 * sum( QUEUED ) / sum(TOTAL), 0)::integer AS "QUEUED (%)",
+        round (100.0 * (SUM(TOTAL)-SUM(PASSED)) / (SUM(TOTAL)), 0)::integer AS "FAIL RATE (%)"
+    FROM ${VIEW}
+    ${WHERE_MULTIPLE_CLAUSE}
+    GROUP BY OWNER_ID, OWNER_USERNAME
+    ORDER BY OWNER_USERNAME
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+  <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME='TESTS SUMMARY';
+
+-- Adjust TABLE charts
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG='{"columns": ["OWNER", "PROJECT", "TEST METHOD", "TEST SUITE", "CREATED AT"]}' WHERE NAME='TESTCASE INFO';
+
+
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG='{"columns": ["OWNER", "PASS", "FAIL", "DEFECT", "SKIP", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}' WHERE NAME='TESTS SUMMARY';
+
+
+-- Adjust TABLE legends
+UPDATE WIDGET_TEMPLATES SET LEGEND_CONFIG='{"legend": ["OWNER", "PASS", "FAIL", "DEFECT", "SKIP", "TOTAL", "PASSED (%)", "FAILED (%)", "KNOWN ISSUE (%)", "SKIPPED (%)", "QUEUED (%)", "FAIL RATE (%)"]}' WHERE NAME='TESTS SUMMARY';
+
+-- insert new 'KNOWN ISSUES AND BLOCKERS' widget_template
+INSERT INTO widget_templates (ID, NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, LEGEND_CONFIG, MODIFIED_AT, CREATED_AT, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES (15, 'KNOWN ISSUES AND BLOCKERS', 'Detailed information about known issues and blockers', 'TABLE', '<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "PLATFORM": join(PLATFORM),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "JOB_NAME": join(JOB_NAME)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+SELECT
+      PROJECT AS "PROJECT",
+      ENV AS "ENV",
+      OWNER_USERNAME AS "OWNER",
+      PLATFORM AS "PLATFORM",
+      PLATFORM_VERSION AS "PLATFORM_VERSION",
+      BROWSER AS "BROWSER",
+      BROWSER_VERSION AS "BROWSER_VERSION",
+      APP_VERSION AS "APP_VERSION",
+      DEVICE AS "DEVICE",
+      LOCALE AS "LOCALE",
+      LANGUAGE AS "LANGUAGE",
+      TEST_SUITE_NAME AS "SUITE NAME",
+      TEST_INFO_URL AS "TEST_INFO_URL",
+      MESSAGE AS "Error Message"
+    FROM ${VIEW}
+    ${WHERE_MULTIPLE_CLAUSE}
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+
+ <#if BLOCKER="true">
+   <#local result = " (KNOWN_ISSUE > 0) AND (TEST_BLOCKER=TRUE) "/>
+ <#else>
+   <#local result = " (KNOWN_ISSUE > 0)" />
+ </#if>
+
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+ <#local result = " WHERE " + result/>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '{"columns": ["PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "BLOCKER": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "required": true,
+    "type": "radio"
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT DISTINCT PROJECT FROM LAST30DAYS_VIEW ORDER BY 1",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT PLATFORM FROM LAST30DAYS_VIEW WHERE PLATFORM IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT DISTINCT OWNER_USERNAME FROM LAST30DAYS_VIEW UNION select ''anonymous'' ORDER BY 1",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM LAST30DAYS_VIEW WHERE ENV IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT DISTINCT PRIORITY FROM LAST30DAYS_VIEW WHERE PRIORITY IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT DISTINCT FEATURE FROM LAST30DAYS_VIEW WHERE FEATURE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM LAST30DAYS_VIEW WHERE DEVICE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM LAST30DAYS_VIEW WHERE APP_VERSION <> '''' AND APP_VERSION IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM LAST30DAYS_VIEW WHERE LOCALE IS NOT NULL ORDER BY 1",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM LAST30DAYS_VIEW WHERE LANGUAGE IS NOT NULL AND LANGUAGE != '''' ORDER BY 1",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "valuesQuery": "SELECT DISTINCT JOB_NAME FROM LAST30DAYS_VIEW WHERE JOB_NAME <> '''' AND JOB_NAME IS NOT NULL ORDER BY 1",
+    "multiple": true
+  }
+}', '{"legend": ["PROJECT", "ENV", "OWNER", "PLATFORM", "PLATFORM_VERSION", "BROWSER", "BROWSER_VERSION", "APP_VERSION", "DEVICE", "LOCALE", "LANGUAGE", "SUITE NAME", "TEST_INFO_URL", "Error Message"]}', '2019-04-18 16:01:29.716692', '2019-04-18 15:12:31.727154', '{
+  "PERIOD": "Last 24 Hours",
+  "PERSONAL": "false",
+  "currentUserId": 1,
+  "PROJECT": [],
+  "USER": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "PLATFORM": [],
+  "DEVICE": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": [],
+  "BLOCKER": "false"
+}', false);
+
+

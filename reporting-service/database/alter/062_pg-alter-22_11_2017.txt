@@ -1,0 +1,7 @@
+INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
+('RABBITMQ_HOST', 'localhost', 'RABBITMQ'),
+('RABBITMQ_PORT', '5672', 'RABBITMQ'),
+('RABBITMQ_USER', 'qpsdemo', 'RABBITMQ'),
+('RABBITMQ_PASSWORD', 'qpsdemo', 'RABBITMQ'),
+('RABBITMQ_WS', 'http://localhost:15674/stomp', 'RABBITMQ'),
+('RABBITMQ_ENABLED', false, 'RABBITMQ');

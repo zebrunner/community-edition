@@ -1,0 +1,346 @@
+SET SCHEMA 'zafira';
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)') WHERE TITLE = 'LAST 24 HOURS PERSONAL';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Last 24 Hours",
+    "PERSONAL": "true",
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "Separator": "Below params are not applicable for Total period!",
+    "BROWSER":[],
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "PARENT_JOB": "",
+    "PARENT_BUILD": "",
+    "userId": "1",
+    "dashboardName": "Personal",
+    "currentUserId": "1"
+}' WHERE TITLE = 'LAST 24 HOURS PERSONAL';
+
+
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)') WHERE TITLE = 'LAST 7 DAYS PERSONAL';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Last 7 Days",
+    "PERSONAL": "true",
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "Separator": "Below params are not applicable for Total period!",
+    "BROWSER":[],
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "PARENT_JOB": "",
+    "PARENT_BUILD": "",
+    "userId": "1",
+    "dashboardName": "Personal",
+    "currentUserId": "1"
+}' WHERE TITLE = 'LAST 7 DAYS PERSONAL';
+
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)') WHERE TITLE = 'LAST 30 DAYS PERSONAL';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Last 30 Days",
+    "PERSONAL": "true",
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "Separator": "Below params are not applicable for Total period!",
+    "BROWSER":[],
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "PARENT_JOB": "",
+    "PARENT_BUILD": "",
+    "userId": "1",
+    "dashboardName": "Personal",
+    "currentUserId": "1"
+}' WHERE TITLE = 'LAST 30 DAYS PERSONAL';
+
+
+UPDATE WIDGETS SET TITLE = 'MONTHLY TESTS IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON)' WHERE TITLE = 'MONTHLY TEST IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON)';
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = ( SELECT id FROM management.widget_templates WHERE name = 'TESTS IMPLEMENTATION PROGRESS' ) WHERE TITLE = 'MONTHLY TESTS IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON)';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERSONAL": "true",
+  "PERIOD": "Total",
+  "USER": [],
+  "PROJECT": [],
+  "userId": "1",
+  "dashboardName": "User Performance",
+  "currentUserId": "1"
+}' WHERE TITLE = 'MONTHLY TESTS IMPLEMENTATION PROGRESS (NUMBER OF TEST METHODS IMPLEMENTED BY PERSON)';
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (LINE)') WHERE TITLE = '30 DAYS TESTS TREND';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Last 30 Days",
+    "PERSONAL": "false",
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "BROWSER":[],
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "testCaseId": "1",
+    "dashboardName": "General"
+}' WHERE TITLE = '30 DAYS TESTS TREND';
+
+
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Last 24 Hours",
+    "PERSONAL": "true",
+    "BLOCKER": "false",
+    "ERROR_COUNT": 0,
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "BROWSER":[],
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "PARENT_JOB": "",
+    "PARENT_BUILD": "",
+    "JIRA_URL": "",
+    "userId": "1",
+    "dashboardName": "Personal",
+    "currentUserId": "1"
+}' WHERE TITLE = 'LAST 24 HOURS PERSONAL FAILURES';
+
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (LINE)') WHERE TITLE = '30 DAYS TESTS PERSONAL TREND';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Last 30 Days",
+    "PERSONAL": "true",
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "BROWSER":[],
+    "Separator": "Below params are not applicable for Total period!",
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "PARENT_JOB": "",
+    "PARENT_BUILD": "",
+    "userId": "1",
+    "dashboardName": "Personal",
+    "currentUserId": "1"
+}' WHERE TITLE = '30 DAYS TESTS PERSONAL TREND';
+
+
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (LINE)') WHERE TITLE = 'TOTAL PERSONAL TESTS TREND';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Total",
+    "PERSONAL": "true",
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "BROWSER":[],
+    "Separator": "Below params are not applicable for Total period!",
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "PARENT_JOB": "",
+    "PARENT_BUILD": "",
+    "userId": "1",
+    "dashboardName": "User Performance",
+    "currentUserId": "1"
+}' WHERE TITLE = 'TOTAL PERSONAL TESTS TREND';
+
+
+
+UPDATE WIDGETS SET TITLE = '30 DAYS PASS RATE BY PROJECT (%)' WHERE TITLE = '30 DAYS PASS RATE BY PLATFORM (%)';
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (BAR)') WHERE TITLE = '30 DAYS PASS RATE BY PROJECT (%)';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+    "PERIOD": "Last 30 Days",
+    "GROUP_BY": "PROJECT",
+    "PROJECT": [],
+    "PLATFORM": [],
+    "USER": [],
+    "ENV": [],
+    "PRIORITY": [],
+    "FEATURE": [],
+    "TASK": [],
+    "BUG": [],
+    "Separator": "Below params are not applicable for Total period!",
+    "PLATFORM_VERSION": [],
+    "BROWSER": [],
+    "BROWSER_VERSION": [],
+    "DEVICE": [],
+    "APP_VERSION": [],
+    "LOCALE": [],
+    "LANGUAGE": [],
+    "JOB_NAME": "",
+    "PARENT_JOB": "",
+    "PARENT_BUILD": "",
+    "hashcode": "1893229022",
+    "dashboardName": "General"
+}' WHERE TITLE = '30 DAYS PASS RATE BY PROJECT (%)';
+
+
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+  "PERIOD": "Last 30 Days",
+  "GROUP_BY": "OWNER_USERNAME",
+  "PERSONAL": "false",
+  "PROJECT": [],
+  "USER": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "TASK": [],
+  "BUG": [],
+  "PLATFORM": [],
+  "BROWSER": [],
+  "DEVICE": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": "",
+  "PARENT_JOB": "",
+  "PARENT_BUILD": "",
+  "userId": "1",
+  "dashboardName": "General",
+  "currentUserId": "1"
+}' WHERE TITLE = '30 DAYS TEST DETAILS';
+
+UPDATE WIDGETS SET LEGEND_CONFIG = '{
+  "OWNER": true,
+  "SUITE": false,
+  "BUILD": false,
+  "PASS": true,
+  "FAIL": true,
+  "DEFECT": false,
+  "SKIP": true,
+  "ABORT": false,
+  "QUEUE": false,
+  "TOTAL": true,
+  "PASSED (%)": true,
+  "FAILED (%)": false,
+  "KNOWN ISSUE (%)": false,
+  "SKIPPED (%)": false,
+  "QUEUED (%)": false,
+  "FAIL RATE (%)": false
+}' WHERE TITLE = '30 DAYS TEST DETAILS';
+
+
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+ "PERSONAL": "true",
+  "PROJECT": [],
+  "PLATFORM": [],
+  "USER": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "BROWSER":[],
+  "TASK": [],
+  "BUG": [],
+  "hashcode": "1893229022",
+  "dashboardName": "User Performance"
+}' WHERE TITLE = 'PERSONAL TOTAL TESTS (MAN-HOURS)';
+
+
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)') WHERE TITLE = '30 DAYS TOTAL';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+  "PERIOD": "Last 30 Days",
+  "PERSONAL": "false",
+  "PROJECT": [],
+  "PLATFORM": [],
+  "USER": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "TASK": [],
+  "BUG": [],
+  "Separator": "Below params are not applicable for Total period!",
+  "BROWSER":[],
+  "DEVICE": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": "",
+  "PARENT_JOB": "",
+  "PARENT_BUILD": "",
+  "userId": "1",
+  "dashboardName": "General",
+  "currentUserId": "1"
+}' WHERE TITLE = '30 DAYS TOTAL';
+
+
+
+UPDATE WIDGETS SET WIDGET_TEMPLATE_ID = (SELECT id FROM management.widget_templates WHERE name = 'PASS RATE (PIE)') WHERE TITLE = 'PERSONAL TOTAL RATE';
+UPDATE WIDGETS SET PARAMS_CONFIG = '{
+  "PERIOD": "Total",
+  "PERSONAL": "true",
+  "PROJECT": [],
+  "PLATFORM": [],
+  "USER": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "FEATURE": [],
+  "TASK": [],
+  "BUG": [],
+  "Separator": "Below params are not applicable for Total period!",
+  "BROWSER":[],
+  "DEVICE": [],
+  "APP_VERSION": [],
+  "LOCALE": [],
+  "LANGUAGE": [],
+  "JOB_NAME": "",
+  "PARENT_JOB": "",
+  "PARENT_BUILD": "",
+  "hashcode": "1893229022",
+  "dashboardName": "User Performance"
+}' WHERE TITLE = 'PERSONAL TOTAL RATE';

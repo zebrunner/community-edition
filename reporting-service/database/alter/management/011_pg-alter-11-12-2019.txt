@@ -1,0 +1,292 @@
+set schema 'management';
+
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG='
+let lineRow = {
+    "type": "line",
+    "smooth": false,
+    "stack": "Status",
+    "itemStyle": {
+      "normal": {
+        "areaStyle": {
+            "opacity": 0.8,
+            "type": "default"
+        }
+      }
+    },
+    "lineStyle": {
+      "width": 1
+    }
+};
+
+let series = [];
+  for (var i = 0; i < 6 ; i++) {
+    series.push(lineRow);
+  };
+
+let option = {
+    "grid": {
+        "right": "8%",
+        "left": "10%",
+        "top": "8%",
+        "bottom": "8%"
+    },
+    "legend": {},
+    "tooltip": {
+        "trigger": "axis",
+        "extraCssText": "transform: translateZ(0);"
+    },
+    "color": [
+        "#e76a77",
+        "#6dbbe7",
+        "#fddb7a",
+        "#b5b5b5",
+        "#61c8b3",
+        "#9f5487"
+    ],
+    "xAxis": {
+        "type": "category",
+        "boundaryGap": false
+    },
+    "yAxis": {},
+    "series": series
+};
+
+window.onresize = function(event) {
+  const leftCorner = chart.getWidth() < 700 ? "10%" : "8%";
+  option.grid.left = leftCorner;
+  chart.setOption(option);
+};
+
+chart.setOption(option);' WHERE NAME='PASS RATE TREND';
+
+
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG='{"columns": ["COUNT", "ENV", "REPORT", "MESSAGE", "BUG", "SUBJECT"]}' WHERE NAME='TESTS FAILURES BY REASON';
+
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG='
+setTimeout(function() {
+  const created = dataset[0].CREATED_AT.toString();
+  const lastCount = dataset.length - 1;
+  const lastValue = dataset[lastCount].CREATED_AT.toString();
+  
+  let dataSource = [["CREATED_AT"], ["PASSED"], ["FAILED"], ["SKIPPED"], ["QUEUED"], ["ABORTED"], ["KNOWN ISSUE"]];
+  
+  const createDatasetSource = () => {
+    let amount = dataset.length;
+    for (let i = 0; i < amount; i++) {
+      dataSource.forEach((value, index) => {
+        let valueName = value[0];
+        let pushValue = dataset[i][valueName];
+        if (valueName === "CREATED_AT") value.push(pushValue.toString());
+        else value.push(pushValue);
+      })
+    }
+    return dataSource;
+  };
+  
+  let grid, legend, pieStyle, title;
+  
+  customStyle = () => {
+    const screenWidth = window.innerWidth;
+    const rich = (fontSize, padding, fontWeight) => {
+      return {
+        PASSED:{ color: "#61c8b3", fontSize, fontWeight },
+        FAILED:{ color: "#e76a77", fontSize, fontWeight },
+        SKIPPED:{ color: "#fddb7a", fontSize, fontWeight},
+        QUEUED:{ color: "#6dbbe7", fontSize, fontWeight },
+        ABORTED:{ color: "#b5b5b5", fontSize, fontWeight },
+        KNOWN_ISSUE:{ color: "#9f5487", fontSize, fontWeight },
+        BUILD:{ color: "#0a0a0a", fontSize, padding, fontWeight: 700 }
+      }
+    };
+    
+    grid = {
+      top: "8%",
+      left: "27%",
+      right: "3%",
+      bottom: "17%"
+    };
+    legend = {
+      orient: "vertical",
+      x: "left",
+      y: "center",
+      left: "1%",
+      icon: "roundRect",
+      textStyle: {
+        fontSize: 12
+      }
+    };
+    title = {
+      show: true,
+      right: "3%",
+      top: 0,
+      textStyle: {
+        rich: rich(12, [0, 0, 0, 50], 500)
+      }
+    };
+    pieStyle = {
+      radius: "70%",
+      center: ["15%", "47%"]
+    };
+    if (screenWidth > 1250) grid.left = "30%";
+    else grid.left = "35%";
+    if (chart._dom.clientWidth === 280 || screenWidth < 481) {
+      grid.top = "50%";
+      grid.left = 30;
+      grid.right = 15;
+      grid.bottom = "15%";
+      legend.x = "left";
+      legend.y = "top";
+      legend.top = 10;
+      legend.itemGap = 2;
+      legend.itemWidth = 10;
+      legend.itemHeight = 7;
+      legend.textStyle.fontSize = 7;
+      title.right = "3%",
+      title.top = "40%";
+      title.textStyle.rich = rich(6);
+      pieStyle.radius = "40%";
+      pieStyle.center = ["60%", "23%"];
+      if (screenWidth < 481) {
+        legend.itemGap = 5;
+        legend.textStyle.fontSize = 10;
+        pieStyle.center = ["60%", "23%"];
+        title.right = "3%",
+        title.right = "2.5%";
+        title.top = "43%";
+        title.textStyle.rich = rich(8, [0, 0, 0, 20], 400);
+      }
+    }
+  }
+  customStyle();
+  
+  const changeTitle = (value = lastCount) => {
+    let titleValue = "";
+    let name = "";
+    let total = 0;
+    let newDataObj = {};
+    
+    for (const testName in dataset[value]){
+      if (testName === "CREATED_AT") continue;
+      total +=  dataset[value][testName];
+    }
+    
+    for (let i = 0; i < dataSource.length; i++){
+      newDataObj[dataSource[i][0]] = dataset[value][dataSource[i][0]]
+    }
+    
+    Object.entries(newDataObj).forEach(([key, value]) => {
+      if (value === 0) return;
+      if (key === "CREATED_AT") return name = typeof value == "number"? `{BUILD|Build: ${value}}` : `{BUILD|Date: ${value}}`;
+
+      let parameter = key === "KNOWN ISSUE" ? "KNOWN_ISSUE" : key;
+      persentValue = (value * 100 / total).toFixed(2);
+      titleValue += ` {${parameter}|${key}: ${persentValue}%;}`;
+    });
+    
+    titleValue += name;
+    
+    chart.setOption({
+      title:{
+        text: titleValue
+      }
+    })
+  };
+  changeTitle();
+  
+let colors = ["#61c8b3", "#e76a77", "#fddb7a", "#6dbbe7", "#b5b5b5", "#9f5487"];
+let lineRow = {
+    type: "line",
+    smooth: false,
+    seriesLayoutBy: "row",
+    stack: "Status",
+    itemStyle: {
+      normal: {
+        areaStyle: {
+          opacity: 0.8,
+          type: "default"
+        }
+      }
+    }
+  };
+  
+  let pie = {
+    type: "pie",
+    id: "pie",
+    radius: pieStyle.radius,
+    center:  pieStyle.center,
+    label: { show: false },
+    encode: {
+      itemName: "CREATED_AT",
+      value: lastValue,
+      tooltip: lastValue
+    },
+    selectedMode : true,
+    emphasis: {
+      label: {
+        show: true,
+        formatter: "{b}: {d}%"
+      }
+    }
+  };
+  
+  let series = [];
+  for (var i = 0; i < dataSource.length - 1 ; i++) {
+    series.push(lineRow);
+  };
+  series.push(pie);
+
+  let option = {
+        title: title,
+        grid: grid,
+        color: colors,
+        legend: legend,
+        tooltip: {
+            trigger: "axis",
+            showDelay: 1
+        },
+        dataZoom: [
+          {
+            startValue: created,
+            bottom: "0",
+            height : "25px"
+          },
+          {
+            type: "inside"
+          }
+        ],
+        dataset: {
+          source: createDatasetSource()
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false
+        },
+        yAxis: {
+          gridIndex: 0
+        },
+        series: series
+    };
+    
+    chart.on("updateAxisPointer", (event) => {
+        let xAxisInfo = event.axesInfo[0];
+        if (xAxisInfo) {
+            let dimension = xAxisInfo.value + 1;
+            chart.setOption({
+                series: {
+                  id: "pie",
+                  label: {
+                    formatter: "{b}: ({d}%)"
+                  },
+                  encode: {
+                    value: dimension,
+                    tooltip: dimension
+                  }
+                }
+            });
+            changeTitle(dimension - 1);
+        }
+    });
+    
+    chart.setOption(option);
+    angular.element($window).on("resize", onResize);
+}, 1000)' WHERE NAME='MILESTONE DETAILS';

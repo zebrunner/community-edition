@@ -1,0 +1,277 @@
+set schema 'management';
+
+INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS_CONFIG, PARAMS_CONFIG_SAMPLE, HIDDEN) VALUES ('PASS RATE (CALENDAR)', 'Calendar view of the pass rate per month, quarter or year.', 'OTHER', '
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+
+SELECT 
+    to_char(created_at, ''YYYY-MM-DD'') as "date",
+    ROUND(sum(passed)*100/sum(total)) AS "value",
+    ''${PASSED_VALUE}'' as "passed"
+    FROM total_view
+    ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY 1
+UNION ALL
+SELECT 
+    to_char(created_at, ''YYYY-MM-DD'') as "date",
+    ROUND(sum(passed)*100/sum(total)) AS "value",
+    ''${PASSED_VALUE}'' as "passed"
+    FROM nightly_view
+    ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY 1 
+  ORDER BY 1
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+
+<#function generateMultipleWhereClause map>
+  <#local result = "" />
+    <#if PERIOD?length = 4 || PERIOD = "YEAR">
+      <#if PERIOD = "YEAR">
+        <#local result = result + " to_char(created_at, ''YYYY'') " + " LIKE to_char(CURRENT_DATE, ''YYYY'')"/>
+      <#else>
+        <#local result = result + " to_char(created_at, ''YYYY'') " + " LIKE ''${PERIOD}''"/>
+      </#if>
+    <#elseif PERIOD != "MONTH" && PERIOD?substring(5, 6) == "Q" || PERIOD = "QUARTER" >
+      <#if PERIOD = "QUARTER">
+        <#local result = result + " to_char(created_at, ''YYYY-Q'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-Q'')"/>
+      <#else>
+        <#local result = result + " to_char(created_at, ''YYYY'') || ''-Q'' || to_char(created_at, ''Q'') " + " LIKE ''${PERIOD}''"/>
+      </#if>
+    <#else>
+      <#if PERIOD = "MONTH">
+        <#local result = result + " to_char(created_at, ''YYYY-MM'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-MM'')"/>
+      <#else>
+        <#local result = result + " to_char(created_at, ''YYYY-MM'') " + " LIKE ''${PERIOD}''"/>
+      </#if>
+    </#if>
+
+  <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+
+      <#if result?length != 0>
+        <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+  </#list>
+
+  <#if result?length != 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId with AND -->
+    <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+  <#elseif result?length == 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId without AND -->
+    <#local result = " OWNER_ID=${currentUserId} "/>
+  </#if>
+
+  <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+  </#if>
+
+  <#if result?length != 0>
+    <#local result = " WHERE " + result/>
+  </#if>
+  <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>', '
+const data = [];
+const range = () => {
+  let ranges = new Set();
+
+  dataset.forEach(({date, value}) => {
+    const d = new Date(date);
+    const range =  d.getFullYear() + "-" + (d.getMonth() + 1);
+    const newDate = range + "-" +  d.getDate();
+
+    ranges.add(range);
+    data.push(new Array(newDate, value));
+  });
+
+  let temporary = [];
+  for (let value of ranges) temporary.push(value);
+
+  return [temporary[0], data[data.length -1][0]]
+};
+
+const color = () => {
+    const red = "#e76a77";
+    const yellow = "#fddb7a";
+    const green = "#61c8b3";
+    const colorArrLenght = 20;
+    const greenValue = dataset[0].passed || 75;
+    let colors = [];
+
+    const creatorColorArr = (color, count) => {
+      for (var i = 0; i < Math.round(count); i++) colors.push(color);
+    }
+
+    let passed = colorArrLenght - (colorArrLenght*greenValue/100);
+    let aboard = (colorArrLenght - passed)/3;
+    let failed = colorArrLenght - passed - aboard
+
+    creatorColorArr(green, passed);
+    creatorColorArr(yellow, aboard);
+    creatorColorArr(red, failed);
+
+    return colors.reverse()
+};
+
+
+let option = {
+    tooltip: {
+      position: "top",
+      formatter: (p) => p.data[1] + "%",
+      "extraCssText": "transform: translateZ(0);"
+    },
+    visualMap: {
+      min: 0,
+      max: 100,
+      calculable: true,
+      orient: "vertical",
+      bottom: 20,
+      right:20,
+      inRange: {
+        color: color(),
+        symbolSize: [10, 100]
+      } 
+    },
+    calendar: {
+      left: 40,
+      right: 80,
+      top: 50,
+      bottom:20,
+      orient: "horizontal",
+      range: range(),
+      cellSize: 30,
+      dayLabel: {
+        nameMap: "en",
+        firstDay: 1, // start on Monday
+        margin: 5
+      },
+      yearLabel:{
+        position: "top"
+      },
+      itemStyle: {
+        color: ["white"],
+        borderWidth: 1,
+        borderColor: "#ccc"
+      }
+    },
+    series: [{
+      type: "heatmap",
+      coordinateSystem: "calendar",
+      calendarIndex: 0,
+      label: {
+        show: true,
+        formatter: function (params) {
+            let d = echarts.number.parseDate(params.value[0]);
+            return d.getDate();
+        },
+        color: "#000"
+      },
+      data: data
+    }]
+};
+
+chart.setOption(option);', '{
+  "PERIOD": {
+    "valuesQuery": "SELECT ''YEAR'' UNION ALL SELECT ''QUARTER'' UNION ALL SELECT ''MONTH'' UNION ALL SELECT DISTINCT to_char(created_at, ''YYYY'') FROM total_view UNION ALL SELECT DISTINCT to_char(created_at, ''YYYY'') || ''-Q'' || to_char(created_at, ''Q'') FROM total_view UNION ALL SELECT DISTINCT to_char(created_at, ''YYYY-MM'') FROM total_view UNION SELECT DISTINCT to_char(created_at, ''YYYY-MM'') FROM NIGHTLY_VIEW ORDER BY 1 DESC;",
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [ 
+      "false",
+      "true" 
+    ],
+    "required": true,
+    "type": "radio"
+  },
+  "PASSED_VALUE":{
+    "value": 75,
+    "required": false
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  }
+}', '{
+  "PERIOD": "MONTH",
+  "PASSED_VALUE": "75",
+  "PERSONAL": "false",
+  "currentUserId": 1,
+  "PROJECT": [],
+  "USER": ["anonymous"],
+  "PLATFORM": [],
+  "BROWSER": [],
+  "FEATURE": [],
+  "ENV": [],
+  "PRIORITY": [],
+  "PARENT_JOB": ""
+}', false);

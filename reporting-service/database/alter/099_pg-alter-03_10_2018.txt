@@ -1,0 +1,6 @@
+set schema 'zafira';
+select check_version(99);
+
+ALTER TABLE USERS ADD COLUMN RESET_TOKEN VARCHAR(255) NULL;
+
+select add_version(99);

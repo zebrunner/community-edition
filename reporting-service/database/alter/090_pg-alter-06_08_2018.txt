@@ -1,0 +1,8 @@
+set schema 'zafira';
+select check_version(90);
+
+UPDATE cron.job set command = 'REFRESH MATERIALIZED VIEW CONCURRENTLY ZAFIRA.TOTAL_VIEW' where command like '%TOTAL_VIEW%';
+UPDATE cron.job set command = 'REFRESH MATERIALIZED VIEW CONCURRENTLY ZAFIRA.BIMONTHLY_VIEW' where command like '%BIMONTHLY_VIEW%';
+UPDATE cron.job set command = 'REFRESH MATERIALIZED VIEW CONCURRENTLY ZAFIRA.TEST_CASE_HEALTH_VIEW' where command like '%TEST_CASE_HEALTH_VIEW%';
+
+select add_version(90);

@@ -26,6 +26,6 @@ docker pull selenoid/video-recorder:latest-release
 
 #-------------- START EVERYTHING ------------------------------
 docker-compose -f jenkins/docker-compose.yml up -d
-#docker-compose -f reporting-service/docker-compose.yml up -d
+docker-compose -f reporting-service/docker-compose.yml up -d
 docker-compose -f sonarqube/docker-compose.yml up -d
 docker-compose up -d

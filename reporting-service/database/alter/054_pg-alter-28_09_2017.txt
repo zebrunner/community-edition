@@ -1,0 +1,14 @@
+DO $$
+
+DECLARE USER_ID zafira.USER_PREFERENCES.id%TYPE;
+
+BEGIN
+	---INSERT INTO zafira.users (USERNAME) VALUES ('anonymous') RETURNING id INTO USER_ID;
+
+	--- PLEASE REPLACE UERS_ID with real value for anonymous
+
+	INSERT INTO zafira.user_preferences (NAME, VALUE, USER_ID) VALUES
+		('REFRESH_INTERVAL', '0', <USER_ID>),
+		('DEFAULT_DASHBOARD', 'General', <USER_ID>);
+
+END$$;

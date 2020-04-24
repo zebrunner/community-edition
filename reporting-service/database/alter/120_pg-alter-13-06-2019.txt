@@ -1,0 +1,7 @@
+SET SCHEMA 'zafira';
+
+select check_version(120);
+
+UPDATE settings SET name = 'JENKINS_FOLDER' WHERE name = 'JENKINS_LAUNCHER_JOB_NAME';
+
+select add_version(120);

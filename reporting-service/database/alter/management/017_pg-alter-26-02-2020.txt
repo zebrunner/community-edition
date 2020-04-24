@@ -1,0 +1,556 @@
+set schema 'management';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL = '<#global IGNORE_TOTAL_PARAMS = ["DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "JOB_NAME", "PARENT_JOB", "PARENT_BUILD"] > 
+<#global IGNORE_PERSONAL_PARAMS = ["OWNER_USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECT": multiJoin(PROJECT, projects),
+  "OWNER_USERNAME": join(USER),
+  "ENV": join(ENV),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "BUG": join(BUG),
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
+  "DEVICE": join(DEVICE),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+<#if PERSONAL == "true" >
+SELECT
+  unnest(array[OWNER_USERNAME,
+              ''PASSED'',
+              ''FAILED'',
+              ''SKIPPED'',
+              ''KNOWN ISSUE'',
+              ''QUEUED'',
+              ''ABORTED'']) AS "label",
+     unnest(
+      array[0,
+          sum(PASSED),
+          sum(FAILED),
+          sum(SKIPPED),
+          sum(KNOWN_ISSUE),
+          sum(QUEUED),
+          sum(ABORTED)]) AS "value"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY OWNER_USERNAME
+
+<#else>
+
+SELECT
+  unnest(array[''${PERIOD}'',
+              ''PASSED'',
+              ''FAILED'',
+              ''SKIPPED'',
+              ''KNOWN ISSUE'',
+              ''QUEUED'',
+              ''ABORTED'']) AS "label",
+     unnest(
+      array[0,
+          sum(PASSED),
+          sum(FAILED),
+          sum(SKIPPED),
+          sum(KNOWN_ISSUE),
+          sum(QUEUED),
+          sum(ABORTED)]) AS "value"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+</#if>
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+ <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+        <#-- Ignore non supported filters for Personal chart: USER -->
+        <#continue>
+      </#if>
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+ </#list>
+
+<#if PERIOD != "Total">
+ <#if PARENT_JOB != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+ </#if>
+ 
+  <#if PARENT_JOB != "" && PARENT_BUILD?lower_case == "latest">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = (
+            SELECT MAX(UPSTREAM_JOB_BUILD_NUMBER)
+            FROM TEST_RUNS INNER JOIN
+              JOBS ON TEST_RUNS.UPSTREAM_JOB_ID = JOBS.ID
+            WHERE JOBS.NAME=''${PARENT_JOB}'')"/>
+  <#elseif PARENT_JOB != "" && PARENT_BUILD != "">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_BUILD_NUMBER = ''" + PARENT_BUILD + "''"/>  
+  </#if>
+</#if>
+
+ <#if result?length != 0 && PERSONAL == "true">
+   <!-- add personal filter by currentUserId with AND -->
+   <#local result = result + " AND OWNER_ID=${currentUserId} "/>
+ <#elseif result?length == 0 && PERSONAL == "true">
+ <!-- add personal filter by currentUserId without AND -->
+   <#local result = " OWNER_ID=${currentUserId} "/>
+ </#if>
+
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "LAST24HOURS_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Monthly">
+    <#local result = "MONTHLY_VIEW" />
+    <#break>
+  <#case "Total">
+    <#local result = "TOTAL_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>'  WHERE NAME = 'PASS RATE (PIE)';
+
+UPDATE WIDGET_TEMPLATES SET PARAMS_CONFIG = '{
+    "PERIOD": {
+    "values": [
+      "Last 24 Hours",
+      "Last 7 Days",
+      "Last 14 Days",
+      "Last 30 Days",
+      "Nightly",
+      "Weekly",
+      "Monthly",
+      "Total"
+      ],
+    "required": true
+  },
+  "PERSONAL": {
+    "values": [
+      "false",
+      "true"
+      ],
+    "type": "radio",
+    "required": true
+  },
+  "PROJECT": {
+    "valuesQuery": "SELECT NAME FROM PROJECTS WHERE NAME <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "PLATFORM": {
+    "valuesQuery": "SELECT DISTINCT LOWER(PLATFORM) FROM TEST_CONFIGS WHERE PLATFORM <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "BROWSER": {
+    "valuesQuery": "SELECT DISTINCT LOWER(BROWSER) FROM TEST_CONFIGS WHERE BROWSER <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "USER": {
+    "valuesQuery": "SELECT USERNAME FROM USERS ORDER BY 1;",
+    "multiple": true
+  },
+  "ENV": {
+    "valuesQuery": "SELECT DISTINCT ENV FROM TEST_CONFIGS WHERE ENV IS NOT NULL AND ENV <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "PRIORITY": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''priority'' ORDER BY 1;",
+    "multiple": true
+  },
+  "FEATURE": {
+    "valuesQuery": "SELECT VALUE FROM TAGS WHERE NAME=''feature'' ORDER BY 1;",
+    "multiple": true
+  },
+  "TASK": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''TASK'' ORDER BY 1;",
+    "multiple": true
+  },  
+  "BUG": {
+    "valuesQuery": "SELECT DISTINCT JIRA_ID FROM WORK_ITEMS WHERE TYPE=''BUG'' ORDER BY 1;",
+    "multiple": true
+  },
+  "PARENT_JOB": {
+    "value": "",
+    "required": false
+  },  
+  "Separator": {
+    "value": "Below params are not applicable for Total period!",
+    "type": "title",
+    "required": false
+  },  
+  "DEVICE": {
+    "valuesQuery": "SELECT DISTINCT DEVICE FROM TEST_CONFIGS WHERE DEVICE IS NOT NULL AND DEVICE <> '''' ORDER BY 1;",
+    "multiple": true
+  },
+  "APP_VERSION": {
+    "valuesQuery": "SELECT DISTINCT APP_VERSION FROM TEST_CONFIGS WHERE APP_VERSION IS NOT NULL AND APP_VERSION <> '''';",
+    "multiple": true
+  },
+  "LOCALE": {
+    "valuesQuery": "SELECT DISTINCT LOCALE FROM TEST_CONFIGS WHERE LOCALE IS NOT NULL AND LOCALE <> '''';",
+    "multiple": true
+  },
+  "LANGUAGE": {
+    "valuesQuery": "SELECT DISTINCT LANGUAGE FROM TEST_CONFIGS WHERE LANGUAGE IS NOT NULL AND LANGUAGE <> '''';",
+    "multiple": true
+  },
+  "JOB_NAME": {
+    "value": "",
+    "required": false
+  },
+  "PARENT_BUILD": {
+    "value": "",
+    "required": false
+  }
+}'  WHERE NAME = 'PASS RATE (PIE)';
+
+
+UPDATE WIDGET_TEMPLATES SET CHART_CONFIG = '{"columns": ["ENV", "REPORT", "BUG", "SUBJECT"]}' WHERE name = 'TEST FAILURE DETAILS';
+
+UPDATE WIDGET_TEMPLATES SET SQL = '<#-- TODO: remove PARENT_JOB from IGNORE_TOTAL_PARAMS as only TEST_CASE_HEALTH_VIEW could have PARENT_JOB/UPSTREAM_JOB_NAME argument-->
+<#-- ZEB-703 Widgets:For widget TEST CASES BY STABILITY with param BUG appears sql error -->
+<#global IGNORE_TOTAL_PARAMS = ["LOWER(PLATFORM)", "OWNER_USERNAME", "ENV", "PRIORITY", "FEATURE", "TASK", "BUG", "BROWSER", "DEVICE", "APP_VERSION", "LOCALE", "LANGUAGE", "PARENT_JOB", "JOB_NAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "LOWER(PLATFORM)": join(PLATFORM),
+  "LOWER(BROWSER)": join(BROWSER),
+  "OWNER_USERNAME": join(USER),
+  "PROJECT": multiJoin(PROJECT, projects),
+  "DEVICE": join(DEVICE),
+  "ENV": join(ENV),
+  "APP_VERSION": join(APP_VERSION),
+  "LOCALE": join(LOCALE),
+  "LANGUAGE": join(LANGUAGE),
+  "PRIORITY": join(PRIORITY),
+  "FEATURE": join(FEATURE),
+  "TASK": join(TASK),
+  "BUG": join(BUG)
+}>
+
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global VIEW = getView(PERIOD) />
+
+<#--
+  1. for "Last 24 Hours" or "Nightly" calculate stability on the fly using appropriate views
+  2. for Monthly select STABILITY from TEST_CASE_HEALTH_VIEW for current month
+  3. for Total calculate avg(STABILITY) overall by TEST_CASE_HEALTH_VIEW view data
+  Note: all filters the rest
+  -->
+
+  SELECT
+    PROJECT AS "PROJECT",
+    STABILITY_URL AS "TEST METHOD",
+    ROUND(SUM(PASSED)/SUM(TOTAL)*100) AS "STABILITY"
+  FROM ${VIEW}
+  ${WHERE_MULTIPLE_CLAUSE}
+  GROUP BY "PROJECT", "TEST METHOD"
+  <#if PERIOD == "Monthly" || PERIOD = "Total">
+    HAVING AVG(STABILITY) <= ${PERCENT}
+  <#else>
+    HAVING ROUND(SUM(PASSED)/SUM(TOTAL)*100) <= ${PERCENT}
+  </#if>
+  ORDER BY "PROJECT", "TEST METHOD", "STABILITY"
+
+
+<#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+ <#local result = "" />
+
+  <#if PERIOD == "Monthly">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "TESTED_AT = date_trunc(''month'', current_date)"/>
+  </#if>
+
+  <#list map?keys as key>
+    <#if map[key] != "" >
+      <#if PERIOD == "Total" && IGNORE_TOTAL_PARAMS?seq_contains(key)>
+      <#-- Ignore non supported filters for Total View: PLATFORM, DEVICE, APP_VERSION, LOCALE, LANGUAGE, JOB_NAME-->
+        <#continue>
+      </#if>
+      
+      <#if result?length != 0>
+       <#local result = result + " AND "/>
+      </#if>
+      <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+    </#if>
+  </#list>
+
+
+  <#if PARENT_JOB != "" && PERIOD != "Total" && PERIOD != "Monthly">
+    <#if result?length != 0>
+      <#local result = result + " AND "/>
+    </#if>
+    <#local result = result + "UPSTREAM_JOB_NAME = ''" + PARENT_JOB + "''"/>
+  </#if>  
+
+ <#if result?length != 0>
+  <#local result = " WHERE " + result/>
+ </#if>
+ <#return result>
+</#function>
+
+<#--
+    Retrieves actual view name by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getView value>
+ <#local result = "TEST_CASE_HEALTH_VIEW" />
+ <#switch value>
+  <#case "Last 24 Hours">
+    <#local result = "LAST24HOURS_VIEW" />
+    <#break>
+  <#case "Last 7 Days">
+    <#local result = "LAST7DAYS_VIEW" />
+    <#break>
+  <#case "Last 14 Days">
+    <#local result = "LAST14DAYS_VIEW" />
+    <#break>
+  <#case "Nightly">
+    <#local result = "NIGHTLY_VIEW" />
+    <#break>
+  <#case "Weekly">
+    <#local result = "WEEKLY_VIEW" />
+    <#break>
+  <#case "Last 30 Days">
+    <#local result = "LAST30DAYS_VIEW" />
+    <#break>
+  <#case "Monthly">
+  <#case "Total">
+    <#local result = "TEST_CASE_HEALTH_VIEW" />
+    <#break>
+ </#switch>
+ <#return result>
+</#function>
+
+
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE name = 'TEST CASES BY STABILITY';
+
+
+UPDATE WIDGET_TEMPLATES SET SQL = '<#global IGNORE_PERSONAL_PARAMS = ["USERS.USERNAME"] >
+
+<#global MULTIPLE_VALUES = {
+  "PROJECTS.NAME": multiJoin(PROJECT, projects),
+  "USERS.USERNAME": join(USER)
+}>
+<#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
+<#global CREATED_AT = getCreatedAt(PERIOD) />
+<#global GROUP_AND_ORDER_BY = getGroupAndOrder(PERIOD) />
+
+SELECT
+      ${CREATED_AT} AS "CREATED_AT",
+      count(*) AS "AMOUNT"
+    FROM TEST_CASES
+    INNER JOIN PROJECTS ON TEST_CASES.PROJECT_ID = PROJECTS.ID
+    INNER JOIN USERS ON TEST_CASES.PRIMARY_OWNER_ID = USERS.ID
+    ${WHERE_MULTIPLE_CLAUSE}
+    ${GROUP_AND_ORDER_BY}
+
+
+  <#--
+    Generates WHERE clause for multiple choosen parameters
+    @map - collected data to generate ''where'' clause (key - DB column name : value - expected DB value)
+    @return - generated WHERE clause
+  -->
+<#function generateMultipleWhereClause map>
+  <#local result = "" />
+
+   <#if PERIOD == "Nightly">
+    <#local result = result + "TEST_CASES.CREATED_AT >= current_date"/>
+  <#elseif PERIOD == "Last 24 Hours">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''hour'', current_date - interval ''24'' hour)"/>
+  <#elseif PERIOD == "Weekly">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''week'', current_date)  - interval ''2'' day"/>
+  <#elseif PERIOD == "Last 7 Days">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''7'' day)"/>
+  <#elseif PERIOD == "Last 14 Days">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''14'' day)"/>
+  <#elseif PERIOD == "Last 30 Days">
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''day'', current_date - interval ''30'' day)"/>
+  <#elseif PERIOD == "Monthly" >
+    <#local result = result + "TEST_CASES.CREATED_AT >= date_trunc(''week'', current_date)"/>  
+  </#if>
+
+  <#list map?keys as key>
+      <#if map[key] != "" >
+        <#if PERSONAL == "true" && IGNORE_PERSONAL_PARAMS?seq_contains(key)>
+          <#-- Ignore non supported filters for Personal chart: USER -->
+          <#continue>
+        </#if>
+        <#if result?length != 0>
+        <#local result = result + " AND "/>
+        </#if>
+        <#local result = result + key + " LIKE ANY (''{" + map[key] + "}'')"/>
+      </#if>
+</#list>
+
+  <#if result?length != 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId with AND -->
+    <#local result = result + " AND USERS.ID=${currentUserId} "/>
+  <#elseif result?length == 0 && PERSONAL == "true">
+    <!-- add personal filter by currentUserId without AND -->
+    <#local result = " USERS.ID=${currentUserId} "/>
+  </#if>
+
+
+  <#if result?length != 0>
+    <#local result = " WHERE " + result/>
+  </#if>
+  <#return result>
+</#function>
+
+<#--
+    Retrieves actual CREATED_BY grouping  by abstract view description
+    @value - abstract view description
+    @return - actual view name
+  -->
+<#function getCreatedAt value>
+  <#local result = "to_char(date_trunc(''day'', TEST_CASES.CREATED_AT), ''MM/DD'')" />
+  <#switch value>
+    <#case "Last 24 Hours">
+    <#case "Nightly">
+      <#local result = "to_char(date_trunc(''hour'', TEST_CASES.CREATED_AT), ''HH24:MI'')" />
+      <#break>
+    <#case "Last 7 Days">
+    <#case "Weekly">
+    <#case "Last 14 Days">
+      <#local result = "to_char(date_trunc(''day'', TEST_CASES.CREATED_AT), ''MM/DD'')" />
+      <#break>
+    <#case "Last 30 Days">
+    <#case "Monthly">
+      <#local result = "to_char(date_trunc(''week'', TEST_CASES.CREATED_AT), ''MM/DD'')" />
+      <#break>
+    <#case "Total">
+      <#local result = "to_char(date_trunc(''quarter'', TEST_CASES.CREATED_AT), ''YYYY-" + ''"Q"'' + "Q'')" />
+      <#break>
+  </#switch>
+  <#return result>
+</#function>
+
+<#function getGroupAndOrder value>
+  <#local result = "GROUP BY 1 ORDER BY 1;" />
+  <#switch value>
+    <#case "Last 24 Hours">
+    <#case "Last 7 Days">
+    <#case "Last 14 Days">
+    <#case "Last 30 Days">
+      <#local result = "GROUP BY 1, to_char(date_trunc(''week'', TEST_CASES.CREATED_AT), ''YY/MM/DD'')
+        ORDER BY to_char(date_trunc(''week'', TEST_CASES.CREATED_AT), ''YY/MM/DD'');" />
+      <#break>
+  </#switch>
+  <#return result>
+</#function>
+<#--
+    Joins array values using '', '' separator
+    @array - to join
+    @return - joined array as string
+  -->
+<#function join array=[]>
+  <#return array?join('', '') />
+</#function>
+
+<#--
+    Joins array values using '', '' separator
+    @array1 - to join, has higher priority that array2
+    @array2 - alternative to join if array1 does not exist or is empty
+    @return - joined array as string
+  -->
+<#function multiJoin array1=[] array2=[]>
+  <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
+</#function>' WHERE NAME = 'TESTS IMPLEMENTATION PROGRESS';

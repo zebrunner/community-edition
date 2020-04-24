@@ -1,0 +1,7 @@
+SET SCHEMA 'zafira';
+
+select check_version(116);
+
+CREATE UNIQUE INDEX USER_EMAIL_UNIQUE ON USERS (EMAIL) WHERE EMAIL IS NOT NULL;
+
+select add_version(116);

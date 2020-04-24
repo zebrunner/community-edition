@@ -2,17 +2,17 @@ version: '3.7'
 networks:
   default:
     external:
-      name: qps-infra
+      name: infra
 services:
   sonarqube:
-    image: qaprosoft/sonarqube:${TAG_SONAR}
-    container_name: qps-sonarqube
+    image: "qaprosoft/sonarqube:${TAG_SONAR}"
+    container_name: sonarqube
     # https://jira.sonarsource.com/browse/SONAR-13272 bug with SONAR_WEB_CONTEXT env variable
     command: -Dsonar.web.context=/sonarqube
     volumes:
-      - data-volume:/opt/sonarqube/data:rw
-      - logs-volume:/opt/sonarqube/logs:rw
-      - extensions-volume:/opt/sonarqube/extensions:rw
+      - "data-volume:/opt/sonarqube/data:rw"
+      - "logs-volume:/opt/sonarqube/logs:rw"
+      - "extensions-volume:/opt/sonarqube/extensions:rw"
     ports:
      - "9000:9000"
     restart: always
