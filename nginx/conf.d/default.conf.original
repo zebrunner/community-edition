@@ -115,16 +115,7 @@ server {
       proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
 
-#      proxy_set_header Upgrade $http_upgrade;
-#      proxy_set_header Connection upgrade;
-#      proxy_cache_bypass $http_upgrade;
-
-#      proxy_pass http://elasticsearch_server/$1/;
-#      rewrite ^/elasticsearch/(.*)$ /$1 break;
     }
-
-
-
 
 #    location ~* /(reporting-service|zafira-ws) {
 #      set $upstream_zebrunner 127.0.0.1:80;
@@ -140,67 +131,6 @@ server {
 #      proxy_set_header Origin "";
 #    }
 
-
-#    # temp rule to continue support for /zafira context root and redirect to the new /app address
-#    location /zafira {
-#       rewrite ^/zafira$ http://demo.qaprosoft.com/app/ permanent;
-#    }
-
-#    location /app {
-#      set $upstream_reporting zebrunner-proxy:80;
-#      proxy_pass http://$upstream_reporting/app;
-#      proxy_http_version 1.1;
-#      proxy_set_header Upgrade $http_upgrade;
-#      proxy_set_header Connection upgrade;
-#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#      proxy_set_header X-Real-IP $http_x_real_ip;
-#      proxy_set_header Host $host;
-#      proxy_pass_header X-XSRF-TOKEN;
-#      proxy_set_header Origin "";
-#    }
-
-##TODO: removed deprecated /zafira-ws in 1.5 Zebrunner Insights
-#    #Reporting web service instance
-#    location /zafira-ws/ {
-#      set $upstream_reporting zebrunner-proxy:80;
-#      proxy_pass http://$upstream_reporting/zafira-ws/;
-#      proxy_http_version 1.1;
-##      proxy_set_header Upgrade $http_upgrade;
-##      proxy_set_header Connection upgrade;
-##      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-##      proxy_set_header X-Real-IP $http_x_real_ip;
-##      proxy_set_header Host $host;
-##      proxy_pass_header X-XSRF-TOKEN;
-##      proxy_set_header Origin "";
-#    }
-
-
-#    #Zafira instance
-#    location /app {
-#      proxy_pass http://zafira-ui_server/app/;
-#      proxy_http_version 1.1;
-#      proxy_set_header Upgrade $http_upgrade;
-#      proxy_set_header Connection upgrade;
-#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#      proxy_set_header X-Real-IP $http_x_real_ip;
-#      proxy_set_header Host $host;
-#      proxy_pass_header X-XSRF-TOKEN;
-#      proxy_set_header Origin "";
-#    }
-
-
-#    #Zafira web service instance
-#    location /zafira-ws/ {
-#      proxy_pass http://zafira_server/zafira-ws/;
-#      proxy_http_version 1.1;
-#      proxy_set_header Upgrade $http_upgrade;
-#      proxy_set_header Connection upgrade;
-#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#      proxy_set_header X-Real-IP $http_x_real_ip;
-#      proxy_set_header Host $host;
-#      proxy_pass_header X-XSRF-TOKEN;
-#      proxy_set_header Origin "";  
-#    }
 
     #GGR-WebSocket
     location /vnc {
@@ -223,17 +153,6 @@ server {
 #      proxy_set_header Connection $connection_upgrade;
 #      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 #      proxy_set_header X-Real-IP $http_x_real_ip;
-#    }
-
-#    location /elasticsearch {
-#      proxy_http_version 1.1;
-#      proxy_set_header Upgrade $http_upgrade;
-#      proxy_set_header Connection 'upgrade';
-#      proxy_set_header Host $host;
-#      proxy_cache_bypass $http_upgrade;
-#
-#      proxy_pass http://elasticsearch_server/$1/;
-#      rewrite ^/elasticsearch/(.*)$ /$1 break;
 #    }
 
     location /video {
@@ -295,7 +214,6 @@ server {
       add_header Access-Control-Allow-Headers "Content-Type,Authorization";
       add_header Access-Control-Allow-Credentials "true";
     }
-
 
 
 # external hub providers integration
@@ -406,13 +324,6 @@ server {
       add_header Access-Control-Allow-Headers "Content-Type,Authorization";
       add_header Access-Control-Allow-Credentials "true";
     }
-
-#  location / { 
-#    proxy_set_header X-Forwarded-Host $host;
-#    proxy_set_header X-Forwarded-Server $host;
-#    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#    proxy_pass http://127.0.0.1:8080/;
-#  }
 
     location / {
         root   /usr/share/nginx/html;
