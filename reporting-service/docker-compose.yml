@@ -84,8 +84,9 @@ services:
     container_name: reporting-ui
     environment:
 #TODO: declare INFRA_HOST in .env of zebrunner/zebrunner
-      - ZAFIRA_API_HOST=http://${INFRA_HOST}:8080
-#TODO: migrate to new /reporting-service
+# https://github.com/zebrunner/zebrunner/issues/2127
+      - ZAFIRA_API_HOST=http://${INFRA_HOST}
+# TODO: investigate why we still have a lot of calls to zafira-ws
 #      - ZAFIRA_API_CONTEXT_PATH=reporting-service
     depends_on:
       - reporting-service
