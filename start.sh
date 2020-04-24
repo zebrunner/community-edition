@@ -12,7 +12,7 @@ if [ ! -f variables.env ] || [ ! -f ./nginx/conf.d/default.conf.original ]; then
     exit -1
 fi
 
-docker network create qps-infra
+docker network create infra
 
 # pull required docker images
 docker pull selenoid/vnc:chrome_78.0
@@ -26,5 +26,6 @@ docker pull selenoid/video-recorder:latest-release
 
 #-------------- START EVERYTHING ------------------------------
 docker-compose -f jenkins/docker-compose.yml up -d
+#docker-compose -f reporting-service/docker-compose.yml up -d
 docker-compose -f sonarqube/docker-compose.yml up -d
 docker-compose up -d
