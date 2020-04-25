@@ -102,13 +102,7 @@ server {
 
     }
 
-    location /rabbitmq {
-      set $upstream_zebrunner 127.0.0.1:80;
-      proxy_set_header Host zebrunner-proxy;
-      proxy_pass http://$upstream_zebrunner;
-      proxy_http_version 1.1;
-
-    }
+    # Important: do not open access to the admin panel for rabbitmq etc
 
 #    location ~* /(reporting-service|zafira-ws) {
 #      set $upstream_zebrunner 127.0.0.1:80;
