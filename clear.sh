@@ -12,9 +12,9 @@ docker volume rm sonarqube_data-volume sonarqube_extensions-volume sonarqube_log
 #remove jenkins data
 docker volume rm jenkins_data-volume
 
-rm -rf ./pgdata/*
+# remove reporting-service data
+docker volume rm reporting-service_assets-data reporting-service_esdata-volume reporting-service_pgdata-volume
 
-sudo rm -rf ./esdata/*
 rm -rf ./selenoid/video/*
 
 
