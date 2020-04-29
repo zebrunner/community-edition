@@ -12,9 +12,9 @@ services:
     ports:
 #    - "80:80"     # primary HTTP port
     - "5672:5672" # log collection port
-    #- "8081:8081" # RabbitMQ administration, optional
-    #- "5432:5432" # database administration, optional
-    #- "6379:6379" # Redis administration, optional
+#    - "8081:8081" # RabbitMQ administration, optional
+#    - "5432:5432" # database administration, optional
+#    - "6379:6379" # Redis administration, optional
     depends_on:
       - reporting-ui
       - reporting-service
