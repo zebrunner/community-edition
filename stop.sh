@@ -28,19 +28,19 @@ do
 esac
 done
 
-docker-compose -f jenkins/docker-compose.yml stop
-docker-compose -f reporting-service/docker-compose.yml stop
-docker-compose -f sonarqube/docker-compose.yml stop
-docker-compose stop
-echo "qps-infra was stopped"
-
-if ! $KEEP_CONTAINERS
+if $KEEP_CONTAINERS
 then
-  docker-compose -f jenkins/docker-compose.yml rm -fv
-  docker-compose -f reporting-service/docker-compose.yml rm -fv
-  docker-compose -f sonarqube/docker-compose.yml rm -fv
-  docker-compose rm -fv
-  echo "Containers were deleted"
-else
-  echo "Containers were kept"
+  docker-compose -f jenkins/docker-compose.yml stop
+  docker-compose -f reporting-service/docker-compose.yml stop
+  docker-compose -f sonarqube/docker-compose.yml stop
+  docker-compose -f mcloud/docker-compose.yml stop
+  docker-compose stop
+  echo "Containers were stopped"
+else 
+  docker-compose -f jenkins/docker-compose.yml down
+  docker-compose -f reporting-service/docker-compose.yml down
+  docker-compose -f sonarqube/docker-compose.yml down
+  docker-compose -f mcloud/docker-compose.yml down
+  docker-compose down
+  echo "Containers were stopped and deleted"
 fi

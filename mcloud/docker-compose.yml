@@ -1,0 +1,30 @@
+version: '3.7'
+networks:
+  default:
+    external:
+      name: infra
+services:
+  ftp:
+    image: "qaprosoft/pure-ftpd:${TAG_FTP}"
+    container_name: ftp
+    env_file:
+     - variables.env
+    volumes:
+    - "data-volume:/usr/share/ftp:rw"
+    ports:
+     - "21:21"
+     - "30000-30009:30000-30009"
+    restart: always
+  selenium-hub:
+    image: "qaprosoft/selenium-hub:${TAG_SELENIUM_HUB}"
+    container_name: selenium-hub
+    env_file:
+     - variables.env
+#    environment:
+#     - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
+#TODO: remove port sharing later
+    ports:
+     - "4446:4444"
+    restart: always
+volumes:
+  data-volume:

@@ -12,30 +12,10 @@ services:
      - ./nginx/conf.d:/etc/nginx/conf.d:ro
      - ./nginx/html:/usr/share/nginx/html:ro
      - ./nginx/htpasswd:/usr/share/nginx/htpasswd:ro
-     - ./selenoid/video:/usr/share/nginx/video:rw
+     - "data-volume:/usr/share/ftp:rw"
+#     - ./selenoid/video:/usr/share/nginx/video:rw
     ports:
      - "80:80"
-    depends_on:
-     - "selenium-hub"
-    restart: always
-  ftp:
-    image: qaprosoft/pure-ftpd:latest
-    env_file:
-     - variables.env
-    volumes:
-    - $PWD/selenoid/video:/usr/share/ftp:rw
-    ports:
-     - "21:21"
-     - "30000-30009:30000-30009"
-    restart: always
-  selenium-hub:
-    image: qaprosoft/selenium-hub:3.5.1
-    env_file:
-     - variables.env
-#    environment:
-#     - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
-    ports:
-     - 4446:4444
     restart: always
   ggr:
     image: aerokube/ggr:latest-release
@@ -56,3 +36,7 @@ services:
       - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video/
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-timeout", "3m0s", "-container-network", "infra"]
     restart: always
+volumes:
+  data-volume:
+    external:
+      name: mcloud_data-volume
