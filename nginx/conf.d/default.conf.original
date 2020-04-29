@@ -59,16 +59,17 @@ server {
     }
 
     location /app {
-      set $upstream_zebrunner 127.0.0.1:80;
-      proxy_set_header Host zebrunner-proxy;
+      set $upstream_zebrunner zebrunner-proxy:80;
       proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
 
+      # two below headers to support websocket connection
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection upgrade;
     }
 
     location ~ /(reporting-service|zafira-ws) {
-      set $upstream_zebrunner 127.0.0.1:80;
-      proxy_set_header Host zebrunner-proxy;
+      set $upstream_zebrunner zebrunner-proxy:80;
       proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
 
@@ -78,10 +79,19 @@ server {
     }
 
     location /elasticsearch {
-      set $upstream_zebrunner 127.0.0.1:80;
-      proxy_set_header Host zebrunner-proxy;
+      set $upstream_zebrunner zebrunner-proxy:80;
       proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
+    }
+
+    location /stf {
+      set $upstream_stf stf-proxy:80;
+      proxy_pass http://$upstream_stf/$1;
+      proxy_http_version 1.1;
+
+#      # two below headers to support websocket connection
+#      proxy_set_header Upgrade $http_upgrade;
+#      proxy_set_header Connection upgrade;
     }
 
     location /mcloud {
@@ -90,14 +100,6 @@ server {
       proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
     }
-
-    location /grid {
-      set $upstream_zebrunner 127.0.0.1:80;
-      proxy_set_header Host mcloud;
-      proxy_pass http://$upstream_zebrunner;
-      proxy_http_version 1.1;
-    }
-
 
 
     # Important: do not open access to the admin panel for rabbitmq etc
