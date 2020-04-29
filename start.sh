@@ -12,7 +12,8 @@ if [ ! -f variables.env ] || [ ! -f ./nginx/conf.d/default.conf.original ]; then
     exit -1
 fi
 
-docker network create infra
+# create infra network only if not exist
+docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
 # pull required docker images
 docker pull selenoid/vnc:chrome_78.0
