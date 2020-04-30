@@ -1,4 +1,4 @@
-# Configuration Guide (Draft)
+# Configuration Guide
 
 ## Organization Setup        
 ### Register Organization
@@ -9,7 +9,7 @@
  Create organization: 
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Organization.png?raw=true "Organization")
 
-#### Register Repository
+### Register Repository
    * Open your organization folder
    * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)
       * Repository should be scanned and TestNG jobs created
@@ -17,9 +17,8 @@
 Create Repository:
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
 
-##### onPush Job/Event setup
 
-###### Setup GitHub WebHook
+#### Setup GitHub WebHook (onPush Job/Event)
    * Go to your GitHub repository
    * Click "Settings" tab
    * Click "Webhooks" menu option
@@ -29,7 +28,7 @@ Create Repository:
    * Tick "Send me everything." option
    * Click "Add webhook" button
    
-###### Trigger onPush Job(s)
+#### Trigger onPush Job(s)
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
 
 ## Source Control Management Integration
@@ -47,15 +46,11 @@ Create Repository:
  </ul>    
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true "Enterprise") 
 
-#### onPullRequest Job/Event setup
-
-##### Setup GitHub PullRequest plugin 
+### Set up "GitHub Pull Request Builder":
    * Open Jenkins -> Credentials
-   * Update Username and Password for "ghprbhook-token" credentials
-   
+   * Update Username and Password for "ghprbhook-token" credentials   
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true "Credentials") 
 
-##### Set up "GitHub Pull Request Builder":
   *  Go to Manage Jenkins -> Configure System
   *  Specify a value for GitHub Server API URL, for example, https://api.github.com
 > Note: corporate versions of GitHub should have a different value, for example, https://github.mydomain.com/api/v3
@@ -65,14 +60,14 @@ Create Repository:
   *  Save changes
 > Note: be sure to test integration through the Jenkins UI
 
-###### Test the integration with Github through the Jenkins UI
+#### Test the integration with Github through the Jenkins UI
    *  Set Credentials -> Test basic connection to GitHub
    *  Set Repository owner/name -> Test Permissions to a Repository
    *  Set Issue ID/Comment -> Test adding comment to Pull Request
 
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/TestGithub.png?raw=true "TestGithub") 
 
-##### Send Pull request to launch onPullRequest Job(s)
+#### Send Pull request to launch onPullRequest Job(s)
    * Go to your GitHub repository
    * Create new Pull Request
         * Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed        
