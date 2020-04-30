@@ -31,7 +31,7 @@ Create Repository:
 #### Trigger onPush Job(s)
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
 
-## Source Control Management Integration
+## Source Control Tools Integration
   For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure    will use them immediately by default:
  <ul>
    <li>  Manage jenkins -> Configure system 
