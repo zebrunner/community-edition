@@ -12,29 +12,11 @@ services:
      - ./nginx/conf.d:/etc/nginx/conf.d:ro
      - ./nginx/html:/usr/share/nginx/html:ro
      - ./nginx/htpasswd:/usr/share/nginx/htpasswd:ro
+#TODO: test what is the valid share path! maybe video!
      - "data-volume:/usr/share/ftp:rw"
-#     - ./selenoid/video:/usr/share/nginx/video:rw
+     - ./hub/selenoid/video:/usr/share/nginx/video:ro
     ports:
      - "80:80"
-    restart: always
-  ggr:
-    image: aerokube/ggr:latest-release
-    volumes:
-      - ./grid-router/:/etc/grid-router:ro
-    ports:
-     - "4444:4444"
-    restart: always
-  selenoid:
-    networks:
-      default: null
-    image: aerokube/selenoid:latest-release
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - $PWD/selenoid/:/etc/selenoid/
-      - $PWD/selenoid/video/:/opt/selenoid/video/
-    environment:
-      - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video/
-    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-timeout", "3m0s", "-container-network", "infra"]
     restart: always
 volumes:
   data-volume:
