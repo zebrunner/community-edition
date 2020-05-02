@@ -12,13 +12,13 @@ services:
      - ./nginx/conf.d:/etc/nginx/conf.d:ro
      - ./nginx/html:/usr/share/nginx/html:ro
      - ./nginx/htpasswd:/usr/share/nginx/htpasswd:ro
-#TODO: test what is the valid share path! maybe video!
-     - "data-volume:/usr/share/ftp:rw"
-     - ./hub/selenoid/video:/usr/share/nginx/video:ro
+     - ./selenoid/video:/usr/share/nginx/video:ro
+##TODO: test what is the valid share path! maybe video!
+#     - "data-volume:/usr/share/ftp:rw"
     ports:
      - "80:80"
     restart: always
-volumes:
-  data-volume:
-    external:
-      name: mcloud_data-volume
+#volumes:
+#  data-volume:
+#    external:
+#      name: mcloud_data-volume
