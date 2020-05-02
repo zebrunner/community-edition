@@ -1,4 +1,5 @@
-selenoid/browsers.json
-selenoid/video/*.mp4
+.env
 nginx/conf.d/default.conf
 variables.env
+selenoid/browsers.json
+selenoid/video/*.mp4
