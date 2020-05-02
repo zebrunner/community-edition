@@ -11,6 +11,6 @@ docker rm -fv $(docker ps -a -q)
 #TODO: make images removal only for infra images somehow!
 docker rmi -f $(docker images -q)
 
-rm -rf ./hub/selenoid/video/*
+rm -rf ./hub/selenoid/video/*.mp4
 
 
