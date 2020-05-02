@@ -7,7 +7,7 @@ BASEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 cd ${BASEDIR}
 
-if [ ! -f variables.env ] || [ ! -f ./nginx/conf.d/default.conf.original ]; then
+if [ ! -f variables.env ] || [ ! -f ./nginx/conf.d/default.conf ] || [ ! -f ./selenoid/browsers.json ]; then
     printf 'WARNING! You forgot to setup qps-infra host address preliminary! For example:\n ./setup.sh myhost.domain.com\n\n' "$(basename "$0")" >&2
     exit -1
 fi
@@ -15,18 +15,8 @@ fi
 # create infra network only if not exist
 docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
-# pull required docker images
-docker pull selenoid/vnc:chrome_78.0
-docker pull selenoid/vnc:chrome_77.0
-docker pull selenoid/vnc:firefox_71.0
-docker pull selenoid/vnc:firefox_70.0
-docker pull selenoid/vnc:opera_66.0
-docker pull selenoid/vnc:opera_65.0
-
-docker pull selenoid/video-recorder:latest-release
-
 #-------------- START EVERYTHING ------------------------------
-docker-compose -f hub/docker-compose.yml up -d
+docker-compose -f selenoid/docker-compose.yml up -d
 #docker-compose -f mcloud/docker-compose.yml up -d
 docker-compose -f jenkins/docker-compose.yml up -d
 docker-compose -f reporting-service/docker-compose.yml up -d

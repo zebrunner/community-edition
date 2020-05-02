@@ -114,10 +114,10 @@ server {
     # Important: do not open access to the admin panel for rabbitmq etc
 
 
-    #GGR-WebSocket
+    #Selenoid VNC WebSocket
     location /vnc {
-      set $upstream_ggr ggr:4444;
-      proxy_pass http://$upstream_ggr;
+      set $upstream_selenoid selenoid:4444;
+      proxy_pass http://$upstream_selenoid;
 
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
@@ -134,19 +134,16 @@ server {
         root   /usr/share/nginx;
     }
 
-# IMPORTANT!!! make sure to generate secure GGR credentials and put them into the INFRA_HOME/nginx/htpasswd/<name>.htpasswd
+# IMPORTANT!!! make sure to generate secure Selenoid credentials and put them into the INFRA_HOME/nginx/htpasswd/selenoid.htpasswd
 # TODO: provide valid link onto the help howto secure this site
 # internal hub providers integration
-    # GoGridRoute
-    location  ~ ^/ggr/(.*)$ {
-      auth_basic "Private GoGridRoute Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/ggr.htpasswd;
+    # Selenoid Hub
+    location  ~ ^/selenoid/(.*)$ {
+      auth_basic "Private Selenoid Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/selenoid.htpasswd;
 
-      # base64 encoded string of the default "demo:demo" credentials. Don't forget to update if you change it on GGR layer!
-      proxy_set_header Authorization "Basic ZGVtbzpkZW1v";
-
-      set $upstream_ggr ggr:4444;
-      proxy_pass http://$upstream_ggr/$1;
+      set $upstream_selenoid selenoid:4444;
+      proxy_pass http://$upstream_selenoid/$1;
 
       proxy_http_version      1.1;
       proxy_set_header        Connection "";

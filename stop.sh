@@ -34,7 +34,7 @@ then
   docker-compose -f reporting-service/docker-compose.yml stop
   docker-compose -f sonarqube/docker-compose.yml stop
 #  docker-compose -f mcloud/docker-compose.yml stop
-  docker-compose -f hub/docker-compose.yml stop
+  docker-compose -f selenoid/docker-compose.yml stop
   docker-compose stop
   echo "Containers were stopped"
 else 
@@ -42,7 +42,7 @@ else
   docker-compose -f reporting-service/docker-compose.yml down
   docker-compose -f sonarqube/docker-compose.yml down
 #  docker-compose -f mcloud/docker-compose.yml down
-  docker-compose -f hub/docker-compose.yml down
+  docker-compose -f selenoid/docker-compose.yml down
   docker-compose down
   echo "Containers were stopped and deleted"
 fi

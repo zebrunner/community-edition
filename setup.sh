@@ -34,4 +34,5 @@ if [ ! -d assets ]; then
   mkdir -p assets;
 fi
 
+./selenoid/update.sh
 echo Setup finished successfully using $HOST_NAME hostname.
