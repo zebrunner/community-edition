@@ -26,8 +26,8 @@ services:
       - "pgdata-volume:/var/lib/postgresql/data"
       - "./database/:/docker-entrypoint-initdb.d"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     restart: always
   rabbitmq:
     image: "qaprosoft/rabbitmq:${TAG_RABBITMQ}"
@@ -74,6 +74,10 @@ services:
       - "assets-data:/opt/assets"
     env_file:
       - configuration/reporting-service/variables.env
+    environment:
+      - "WEB_HOST=http://${INFRA_HOST}"
+      - "API_HOST=http://${INFRA_HOST}"
+      - "ELASTICSEARCH_URL=http://${INFRA_HOST}/elasticsearch"
     depends_on:
       - postgres
       - rabbitmq
