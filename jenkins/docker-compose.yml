@@ -10,7 +10,7 @@ services:
     env_file:
      - variables.env
     environment:
-      - "JAVA_OPTS=-Dhudson.model.ParametersAction.keepUndefinedParameters=true"
+      - "INFRA_HOST=${INFRA_HOST}"
     volumes:
      # TODO: test plugins https://github.com/qaprosoft/jenkins-master/issues/193
      # to add extra plugins follow this steps: https://github.com/qaprosoft/jenkins-master/releases/tag/4.6
