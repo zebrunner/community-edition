@@ -1,5 +1,8 @@
 .env
 nginx/conf.d/default.conf
 variables.env
+.env.bak
+nginx/conf.d/default.conf.bak
+variables.env.bak
 selenoid/browsers.json
 selenoid/video/*.mp4
