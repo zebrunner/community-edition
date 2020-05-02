@@ -1,2 +1,2 @@
-hub/selenoid/video
+hub/selenoid/video/*.mp4
 nginx/conf.d/default.conf
