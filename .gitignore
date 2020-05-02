@@ -1,2 +1,3 @@
 hub/selenoid/video/*.mp4
 nginx/conf.d/default.conf
+variables.env
