@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+BASEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+cd ${BASEDIR}
 
 docker-compose -f jenkins/docker-compose.yml down -v
 docker-compose -f reporting-service/docker-compose.yml down -v
@@ -13,5 +16,8 @@ docker rmi -f $(docker images -q)
 
 rm -rf ./selenoid/video/*.mp4
 mv selenoid/browsers.json selenoid/browsers.json.bak
+mv variables.env variables.env.bak
+mv ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
+mv .env .env.bak
 
 
