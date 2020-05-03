@@ -245,7 +245,7 @@ server {
       # Replace SAUCELABS_TOKEN with base64 encoded string of your "user:password" credentials.
       proxy_set_header Authorization "Basic SAUCELABS_TOKEN";
 
-      set $upstream_saucelabs ondemand.saucelabs.com
+      set $upstream_saucelabs ondemand.saucelabs.com;
       proxy_pass              http://$upstream_saucelabs/$1;
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
