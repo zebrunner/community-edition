@@ -1,7 +1,0 @@
-SET SCHEMA 'zafira';
-
-select check_version(119);
-
-ALTER TABLE LAUNCHERS ADD COLUMN AUTO_SCAN BOOLEAN NOT NULL DEFAULT FALSE;
-
-select add_version(119);

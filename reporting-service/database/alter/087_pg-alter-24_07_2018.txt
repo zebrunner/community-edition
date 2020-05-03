@@ -1,7 +1,0 @@
-set schema 'zafira';
-select check_version(87);
-
-INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
-	('EMAIL_FROM_ADDRESS', '', 'EMAIL');
-
-select add_version(87);

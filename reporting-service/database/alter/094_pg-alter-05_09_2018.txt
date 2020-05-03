@@ -1,8 +1,0 @@
-set schema 'zafira';
-select check_version(94);
-
-INSERT INTO SETTINGS (NAME, VALUE, TOOL) VALUES
-	('AMAZON_DISTRIBUTION_DOMAIN', '', 'AMAZON'),
-	('AMAZON_KEY_PAIR_ID', '', 'AMAZON');
-
-select add_version(94);

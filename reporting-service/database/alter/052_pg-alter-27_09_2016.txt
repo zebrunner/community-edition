@@ -1,3 +1,0 @@
-set schema 'zafira';
-
-ALTER TABLE widgets ADD REFRESHABLE BOOLEAN DEFAULT false NOT NULL;

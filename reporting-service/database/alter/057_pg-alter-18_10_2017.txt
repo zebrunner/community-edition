@@ -1,4 +1,0 @@
-INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
-	('STF_URL', '', 'STF'),
-	('STF_TOKEN', '', 'STF'),
-	('STF_ENABLED', true, 'STF');

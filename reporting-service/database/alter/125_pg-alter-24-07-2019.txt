@@ -1,8 +1,0 @@
-SET SCHEMA 'zafira';
-
-select check_version(125);
-
---DELETE FROM SETTINGS WHERE NAME = 'SLACK_WEB_HOOK_URL';
---INSERT INTO SETTINGS (NAME, VALUE, TOOL) VALUES ('SLACK_OAUTH_ACCESS_TOKEN', '', 'SLACK');
-
-select add_version(125);

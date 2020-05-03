@@ -1,2 +1,0 @@
-set schema 'zafira';
-ALTER TABLE TEST_RUNS DROP COLUMN CLASS_MODE;

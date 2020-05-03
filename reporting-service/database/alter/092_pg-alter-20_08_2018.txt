@@ -1,7 +1,0 @@
-set schema 'zafira';
-select check_version(92);
-
-INSERT INTO zafira.SETTINGS (NAME, VALUE, TOOL) VALUES
-	('AMAZON_REGION', '', 'AMAZON');
-
-select add_version(92);

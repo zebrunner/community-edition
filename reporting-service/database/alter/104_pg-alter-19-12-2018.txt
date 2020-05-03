@@ -1,8 +1,0 @@
-SET SCHEMA 'zafira';
-
-select check_version(104);
-
-DROP INDEX FILTERS_NAME_UNIQUE;
-CREATE UNIQUE INDEX FILTERS_NAME_USER_ID_UNIQUE ON FILTERS (NAME, USER_ID);
-
-select add_version(104);

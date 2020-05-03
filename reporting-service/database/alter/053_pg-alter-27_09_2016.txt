@@ -1,3 +1,0 @@
-set schema 'zafira';
-
-CREATE UNIQUE INDEX widgets_title_uindex ON zafira.widgets (title);
