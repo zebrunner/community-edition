@@ -16,9 +16,6 @@ sed 's/demo.qaprosoft.com/'$1'/g' variables.env.original > variables.env
 echo generating ./nginx/conf.d/default.conf...
 sed 's/demo.qaprosoft.com/'$1'/g' ./nginx/conf.d/default.conf.original > ./nginx/conf.d/default.conf
 
-echo updating host in .env file...
-sed -i 's/demo.qaprosoft.com/'$1'/g' .env
-
 echo WARNING! Increase vm.max_map_count=262144 appending it to /etc/sysctl.conf on Linux Ubuntu
 echo your current value is `sysctl vm.max_map_count`
 
