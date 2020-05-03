@@ -8,7 +8,7 @@ BASEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${BASEDIR}
 
 if [ ! -f variables.env ] || [ ! -f ./nginx/conf.d/default.conf ] || [ ! -f ./selenoid/browsers.json ]; then
-    printf 'WARNING! You forgot to setup qps-infra host address preliminary! For example:\n ./setup.sh myhost.domain.com\n\n' "$(basename "$0")" >&2
+    printf 'WARNING! You forgot to setup infra host address preliminary! For example:\n ./setup.sh myhost.domain.com\n\n' "$(basename "$0")" >&2
     exit -1
 fi
 
