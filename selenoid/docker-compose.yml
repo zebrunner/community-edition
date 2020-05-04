@@ -1,0 +1,21 @@
+version: '3.7'
+networks:
+  default:
+    external:
+      name: infra
+services:
+  selenoid:
+    networks:
+      default: null
+    image: aerokube/selenoid:${TAG_SELENOID}
+    container_name: selenoid
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - ./browsers.json:/etc/selenoid/browsers.json
+     - ./video/:/opt/selenoid/video/
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=$PWD/selenoid/video/
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-timeout", "3m0s", "-container-network", "infra"]
+#    ports:
+#     - "4444:4444"
+    restart: always
