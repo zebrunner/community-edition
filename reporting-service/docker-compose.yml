@@ -78,6 +78,8 @@ services:
       - "WEB_HOST=http://${INFRA_HOST}"
       - "API_HOST=http://${INFRA_HOST}"
       - "ELASTICSEARCH_URL=http://${INFRA_HOST}/elasticsearch"
+      - "GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}"
+      - "GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}"
     depends_on:
       - postgres
       - rabbitmq
