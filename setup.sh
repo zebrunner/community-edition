@@ -11,7 +11,7 @@ if [ $# -lt 1 ]; then
 fi
 
 if [ $HOST_NAME == "localhost" ] || [ $HOST_NAME == "127.0.0.1" ]; then
-    printf "You can't use $HOST_NAME as a host name\n"
+    printf "Use fully qualified domain name or your server ip address to setup!"
     exit -1
 fi
 
