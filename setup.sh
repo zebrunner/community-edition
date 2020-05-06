@@ -10,8 +10,8 @@ if [ $# -lt 1 ]; then
     exit -1
 fi
 
-if [ $HOST_NAME == "lockalhost" ] | [ $HOST_NAME == "127.0.0.1" ]; then
-    printf "You can't use $HOST_NAME as a host name"
+if [ $HOST_NAME == "localhost" ] || [ $HOST_NAME == "127.0.0.1" ]; then
+    printf "You can't use $HOST_NAME as a host name\n"
     exit -1
 fi
 
