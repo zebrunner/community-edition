@@ -10,6 +10,11 @@ if [ $# -lt 1 ]; then
     exit -1
 fi
 
+if [ $HOST_NAME == "lockalhost" ] | [ $HOST_NAME == "127.0.0.1" ]; then
+    printf "You can't use $HOST_NAME as a host name"
+    exit -1
+fi
+
 echo generating variables.env...
 sed 's/demo.qaprosoft.com/'$1'/g' .env.original > .env
 sed 's/demo.qaprosoft.com/'$1'/g' variables.env.original > variables.env
