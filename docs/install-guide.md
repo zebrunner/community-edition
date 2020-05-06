@@ -17,7 +17,7 @@
 
 * Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc
 
-* Install docker ([Ubuntu 16.04](http://www.techrepublic.com/article/how-to-install-docker-on-ubuntu-16-04/), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04) or [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/))
+* Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04) or [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/))
   > MacOS is <b>not recommended</b> for production usage!
   
 * Install [docker-composer](https://docs.docker.com/compose/install/#install-compose)

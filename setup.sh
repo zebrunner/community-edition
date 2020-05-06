@@ -10,6 +10,11 @@ if [ $# -lt 1 ]; then
     exit -1
 fi
 
+if [ $HOST_NAME == "localhost" ] || [ $HOST_NAME == "127.0.0.1" ]; then
+    printf "Use fully qualified domain name or your server ip address to setup!"
+    exit -1
+fi
+
 echo generating variables.env...
 sed 's/demo.qaprosoft.com/'$1'/g' .env.original > .env
 sed 's/demo.qaprosoft.com/'$1'/g' variables.env.original > variables.env
