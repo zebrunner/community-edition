@@ -11,6 +11,7 @@ services:
      - variables.env
     environment:
       - "INFRA_HOST=${INFRA_HOST}"
+      - "ROOT_URL=${ROOT_URL}"
       - "SONAR_URL=${SONAR_URL}"
     volumes:
      # TODO: test plugins https://github.com/qaprosoft/jenkins-master/issues/193
