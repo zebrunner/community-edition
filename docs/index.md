@@ -24,7 +24,7 @@ Welcome to the QPS-Infra Tutorial. This manual is designed to help you install, 
 > In short, the aim of this manual is to explain the tasks involved in administering QPS-Infra system
 
 ## Audience
-This guide is written for all levels of administrators, from those who is responsible for deployment and setup, to those who oversee the entire system and its usage. In addition, some information from User Guide is intended for TestOps engineers who want to build effective Test Automation process and follow best practices.
+This guide is written for all levels of administrators, from those responsible for deployment and setup, to those who oversee the entire system and its usage. In addition, some information from User Guide is intended for TestOps engineers who want to build effective Test Automation process and follow best practices.
 
 ## Assumed Knowledge
 Installation and Configuration guides are for administrators who install, deploy and Manage QPS-Infra products. It assumes the following knowledge:
