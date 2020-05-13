@@ -13,7 +13,7 @@ services:
 #    - "80:80"     # primary HTTP port
     - "5672:5672" # log collection port
 #    - "8081:8081" # RabbitMQ administration, optional
-#    - "5432:5432" # database administration, optional
+    - "5432:5432" # database administration, optional
 #    - "6379:6379" # Redis administration, optional
     depends_on:
       - reporting-ui
@@ -22,6 +22,8 @@ services:
   postgres:
     image: "qaprosoft/postgres:${TAG_POSTGRES}"
     container_name: postgres
+    env_file:
+      - variables.env
     volumes:
       - "pgdata-volume:/var/lib/postgresql/data"
       - "./database/:/docker-entrypoint-initdb.d"
@@ -73,7 +75,7 @@ services:
     volumes:
       - "assets-data:/opt/assets"
     env_file:
-      - configuration/reporting-service/variables.env
+      - variables.env
     environment:
       - "WEB_HOST=http://${INFRA_HOST}"
       - "API_HOST=http://${INFRA_HOST}"
