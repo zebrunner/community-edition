@@ -77,6 +77,47 @@ Create Repository:
 ###### Trigger onPush Job(s)
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
    
+## SonarQube Integration
+To enable sonarqube integration it is needed to have the following components configured correctly.
+  #### Sonarqube token
+   * Open your.domain.com/sonarqube
+   * Login with admin/admin(default) or your own credentials
+   * [OPTIONAL] change password if u need it
+   * Generate user token (login icon -> My account -> security)
+
+  #### Jenkins credential
+   * Open jenkins and generate new credential (secrect text) id = sonar-token, desc = sonar-admin, secret = your sonar token
+   * Navigate to jenkins global configuration and assign the new credential to the sonarqube server config and save config
+
+  #### SonarQube configuration file
+  For enabling static code analysis create a file named **.sonarqube**  in your project root directory and add the following properties(example from carina-demo):
+  ```
+  sonar.projectBaseDir=.
+  sonar.projectName=carina-demo
+  sonar.projectKey=carina-demo
+  sonar.java.source=1.8
+  sonar.sources=src/main
+  sonar.tests=src/test
+  sonar.java.binaries=target/classes
+  sonar.junit.reportPaths=target/surefire-reports
+  ```
+  For multi-module maven projects add the following properrty to the above file(example from carina):
+  ```
+  sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
+  dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
+  ```
+  Once such file is created after each push or pull request on your repository the sonar scanner will be executed.
+
+  ### Pull request decoration
+  In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:
+
+   * Navigate to your jenkins instance global configuration page
+   * In the global properties section add new variable with the followings params:
+       ```
+       name = GITHUB_OAUTH_TOKEN 
+       value = your github token(with write permissions to the repository)
+       ```
+   After each pull request created/reopened in line comments will be published with the user linked to the provided github token. 
 ## Troubleshooting
 
 ## Support Channel
