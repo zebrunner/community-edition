@@ -115,8 +115,10 @@ To enable sonarqube integration it is needed to have the following components co
    * In the global properties section add new variable with the followings params:
        ```
        name = GITHUB_OAUTH_TOKEN 
-       value = your github token(with write permissions to the repository)
+       value = your github token
        ```
+> Note: be sure that the token you are using has writing permission over the repository you are analysing.
+
    After each pull request created/reopened in line comments will be published with the user linked to the provided github token. 
 ## Troubleshooting
 
