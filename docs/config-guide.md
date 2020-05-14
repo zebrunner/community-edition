@@ -79,20 +79,20 @@ Create Repository:
    
 ## SonarQube Integration
 To enable sonarqube integration it is needed to have the following components configured correctly.
-  #### Sonarqube token
+  ### Sonarqube token
    * Open your.domain.com/sonarqube
    * Login with admin/admin(default) or your own credentials
    * [OPTIONAL] change password if u need it
    * Generate user token (login icon -> My account -> security)
 
-  #### Jenkins credential
+  ### Jenkins credential
    * Open jenkins and generate new credential (secrect text) id = sonar-token, desc = sonar-admin, secret = your sonar token
    
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
    * Navigate to jenkins global configuration and assign the new credential to the sonarqube server config and save config
    
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
-  #### SonarQube configuration file
+  ### SonarQube configuration file
   For enabling static code analysis create a file named **.sonarqube**  in your project root directory and add the following properties(example from carina-demo):
   ```
   sonar.projectBaseDir=.
