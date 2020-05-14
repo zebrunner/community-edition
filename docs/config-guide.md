@@ -132,7 +132,7 @@ To enable sonarqube integration it is needed to have the following components co
   sonar.java.binaries=target/classes
   sonar.junit.reportPaths=target/surefire-reports
   ```
-  For multi-module maven projects add the following properrty to the above file(example from carina):
+  For multi-module maven projects add the following property to the above file(example from carina):
   ```
   sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
