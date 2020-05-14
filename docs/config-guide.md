@@ -87,8 +87,11 @@ To enable sonarqube integration it is needed to have the following components co
 
   #### Jenkins credential
    * Open jenkins and generate new credential (secrect text) id = sonar-token, desc = sonar-admin, secret = your sonar token
+   
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
    * Navigate to jenkins global configuration and assign the new credential to the sonarqube server config and save config
-
+   
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
   #### SonarQube configuration file
   For enabling static code analysis create a file named **.sonarqube**  in your project root directory and add the following properties(example from carina-demo):
   ```
