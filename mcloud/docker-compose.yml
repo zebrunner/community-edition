@@ -53,7 +53,7 @@ services:
     container_name: stf-app
     env_file:
      - variables.env
-    command: stf app --port 3000 --auth-url http://demo.qaprosoft.com/auth/mock/ --websocket-url http://demo.qaprosoft.com/stf/
+    command: stf app --port 3000 --auth-url http://${INFRA_HOST}/auth/mock/ --websocket-url http://${INFRA_HOST}/stf/
     extra_hosts:
      - "${PUBLIC_IP}:${PRIVATE_IP}"
     depends_on:
@@ -64,7 +64,7 @@ services:
     container_name: stf-auth-mock
     env_file:
      - variables.env
-    command: stf auth-mock --port 3000 --app-url http://demo.qaprosoft.com/stf/
+    command: stf auth-mock --port 3000 --app-url http://${INFRA_HOST}/stf/
     extra_hosts:
      - "${PUBLIC_IP}:${PRIVATE_IP}"
     restart: always
@@ -105,7 +105,7 @@ services:
     container_name: stf-storage-plugin-apk
     env_file:
      - variables.env
-    command: stf storage-plugin-apk --port 3000 --storage-url http://demo.qaprosoft.com/stf/
+    command: stf storage-plugin-apk --port 3000 --storage-url http://${INFRA_HOST}/stf/
     extra_hosts:
      - "${PUBLIC_IP}:${PRIVATE_IP}"
     restart: always
@@ -114,7 +114,7 @@ services:
     container_name: stf-storage-plugin-image
     env_file:
      - variables.env
-    command: stf storage-plugin-image --port 3000 --storage-url http://demo.qaprosoft.com/stf/
+    command: stf storage-plugin-image --port 3000 --storage-url http://${INFRA_HOST}/stf/
     extra_hosts:
      - "${PUBLIC_IP}:${PRIVATE_IP}"
     restart: always
@@ -158,7 +158,7 @@ services:
     container_name: stf-websocket
     env_file:
      - variables.env
-    command: stf websocket --port 3000 --storage-url http://demo.qaprosoft.com/stf/ --connect-sub tcp://${PUBLIC_IP}:7150 --connect-push tcp://${PUBLIC_IP}:7170
+    command: stf websocket --port 3000 --storage-url http://${INFRA_HOST}/stf/ --connect-sub tcp://${PUBLIC_IP}:7150 --connect-push tcp://${PUBLIC_IP}:7170
     extra_hosts:
      - "${PUBLIC_IP}:${PRIVATE_IP}"
     depends_on:

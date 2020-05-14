@@ -7,10 +7,14 @@ services:
   jenkins-master:
     image: "qaprosoft/jenkins-master:${TAG_JENKINS_MASTER}"
     container_name: jenkins-master
-    env_file:
-     - variables.env
     environment:
       - "INFRA_HOST=${INFRA_HOST}"
+      - "ROOT_URL=${ROOT_URL}"
+      - "SONAR_URL=${SONAR_URL}"
+      - "AMIN_USER=${JENKINS_ADMIN_USER}"
+      - "ADMIN_PASS=${JENKINS_ADMIN_PASS}"
+      - "ROOT_EMAIL=${JENKINS_ROOT_EMAIL}"
+      - "ADMIN_EMAILS=${JENKINS_ADMIN_EMAILS}"
     volumes:
      # TODO: test plugins https://github.com/qaprosoft/jenkins-master/issues/193
      # to add extra plugins follow this steps: https://github.com/qaprosoft/jenkins-master/releases/tag/4.6
@@ -21,12 +25,13 @@ services:
   jenkins-slave:
     image: "qaprosoft/jenkins-slave:${TAG_JENKINS_SLAVE}"
     container_name: jenkins-slave
-    env_file:
-     - variables.env
     environment:
-     - JENKINS_SLAVE_NAME=jenkins-slave
-     - JENKINS_SLAVE_WORKERS=5
-     - JENKINS_SLAVE_LABELS=qps-slave api web qa docker
+     - "JENKINS_MASTER_URL=http://jenkins-master:8080/jenkins"
+     - "JENKINS_MASTER_USERNAME=${JENKINS_ADMIN_USER}"
+     - "JENKINS_MASTER_PASSWORD=${JENKINS_ADMIN_PASS}"
+     - "JENKINS_SLAVE_NAME=jenkins-slave"
+     - "JENKINS_SLAVE_WORKERS=5"
+     - "JENKINS_SLAVE_LABELS=maven api web docker"
     volumes:
      - "/var/run/docker.sock:/var/run/docker.sock"
     ports:

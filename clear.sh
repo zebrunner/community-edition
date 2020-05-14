@@ -16,7 +16,6 @@ docker rmi -f $(docker images -q)
 
 rm -rf ./selenoid/video/*.mp4
 mv selenoid/browsers.json selenoid/browsers.json.bak
-mv variables.env variables.env.bak
 mv ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
 mv .env .env.bak
 
