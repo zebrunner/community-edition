@@ -1,59 +1,3 @@
-upstream jenkins_server {
-    server jenkins-master:8080 fail_timeout=0;
-}
-
-upstream zafira-ui_server {
-    server zafira-ui:80 max_fails=0;
-}
-
-upstream zafira_server {
-    server zafira:8080 max_fails=0;
-}
-
-upstream sonar_server {
-    server sonarqube:9000 max_fails=0;
-}
-
-upstream rabbitmq_server {
-    server rabbitmq:15674 max_fails=0;
-}
-
-upstream elasticsearch_server {
-    server elasticsearch:9200 max_fails=0;
-}
-
-upstream ggr_server {
-    server ggr:4444 max_fails=0;
-}
-
-upstream mcloud_server {
-    server selenium-hub:4444 max_fails=0;
-}
-
-upstream zebrunner_server {
-    server hub.zebrunner.com:4444 max_fails=0;
-}
-
-upstream aerokube_server {
-    server browsers.aerokube.com:4444 max_fails=0;
-}
-
-upstream browserstack_server {
-    server hub-cloud.browserstack.com max_fails=0;
-}
-
-upstream saucelabs_server {
-    server ondemand.saucelabs.com max_fails=0;
-}
-
-  types {
-    application/javascript  js;
-    image/gif               gif;
-    image/jpeg              jpg;
-    text/css                css;
-    text/html               html;
-  }
-
   map $http_upgrade $connection_upgrade {
     default  upgrade;
     ''       close;
@@ -66,71 +10,99 @@ server {
     #to resolve issue with uploading to sonar huge project reports (Error 413)
     client_max_body_size 200M;
 
-    # SSL configuration
-#    listen 443 ssl;
-#    ssl_certificate /etc/nginx/ssl/ssl.crt;
-#    ssl_certificate_key /etc/nginx/ssl/ssl.key;
-#    ssl_session_timeout 5m;
-#    ssl_session_cache shared:SSL:10m;
-##    ssl_dhparam /etc/nginx/ssl/dhparam.pem;
-#    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-#    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
-#    ssl_prefer_server_ciphers on;
-
-    resolver 8.8.4.4 8.8.8.8 valid=300s;
+    resolver 127.0.0.11 valid=30s;
     resolver_timeout 10s;
 
     #charset koi8-r;
     access_log  /var/log/nginx/default.access.log main;
     error_log   /var/log/nginx/default.error.log warn;
 
+    location /sonarqube {
+      set $upstream_sonar 127.0.0.1:80;
+      proxy_set_header Host sonarqube;
+      proxy_pass http://$upstream_sonar;
+      proxy_http_version 1.1;
+    }
+
     location /jenkins {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $http_host;
+
         #proxy_redirect off;
 	#proxy_redirect http:// https://;
  
         if (!-f $request_filename) {
-            proxy_pass http://jenkins_server;
+            set $upstream_jenkins jenkins-master:8080;
+	    proxy_pass http://$upstream_jenkins;
             break;
         }
     }
 
-    # temp rule to continue support for /zafira context root and redirect to the new /app address
-    location /zafira {
-       rewrite ^/zafira$ http://demo.qaprosoft.com/app/ permanent;
-    }
-
-    #Zafira instance
     location /app {
-      proxy_pass http://zafira-ui_server/app/;
+      set $upstream_zebrunner zebrunner-proxy:80;
+      proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
+
+      # two below headers to support websocket connection
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection upgrade;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $http_x_real_ip;
-      proxy_set_header Host $host;
-      proxy_pass_header X-XSRF-TOKEN;
-      proxy_set_header Origin "";
+    }
+
+    location ~ /(reporting-service|zafira-ws) {
+      set $upstream_zebrunner zebrunner-proxy:80;
+      proxy_pass http://$upstream_zebrunner;
+      proxy_http_version 1.1;
+
+     # two below headers to support websocket connection
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection upgrade;
+    }
+
+    location /elasticsearch {
+      set $upstream_zebrunner zebrunner-proxy:80;
+      proxy_pass http://$upstream_zebrunner;
+      proxy_http_version 1.1;
+    }
+
+    location /stf {
+#       rewrite http://stf-demo.qaprosoft.com permanent;
+      set $upstream_stf stf-proxy:80;
+      proxy_pass http://$upstream_stf;
+      proxy_http_version 1.1;
+    }
+
+#    location ~ /(stf|static/app/build|static/logo|auth/mock|auth/contact|auth/api|app/api|api/v1) {
+#      set $upstream_stf stf-proxy:80;
+#      proxy_pass http://$upstream_stf;
+#      proxy_http_version 1.1;
+#    }
+
+#    location /socket.io {
+#      set $upstream_stf stf-proxy:80;
+#      proxy_pass http://$upstream_stf;
+#      proxy_http_version 1.1;
+#      
+#      # two below headers to support websocket connection
+#      proxy_set_header Upgrade $http_upgrade;
+#      proxy_set_header Connection upgrade;
+#   }
+
+    location /mcloud {
+      set $upstream_zebrunner 127.0.0.1:80;
+      proxy_set_header Host mcloud;
+      proxy_pass http://$upstream_zebrunner;
+      proxy_http_version 1.1;
     }
 
 
-    #Zafira web service instance
-    location /zafira-ws/ {
-      proxy_pass http://zafira_server/zafira-ws/;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection upgrade;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $http_x_real_ip;
-      proxy_set_header Host $host;
-      proxy_pass_header X-XSRF-TOKEN;
-      proxy_set_header Origin "";  
-    }
+    # Important: do not open access to the admin panel for rabbitmq etc
 
-    #GGR-WebSocket
+
+    #Selenoid VNC WebSocket
     location /vnc {
-      proxy_pass http://ggr_server;
+      set $upstream_selenoid selenoid:4444;
+      proxy_pass http://$upstream_selenoid;
+
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
@@ -142,46 +114,21 @@ server {
       proxy_set_header X-NginX-Proxy true;
     }
 
-    location /stomp {
-      proxy_pass http://rabbitmq_server;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection $connection_upgrade;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Real-IP $http_x_real_ip;
-    }
-
-    location /sonarqube {
-      proxy_pass http://sonar_server;
-    }
-
-    location /elasticsearch {
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection 'upgrade';
-      proxy_set_header Host $host;
-      proxy_cache_bypass $http_upgrade;
-
-      proxy_pass http://elasticsearch_server/$1/;
-      rewrite ^/elasticsearch/(.*)$ /$1 break;
-    }
-
     location /video {
         root   /usr/share/nginx;
     }
 
-# IMPORTANT!!! make sure to generate secure GGR credentials and put them into the INFRA_HOME/nginx/htpasswd/<name>.htpasswd
+# IMPORTANT!!! make sure to generate secure Selenoid credentials and put them into the INFRA_HOME/nginx/htpasswd/selenoid.htpasswd
 # TODO: provide valid link onto the help howto secure this site
 # internal hub providers integration
-    # GoGridRoute
-    location  ~ ^/ggr/(.*)$ {
-      auth_basic "Private GoGridRoute Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/ggr.htpasswd;
+    # Selenoid Hub
+    location  ~ ^/selenoid/(.*)$ {
+      auth_basic "Private Selenoid Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/selenoid.htpasswd;
 
-      # base64 encoded string of the default "demo:demo" credentials. Don't forget to update if you change it on GGR layer!
-      proxy_set_header Authorization "Basic ZGVtbzpkZW1v";
+      set $upstream_selenoid selenoid:4444;
+      proxy_pass http://$upstream_selenoid/$1;
 
-      proxy_pass              http://ggr_server/$1;
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
       proxy_set_header        Host $host;
@@ -200,33 +147,6 @@ server {
       add_header Access-Control-Allow-Headers "Content-Type,Authorization";
       add_header Access-Control-Allow-Credentials "true";
     }
-
-    # MCloud
-    location  ~ ^/mcloud/(.*)$ {
-      auth_basic "Private MCloud Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/mcloud.htpasswd;
-
-      proxy_pass              http://mcloud_server/$1;
-      proxy_http_version      1.1;
-      proxy_set_header        Connection "";
-      proxy_set_header        Host $host;
-      proxy_set_header        X-Real-IP $remote_addr;
-      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   10;
-      proxy_send_timeout      300;
-      proxy_read_timeout      300;
-      proxy_buffers           32 64m;
-      proxy_buffer_size       64k;
-      proxy_next_upstream    error timeout http_502 http_503 http_504;
-      client_max_body_size    64m;
-      client_body_buffer_size 64m;
-      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
-      add_header Access-Control-Allow-Origin "*";
-      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
-      add_header Access-Control-Allow-Credentials "true";
-    }
-
-
 
 # external hub providers integration
     # ZEBRUNNER
@@ -234,9 +154,12 @@ server {
       auth_basic "External Zebrunner Selenium Hub";
       auth_basic_user_file /usr/share/nginx/htpasswd/zebrunner.htpasswd;
 
+      # Replace ZEBRUNNER_TOKEN with base64 encoded string of your "user:password" credentials.
       proxy_set_header Authorization "Basic ZEBRUNNER_TOKEN";
 
-      proxy_pass              https://zebrunner_server/$1;
+      set $upstream_zebranner hub.zebrunner.com:4444;
+
+      proxy_pass              https://upstream_zebranner/$1;
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
       proxy_set_header        Host $host;
@@ -261,9 +184,11 @@ server {
       auth_basic "External Aerokube Selenium Hub";
       auth_basic_user_file /usr/share/nginx/htpasswd/aerokube.htpasswd;
 
+      # Replace AEROKUBE_TOKEN with base64 encoded string of your "user:password" credentials.
       proxy_set_header Authorization "Basic AEROKUBE_TOKEN";
 
-      proxy_pass              https://aerokube_server/$1;
+      set $upstream_aerokube browsers.aerokube.com:4444;
+      proxy_pass              https://$upstream_aerokube/$1;
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
       proxy_set_header        Host $host;
@@ -288,9 +213,11 @@ server {
       auth_basic "External Browserstack Selenium Hub";
       auth_basic_user_file /usr/share/nginx/htpasswd/browserstack.htpasswd;
 
+      # Replace BROWSERSTACK_TOKEN with base64 encoded string of your "user:password" credentials.
       proxy_set_header Authorization "Basic BROWSERSTACK_TOKEN";
 
-      proxy_pass              http://browserstack_server/$1;
+      set $upstream_browserstack hub-cloud.browserstack.com;
+      proxy_pass              http://$upstream_browserstack/$1;
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
       proxy_set_header        Host $host;
@@ -315,9 +242,11 @@ server {
       auth_basic "External SauceLabs Selenium Hub";
       auth_basic_user_file /usr/share/nginx/htpasswd/saucelabs.htpasswd;
 
+      # Replace SAUCELABS_TOKEN with base64 encoded string of your "user:password" credentials.
       proxy_set_header Authorization "Basic SAUCELABS_TOKEN";
 
-      proxy_pass              http://saucelabs_server/$1;
+      set $upstream_saucelabs ondemand.saucelabs.com;
+      proxy_pass              http://$upstream_saucelabs/$1;
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
       proxy_set_header        Host $host;
@@ -337,12 +266,7 @@ server {
       add_header Access-Control-Allow-Credentials "true";
     }
 
-#  location / { 
-#    proxy_set_header X-Forwarded-Host $host;
-#    proxy_set_header X-Forwarded-Server $host;
-#    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-#    proxy_pass http://127.0.0.1:8080/;
-#  }
+#TODO: register lamdatest location url
 
     location / {
         root   /usr/share/nginx/html;
