@@ -133,7 +133,7 @@ To enable sonarqube integration it is needed to have the following components co
   ```
   For multi-module maven projects add the following property to the above file(example from [carina](https://github.com/qaprosoft/carina/blob/master/.sonarqube)):
   ```
-  sonar.java.binaries=target/classes
+  sonar.java.test.binaries=target/test-classes
   sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
   ```
