@@ -23,7 +23,9 @@
 ## Initial setup
 
 1. Clone [qps-infra](https://github.com/qaprosoft/qps-infra)
-2. Generate github OAuth Apps token and put values into .env.original (GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET)
+
+2. Generate github [OAuth Apps](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) token and put values into .env.original (GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET)
+
 3. Launch the setup.sh script providing your hostname as an argument:<br>
   ```
   git clone https://github.com/qaprosoft/qps-infra.git && cd qps-infra && ./setup.sh myhost.domain.com
