@@ -73,23 +73,6 @@ Create Repository:
         * Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed        
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true "PushJobs")
 
-## Organization Setup        
-### Register Organization
-  * Open Jenkins->Management_Jobs folder.
-  * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
-      * New folder is created with default content
-     
- Create organization: 
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Organization.png?raw=true "Organization")
-
-#### Register Repository
-   * Open your organization folder
-   * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)
-      * Repository should be scanned and TestNG jobs created
-     
-Create Repository:
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
-
 ##### onPush Job/Event setup
 
 ###### Setup GitHub WebHook

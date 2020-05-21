@@ -15,35 +15,37 @@
 
 ### Software requirements
 
-* Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc
-
-* Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04) or [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/))
+* Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04), [Amazon Linux 2](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html) or [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/))
   > MacOS is <b>not recommended</b> for production usage!
   
 * Install [docker-composer](https://docs.docker.com/compose/install/#install-compose)
 
 ## Initial setup
 
-1. Clone [qps-infra](https://github.com/qaprosoft/qps-infra) and launch the setup.sh script providing your hostname as an argument:<br>
+1. Clone [qps-infra](https://github.com/qaprosoft/qps-infra)
+
+2. Generate github [OAuth Apps](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) token and put values into .env.original (GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET)
+
+3. Launch the setup.sh script providing your hostname as an argument:<br>
   ```
   git clone https://github.com/qaprosoft/qps-infra.git && cd qps-infra && ./setup.sh myhost.domain.com
   ```
   > Use public ip address if you don't have registered DNS hostname yet
   
-2. [Optional] adjust docker-compose.yml file removing/disabling unused services according to the [steps](#disableremove-components).
+4. [Optional] TODO: document disabling steps for 5.0+ version [steps](#disableremove-components).
   
-3. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
+5. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
   > Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string
 
-4. [Optional] Update default credentials in variables.env
+6. [Optional] Update default credentials in variables.env
   > If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well
  
-5. Start services<br>
+7. Start services<br>
   ```
   ./start.sh
   ```
   
-6. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
+8. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
   > Use your host domain address or IP.
   > admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel
   
