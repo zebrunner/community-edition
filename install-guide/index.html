@@ -469,18 +469,18 @@
 </ul>
 <h2 id="initial-setup">Initial setup</h2>
 <ol>
-<li>
-<p>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a> and launch the setup.sh script providing your hostname as an argument:<br>
+<li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a> and launch the setup.sh script providing your hostname as an argument:<br>
+  ```
+  git clone https://github.com/qaprosoft/qps-infra.git</li>
+</ol>
+<p>cd qps-infra</p>
+<p>set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original</p>
+<p>./setup.sh myhost.domain.com
   ```</p>
 <blockquote>
-<p>git clone https://github.com/qaprosoft/qps-infra.git
-cd qps-infra
-set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original
-./setup.sh myhost.domain.com
-  ```
-Use public ip address if you don't have registered DNS hostname yet</p>
+<p>Use public ip address if you don't have registered DNS hostname yet</p>
 </blockquote>
-</li>
+<ol>
 <li>
 <p>[Optional] adjust docker-compose.yml file removing/disabling unused services according to the <a href="#disableremove-components">steps</a>.</p>
 </li>
