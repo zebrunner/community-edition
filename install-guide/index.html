@@ -455,9 +455,6 @@
 <h3 id="software-requirements">Software requirements</h3>
 <ul>
 <li>
-<p>Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc</p>
-</li>
-<li>
 <p>Install docker (<a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04">Ubuntu 16.04</a>, <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04">Ubuntu 18.04</a>, <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html">Amazon Linux 2</a> or <a href="https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/">MacOS</a>)</p>
 <blockquote>
 <p>MacOS is <b>not recommended</b> for production usage!</p>
@@ -470,19 +467,16 @@
 <h2 id="initial-setup">Initial setup</h2>
 <ol>
 <li>Clone <a href="https://github.com/qaprosoft/qps-infra">qps-infra</a></li>
-<li>Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original</li>
+<li>Generate github OAuth Apps token and put values into .env.original (GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET)</li>
 <li>
 <p>Launch the setup.sh script providing your hostname as an argument:<br>
-  <code>git clone https://github.com/qaprosoft/qps-infra.git,
-  cd qps-infra,
-  set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original,
-  ./setup.sh myhost.domain.com</code></p>
+  <code>git clone https://github.com/qaprosoft/qps-infra.git &amp;&amp; cd qps-infra &amp;&amp; ./setup.sh myhost.domain.com</code></p>
 <blockquote>
 <p>Use public ip address if you don't have registered DNS hostname yet</p>
 </blockquote>
 </li>
 <li>
-<p>[Optional] adjust docker-compose.yml file removing/disabling unused services according to the <a href="#disableremove-components">steps</a>.</p>
+<p>[Optional] TODO: document disabling steps for 5.0+ version <a href="#disableremove-components">steps</a>.</p>
 </li>
 <li>
 <p>[Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env</p>
