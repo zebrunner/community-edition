@@ -15,8 +15,6 @@
 
 ### Software requirements
 
-* Docker requires a user with uid=1000 and gid=1000 for simple volumes sharing, etc
-
 * Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04), [Amazon Linux 2](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html) or [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/))
   > MacOS is <b>not recommended</b> for production usage!
   
@@ -25,17 +23,14 @@
 ## Initial setup
 
 1. Clone [qps-infra](https://github.com/qaprosoft/qps-infra)
-2. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original
+2. Generate github OAuth Apps token and put values into .env.original (GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET)
 3. Launch the setup.sh script providing your hostname as an argument:<br>
   ```
-  git clone https://github.com/qaprosoft/qps-infra.git,
-  cd qps-infra,
-  set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original,
-  ./setup.sh myhost.domain.com
+  git clone https://github.com/qaprosoft/qps-infra.git && cd qps-infra && ./setup.sh myhost.domain.com
   ```
   > Use public ip address if you don't have registered DNS hostname yet
   
-4. [Optional] adjust docker-compose.yml file removing/disabling unused services according to the [steps](#disableremove-components).
+4. [Optional] TODO: document disabling steps for 5.0+ version [steps](#disableremove-components).
   
 5. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
   > Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string
