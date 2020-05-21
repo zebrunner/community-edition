@@ -24,7 +24,9 @@
 
 ## Initial setup
 
-1. Clone [qps-infra](https://github.com/qaprosoft/qps-infra) and launch the setup.sh script providing your hostname as an argument:<br>
+1. Clone [qps-infra](https://github.com/qaprosoft/qps-infra)
+2. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original
+3. Launch the setup.sh script providing your hostname as an argument:<br>
   ```
   git clone https://github.com/qaprosoft/qps-infra.git,
   cd qps-infra,
@@ -33,20 +35,20 @@
   ```
   > Use public ip address if you don't have registered DNS hostname yet
   
-2. [Optional] adjust docker-compose.yml file removing/disabling unused services according to the [steps](#disableremove-components).
+4. [Optional] adjust docker-compose.yml file removing/disabling unused services according to the [steps](#disableremove-components).
   
-3. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
+5. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
   > Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string
 
-4. [Optional] Update default credentials in variables.env
+6. [Optional] Update default credentials in variables.env
   > If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well
  
-5. Start services<br>
+7. Start services<br>
   ```
   ./start.sh
   ```
   
-6. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
+8. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
   > Use your host domain address or IP.
   > admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel
   
