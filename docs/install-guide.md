@@ -26,8 +26,8 @@
 
 1. Clone [qps-infra](https://github.com/qaprosoft/qps-infra) and launch the setup.sh script providing your hostname as an argument:<br>
   ```
-  git clone https://github.com/qaprosoft/qps-infra.git 
-  cd qps-infra 
+  git clone https://github.com/qaprosoft/qps-infra.git
+  cd qps-infra
   set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in .env.original
   ./setup.sh myhost.domain.com
   ```
