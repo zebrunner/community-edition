@@ -9,8 +9,8 @@ services:
     container_name: stf-proxy
     volumes:
     - "./configuration/stf-proxy/nginx.conf:/etc/nginx/nginx.conf:ro"
-#    ports:
-#    - "80:80"     # primary HTTP port
+    ports:
+    - "80:80"     # primary HTTP port
     depends_on:
       - stf-app
     restart: always
@@ -45,17 +45,13 @@ services:
     volumes:
      - "stf-db-volume:/data"
     command: rethinkdb --bind all --cache-size 8192 --no-update-check
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
     restart: always
   stf-app:
     image: "qaprosoft/stf:${TAG_STF}"
     container_name: stf-app
     env_file:
      - variables.env
-    command: stf app --port 3000 --auth-url http://${INFRA_HOST}/auth/mock/ --websocket-url http://${INFRA_HOST}/stf/
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf app --port 3000 --auth-url http://${STF_HOST}/auth/mock/ --websocket-url http://${STF_HOST}/
     depends_on:
      - "rethinkdb"
     restart: always
@@ -64,9 +60,7 @@ services:
     container_name: stf-auth-mock
     env_file:
      - variables.env
-    command: stf auth-mock --port 3000 --app-url http://${INFRA_HOST}/stf/
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf auth-mock --port 3000 --app-url http://${STF_HOST}/
     restart: always
   stf-migrate:
     image: "qaprosoft/stf:${TAG_STF}"
@@ -74,8 +68,6 @@ services:
     env_file:
      - variables.env
     command: stf migrate
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
     depends_on:
      - "rethinkdb"
   stf-processor001:
@@ -83,9 +75,7 @@ services:
     container_name: stf-processor001
     env_file:
      - variables.env
-    command: stf processor proc001 --connect-app-dealer tcp://${PUBLIC_IP}:7160 --connect-dev-dealer tcp://${PUBLIC_IP}:7260
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf processor proc001 --connect-app-dealer tcp://stf-triproxy-app:7160 --connect-dev-dealer tcp://stf-triproxy-dev:7260
     depends_on:
      - "rethinkdb"
     restart: always
@@ -94,9 +84,7 @@ services:
     container_name: stf-reaper
     env_file:
      - variables.env
-    command: stf reaper reaper001 --connect-push tcp://${PUBLIC_IP}:7270 --connect-sub tcp://${PUBLIC_IP}:7150 --heartbeat-timeout 30000
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf reaper reaper001 --connect-push tcp://stf-triproxy-dev:7270 --connect-sub tcp://stf-triproxy-app:7150 --heartbeat-timeout 30000
     depends_on:
      - "rethinkdb"
     restart: always
@@ -105,18 +93,14 @@ services:
     container_name: stf-storage-plugin-apk
     env_file:
      - variables.env
-    command: stf storage-plugin-apk --port 3000 --storage-url http://${INFRA_HOST}/stf/
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf storage-plugin-apk --port 3000 --storage-url http://${STF_HOST}/
     restart: always
   stf-storage-plugin-image:
     image: "qaprosoft/stf:${TAG_STF}"
     container_name: stf-storage-plugin-image
     env_file:
      - variables.env
-    command: stf storage-plugin-image --port 3000 --storage-url http://${INFRA_HOST}/stf/
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf storage-plugin-image --port 3000 --storage-url http://${STF_HOST}/
     restart: always
   stf-storage-temp:
     image: "qaprosoft/stf:${TAG_STF}"
@@ -125,7 +109,7 @@ services:
      - variables.env
     volumes:
      - "stf-temp-volume:/data"
-    command: stf storage-temp --port 3000 --save-dir /data --connect-sub tcp://${PUBLIC_IP}:7150 --connect-push tcp://${PUBLIC_IP}:7170
+    command: stf storage-temp --port 3000 --save-dir /data --connect-sub tcp://stf-triproxy-app:7150 --connect-push tcp://stf-triproxy-app:7170
     restart: always
   stf-triproxy-app:
     image: "qaprosoft/stf:${TAG_STF}"
@@ -158,9 +142,7 @@ services:
     container_name: stf-websocket
     env_file:
      - variables.env
-    command: stf websocket --port 3000 --storage-url http://${INFRA_HOST}/stf/ --connect-sub tcp://${PUBLIC_IP}:7150 --connect-push tcp://${PUBLIC_IP}:7170
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf websocket --port 3000 --storage-url http://${STF_HOST}/ --connect-sub tcp://stf-triproxy-app:7150 --connect-push tcp://stf-triproxy-app:7170
     depends_on:
      - "rethinkdb"
     restart: always
@@ -169,9 +151,7 @@ services:
     container_name: stf-api
     env_file:
      - variables.env
-    command: stf api --port 3000 --connect-sub tcp://${PUBLIC_IP}:7150 --connect-push tcp://${PUBLIC_IP}:7170 --connect-sub-dev tcp://${PRIVATE_IP}:7250 --connect-push-dev tcp://${PRIVATE_IP}:7270
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf api --port 3000 --connect-sub tcp://stf-triproxy-app:7150 --connect-push tcp://stf-triproxy-app:7170 --connect-sub-dev tcp://stf-triproxy-dev:7250 --connect-push-dev tcp://stf-triproxy-dev:7270
     depends_on:
      - "rethinkdb"
     restart: always
@@ -180,9 +160,7 @@ services:
     container_name: stf-api-groups-engine
     env_file:
      - variables.env
-    command: stf groups-engine --connect-sub tcp://${PUBLIC_IP}:7150 --connect-push tcp://${PUBLIC_IP}:7170 --connect-sub-dev tcp://${PRIVATE_IP}:7250 --connect-push-dev tcp://${PRIVATE_IP}:7270
-    extra_hosts:
-     - "${PUBLIC_IP}:${PRIVATE_IP}"
+    command: stf groups-engine --connect-sub tcp://stf-triproxy-app:7150 --connect-push tcp://stf-triproxy-app:7170 --connect-sub-dev tcp://stf-triproxy-dev:7250 --connect-push-dev tcp://stf-triproxy-dev:7270
     depends_on:
      - "rethinkdb"
     restart: always
