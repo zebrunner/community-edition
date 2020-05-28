@@ -480,7 +480,7 @@
 </blockquote>
 </li>
 <li>
-<p>[Optional] TODO: document disabling steps for 5.0+ version <a href="#disableremove-components">steps</a>.</p>
+<p>[Optional] Disable unused componentaccording to the <a href="#disableremove-components">steps</a>.</p>
 </li>
 <li>
 <p>[Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env</p>
@@ -552,37 +552,33 @@ admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated ins
 <tbody>
 <tr>
 <td>NGiNX WebServer</td>
-<td>nginx</td>
+<td>nginx (docker-compose.yml in a root folder)</td>
 </tr>
 <tr>
 <td>Reporting Services</td>
-<td>postgres, zafira, zafira-ui, rabbitmq, elasticsearch, redis, logstash</td>
+<td>postgres, reporting-service, reporting-ui, zebrunner-proxy etc</td>
 </tr>
 <tr>
 <td>CI (Jenkins)</td>
-<td>jenkins-master, jenkins-slave-web, jenkins-slave-api</td>
-</tr>
-<tr>
-<td>Local Storage</td>
-<td>ftp</td>
+<td>jenkins-master, jenkins-slave</td>
 </tr>
 <tr>
 <td>Code Analysis</td>
 <td>sonarqube</td>
 </tr>
 <tr>
-<td>Embedded web selenium hub</td>
-<td>ggr, selenoid</td>
+<td>MCloud</td>
+<td>stf services, selenium-hub, ftp</td>
 </tr>
 <tr>
-<td>Embedded mobile selenium hub</td>
-<td>selenium-hub</td>
+<td>Embedded web selenium hub</td>
+<td>selenoid</td>
 </tr>
 </tbody>
 </table>
-<p>Open docker-composer.yml and comment/remove all unused containers.</p>
+<p>Comment/uncomment in the start.sh (stop.sh and clear.sh) appropriate <a href="https://github.com/qaprosoft/qps-infra/blob/82f591827b8cbadd886ea9731661a39aba2ed0a4/start.sh#L20">line</a> for the component</p>
 <blockquote>
-<p>Make sure to remove disabled services from depends_on directives in docker-compose.yml</p>
+<p>that's a temporary solution for 5.0. In 5.1 more convenient way should appear</p>
 </blockquote>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
