@@ -32,7 +32,7 @@
   ```
   > Use public ip address if you don't have registered DNS hostname yet
   
-4. [Optional] TODO: document disabling steps for 5.0+ version [steps](#disableremove-components).
+4. [Optional] Disable unused componentaccording to the [steps](#disableremove-components).
   
 5. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
   > Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string
@@ -64,16 +64,15 @@ QPS-Infra contains such layers of services:
 
 | Layer                        	| Containers                                                           	|
 |------------------------------	|----------------------------------------------------------------------	|
-| NGiNX WebServer              	| nginx                                                                	|
-| Reporting Services           	| postgres, zafira, zafira-ui, rabbitmq, elasticsearch, redis, logstash	|
-| CI (Jenkins)                 	| jenkins-master, jenkins-slave-web, jenkins-slave-api                 	|
-| Local Storage                	| ftp                                                                  	|
+| NGiNX WebServer              	| nginx (docker-compose.yml in a root folder)                          	|
+| Reporting Services           	| postgres, reporting-service, reporting-ui, zebrunner-proxy etc      	|
+| CI (Jenkins)                 	| jenkins-master, jenkins-slave                                       	|
 | Code Analysis                	| sonarqube                                                            	|
-| Embedded web selenium hub    	| ggr, selenoid                                                        	|
-| Embedded mobile selenium hub 	| selenium-hub                                                         	|
+| MCloud                      	| stf services, selenium-hub, ftp                                      	|
+| Embedded web selenium hub    	| selenoid                                                            	|
   
-Open docker-composer.yml and comment/remove all unused containers.
-> Make sure to remove disabled services from depends_on directives in docker-compose.yml
+Comment/uncomment in the start.sh (stop.sh and clear.sh) appropriate [line](https://github.com/qaprosoft/qps-infra/blob/82f591827b8cbadd886ea9731661a39aba2ed0a4/start.sh#L20) for the component
+> that's a temporary solution for 5.0. In 5.1 more convenient way should appear
 
 ## Troubleshooting
 
