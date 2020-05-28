@@ -32,7 +32,7 @@
 4. [Optional] Disable unused component according to the [steps](#disableremove-components).
 
 5. [Optional] Update default credentials in .env.original
-  > Note: due to the huge refactoring better to ask [assistance]((https://t.me/qps_infra)) in updating credentials for all configuration files. In 5.1 it is planned to have single point of true only inside .env.original!
+  > Note: due to the huge refactoring better to ask [assistance](https://t.me/qps_infra) in updating credentials for all configuration files. In 5.1 it is planned to have single point of true only inside .env.original!
 
 6. Launch the setup.sh script providing your hostname as an argument:<br>
   ```
