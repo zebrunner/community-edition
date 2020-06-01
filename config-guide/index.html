@@ -786,8 +786,8 @@
 <h3 id="configure-sonarqube-configuration-file-for-enabling-static-code-analysis">Configure SonarQube configuration file for enabling static code analysis</h3>
 <p><ul>
   <li> Create a file named <strong>.sonarqube</strong>  in your project root directory 
-  <li> Add the following properties (example from carina-demo):
-  <code>sonar.projectBaseDir=.
+  <li> Add the following properties (example from carina-demo):</p>
+<p><code>sonar.projectBaseDir=.
   sonar.projectName=carina-demo
   sonar.projectKey=carina-demo
   sonar.java.source=1.8
@@ -795,8 +795,8 @@
   sonar.tests=src/test
   sonar.java.binaries=target/classes
   sonar.junit.reportPaths=target/surefire-reports</code>
-  <li> Add the following property above the file (for multi-module maven projects):
-  <code>sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
+  <li> Add the following property above the file (for multi-module maven projects):</p>
+<p><code>sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver</code>
   </ul></p>
 <blockquote>
@@ -804,13 +804,18 @@
 </blockquote>
 <h3 id="pull-request-decoration">Pull request decoration</h3>
 <p>In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
-   * Open Manage jenkins -&gt; Configure System
-   * Open Global properties section -&gt; Add new variable with the followings params:
-       <code>name = GITHUB_OAUTH_TOKEN 
-       value = your github token</code></p>
+  <ul>
+   <li> Open Manage jenkins -&gt; Configure System
+   <li> Open Global properties section -&gt; Add new variable with the followings params:</p>
+<pre><code>   ```
+   name = GITHUB_OAUTH_TOKEN 
+   value = your github token
+   ```
+</code></pre>
 <blockquote>
 <p>Note: The token you are using should have writing permission over the analysing repository.
-   * Pull request created/reopened -&gt; published with the user linked to the provided github token in line comments </p>
+   <li> Pull request created/reopened -&gt; published with the user linked to the provided github token in line comments 
+ </ul></p>
 </blockquote>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
