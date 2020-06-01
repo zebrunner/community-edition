@@ -110,6 +110,7 @@ To enable sonarqube integration need to have the following components configured
    <li> Assign the new credential to Server and Save
    <li> ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
    </ul>
+   
   ### Configure SonarQube configuration file for enabling static code analysis
    
   * Create a file named **.sonarqube**  in your project root directory 
