@@ -698,19 +698,25 @@
 <li>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
 </ul>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
-<p>To enable sonarqube integration it is needed to have the following components configured correctly.
-  ### Sonarqube token
-   * Open your.domain.com/sonarqube
-   * Login with admin/admin(default) or your own credentials
-   * [OPTIONAL] change password if u need it
-   * Generate user token (login icon -&gt; My account -&gt; security)</p>
-<p>### Jenkins credential
-   * Open jenkins and generate new credential (secrect text) id = sonar-token, desc = sonar-admin, secret = your sonar token</p>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
-   * Navigate to jenkins global configuration and assign the new credential to the sonarqube server config and save config</p>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" />
-  ### SonarQube configuration file
-  For enabling static code analysis create a file named <strong>.sonarqube</strong>  in your project root directory and add the following properties(example from carina-demo):
+<p>To enable sonarqube integration need to have the following components configured correctly
+  ### Generate Sonarqube token
+   <ul>
+   <li> Open your.domain.com/sonarqube 
+   <li> Login with admin/admin(default) or your own credentials
+   <li> [OPTIONAL] change password if you need
+   <li> Generate user token (login icon -&gt; My account -&gt; security)
+   </ul></p>
+<p>### Set up sonar credentials in Jenkins
+   * Open Manage jenkins -&gt; Credentials -&gt; System -&gt; Global Credentials
+   * Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
+   * Go to Manage Jenkins -&gt; Configure System -&gt; SonarQube servers 
+   * Assign the new credential to Server and Save
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" /></p>
+<p>### Configure SonarQube configuration file for enabling static code analysis</p>
+<ul>
+<li>Create a file named <strong>.sonarqube</strong>  in your project root directory </li>
+<li>Add the following properties (example from carina-demo):
   <code>sonar.projectBaseDir=.
   sonar.projectName=carina-demo
   sonar.projectKey=carina-demo
@@ -718,23 +724,24 @@
   sonar.sources=src/main
   sonar.tests=src/test
   sonar.java.binaries=target/classes
-  sonar.junit.reportPaths=target/surefire-reports</code>
-  For multi-module maven projects add the following property to the above file(example from carina):
+  sonar.junit.reportPaths=target/surefire-reports</code></li>
+<li>Add the following property above the file (for multi-module maven projects):
   <code>sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
-  dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver</code>
-  Once such file is created after each push or pull request on your repository the sonar scanner will be executed.</p>
-<p>### Pull request decoration
-  In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:</p>
-<ul>
-<li>Navigate to your jenkins instance global configuration page</li>
-<li>In the global properties section add new variable with the followings params:
-       <code>name = GITHUB_OAUTH_TOKEN 
-       value = your github token</code><blockquote>
-<p>Note: be sure that the token you are using has writing permission over the repository you are analysing.</p>
+  dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver</code><blockquote>
+<p>Note: Each push or pull request on your repository the sonar scanner will be executed.</p>
 </blockquote>
 </li>
 </ul>
-<p>After each pull request created/reopened in line comments will be published with the user linked to the provided github token. </p>
+<p>### Pull request decoration
+  In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
+   * Open Manage jenkins -&gt; Configure System
+   * Open Global properties section -&gt; Add new variable with the followings params:
+       <code>name = GITHUB_OAUTH_TOKEN 
+       value = your github token</code></p>
+<blockquote>
+<p>Note: The token you are using should have writing permission over the analysing repository.
+   * Pull request created/reopened -&gt; published with the user linked to the provided github token in line comments </p>
+</blockquote>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
