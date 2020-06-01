@@ -130,20 +130,15 @@ To enable sonarqube integration need to have the following components configured
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
   ```
   </ul>
-  > Note: Each push or pull request on your repository the sonar scanner will be executed.
+  > Note: For each push or pull request on your repository the sonar scanner will be executed.
   
 ### Pull request decoration
-  In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
-  <ul>
-  <li> Open Manage jenkins -> Configure System
-  <li> Open Global properties section -> Add new variable with the followings params:
-    
-   ```
-   name = GITHUB_OAUTH_TOKEN 
-   value = your github token
-   ```
-   > Note: The token you are using should have writing permission over the analysing repository.
-   <li> Pull request created/reopened -> published with the user linked to the provided github token in line comments 
+In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:
+   * Create a new token for your github account with the following permissions
+![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Github-sonar-token.png?raw=true "github-sonar-token")
+   * When running registerOrganization job add the generated token under **sonarGithubOAuth**
+![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/RegisterOrganization.png?raw=true "register-organization")
+   <li> Pull request created/reopened -> sonar issues published with the user linked to the provided github token as in line comments.
    </ul>
 
 ## Troubleshooting
