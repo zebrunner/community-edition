@@ -89,22 +89,28 @@ Create Repository:
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
    
 ## SonarQube Integration
-To enable sonarqube integration it is needed to have the following components configured correctly.
-  ### Sonarqube token
-   * Open your.domain.com/sonarqube
-   * Login with admin/admin(default) or your own credentials
-   * [OPTIONAL] change password if u need it
-   * Generate user token (login icon -> My account -> security)
 
-  ### Jenkins credential
-   * Open jenkins and generate new credential (secrect text) id = sonar-token, desc = sonar-admin, secret = your sonar token
+To enable sonarqube integration need to have the following components configured correctly
+  ### Generate Sonarqube token
+   <ul>
+   <li> Open your.domain.com/sonarqube 
+   <li> Login with admin/admin(default) or your own credentials
+   <li> [OPTIONAL] change password if you need
+   <li> Generate user token (login icon -> My account -> security)
+   </ul>
    
+  ### Set up sonar credentials in Jenkins
+   * Open Manage jenkins -> Credentials -> System -> Global Credentials
+   * Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
-   * Navigate to jenkins global configuration and assign the new credential to the sonarqube server config and save config
-   
+   * Go to Manage Jenkins -> Configure System -> SonarQube servers 
+   * Assign the new credential to Server and Save
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
-  ### SonarQube configuration file
-  For enabling static code analysis create a file named **.sonarqube**  in your project root directory and add the following properties(example from carina-demo):
+   
+  ### Configure SonarQube configuration file for enabling static code analysis
+   
+  * Create a file named **.sonarqube**  in your project root directory 
+  * Add the following properties (example from carina-demo):
   ```
   sonar.projectBaseDir=.
   sonar.projectName=carina-demo
@@ -115,25 +121,23 @@ To enable sonarqube integration it is needed to have the following components co
   sonar.java.binaries=target/classes
   sonar.junit.reportPaths=target/surefire-reports
   ```
-  For multi-module maven projects add the following property to the above file(example from carina):
+  * Add the following property above the file (for multi-module maven projects):
   ```
   sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
   ```
-  Once such file is created after each push or pull request on your repository the sonar scanner will be executed.
+  > Note: Each push or pull request on your repository the sonar scanner will be executed.
 
   ### Pull request decoration
-  In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:
-
-   * Navigate to your jenkins instance global configuration page
-   * In the global properties section add new variable with the followings params:
+  In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
+   * Open Manage jenkins -> Configure System
+   * Open Global properties section -> Add new variable with the followings params:
        ```
        name = GITHUB_OAUTH_TOKEN 
        value = your github token
        ```
-> Note: be sure that the token you are using has writing permission over the repository you are analysing.
-
-   After each pull request created/reopened in line comments will be published with the user linked to the provided github token. 
+> Note: The token you are using should have writing permission over the analysing repository.
+   * Pull request created/reopened -> published with the user linked to the provided github token in line comments 
 
 ## Troubleshooting
 
