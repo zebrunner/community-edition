@@ -91,6 +91,7 @@ Create Repository:
 ## SonarQube Integration
 
 To enable sonarqube integration need to have the following components configured correctly
+
   ### Generate Sonarqube token
    <ul>
    <li> Open your.domain.com/sonarqube 
@@ -100,13 +101,15 @@ To enable sonarqube integration need to have the following components configured
    </ul>
    
   ### Set up sonar credentials in Jenkins
-   * Open Manage jenkins -> Credentials -> System -> Global Credentials
-   * Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
-   * Go to Manage Jenkins -> Configure System -> SonarQube servers 
-   * Assign the new credential to Server and Save
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
-   
+  
+  <ul>
+   <li> Open Manage jenkins -> Credentials -> System -> Global Credentials
+   <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
+   <li> ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
+   <li> Go to Manage Jenkins -> Configure System -> SonarQube servers 
+   <li> Assign the new credential to Server and Save
+   <li> ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
+   </ul>
   ### Configure SonarQube configuration file for enabling static code analysis
    
   * Create a file named **.sonarqube**  in your project root directory 
