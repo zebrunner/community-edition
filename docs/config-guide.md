@@ -138,10 +138,10 @@ To enable sonarqube integration need to have the following components configured
    <li> Open Manage jenkins -> Configure System
    <li> Open Global properties section -> Add new variable with the followings params:
     
-       ```
-       name = GITHUB_OAUTH_TOKEN 
-       value = your github token
-       ```
+    ```
+    name = GITHUB_OAUTH_TOKEN 
+    value = your github token
+    ```
    > Note: The token you are using should have writing permission over the analysing repository.
 
    <li> Pull request created/reopened -> published with the user linked to the provided github token in line comments 
