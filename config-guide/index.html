@@ -359,6 +359,40 @@
     SonarQube Integration
   </a>
   
+    <nav class="md-nav" aria-label="SonarQube Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-sonarqube-token" class="md-nav__link">
+    Generate Sonarqube token
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-up-sonar-credentials-in-jenkins" class="md-nav__link">
+    Set up sonar credentials in Jenkins
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-configuration-file-for-enabling-static-code-analysis" class="md-nav__link">
+    Configure SonarQube configuration file for enabling static code analysis
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-request-decoration" class="md-nav__link">
+    Pull request decoration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -556,6 +590,40 @@
     SonarQube Integration
   </a>
   
+    <nav class="md-nav" aria-label="SonarQube Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-sonarqube-token" class="md-nav__link">
+    Generate Sonarqube token
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-up-sonar-credentials-in-jenkins" class="md-nav__link">
+    Set up sonar credentials in Jenkins
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-configuration-file-for-enabling-static-code-analysis" class="md-nav__link">
+    Configure SonarQube configuration file for enabling static code analysis
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-request-decoration" class="md-nav__link">
+    Pull request decoration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -699,26 +767,26 @@
 </ul>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
 <p>To enable sonarqube integration need to have the following components configured correctly</p>
-<p>### Generate Sonarqube token
-   <ul>
+<h3 id="generate-sonarqube-token">Generate Sonarqube token</h3>
+<p><ul>
    <li> Open your.domain.com/sonarqube 
    <li> Login with admin/admin(default) or your own credentials
    <li> [OPTIONAL] change password if you need
    <li> Generate user token (login icon -&gt; My account -&gt; security)
    </ul></p>
-<p>### Set up sonar credentials in Jenkins</p>
+<h3 id="set-up-sonar-credentials-in-jenkins">Set up sonar credentials in Jenkins</h3>
 <p><ul>
    <li> Open Manage jenkins -&gt; Credentials -&gt; System -&gt; Global Credentials
    <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
-   <li> <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
    <li> Go to Manage Jenkins -&gt; Configure System -&gt; SonarQube servers 
    <li> Assign the new credential to Server and Save
-   <li> <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" />
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" />
    </ul></p>
-<p>### Configure SonarQube configuration file for enabling static code analysis</p>
-<ul>
-<li>Create a file named <strong>.sonarqube</strong>  in your project root directory </li>
-<li>Add the following properties (example from carina-demo):
+<h3 id="configure-sonarqube-configuration-file-for-enabling-static-code-analysis">Configure SonarQube configuration file for enabling static code analysis</h3>
+<p><ul>
+  <li> Create a file named <strong>.sonarqube</strong>  in your project root directory 
+  <li> Add the following properties (example from carina-demo):
   <code>sonar.projectBaseDir=.
   sonar.projectName=carina-demo
   sonar.projectKey=carina-demo
@@ -726,16 +794,16 @@
   sonar.sources=src/main
   sonar.tests=src/test
   sonar.java.binaries=target/classes
-  sonar.junit.reportPaths=target/surefire-reports</code></li>
-<li>Add the following property above the file (for multi-module maven projects):
+  sonar.junit.reportPaths=target/surefire-reports</code>
+  <li> Add the following property above the file (for multi-module maven projects):
   <code>sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
-  dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver</code><blockquote>
+  dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver</code>
+  </ul></p>
+<blockquote>
 <p>Note: Each push or pull request on your repository the sonar scanner will be executed.</p>
 </blockquote>
-</li>
-</ul>
-<p>### Pull request decoration
-  In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
+<h3 id="pull-request-decoration">Pull request decoration</h3>
+<p>In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
    * Open Manage jenkins -&gt; Configure System
    * Open Global properties section -&gt; Add new variable with the followings params:
        <code>name = GITHUB_OAUTH_TOKEN 
