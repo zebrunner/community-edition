@@ -800,20 +800,16 @@
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver</code>
   </ul></p>
 <blockquote>
-<p>Note: Each push or pull request on your repository the sonar scanner will be executed.</p>
+<p>Note: For each push or pull request on your repository the sonar scanner will be executed.</p>
 </blockquote>
 <h3 id="pull-request-decoration">Pull request decoration</h3>
-<p>In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
-  <ul>
-  <li> Open Manage jenkins -&gt; Configure System
-  <li> Open Global properties section -&gt; Add new variable with the followings params:</p>
-<p><code>name = GITHUB_OAUTH_TOKEN 
-   value = your github token</code></p>
-<blockquote>
-<p>Note: The token you are using should have writing permission over the analysing repository.
-   <li> Pull request created/reopened -&gt; published with the user linked to the provided github token in line comments 
+<p>In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:
+   * Create a new token for your github account with the following permissions
+<img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Github-sonar-token.png?raw=true" title="github-sonar-token" />
+   * When running registerOrganization job add the generated token under <strong>sonarGithubOAuth</strong>
+<img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/RegisterOrganization.png?raw=true" title="register-organization" />
+   <li> Pull request created/reopened -&gt; sonar issues published with the user linked to the provided github token as in line comments.
    </ul></p>
-</blockquote>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
