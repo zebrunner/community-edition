@@ -134,11 +134,12 @@ To enable sonarqube integration need to have the following components configured
   
 ### Pull request decoration
 In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:
-   * Create a new token for your github account with the following permissions
+
+   1. Create a new token for your github account with the following permissions
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Github-sonar-token.png?raw=true "github-sonar-token")
-   * When running registerOrganization job add the generated token under **sonarGithubOAuth**
+   2. When running registerOrganization job add the generated token under **sonarGithubOAuth**
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/RegisterOrganization.png?raw=true "register-organization")
-   * Pull request created/reopened -> sonar issues published with the user linked to the provided github token as in line comments.
+   3. Pull request created/reopened -> sonar issues published with the user linked to the provided github token as in line comments.
 
 ## Troubleshooting
 
