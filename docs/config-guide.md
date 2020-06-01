@@ -89,10 +89,8 @@ Create Repository:
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
    
 ## SonarQube Integration
-
 To enable sonarqube integration need to have the following components configured correctly
-
-  ### Generate Sonarqube token
+### Generate Sonarqube token
    <ul>
    <li> Open your.domain.com/sonarqube 
    <li> Login with admin/admin(default) or your own credentials
@@ -100,21 +98,20 @@ To enable sonarqube integration need to have the following components configured
    <li> Generate user token (login icon -> My account -> security)
    </ul>
    
-  ### Set up sonar credentials in Jenkins
-  
+### Set up sonar credentials in Jenkins
   <ul>
    <li> Open Manage jenkins -> Credentials -> System -> Global Credentials
    <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
-   <li> ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
    <li> Go to Manage Jenkins -> Configure System -> SonarQube servers 
    <li> Assign the new credential to Server and Save
-   <li> ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
    </ul>
    
-  ### Configure SonarQube configuration file for enabling static code analysis
-   
-  * Create a file named **.sonarqube**  in your project root directory 
-  * Add the following properties (example from carina-demo):
+### Configure SonarQube configuration file for enabling static code analysis
+  <ul>
+  <li> Create a file named **.sonarqube**  in your project root directory 
+  <li> Add the following properties (example from carina-demo):
   ```
   sonar.projectBaseDir=.
   sonar.projectName=carina-demo
@@ -125,14 +122,15 @@ To enable sonarqube integration need to have the following components configured
   sonar.java.binaries=target/classes
   sonar.junit.reportPaths=target/surefire-reports
   ```
-  * Add the following property above the file (for multi-module maven projects):
+  <li> Add the following property above the file (for multi-module maven projects):
   ```
   sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
   ```
+  </ul>
   > Note: Each push or pull request on your repository the sonar scanner will be executed.
-
-  ### Pull request decoration
+  
+### Pull request decoration
   In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
    * Open Manage jenkins -> Configure System
    * Open Global properties section -> Add new variable with the followings params:
