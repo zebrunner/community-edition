@@ -698,22 +698,24 @@
 <li>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
 </ul>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
-<p>To enable sonarqube integration need to have the following components configured correctly
-  ### Generate Sonarqube token
+<p>To enable sonarqube integration need to have the following components configured correctly</p>
+<p>### Generate Sonarqube token
    <ul>
    <li> Open your.domain.com/sonarqube 
    <li> Login with admin/admin(default) or your own credentials
    <li> [OPTIONAL] change password if you need
    <li> Generate user token (login icon -&gt; My account -&gt; security)
    </ul></p>
-<p>### Set up sonar credentials in Jenkins
-   * Open Manage jenkins -&gt; Credentials -&gt; System -&gt; Global Credentials
-   * Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
-   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
-   * Go to Manage Jenkins -&gt; Configure System -&gt; SonarQube servers 
-   * Assign the new credential to Server and Save
-   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" /></p>
-<p>### Configure SonarQube configuration file for enabling static code analysis</p>
+<p>### Set up sonar credentials in Jenkins</p>
+<p><ul>
+   <li> Open Manage jenkins -&gt; Credentials -&gt; System -&gt; Global Credentials
+   <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
+   <li> <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
+   <li> Go to Manage Jenkins -&gt; Configure System -&gt; SonarQube servers 
+   <li> Assign the new credential to Server and Save
+   <li> <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" />
+   </ul>
+  ### Configure SonarQube configuration file for enabling static code analysis</p>
 <ul>
 <li>Create a file named <strong>.sonarqube</strong>  in your project root directory </li>
 <li>Add the following properties (example from carina-demo):
