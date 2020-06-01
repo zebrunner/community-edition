@@ -143,7 +143,6 @@ To enable sonarqube integration need to have the following components configured
    value = your github token
    ```
    > Note: The token you are using should have writing permission over the analysing repository.
-
    <li> Pull request created/reopened -> published with the user linked to the provided github token in line comments 
    </ul>
 
