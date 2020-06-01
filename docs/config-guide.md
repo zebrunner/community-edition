@@ -112,6 +112,7 @@ To enable sonarqube integration need to have the following components configured
   <ul>
   <li> Create a file named **.sonarqube**  in your project root directory 
   <li> Add the following properties (example from carina-demo):
+   
   ```
   sonar.projectBaseDir=.
   sonar.projectName=carina-demo
@@ -123,6 +124,7 @@ To enable sonarqube integration need to have the following components configured
   sonar.junit.reportPaths=target/surefire-reports
   ```
   <li> Add the following property above the file (for multi-module maven projects):
+ 
   ```
   sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
   dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
@@ -132,14 +134,17 @@ To enable sonarqube integration need to have the following components configured
   
 ### Pull request decoration
   In order to enable pull request decoration (auto comments with sonar issues in the pr) follow the next steps:
-   * Open Manage jenkins -> Configure System
-   * Open Global properties section -> Add new variable with the followings params:
+  <ul>
+   <li> Open Manage jenkins -> Configure System
+   <li> Open Global properties section -> Add new variable with the followings params:
+    
        ```
        name = GITHUB_OAUTH_TOKEN 
        value = your github token
        ```
 > Note: The token you are using should have writing permission over the analysing repository.
-   * Pull request created/reopened -> published with the user linked to the provided github token in line comments 
+   <li> Pull request created/reopened -> published with the user linked to the provided github token in line comments 
+ </ul>
 
 ## Troubleshooting
 
