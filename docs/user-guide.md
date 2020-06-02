@@ -1,7 +1,13 @@
 # User Guide (Draft)
 
 
-User guide is for TestOps engineers who wants to develop test automation process and create test jobs, execute, maintain them etc.
+User guide is for TestOps engineers who wants to develop test automation process and create test jobs, execute, maintain them etc. 
+It shoul be helpful for TestOps engineers: 
+- Run Test jobs on different environments and platforms(i.e. PROD, QA, DEV, STAGE, BETA, etc.)
+- Run API, Mobile, Web, Soap-ui etc. test jobs
+- Run tes jobs by schedule
+- Run test cases in different order
+- Get Test result reports and logs
 
 
 ## Summary of Annotations
@@ -21,7 +27,7 @@ If value set to “web” – Jenkins will use web browser to run the Test. Chro
 </br>
 <b>jenkinsRegressionPipeline </b> - This property takes a comma separated string of the various pipelines that a specific Test Suite will be attached to. (i.e. nightly_regression_cron, full_regression_cron). This would end up creating two pipeline jobs inside of Jenkins. 
 </br>
-<b>jenkinsEnvironments </b> - This property takes a comma separated string of the various environments that will be tested for that particular suite. (i.e. PROD, QA,DEV,STAGE,BETA, etc...) 
+<b>jenkinsEnvironments </b> - This property takes a comma separated string of the various environments that will be tested for that particular suite. (i.e. PROD, QA, DEV, STAGE, BETA, etc.) 
 </br>
 <b> jenkinsPipelineEnvironments </b> - This property takes a comma separated string of the various environments that will be tested for a particular suite in a particular pipeline (i.e. PROD,QA,DEV,STAGE) 
 </br>
