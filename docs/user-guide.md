@@ -28,7 +28,17 @@ When that is specified if a prior job has had an error while running the next jo
 <b> jenkinsRegressionMatrix </b> - This property we use for creating configuration test matrix. 
 </br>
 <b> overrideFields </b> - This property takes any number of custom fields that need to be available at run-time for a job to run successfully.
-
+</br>
+<b> jenkinsSlackChannels </b> - This property is responsible for send test run results to Slack channel via slack-api.
+</br>
+<b> TestRailProjectId </b> - This property is project ID in TestRail of the test suite.
+</br>
+<b> TestRailSuiteId </b>  - This property is suite ID in Test Suite xml.
+</br>
+<b> jenkinsDefaultThreadCount </b> - This property is the number of test flows for current test suite. The value should be according to the number of devices or simulators that will be used for run the test suite. Note: In xml tag <suite> should be populated param parallel=“”.
+  </br>
+<b> jenkinsMobileDefaultPool </b> - This property means the name of the devices that will be used for running  test cases on mobile.
+</br>
 
 ## Test Jobs (API/Web/Mobile)
 Jenkins Pipeline Job - this is a job that can be created for each suite and can be executed on demand or by schedule. 
