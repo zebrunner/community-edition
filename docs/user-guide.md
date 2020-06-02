@@ -1,6 +1,8 @@
 # User Guide (Draft)
 
-## How to use these features?
+
+User guide is for TestOps engineers who wants to develop test automation process and create test jobs, execute, maintain them etc.
+
 
 ## Summary of Annotations
 
