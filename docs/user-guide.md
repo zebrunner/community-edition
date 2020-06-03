@@ -45,7 +45,7 @@ Steps:
 ```
 <parameter name="scheduling" value="H 2 * * *" /> 
 ```
-> Note: As a value provide regular Jenkins Cron expression.To prganize multiple schedules use "\n" as separator:
+> Note: Provide regular Jenkins Cron expression as a value. To organize multiple schedules use "\n" as separator:
 ```
 <parameter name="scheduling" value="H 2 * * *\nH 10 * * *" /> 
 ```
