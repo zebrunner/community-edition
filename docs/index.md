@@ -8,10 +8,10 @@ QPS Infrastructure
 [![postgres pulls](https://img.shields.io/docker/pulls/qaprosoft/postgres.svg?label=postgres%20pulls)](https://hub.docker.com/r/qaprosoft/postgres/)
 
 ## Overview
-QPS-Infra is a dockerized QA infrastructure solution for effective Test Automation and Reporting to organize effective continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment.
-It is integrated by default with [carina-core](http://www.carina-core.io) open source framework and uses Jenkins as a CI Tool.
+QPS-Infra is a [Continuous configuration automation](https://en.wikipedia.org/wiki/Infrastructure_as_code#Continuous_configuration_automation) framework for continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
+> It is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
 
-* QPS-Infra is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Insights](https://zebrunner.github.io/documentation/) - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, RabbitMQ, etc. 
+* QPS-Infra is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Insights](https://zebrunner.github.io/documentation/) - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub(s), [MCloud](https://github.com/qaprosoft/mcloud) SonarQube, etc. 
   > In additions it is easily intergated with 3rd party devices/browsers cloud providers like: [Zebrunner Engine](https://zebrunner.com/), [MCloud](https://mobiletesting.farm/), [Browserstack](https://www.browserstack.com/), [SauceLabs](https://saucelabs.com/) etc
 
 * All components are deployed under NGiNX WebServer which can be configured in a fully secured environment
