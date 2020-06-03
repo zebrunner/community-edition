@@ -29,7 +29,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <parameter name="jenkinsEnvironments" value="DEMO"/> 
 ```
 * Commit and merge.
-* After Scan is finished (automatic or manual) "Job1" test job is created in Jenkins.
+* After scan is finished (automatic or manual) "Job1" test job is created in Jenkins.
 
 ### Run a Job
 Steps:
@@ -41,7 +41,7 @@ Steps:
 
 ### Schedule a Job
 * Open TestNG suite xml file
-* Fill the bunch of necessary parameters in your xml if they are absent:
+* Declare "scheduling" parameter :
 ```
 <parameter name="scheduling" value="H 2 * * *" /> 
 ```
@@ -57,7 +57,7 @@ Steps:
 * Commit and merge.
 * Ask your administrator to remove the Job on Jenkins.
 
-## Cron Jobs(Layer of Testing)
+## Cron Jobs (Layer of Testing)
 Jenkins Pipeline Cron - this is a job that can execute different suites/jobs in scope of single run. Test Job can be assigned to testing layer(cron) using "jenkinsRegressionPipeline" annotation.
 
 ### Create a Cron
@@ -67,7 +67,7 @@ Jenkins Pipeline Cron - this is a job that can execute different suites/jobs in 
 <parameter name="jenkinsRegressionPipeline" value="nightly_regression, full_regression"/>
 ```
 * Commit and merge.
-* After Scan is finished (automatic or manual) nightly_regression and full_regression crons are created in Jenkins.
+* After scan is finished (automatic or manual) nightly_regression and full_regression crons are created in Jenkins.
 * During execution nightly_regression or full_regression crons current test suite(job) must be executed.
 
 #### How to Set up Configuration Matrix
@@ -78,7 +78,7 @@ Jenkins Pipeline Cron - this is a job that can execute different suites/jobs in 
 <parameter name="jenkinsRegressionMatrix" value="env: DEMO, branch: master; env:PROD, branch: prod"/>
 ```
 * Commit and merge.
-* After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline cron job is created in Jenkins.
+* After scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline cron job is created in Jenkins.
 * Every time you run Carina-Demo-Regression-Pipeline job it should start your suite xml child job twice for DEMO and PROD environments using appropriate branches.
 > Note: Any param values pairs can be provided. Comma separated - for single job params. Semicolon separated for multiple child job params.
 
@@ -89,7 +89,7 @@ Steps:
 > Note: There is a "CRON" view for such kind of jobs
 * Click Build with Parameters and run Build 
 * Cron Job should trigger children jobs according to desired configuration matrix
-* When Cron Job is Completed analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)
+* When Cron and children jobs are finished analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)
 
 ### Schedule a Cron
 * Open any child TestNG suite xml file 
@@ -99,11 +99,11 @@ Steps:
 <parameter name="jenkinsRegressionScheduling" value="H 2 * * *" /> 
 ```
 * Commit and merge.
-* After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.
+* After scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.
 
 ### Delete a Cron
 
-* Open each TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.
+* Open <b>each</b> TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.
 * Commit and merge.
 * Ask your administrator to delete Cron job in Jenkins
 
@@ -135,7 +135,7 @@ If value set to “android” – android native application test job.
 <b>jenkinsJobExecutionOrder</b> - This property takes a number value and allows for a pipeline to be generated which will run tests in a sequential synchronous manner, compared to the default asynchronous manner. 
 </br>
 <b>jenkinsJobExecutionMode</b> - This property is only consumed when a jenkinsJobExecutionOrder has been set on a pipeline which would put that pipeline into a synchronous mode and takes a value of "continue" or "abort". 
-When it is "abort" we halt the entire pipeline as only failed job detected. It might be useful to setup extended health-check scenarios  
+When it is "abort" we halt the entire pipeline as only failed job detected. It might be useful to setup extended health-check scenarios. 
 </br>
 <b>jenkinsRegressionMatrix</b> - This property we use for creating configuration test matrix. 
 </br>
