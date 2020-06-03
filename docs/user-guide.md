@@ -1,63 +1,25 @@
-# User Guide (Draft)
+# User Guide
 
+## Preconditions
 
-User guide is for TestOps engineers who wants to develop test automation process and create test jobs, execute, maintain them etc. 
-It shoul be helpful for TestOps engineers: 
-- Run Test jobs on different environments and platforms(i.e. PROD, QA, DEV, STAGE, BETA, etc.)
-- Run API, Mobile, Web, Soap-ui etc. test jobs
-- Run tes jobs by schedule
-- Run test cases in different order
-- Get Test result reports and logs
+- TestNG repository is present. 
+ > For quick start use [carina archetype](http://qaprosoft.github.io/carina/getting_started/) 
+- Infrustructure is deployed, system onPullRequest and onPush events configured.
 
+## Continious Intergration (Jenkins)
 
-## Summary of Annotations
-
-To start there are a number of additional parameters that can be added to an existing Test Suite xml.
-These parameters are: 
-</br>
-<b> jenkinsJobName </b> - This property is just the name that Jenkins should create a job for, the normal pattern here is to include the platform name in the job itself to make it easier to find inside of Jenkins. 
-</br>
-<b>jenkinsJobType </b> – This property tells Jenkins what type of job it is. This field can take a “web” or “api” value.
-If value set to “api” – Jenkins knows that there is no need to use web browser for run this Test Suite.
-If value set to “web” – Jenkins will use web browser to run the Test. Chrome browser will be used by default.
-</br>
-<b> jenkinsEmail </b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite will be emailed to. 
-</br>
-<b> jenkinsFailedEmail </b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite that contains failures will be emailed to. 
-</br>
-<b>jenkinsRegressionPipeline </b> - This property takes a comma separated string of the various pipelines that a specific Test Suite will be attached to. (i.e. nightly_regression_cron, full_regression_cron). This would end up creating two pipeline jobs inside of Jenkins. 
-</br>
-<b>jenkinsEnvironments </b> - This property takes a comma separated string of the various environments that will be tested for that particular suite. (i.e. PROD, QA, DEV, STAGE, BETA, etc.) 
-</br>
-<b> jenkinsPipelineEnvironments </b> - This property takes a comma separated string of the various environments that will be tested for a particular suite in a particular pipeline (i.e. PROD,QA,DEV,STAGE) 
-</br>
-<b>jenkinsJobExecutionOrder</b> - This property takes a number value and allows for a pipeline to be generated which will run tests in a sequential synchronous manner, compared to the default asynchronous manner. 
-</br>
-<b> jenkinsJobExecutionMode </b> -This property is only consumed when a jenkinsJobExecutionOrder has been set on a pipeline which would put that pipeline into a synchronous mode and takes a value of "continue". 
-When that is specified if a prior job has had an error while running the next job in sequence will still pick up and run instead of halting the entire pipeline. 
-</br>
-<b> jenkinsRegressionMatrix </b> - This property we use for creating configuration test matrix. 
-</br>
-<b> overrideFields </b> - This property takes any number of custom fields that need to be available at run-time for a job to run successfully.
-</br>
-<b> jenkinsSlackChannels </b> - This property is responsible for send test run results to Slack channel via slack-api.
-</br>
-<b> TestRailProjectId </b> - This property is project ID in TestRail of the test suite.
-</br>
-<b> TestRailSuiteId </b>  - This property is suite ID in Test Suite xml.
-</br>
-<b> jenkinsDefaultThreadCount </b> - This property is the number of test flows for current test suite. The value should be according to the number of devices or simulators that will be used for run the test suite. Note: In xml tag <suite> should be populated param "parallel".
-  </br>
-<b> jenkinsMobileDefaultPool </b> - This property means the name of the devices that will be used for running  test cases on mobile.
-</br>
+All test jobs are created and maintained automatically according to [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
+For every TestNG [suite](https://www.toolsqa.com/testng/testng-test-suite/) dedicated job is created.
 
 ## Test Jobs (API/Web/Mobile)
-Jenkins Pipeline Job - this is a job that can be created for each suite and can be executed on demand or by schedule. 
+
+To generate special type of jobs, coverage matrix etc we have to use special annotations otherwise "api" job is generated using suite ["name"](https://github.com/qaprosoft/carina-demo/blob/14f7f7a7c426b1c6d86768abddf4c6467b32b016/src/test/resources/testng_suites/api.xml#L2). 
+Test Jobs can be executed on-demand, scheduled, included into different testing layers (Smoke, Regression, etc.).
 
 ### Create a Job
 
 * Open TestNG suite xml file
-* Fill the bunch of necessary parameters in your xml:
+* Fill the bunch of parameters in your xml:
 ```
 <parameter name="suiteOwner" value="qpsdemo"/>
 <parameter name="jenkinsJobName" value="Job1"/>
@@ -94,17 +56,18 @@ Steps:
 * Commit and merge.
 * Ask your administrator to remove the Job on Jenkins.
 
-## Cron Jobs(Layer of testing)
-Jenkins Pipeline Cron - this is a job that can include different suites/jobs and can be executed on demand or by schedule.
+## Cron Jobs(Layer of Testing)
+Jenkins Pipeline Cron - this is a job that can execute different suites/jobs in scope of single run. Test Job can be assigned to testing layer(cron) using "jenkinsRegressionPipeline" annotation.
 
 ### Create a Cron
-* Open each TestNG suite xml file(s) 
+* Open TestNG suite xml file
 * Declare "jenkinsRegressionPipeline" property in xml:
 ```
 <parameter name="jenkinsRegressionPipeline" value="nightly_regression, full_regression"/>
 ```
 * Commit and merge.
-* After Scan is finished (automatic or manual) nightly_regression, full_regression crons are created in Jenkins.
+* After Scan is finished (automatic or manual) nightly_regression and full_regression crons are created in Jenkins.
+* During execution nightly_regression or full_regression crons current test suite(job) must be executed.
 
 #### How to Set up Configuration Matrix
 * Open TestNG suite xml file 
@@ -142,6 +105,43 @@ Steps:
 * Open each TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.
 * Commit and merge.
 * Ask your administrator to delete Cron job in Jenkins
+
+## Special Annotations
+
+To start there are a number of additional parameters that can be added to an existing Test Suite xml.
+These parameters are: 
+</br>
+<b>jenkinsJobName</b> - This property is just the name that Jenkins should create a job for, the normal pattern here is to include the platform name in the job itself to make it easier to find inside of Jenkins. 
+</br>
+<b>jenkinsJobType</b> – This property tells Jenkins what type of job it is. This field can take a “web”, “api”, “ios”, “android” value. For each type of job appropriate capabilities and parameter are generated.
+If value set to “api” – Jenkins knows that there is no need to use web browser for run this Test Suite.
+If value set to “web” – Jenkins will use web browser to run the Test. Chrome browser will be used by default.
+If value set to “ios” – ios native application test job.
+If value set to “android” – android native application test job.
+</br>
+<b>capabilities</b> - This property is extended W3C driver capabilities.
+</br>
+<b> jenkinsEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite will be emailed to. 
+</br>
+<b>jenkinsFailedEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite that contains failures will be emailed to. 
+</br>
+<b>jenkinsRegressionPipeline</b> - This property takes a comma separated string of the various pipelines that a specific Test Suite will be attached to. 
+</br>
+<b>jenkinsEnvironments</b> - This property takes a comma separated string of the various environments that will be tested for that particular suite i.e. PROD, QA, DEV, STAGE, BETA, etc. 
+</br>
+<b>jenkinsPipelineEnvironments</b> - This property takes a comma separated string of the various environments that will be tested for a particular suite in a particular pipeline (i.e. PROD,QA,DEV,STAGE) 
+</br>
+<b>jenkinsJobExecutionOrder</b> - This property takes a number value and allows for a pipeline to be generated which will run tests in a sequential synchronous manner, compared to the default asynchronous manner. 
+</br>
+<b>jenkinsJobExecutionMode</b> - This property is only consumed when a jenkinsJobExecutionOrder has been set on a pipeline which would put that pipeline into a synchronous mode and takes a value of "continue" or "abort". 
+When it is "abort" we halt the entire pipeline as only failed job detected. It might be useful to setup extended health-check scenarios  
+</br>
+<b>jenkinsRegressionMatrix</b> - This property we use for creating configuration test matrix. 
+</br>
+<b>overrideFields</b> - This property takes any number of custom fields that need to be available at run-time for a job to run successfully. They can override any CI parameter forcibly.
+</br>
+<b>jenkinsSlackChannels</b> - This property is responsible for send test run results to Slack channel via slack-api.
+</br>
 
 ## Troubleshooting
 
