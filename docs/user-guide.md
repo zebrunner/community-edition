@@ -29,7 +29,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <parameter name="jenkinsEnvironments" value="DEMO"/> 
 ```
 * Commit and merge.
-* You will see "Job1" Job after Scan is finished (automatic or manual). 
+* After Scan is finished (automatic or manual) "Job1" test job is created in Jenkins.
 
 ### Run a Job
 Steps:
