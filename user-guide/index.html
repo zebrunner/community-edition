@@ -302,11 +302,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cron-jobslayer-of-testing" class="md-nav__link">
-    Cron Jobs(Layer of Testing)
+  <a href="#cron-jobs-layer-of-testing" class="md-nav__link">
+    Cron Jobs (Layer of Testing)
   </a>
   
-    <nav class="md-nav" aria-label="Cron Jobs(Layer of Testing)">
+    <nav class="md-nav" aria-label="Cron Jobs (Layer of Testing)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -476,11 +476,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#cron-jobslayer-of-testing" class="md-nav__link">
-    Cron Jobs(Layer of Testing)
+  <a href="#cron-jobs-layer-of-testing" class="md-nav__link">
+    Cron Jobs (Layer of Testing)
   </a>
   
-    <nav class="md-nav" aria-label="Cron Jobs(Layer of Testing)">
+    <nav class="md-nav" aria-label="Cron Jobs (Layer of Testing)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -602,7 +602,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 
 <ul>
 <li>Commit and merge.</li>
-<li>After Scan is finished (automatic or manual) "Job1" test job is created in Jenkins.</li>
+<li>After scan is finished (automatic or manual) "Job1" test job is created in Jenkins.</li>
 </ul>
 <h3 id="run-a-job">Run a Job</h3>
 <p>Steps:</p>
@@ -615,7 +615,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <h3 id="schedule-a-job">Schedule a Job</h3>
 <ul>
 <li>Open TestNG suite xml file</li>
-<li>Fill the bunch of necessary parameters in your xml if they are absent:</li>
+<li>Declare "scheduling" parameter :</li>
 </ul>
 <pre><code>&lt;parameter name=&quot;scheduling&quot; value=&quot;H 2 * * *&quot; /&gt; 
 </code></pre>
@@ -635,7 +635,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <li>Commit and merge.</li>
 <li>Ask your administrator to remove the Job on Jenkins.</li>
 </ul>
-<h2 id="cron-jobslayer-of-testing">Cron Jobs(Layer of Testing)</h2>
+<h2 id="cron-jobs-layer-of-testing">Cron Jobs (Layer of Testing)</h2>
 <p>Jenkins Pipeline Cron - this is a job that can execute different suites/jobs in scope of single run. Test Job can be assigned to testing layer(cron) using "jenkinsRegressionPipeline" annotation.</p>
 <h3 id="create-a-cron">Create a Cron</h3>
 <ul>
@@ -647,7 +647,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 
 <ul>
 <li>Commit and merge.</li>
-<li>After Scan is finished (automatic or manual) nightly_regression and full_regression crons are created in Jenkins.</li>
+<li>After scan is finished (automatic or manual) nightly_regression and full_regression crons are created in Jenkins.</li>
 <li>During execution nightly_regression or full_regression crons current test suite(job) must be executed.</li>
 </ul>
 <h4 id="how-to-set-up-configuration-matrix">How to Set up Configuration Matrix</h4>
@@ -661,7 +661,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 
 <ul>
 <li>Commit and merge.</li>
-<li>After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline cron job is created in Jenkins.</li>
+<li>After scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline cron job is created in Jenkins.</li>
 <li>Every time you run Carina-Demo-Regression-Pipeline job it should start your suite xml child job twice for DEMO and PROD environments using appropriate branches.<blockquote>
 <p>Note: Any param values pairs can be provided. Comma separated - for single job params. Semicolon separated for multiple child job params.</p>
 </blockquote>
@@ -676,7 +676,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 </li>
 <li>Click Build with Parameters and run Build </li>
 <li>Cron Job should trigger children jobs according to desired configuration matrix</li>
-<li>When Cron Job is Completed analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
+<li>When Cron and children jobs are finished analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
 </ul>
 <h3 id="schedule-a-cron">Schedule a Cron</h3>
 <ul>
@@ -689,11 +689,11 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 
 <ul>
 <li>Commit and merge.</li>
-<li>After Scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.</li>
+<li>After scan is finished (automatic or manual) Carina-Demo-Regression-Pipeline is created and sheduled to run periodically in Jenkins.</li>
 </ul>
 <h3 id="delete-a-cron">Delete a Cron</h3>
 <ul>
-<li>Open each TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.</li>
+<li>Open <b>each</b> TestNG suite xml file(s) and remove declaration of "jenkinsRegressionPipeline" property.</li>
 <li>Commit and merge.</li>
 <li>Ask your administrator to delete Cron job in Jenkins</li>
 </ul>
@@ -724,7 +724,7 @@ If value set to “android” – android native application test job.
 <b>jenkinsJobExecutionOrder</b> - This property takes a number value and allows for a pipeline to be generated which will run tests in a sequential synchronous manner, compared to the default asynchronous manner. 
 </br>
 <b>jenkinsJobExecutionMode</b> - This property is only consumed when a jenkinsJobExecutionOrder has been set on a pipeline which would put that pipeline into a synchronous mode and takes a value of "continue" or "abort". 
-When it is "abort" we halt the entire pipeline as only failed job detected. It might be useful to setup extended health-check scenarios<br />
+When it is "abort" we halt the entire pipeline as only failed job detected. It might be useful to setup extended health-check scenarios. 
 </br>
 <b>jenkinsRegressionMatrix</b> - This property we use for creating configuration test matrix. 
 </br>
