@@ -4,7 +4,7 @@
 
 - TestNG repository is available. 
  > For quick start use [carina archetype](http://qaprosoft.github.io/carina/getting_started/) 
-- Infrustructure is deployed, system onPullRequest and onPush events configured.
+- Infrustructure is deployed, and optionally onPullRequest/onPush events configured.
 
 ## Continious Intergration (Jenkins)
 
