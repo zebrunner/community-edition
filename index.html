@@ -387,11 +387,13 @@
 <a href="https://hub.docker.com/r/qaprosoft/jenkins-slave/"><img alt="jenkins-slave pulls" src="https://img.shields.io/docker/pulls/qaprosoft/jenkins-slave.svg?label=jenkins-slave%20pulls" /></a>
 <a href="https://hub.docker.com/r/qaprosoft/postgres/"><img alt="postgres pulls" src="https://img.shields.io/docker/pulls/qaprosoft/postgres.svg?label=postgres%20pulls" /></a></p>
 <h2 id="overview">Overview</h2>
-<p>QPS-Infra is a dockerized QA infrastructure solution for effective Test Automation and Reporting to organize effective continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment.
-It is integrated by default with <a href="http://www.carina-core.io">carina-core</a> open source framework and uses Jenkins as a CI Tool.</p>
+<p>QPS-Infra is a <a href="https://en.wikipedia.org/wiki/Infrastructure_as_code#Continuous_configuration_automation">Continuous configuration automation</a> framework for continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment. It is built in accordance with <a href="https://en.wikipedia.org/wiki/Infrastructure_as_code">Infrastructure as Code</a> processes. </p>
+<blockquote>
+<p>It is integrated by default with <a href="http://www.carina-core.io">carina-core</a> open source TestNG framework and uses Jenkins as a CI Tool.</p>
+</blockquote>
 <ul>
 <li>
-<p>QPS-Infra is built on top of popular docker solutions, it includes Postgres database, <a href="https://zebrunner.github.io/documentation/">Zebrunner Insights</a> - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, RabbitMQ, etc. </p>
+<p>QPS-Infra is built on top of popular docker solutions, it includes Postgres database, <a href="https://zebrunner.github.io/documentation/">Zebrunner Insights</a> - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub(s), <a href="https://github.com/qaprosoft/mcloud">MCloud</a> SonarQube, etc. </p>
 <blockquote>
 <p>In additions it is easily intergated with 3rd party devices/browsers cloud providers like: <a href="https://zebrunner.com/">Zebrunner Engine</a>, <a href="https://mobiletesting.farm/">MCloud</a>, <a href="https://www.browserstack.com/">Browserstack</a>, <a href="https://saucelabs.com/">SauceLabs</a> etc</p>
 </blockquote>
