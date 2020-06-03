@@ -10,6 +10,7 @@
 
 All test jobs are created and maintained automatically according to [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
 For every TestNG [suite](https://www.toolsqa.com/testng/testng-test-suite/) dedicated job is created.
+> For example visit [carina suites](https://github.com/qaprosoft/carina-demo/tree/master/src/test/resources/testng_suites) 
 
 ## Test Jobs (API/Web/Mobile)
 
