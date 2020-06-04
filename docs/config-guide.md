@@ -73,9 +73,9 @@ Create Repository:
         * Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed        
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true "PushJobs")
 
-##### onPush Job/Event setup
+### onPush Job/Event setup
 
-###### Setup GitHub WebHook
+#### Setup GitHub WebHook
    * Go to your GitHub repository
    * Click "Settings" tab
    * Click "Webhooks" menu option
@@ -85,7 +85,7 @@ Create Repository:
    * Tick "Send me everything." option
    * Click "Add webhook" button
    
-###### Trigger onPush Job(s)
+#### Trigger onPush Job(s)
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
    
 ## SonarQube Integration
