@@ -3,7 +3,7 @@
 ## Organization Setup        
 ### Register Organization
   * Open Jenkins->Management_Jobs folder.
-  * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
+  * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName and/or generated Sonarqube token
       * New folder is created with default content
      
  Create organization: 
