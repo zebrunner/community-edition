@@ -42,6 +42,7 @@ User guide is for TestOps engineers who develop test automation scenarios, execu
    > Java/Maven/[TestNG](https://testng.org/)
    </br>
    > [Carina](https://www.carina-core.io/) experience is a plus
+   
  * Understanding of the basics of Jenkins pipeline and JobDSL
 
 
