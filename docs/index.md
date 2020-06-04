@@ -39,8 +39,7 @@ Installation and Configuration guides are for administrators who install, deploy
 User guide is for TestOps engineers who develop test automation scenarios, execute and maintain them etc. It assumes the following knowledge:
 
  * Preferable Test Automation language and framework. 
-   > Java/Maven/[TestNG](https://testng.org/)
-   </br>
+   > Java/Maven/[TestNG](https://testng.org/)/
    > [Carina](https://www.carina-core.io/) experience is a plus
    
  * Understanding of the basics of Jenkins pipeline and JobDSL
