@@ -51,7 +51,8 @@ Create Repository:
        <li> GITHUB_ORGANIZATION -> myorganization 
        <li> GITHUB_SSH_URL -> git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
        </ul>   
- </ul>    
+ </ul>
+ 
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true "Enterprise") 
 
 ### Set up "GitHub Pull Request Builder":
@@ -99,6 +100,7 @@ Create Repository:
 ## SonarQube Integration
 
 To enable sonarqube integration need to have the following components configured correctly
+
 > Note: Sonarqube token should be generated
    
 ### Set up sonar credentials in Jenkins
