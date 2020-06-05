@@ -13,6 +13,7 @@
   > <li> Generate user token (login icon -> My account -> security)
   > </ul>
   * New folder is created with default content   
+ 
  Create organization: 
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/organization.png?raw=true "Organization")
 
