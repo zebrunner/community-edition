@@ -14,7 +14,7 @@
   > </ul>
   * New folder is created with default content   
  Create organization: 
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/organization5.png?raw=true "Organization")
+ ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/organization.png?raw=true "Organization")
 
 ### Register Repository
    * Open your organization folder
