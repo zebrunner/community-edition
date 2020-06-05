@@ -357,6 +357,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#generate-sonarqube-token" class="md-nav__link">
+    Generate Sonarqube token
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#set-up-sonar-credentials-in-jenkins" class="md-nav__link">
     Set up sonar credentials in Jenkins
   </a>
@@ -575,6 +582,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#generate-sonarqube-token" class="md-nav__link">
+    Generate Sonarqube token
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#set-up-sonar-credentials-in-jenkins" class="md-nav__link">
     Set up sonar credentials in Jenkins
   </a>
@@ -639,16 +653,7 @@
 <h3 id="register-organization">Register Organization</h3>
 <ul>
 <li>Open Jenkins-&gt;Management_Jobs folder.</li>
-<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName and/or generated Sonarqube token<blockquote>
-<p>Generate Sonarqube token
-<ul>
-<li> Open your.domain.com/sonarqube 
-<li> Login with admin/admin(default) or your own credentials
-<li> [OPTIONAL] change password if you need
-<li> Generate user token (login icon -&gt; My account -&gt; security)
-</ul></p>
-</blockquote>
-</li>
+<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName and/or generated Sonarqube token</li>
 <li>New folder is created with default content   </li>
 </ul>
 <p>Create organization: 
@@ -748,9 +753,13 @@
 </ul>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
 <p>To enable sonarqube integration need to have the following components configured correctly</p>
-<blockquote>
-<p>Note: Sonarqube token should be generated</p>
-</blockquote>
+<h3 id="generate-sonarqube-token">Generate Sonarqube token</h3>
+<p><ul>
+  <li> Open your.domain.com/sonarqube 
+  <li> Login with admin/admin(default) or your own credentials
+  <li> [OPTIONAL] change password if you need
+  <li> Generate user token (login icon -&gt; My account -&gt; security)
+  </ul></p>
 <h3 id="set-up-sonar-credentials-in-jenkins">Set up sonar credentials in Jenkins</h3>
 <p><ul>
    <li> Open Manage jenkins -&gt; Credentials -&gt; System -&gt; Global Credentials
