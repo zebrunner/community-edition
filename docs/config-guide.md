@@ -5,13 +5,6 @@
    
   * Open Jenkins->Management_Jobs folder.
   * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName and/or generated Sonarqube token
-  > Generate Sonarqube token
-  > <ul>
-  > <li> Open your.domain.com/sonarqube 
-  > <li> Login with admin/admin(default) or your own credentials
-  > <li> [OPTIONAL] change password if you need
-  > <li> Generate user token (login icon -> My account -> security)
-  > </ul>
   * New folder is created with default content   
  
  Create organization: 
@@ -101,7 +94,14 @@ Create Repository:
 
 To enable sonarqube integration need to have the following components configured correctly
 
-> Note: Sonarqube token should be generated
+### Generate Sonarqube token
+
+  <ul>
+  <li> Open your.domain.com/sonarqube 
+  <li> Login with admin/admin(default) or your own credentials
+  <li> [OPTIONAL] change password if you need
+  <li> Generate user token (login icon -> My account -> security)
+  </ul>
    
 ### Set up sonar credentials in Jenkins
   <ul>
