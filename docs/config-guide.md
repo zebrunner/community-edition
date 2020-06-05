@@ -1,13 +1,20 @@
 # Configuration Guide
-
+   
 ## Organization Setup        
 ### Register Organization
+   
   * Open Jenkins->Management_Jobs folder.
   * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName and/or generated Sonarqube token
-      * New folder is created with default content
-     
+  > Generate Sonarqube token
+   <ul>
+   <li> Open your.domain.com/sonarqube 
+   <li> Login with admin/admin(default) or your own credentials
+   <li> [OPTIONAL] change password if you need
+   <li> Generate user token (login icon -> My account -> security)
+   </ul>
+      * New folder is created with default content   
  Create organization: 
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/organization.png?raw=true "Organization")
+ ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/organization5.0.png?raw=true "Organization")
 
 ### Register Repository
    * Open your organization folder
@@ -89,14 +96,9 @@ Create Repository:
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
    
 ## SonarQube Integration
+
 To enable sonarqube integration need to have the following components configured correctly
-### Generate Sonarqube token
-   <ul>
-   <li> Open your.domain.com/sonarqube 
-   <li> Login with admin/admin(default) or your own credentials
-   <li> [OPTIONAL] change password if you need
-   <li> Generate user token (login icon -> My account -> security)
-   </ul>
+> Note: Sonarqube token should be generated
    
 ### Set up sonar credentials in Jenkins
   <ul>
