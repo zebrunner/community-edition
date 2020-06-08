@@ -39,4 +39,5 @@ Now you can run ${b}Selenoid${x} with ${b}cm${x}:
 
 To get instant help just type:
     ${b}./cm --help${x}
+
 "
