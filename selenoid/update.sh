@@ -6,7 +6,8 @@ cd ${BASEDIR}
 #TODO: execute binary based on host architecture to support win as well
 
 echo downloading latest chrome/firefox/opera browser images
-${BASEDIR}/bin/bash selenoid update --vnc --config-dir "${BASEDIR}" $*
+curl -s https://aerokube.com/cm/bash
+./cm selenoid update --vnc --config-dir "${BASEDIR}" $*
 
 if [ ! "docker ps -q -f status=running -f name=selenoid" ]; then
     docker rm -f selenoid
