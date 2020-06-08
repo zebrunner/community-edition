@@ -1,4 +1,4 @@
-QPS Infrastructure
+Zebrunner Starter (QPS Infrastructure)
 ==================
 
 [![zafira pulls](https://img.shields.io/docker/pulls/qaprosoft/zafira.svg?label=zafira%20pulls)](https://hub.docker.com/r/qaprosoft/zafira/)
@@ -7,19 +7,22 @@ QPS Infrastructure
 [![jenkins-slave pulls](https://img.shields.io/docker/pulls/qaprosoft/jenkins-slave.svg?label=jenkins-slave%20pulls)](https://hub.docker.com/r/qaprosoft/jenkins-slave/)
 [![postgres pulls](https://img.shields.io/docker/pulls/qaprosoft/postgres.svg?label=postgres%20pulls)](https://hub.docker.com/r/qaprosoft/postgres/)
 
-QPS-Infra is a dockerized QA infrastructure solution for Test Automation. It is integrated by default with [carina-core](http://www.carina-core.io) open source solution and uses Jenkins as a CI Tool.
+# QPS-Infra becomes part of [Zebrunner solution](https://medium.com/@zebrunner_official/qps-infra-becomes-part-of-zebrunner-solution-dbcf233e49f)!
 
-* QPS-Infra is built on top of popular docker solutions, it includes Postgres database, [Zafira Reporting Tool](http://qaprosoft.github.io/zafira), Jenkins Master/Slaves Nodes, Selenium Hub, SonarQube, RabbitMQ, etc.
+* Zebrunner Starter is a [Continuous configuration automation](https://en.wikipedia.org/wiki/Infrastructure_as_code#Continuous_configuration_automation) framework for continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
+  > It is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
+
+* It is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Insights](https://zebrunner.github.io/documentation/), Jenkins Master/Slaves Nodes, Selenium Hub, MCloud, SonarQube etc.
 
 * All components are deployed under NGINX WebServer which can be configured in a fully secured environment
 
-* QPS-Infra and its subcomponents all together can be used as an effective Test Automation infrastructure for test automation development, execution, management, etc.
+* Zebrunner Starter subcomponents all together can be used as an effective Test Automation infrastructure for test automation development, execution, management, etc.
 
-![Alt text](./docs/img/qps-infra.png?raw=true "QPS-Infra")
+![Alt text](./docs/img/qps-infra.png?raw=true "Zebrunner Starter")
 
 ## Documentation and free support
 * [QPS infra manual](https://qaprosoft.github.io/qps-infra)
-* [Zafira manual](http://qaprosoft.github.io/zafira)
+* [Zebrunner Insights](https://zebrunner.github.io/documentation/)
 * [Carina manual](http://qaprosoft.github.io/carina)
 * [Demo project](https://github.com/qaprosoft/carina-demo)
 * [Telegram channel](https://t.me/qps_infra)

@@ -15,7 +15,7 @@
 
 ### Software requirements
 
-* Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04), [Amazon Linux 2](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html) or [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/))
+* Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04), [Amazon Linux 2](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html), [Redhat/Cent OS](https://www.cyberciti.biz/faq/install-use-setup-docker-on-rhel7-centos7-linux/) or [MacOS](https://pilsniak.com/how-to-install-docker-on-mac-os-using-brew/))
   > MacOS is <b>not recommended</b> for production usage!
   
 * Install [docker-composer](https://docs.docker.com/compose/install/#install-compose)
@@ -26,20 +26,20 @@
 
 2. Generate github [OAuth Apps](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) token and put values into .env.original (GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET)
 
-3. Launch the setup.sh script providing your hostname as an argument:<br>
+3. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
+  > Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string
+
+4. [Optional] Disable unused component according to the [steps](#disableremove-components).
+
+5. [Optional] Update default credentials in .env.original
+  > Note: due to the huge refactoring better to ask [assistance](https://t.me/qps_infra) in updating credentials for all configuration files. In 5.1 it is planned to have single point of true only inside .env.original!
+
+6. Launch the setup.sh script providing your hostname as an argument:<br>
   ```
   git clone https://github.com/qaprosoft/qps-infra.git && cd qps-infra && ./setup.sh myhost.domain.com
   ```
   > Use public ip address if you don't have registered DNS hostname yet
-  
-4. [Optional] TODO: document disabling steps for 5.0+ version [steps](#disableremove-components).
-  
-5. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
-  > Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string
 
-6. [Optional] Update default credentials in variables.env
-  > If you change RABBITMQ_USER and RABBITMQ_PASS, please, update them in config/definitions.json and config/logstash.conf files as well
- 
 7. Start services<br>
   ```
   ./start.sh
@@ -49,14 +49,14 @@
   > Use your host domain address or IP.
   > admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel
   
-| Components          	| URL                                                                                                    	|
-|---------------------	|--------------------------------------------------------------------------------------------------------	|
-| 1st Page            	| [http://demo.qaprosoft.com](http://demo.qaprosoft.com)                                                 	|
-| Jenkins             	| [http://demo.qaprosoft.com/jenkins](http://demo.qaprosoft.com/jenkins)                                 	|
-| Zebrunner Insights  	| [http://demo.qaprosoft.com/app](http://demo.qaprosoft.com/app)                                         	|
-| SonarQube           	| [http://demo.qaprosoft.com/sonarqube](http://demo.qaprosoft.com/sonarqube)                             	|
-| Web Selenium Hub    	| [http://demo:demo@demo.qaprosoft.com/ggr/wd/hub](http://demo:demo@demo.qaprosoft.com/ggr/wd/hub)       	|
-| Mobile Selenium Hub 	| [http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub](http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub) 	|
+| Components          	| URL                                                                                                    	   |
+|---------------------	|----------------------------------------------------------------------------------------------------------	 |
+| 1st Page            	| [http://demo.qaprosoft.com](http://demo.qaprosoft.com)                                                 	   |
+| Jenkins             	| [http://demo.qaprosoft.com/jenkins](http://demo.qaprosoft.com/jenkins)                                 	   |
+| Zebrunner Insights  	| [http://demo.qaprosoft.com/app](http://demo.qaprosoft.com/app)                                         	   |
+| SonarQube           	| [http://demo.qaprosoft.com/sonarqube](http://demo.qaprosoft.com/sonarqube)                             	   |
+| Web Selenium Hub    	| [http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub](http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub) |
+| Mobile Selenium Hub 	| [http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub](http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub) 	   |
 
 
 ## Disable/Remove component(s)
@@ -64,16 +64,15 @@ QPS-Infra contains such layers of services:
 
 | Layer                        	| Containers                                                           	|
 |------------------------------	|----------------------------------------------------------------------	|
-| NGiNX WebServer              	| nginx                                                                	|
-| Reporting Services           	| postgres, zafira, zafira-ui, rabbitmq, elasticsearch, redis, logstash	|
-| CI (Jenkins)                 	| jenkins-master, jenkins-slave-web, jenkins-slave-api                 	|
-| Local Storage                	| ftp                                                                  	|
+| NGiNX WebServer              	| nginx (docker-compose.yml in a root folder)                          	|
+| Reporting Services           	| postgres, reporting-service, reporting-ui, zebrunner-proxy etc      	|
+| CI (Jenkins)                 	| jenkins-master, jenkins-slave                                       	|
 | Code Analysis                	| sonarqube                                                            	|
-| Embedded web selenium hub    	| ggr, selenoid                                                        	|
-| Embedded mobile selenium hub 	| selenium-hub                                                         	|
+| MCloud                      	| stf services, selenium-hub, ftp                                      	|
+| Embedded web selenium hub    	| selenoid                                                            	|
   
-Open docker-composer.yml and comment/remove all unused containers.
-> Make sure to remove disabled services from depends_on directives in docker-compose.yml
+Comment/uncomment in the start.sh (stop.sh and clear.sh) appropriate [line](https://github.com/qaprosoft/qps-infra/blob/82f591827b8cbadd886ea9731661a39aba2ed0a4/start.sh#L20) for the component
+> that's a temporary solution for 5.0. In 5.1 more convenient way should appear
 
 ## Troubleshooting
 

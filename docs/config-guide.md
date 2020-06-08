@@ -1,13 +1,14 @@
 # Configuration Guide
-
+   
 ## Organization Setup        
 ### Register Organization
+   
   * Open Jenkins->Management_Jobs folder.
-  * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
-      * New folder is created with default content
-     
+  * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName and/or generated Sonarqube token
+  * New folder is created with default content   
+ 
  Create organization: 
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Organization.png?raw=true "Organization")
+ ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/organization.png?raw=true "Organization")
 
 ### Register Repository
    * Open your organization folder
@@ -43,7 +44,8 @@ Create Repository:
        <li> GITHUB_ORGANIZATION -> myorganization 
        <li> GITHUB_SSH_URL -> git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
        </ul>   
- </ul>    
+ </ul>
+ 
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true "Enterprise") 
 
 ### Set up "GitHub Pull Request Builder":
@@ -73,9 +75,9 @@ Create Repository:
         * Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed        
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true "PushJobs")
 
-##### onPush Job/Event setup
+### onPush Job/Event setup
 
-###### Setup GitHub WebHook
+#### Setup GitHub WebHook
    * Go to your GitHub repository
    * Click "Settings" tab
    * Click "Webhooks" menu option
@@ -85,50 +87,65 @@ Create Repository:
    * Tick "Send me everything." option
    * Click "Add webhook" button
    
-###### Trigger onPush Job(s)
+#### Trigger onPush Job(s)
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
    
 ## SonarQube Integration
-To enable sonarqube integration it is needed to have the following components configured correctly.
 
-### Sonarqube token
-   * Open your.domain.com/sonarqube
-   * Login with admin/admin(default) or your own credentials
-   * [OPTIONAL] change password if u need it
-   * Generate user token (login icon -> My account -> security)
+To enable sonarqube integration need to have the following components configured correctly
 
-### Jenkins credential
-   * Open jenkins and generate new credential (secrect text) id = sonar-token, desc = sonar-admin, secret = your sonar token
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
-   * Navigate to jenkins global configuration and assign the new credential to the sonarqube server config 
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
+### Generate Sonarqube token
+
+  <ul>
+  <li> Open your.domain.com/sonarqube 
+  <li> Login with admin/admin(default) or your own credentials
+  <li> [OPTIONAL] change password if you need
+  <li> Generate user token (login icon -> My account -> security)
+  </ul>
    
-### SonarQube configuration file
-For enabling static code analysis create a file named **.sonarqube**  in your project root directory and add the following properties(example from [carina-demo](https://github.com/qaprosoft/carina-demo/blob/master/.sonarqube)):
-```
-sonar.projectBaseDir=.
-sonar.projectName=carina-demo
-sonar.projectKey=carina-demo
-sonar.java.source=1.8
-sonar.sources=src
-sonar.java.binaries=target/classes
-sonar.junit.reportPaths=target/surefire-reports
-```
-For multi-module maven projects add the following property to the above file(example from [carina](https://github.com/qaprosoft/carina/blob/master/.sonarqube)):
-```
-sonar.java.test.binaries=target/test-classes
-sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
-dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
-```
-Once such file is created after each push or pull request on your repository the sonar scanner will be executed.
-
+### Set up sonar credentials in Jenkins
+  <ul>
+   <li> Open Manage jenkins -> Credentials -> System -> Global Credentials
+   <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
+   <li> Go to Manage Jenkins -> Configure System -> SonarQube servers 
+   <li> Assign the new credential to Server and Save
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
+   </ul>
+   
+### Configure SonarQube configuration file for enabling static code analysis
+  <ul>
+  <li> Create a file named **.sonarqube**  in your project root directory 
+  <li> Add the following properties (example from carina-demo):
+   
+  ```
+  sonar.projectBaseDir=.
+  sonar.projectName=carina-demo
+  sonar.projectKey=carina-demo
+  sonar.java.source=1.8
+  sonar.sources=src/main
+  sonar.tests=src/test
+  sonar.java.binaries=target/classes
+  sonar.junit.reportPaths=target/surefire-reports
+  ```
+  <li> Add the following property above the file (for multi-module maven projects):
+ 
+  ```
+  sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
+  dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
+  ```
+  </ul>
+  > Note: For each push or pull request on your repository the sonar scanner will be executed.
+  
 ### Pull request decoration
 In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:
-   * Create a new token for your github account with the following permissions
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/%23174/docs/img/Github-sonar-token.png?raw=true "github-sonar-token")
-   * When running registerOrganization job add the generated token under **sonarGithubOAuth**
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/%23174/docs/img/RegisterOrganization.png?raw=true "register-organization")
-After each pull request created/reopened in line comments will be published with the user linked to the provided github token. 
+<ul>
+   <li> Create a new token for your github account with the following permissions
+![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Github-sonar-token.png?raw=true "github-sonar-token")
+   <li> When running registerOrganization job add the generated token under **sonarGithubOAuth**
+![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/RegisterOrganization.png?raw=true "register-organization")
+   <li> Pull request created/reopened -> sonar issues published with the user linked to the provided github token as in line comments.
+</ul>
 
 ## Troubleshooting
 
