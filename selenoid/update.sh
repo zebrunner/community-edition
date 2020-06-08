@@ -9,5 +9,5 @@ echo downloading latest chrome/firefox/opera browser images
 ${BASEDIR}/bin/bash selenoid update --vnc --config-dir "${BASEDIR}" $*
 
 if [ docker inspect selenoid | grep "Running" ]; then
-docker rm -f selenoid
+    docker rm -f selenoid
 fi
