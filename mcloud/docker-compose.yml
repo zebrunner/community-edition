@@ -20,7 +20,7 @@ services:
     env_file:
      - variables.env
     volumes:
-     - "data-volume:/usr/share/ftp:rw"
+     - "data-volume:/share/ftp:rw"
     ports:
      - "21:21"
      - "30000-30009:30000-30009"
