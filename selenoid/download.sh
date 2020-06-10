@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Apache License Version 2.0, January 2004
 # https://github.com/aerokube/cm/blob/master/LICENSE
@@ -24,10 +24,10 @@ esac
 
 LATEST_BINARY_URL=`curl -s https://api.github.com/repos/aerokube/cm/releases/latest | grep "browser_download_url" | grep ${OS_TYPE} | cut -d : -f 2,3 | tr -d \"`
 
-curl -L -o bin/cm  $LATEST_BINARY_URL
-chmod +x ./bin/cm
+curl -L -o cm  $LATEST_BINARY_URL
+chmod +x ./cm
 
-VERSION=`./bin/cm version`
+VERSION=`./cm version`
 
 say "
 ${g}SUCCESSFULLY DOWNLOADED!${x}
@@ -35,9 +35,9 @@ ${g}SUCCESSFULLY DOWNLOADED!${x}
 $VERSION
 
 Now you can run ${b}Selenoid${x} with ${b}cm${x}:
-    ${b}./bin/cm selenoid start --vnc${x}
+    ${b}./cm selenoid start --vnc${x}
 
 To get instant help just type:
-    ${b}./bin/cm --help${x}
+    ${b}./cm --help${x}
 
 "
