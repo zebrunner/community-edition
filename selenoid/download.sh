@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Apache License Version 2.0, January 2004
-# https://github.com/aerokube/cm/blob/master/LICENSE
+BASEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+cd ${BASEDIR}
 
 set -e +o pipefail
 
@@ -24,10 +24,10 @@ esac
 
 LATEST_BINARY_URL=`curl -s https://api.github.com/repos/aerokube/cm/releases/latest | grep "browser_download_url" | grep ${OS_TYPE} | cut -d : -f 2,3 | tr -d \"`
 
-curl -L -o bin/cm  $LATEST_BINARY_URL
-chmod +x ./bin/cm
+curl -L -o ${BASEDIR}/bin/cm  $LATEST_BINARY_URL
+chmod +x ${BASEDIR}/bin/cm
 
-VERSION=`./bin/cm version`
+VERSION=`${BASEDIR}/bin/cm version`
 
 say "
 ${g}SUCCESSFULLY DOWNLOADED!${x}
