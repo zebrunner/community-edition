@@ -24,7 +24,7 @@ esac
 
 LATEST_BINARY_URL=`curl -s https://api.github.com/repos/aerokube/cm/releases/latest | grep "browser_download_url" | grep ${OS_TYPE} | cut -d : -f 2,3 | tr -d \"`
 
-curl -L -o ${BASEDIR}/bin/cm  $LATEST_BINARY_URL
+curl -L -o ${BASEDIR}/bin/cm $LATEST_BINARY_URL
 chmod +x ${BASEDIR}/bin/cm
 
 VERSION=`${BASEDIR}/bin/cm version`
