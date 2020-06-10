@@ -33,11 +33,4 @@ say "
 ${g}SUCCESSFULLY DOWNLOADED!${x}
 
 $VERSION
-
-Now you can run ${b}Selenoid${x} with ${b}cm${x}:
-    ${b}./bin/cm selenoid start --vnc${x}
-
-To get instant help just type:
-    ${b}./bin/cm --help${x}
-
 "
