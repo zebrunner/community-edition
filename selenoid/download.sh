@@ -24,10 +24,10 @@ esac
 
 LATEST_BINARY_URL=`curl -s https://api.github.com/repos/aerokube/cm/releases/latest | grep "browser_download_url" | grep ${OS_TYPE} | cut -d : -f 2,3 | tr -d \"`
 
-curl -L -o cm  $LATEST_BINARY_URL
-chmod +x ./cm
+curl -L -o bin/cm  $LATEST_BINARY_URL
+chmod +x ./bin/cm
 
-VERSION=`./cm version`
+VERSION=`./bin/cm version`
 
 say "
 ${g}SUCCESSFULLY DOWNLOADED!${x}
@@ -35,9 +35,9 @@ ${g}SUCCESSFULLY DOWNLOADED!${x}
 $VERSION
 
 Now you can run ${b}Selenoid${x} with ${b}cm${x}:
-    ${b}./cm selenoid start --vnc${x}
+    ${b}./bin/cm selenoid start --vnc${x}
 
 To get instant help just type:
-    ${b}./cm --help${x}
+    ${b}./bin/cm --help${x}
 
 "

@@ -7,6 +7,6 @@ cd ${BASEDIR}
 
 echo downloading latest chrome/firefox/opera browser images
 ${BASEDIR}/download.sh selenoid start --vnc
-${BASEDIR}/cm selenoid update --vnc --config-dir "${BASEDIR}" $*
+${BASEDIR}/bin/cm selenoid update --vnc --config-dir "${BASEDIR}" $*
 
 docker rm -f selenoid
