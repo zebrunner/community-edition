@@ -31,18 +31,6 @@ SUCCESSFULLY DOWNLOADED!
 $VERSION
 "
 
-
-
-
-
-
-
-
-
-
-
-
-
 ${BASEDIR}/bin/cm selenoid update --vnc --config-dir "${BASEDIR}" $*
 
 docker rm -f selenoid
