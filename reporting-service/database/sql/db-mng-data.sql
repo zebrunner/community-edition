@@ -21,11 +21,11 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 SELECT
       ROUND(SUM(TOTAL_SECONDS)/3600) AS "ACTUAL",
       ROUND(SUM(TOTAL_ETA_SECONDS)/3600) AS "ETA",
-      to_char(CREATED_AT, ''YYYY-MM'') AS "CREATED_AT"
+      to_char(STARTED_AT, ''YYYY-MM'') AS "STARTED_AT"
   FROM TOTAL_VIEW
   ${WHERE_MULTIPLE_CLAUSE}
-  GROUP BY "CREATED_AT"
-  ORDER BY "CREATED_AT";
+  GROUP BY "STARTED_AT"
+  ORDER BY "STARTED_AT";
 
 
   <#--
@@ -94,7 +94,7 @@ SELECT
         "extraCssText": "transform: translateZ(0);"
     },
     "dimensions": [
-        "CREATED_AT",
+        "STARTED_AT",
         "ACTUAL",
         "ETA"
     ],
@@ -968,10 +968,10 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 }>
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
 <#global VIEW = getView(PERIOD) />
-<#global GROUP_AND_ORDER_BY = getCreatedAt(PERIOD) />
+<#global GROUP_AND_ORDER_BY = getStartedAt(PERIOD) />
 
 SELECT
-    ${GROUP_AND_ORDER_BY} AS "CREATED_AT",
+    ${GROUP_AND_ORDER_BY} AS "STARTED_AT",
     sum( PASSED ) AS "PASSED",
     sum( FAILED ) AS "FAILED",
     sum( SKIPPED ) AS "SKIPPED",
@@ -1032,24 +1032,24 @@ SELECT
     @value - abstract view description
     @return - actual view name
   -->
-<#function getCreatedAt value>
-  <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+<#function getStartedAt value>
+  <#local result = "to_char(date_trunc(''day'', STARTED_AT), ''YYYY-MM-DD'')" />
   <#switch value>
     <#case "Last 24 Hours">
-      <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''MM-DD HH24:MI'')" />
+      <#local result = "to_char(date_trunc(''hour'', STARTED_AT), ''MM-DD HH24:MI'')" />
       <#break>
     <#case "Nightly">
-      <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''HH24:MI'')" />
+      <#local result = "to_char(date_trunc(''hour'', STARTED_AT), ''HH24:MI'')" />
       <#break>
     <#case "Last 7 Days">
     <#case "Last 14 Days">
     <#case "Last 30 Days">
     <#case "Weekly">
     <#case "Monthly">
-      <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+      <#local result = "to_char(date_trunc(''day'', STARTED_AT), ''YYYY-MM-DD'')" />
       <#break>
     <#case "Total">
-      <#local result = "to_char(date_trunc(''month'', CREATED_AT), ''YYYY-MM'')" />
+      <#local result = "to_char(date_trunc(''month'', STARTED_AT), ''YYYY-MM'')" />
       <#break>
   </#switch>
   <#return result>
@@ -3290,7 +3290,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 <#global GROUP_AND_ORDER_BY = getGroupBy(PERIOD, PARENT_JOB) />
 
 SELECT
-      ${GROUP_AND_ORDER_BY} AS "CREATED_AT",
+      ${GROUP_AND_ORDER_BY} AS "STARTED_AT",
       sum( PASSED ) AS "PASSED",
       sum( FAILED ) AS "FAILED",
       sum( SKIPPED ) AS "SKIPPED",
@@ -3352,7 +3352,7 @@ SELECT
   <#if parentJob != "">
     <#local result = "UPSTREAM_JOB_BUILD_NUMBER" />
   <#else>
-    <#local result = getCreatedAt(PERIOD) />
+    <#local result = getStartedAt(PERIOD) />
   </#if>
  <#return result>
 </#function>
@@ -3361,21 +3361,21 @@ SELECT
     @value - abstract view description
     @return - actual view name
   -->
-<#function getCreatedAt value>
-  <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+<#function getStartedAt value>
+  <#local result = "to_char(date_trunc(''day'', STARTED_AT), ''YYYY-MM-DD'')" />
   <#switch value>
     <#case "Last 24 Hours">
-      <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''MM-DD HH24:MI'')" />
+      <#local result = "to_char(date_trunc(''hour'', STARTED_AT), ''MM-DD HH24:MI'')" />
       <#break>
     <#case "Nightly">
-      <#local result = "to_char(date_trunc(''hour'', CREATED_AT), ''HH24:MI'')" />
+      <#local result = "to_char(date_trunc(''hour'', STARTED_AT), ''HH24:MI'')" />
       <#break>
     <#case "Last 7 Days">
     <#case "Last 14 Days">
     <#case "Last 30 Days">
     <#case "Weekly">
     <#case "Monthly">
-      <#local result = "to_char(date_trunc(''day'', CREATED_AT), ''YYYY-MM-DD'')" />
+      <#local result = "to_char(date_trunc(''day'', STARTED_AT), ''YYYY-MM-DD'')" />
       <#break>
   </#switch>
   <#return result>
@@ -3430,11 +3430,11 @@ SELECT
   <#return ((array1?? && array1?size != 0) || ! array2??)?then(join(array1), join(array2)) />
 </#function>' , '
 setTimeout(function() {
-  const created = dataset[0].CREATED_AT.toString();
+  const created = dataset[0].STARTED_AT.toString();
   const lastCount = dataset.length - 1;
-  const lastValue = dataset[lastCount].CREATED_AT.toString();
+  const lastValue = dataset[lastCount].STARTED_AT.toString();
   
-  let dataSource = [["CREATED_AT"], ["PASSED"], ["FAILED"], ["SKIPPED"], ["QUEUED"], ["ABORTED"], ["KNOWN ISSUE"]];
+  let dataSource = [["STARTED_AT"], ["PASSED"], ["FAILED"], ["SKIPPED"], ["QUEUED"], ["ABORTED"], ["KNOWN ISSUE"]];
   
   const createDatasetSource = () => {
     let amount = dataset.length;
@@ -3442,7 +3442,7 @@ setTimeout(function() {
       dataSource.forEach((value, index) => {
         let valueName = value[0];
         let pushValue = dataset[i][valueName];
-        if (valueName === "CREATED_AT") value.push(pushValue.toString());
+        if (valueName === "STARTED_AT") value.push(pushValue.toString());
         else value.push(pushValue);
       })
     }
@@ -3532,7 +3532,7 @@ setTimeout(function() {
     let newDataObj = {};
     
     for (const testName in dataset[value]){
-      if (testName === "CREATED_AT") continue;
+      if (testName === "STARTED_AT") continue;
       total +=  dataset[value][testName];
     }
     
@@ -3542,7 +3542,7 @@ setTimeout(function() {
     
     Object.entries(newDataObj).forEach(([key, value]) => {
       if (value === 0) return;
-      if (key === "CREATED_AT") return name = typeof value == "number"? `{BUILD|Build: ${value}}` : `{BUILD|Date: ${value}}`;
+      if (key === "STARTED_AT") return name = typeof value == "number"? `{BUILD|Build: ${value}}` : `{BUILD|Date: ${value}}`;
 
       let parameter = key === "KNOWN ISSUE" ? "KNOWN_ISSUE" : key;
       persentValue = (value * 100 / total).toFixed(2);
@@ -3582,7 +3582,7 @@ let lineRow = {
     center:  pieStyle.center,
     label: { show: false },
     encode: {
-      itemName: "CREATED_AT",
+      itemName: "STARTED_AT",
       value: lastValue,
       tooltip: lastValue
     },
@@ -4045,7 +4045,7 @@ INSERT INTO WIDGET_TEMPLATES (NAME, DESCRIPTION, TYPE, SQL, CHART_CONFIG, PARAMS
 <#global WHERE_MULTIPLE_CLAUSE = generateMultipleWhereClause(MULTIPLE_VALUES) />
 
 SELECT 
-    to_char(created_at, ''YYYY-MM-DD'') as "date",
+    to_char(STARTED_AT, ''YYYY-MM-DD'') as "date",
     ROUND(sum(passed)*100/sum(total)) AS "value",
     ''${PASSED_VALUE}'' as "passed"
     FROM total_view
@@ -4053,7 +4053,7 @@ SELECT
   GROUP BY 1
 UNION ALL
 SELECT 
-    to_char(created_at, ''YYYY-MM-DD'') as "date",
+    to_char(STARTED_AT, ''YYYY-MM-DD'') as "date",
     ROUND(sum(passed)*100/sum(total)) AS "value",
     ''${PASSED_VALUE}'' as "passed"
     FROM nightly_view
@@ -4072,21 +4072,21 @@ SELECT
   <#local result = "" />
     <#if PERIOD?length = 4 || PERIOD = "YEAR">
       <#if PERIOD = "YEAR">
-        <#local result = result + " to_char(created_at, ''YYYY'') " + " LIKE to_char(CURRENT_DATE, ''YYYY'')"/>
+        <#local result = result + " to_char(STARTED_AT, ''YYYY'') " + " LIKE to_char(CURRENT_DATE, ''YYYY'')"/>
       <#else>
-        <#local result = result + " to_char(created_at, ''YYYY'') " + " LIKE ''${PERIOD}''"/>
+        <#local result = result + " to_char(STARTED_AT, ''YYYY'') " + " LIKE ''${PERIOD}''"/>
       </#if>
     <#elseif PERIOD != "MONTH" && PERIOD?substring(5, 6) == "Q" || PERIOD = "QUARTER" >
       <#if PERIOD = "QUARTER">
-        <#local result = result + " to_char(created_at, ''YYYY-Q'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-Q'')"/>
+        <#local result = result + " to_char(STARTED_AT, ''YYYY-Q'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-Q'')"/>
       <#else>
-        <#local result = result + " to_char(created_at, ''YYYY'') || ''-Q'' || to_char(created_at, ''Q'') " + " LIKE ''${PERIOD}''"/>
+        <#local result = result + " to_char(STARTED_AT, ''YYYY'') || ''-Q'' || to_char(STARTED_AT, ''Q'') " + " LIKE ''${PERIOD}''"/>
       </#if>
     <#else>
       <#if PERIOD = "MONTH">
-        <#local result = result + " to_char(created_at, ''YYYY-MM'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-MM'')"/>
+        <#local result = result + " to_char(STARTED_AT, ''YYYY-MM'') " + " LIKE to_char(CURRENT_DATE, ''YYYY-MM'')"/>
       <#else>
-        <#local result = result + " to_char(created_at, ''YYYY-MM'') " + " LIKE ''${PERIOD}''"/>
+        <#local result = result + " to_char(STARTED_AT, ''YYYY-MM'') " + " LIKE ''${PERIOD}''"/>
       </#if>
     </#if>
 
@@ -4244,7 +4244,7 @@ let option = {
 
 chart.setOption(option);', '{
   "PERIOD": {
-    "valuesQuery": "SELECT ''YEAR'' UNION ALL SELECT ''QUARTER'' UNION ALL SELECT ''MONTH'' UNION ALL SELECT DISTINCT to_char(created_at, ''YYYY'') FROM total_view UNION ALL SELECT DISTINCT to_char(created_at, ''YYYY'') || ''-Q'' || to_char(created_at, ''Q'') FROM total_view UNION ALL SELECT DISTINCT to_char(created_at, ''YYYY-MM'') FROM total_view UNION SELECT DISTINCT to_char(created_at, ''YYYY-MM'') FROM NIGHTLY_VIEW ORDER BY 1 DESC;",
+    "valuesQuery": "SELECT ''YEAR'' UNION ALL SELECT ''QUARTER'' UNION ALL SELECT ''MONTH'' UNION ALL SELECT DISTINCT to_char(STARTED_AT, ''YYYY'') FROM total_view UNION ALL SELECT DISTINCT to_char(STARTED_AT, ''YYYY'') || ''-Q'' || to_char(STARTED_AT, ''Q'') FROM total_view UNION ALL SELECT DISTINCT to_char(STARTED_AT, ''YYYY-MM'') FROM total_view UNION SELECT DISTINCT to_char(STARTED_AT, ''YYYY-MM'') FROM NIGHTLY_VIEW ORDER BY 1 DESC;",
     "required": true
   },
   "PERSONAL": {
