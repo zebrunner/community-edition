@@ -31,7 +31,7 @@ services:
      - "JENKINS_MASTER_PASSWORD=${JENKINS_ADMIN_PASS}"
      - "JENKINS_SLAVE_NAME=jenkins-slave"
      - "JENKINS_SLAVE_WORKERS=5"
-     - "JENKINS_SLAVE_LABELS=maven api web docker"
+     - "JENKINS_SLAVE_LABELS=maven api web docker default"
     volumes:
      - "/var/run/docker.sock:/var/run/docker.sock"
     ports:
