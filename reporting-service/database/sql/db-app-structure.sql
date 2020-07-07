@@ -316,11 +316,13 @@ CREATE TABLE IF NOT EXISTS test_runs (
   env VARCHAR(50) NULL,
   app_version VARCHAR(255) NULL,
   started_at TIMESTAMP NULL,
+  ended_at TIMESTAMP NULL,
   elapsed INT NULL,
   eta INT NULL,
   comments TEXT NULL,
   channels VARCHAR(255) NULL,
   reviewed BOOLEAN NOT NULL DEFAULT FALSE,
+  framework VARCHAR(50) NULL,
   modified_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
   created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (id),
@@ -381,6 +383,7 @@ CREATE TABLE IF NOT EXISTS tests (
   blocker BOOLEAN NOT NULL DEFAULT FALSE,
   need_rerun BOOLEAN NOT NULL DEFAULT TRUE,
   depends_on_methods VARCHAR(255) NULL,
+  uuid TEXT NULL,
   modified_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
   created_at TIMESTAMP NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (id),
@@ -390,6 +393,7 @@ CREATE TABLE IF NOT EXISTS tests (
     ON UPDATE NO ACTION,
   FOREIGN KEY (test_case_id) REFERENCES test_cases (id)
 );
+CREATE UNIQUE INDEX uuid_test_unique ON tests (test_run_id, uuid) WHERE uuid IS NOT NULL;
 CREATE INDEX fk_tests_test_runs1_idx ON tests (test_run_id);
 CREATE INDEX fk_tests_test_cases1_idx ON tests (test_case_id);
 CREATE INDEX fk_tests_test_configs1_idx ON tests (test_config_id);
