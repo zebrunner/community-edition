@@ -4,11 +4,11 @@
 ### Register Organization
    
   * Open Jenkins->Management_Jobs folder.
-  * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName and/or generated Sonarqube token
+  * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
   * New folder is created with default content   
  
  Create organization: 
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/organization.png?raw=true "Organization")
+ ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Organization.png?raw=true "Organization")
 
 ### Register Repository
    * Open your organization folder
@@ -16,7 +16,7 @@
       * Repository should be scanned and TestNG jobs created
      
 Create Repository:
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
+ ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")       
 
 
 #### Setup GitHub WebHook (onPush Job/Event)
@@ -92,60 +92,69 @@ Create Repository:
    
 ## SonarQube Integration
 
-To enable sonarqube integration need to have the following components configured correctly
+In order to enable sonarqube the following components must be configured correctly.
+   
+### Create a [GitHub App](https://developer.github.com/apps/about-apps/)
 
-### Generate Sonarqube token
+   * Follow Steps 1–4 [here](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) to start creating your GitHub App
+   * Under **GitHub App name**, give your app a name, such as SonarQubePRDecorator.
+   * Add a **Homepage URL**. GitHub requires this, but it isn't important for Pull Request decoration. You can use any URL, such as https://zebrunner.com/.
+   * Enter your **User authorization callback URL**. Set this to your instance's base URL. For example, https://your.infra.domain.com/sonarqube/oauth2/callback
+   * Add **Webhook URL**. Set this to your instance's base URL. For example, https://zebrunner.com/.
+   * Grant access for the following **Permissions**:
+   
+      |Permission                | Access        |
+      |:------------------------:|---------------|
+      |      Checks              | Read & Write  |	
+      |      Metadata            | Read-Only     | 
+      |      Pull Requests       | Read & Write  |
+      |      Commit statuses     | Read-only     |
+   > Note: if your are using **Github Enterprise** the permission "Metadata" is renamed to "Repository Metadata"
 
-  <ul>
-  <li> Open your.domain.com/sonarqube 
-  <li> Login with admin/admin(default) or your own credentials
-  <li> [OPTIONAL] change password if you need
-  <li> Generate user token (login icon -> My account -> security)
-  </ul>
-   
-### Set up sonar credentials in Jenkins
-  <ul>
-   <li> Open Manage jenkins -> Credentials -> System -> Global Credentials
-   <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
-   <li> Go to Manage Jenkins -> Configure System -> SonarQube servers 
-   <li> Assign the new credential to Server and Save
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
-   </ul>
-   
-### Configure SonarQube configuration file for enabling static code analysis
-  <ul>
-  <li> Create a file named **.sonarqube**  in your project root directory 
-  <li> Add the following properties (example from carina-demo):
-   
-  ```
-  sonar.projectBaseDir=.
-  sonar.projectName=carina-demo
-  sonar.projectKey=carina-demo
-  sonar.java.source=1.8
-  sonar.sources=src/main
-  sonar.tests=src/test
-  sonar.java.binaries=target/classes
-  sonar.junit.reportPaths=target/surefire-reports
-  ```
-  <li> Add the following property above the file (for multi-module maven projects):
- 
-  ```
-  sonar.modules=carina-api,carina-aws-s3,carina-commons,carina-core,carina-crypto,carina-
-  dataprovider,carina-appcenter,carina-proxy,carina-reporting,carina-utils,carina-webdriver
-  ```
-  </ul>
-  > Note: For each push or pull request on your repository the sonar scanner will be executed.
+   * Under "Where can this GitHub App be installed?," select **Any account.**
+   * Click <b>Create GitHub App</b>. This will take you to your new GitHub App's page.
+   * Scroll down to the bottom of your app page and click <**Generate Private Key.** This downloads a .pem file that you'll use in the **Configure SonarQube server section.**
+   > Tip: in order to acces the private key open the .pem file with your favorite text editor.
   
-### Pull request decoration
-In order to enable pull request decoration(auto comments with sonar issues in the pr) follow the next steps:
-<ul>
-   <li> Create a new token for your github account with the following permissions
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Github-sonar-token.png?raw=true "github-sonar-token")
-   <li> When running registerOrganization job add the generated token under **sonarGithubOAuth**
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/RegisterOrganization.png?raw=true "register-organization")
-   <li> Pull request created/reopened -> sonar issues published with the user linked to the provided github token as in line comments.
-</ul>
+## Install your app
+Installing your GitHub App from the app's settings page.
+
+   * Go to your GitHub profile > Developer settings > GitHub Apps > Your app name > Install App
+   * Select the organization to install the app
+   * Select All repositories
+   * Clik install
+
+  
+### Configure SonarQUbe server
+In order to enable pull request decoration follow the next steps:
+
+   * Go to your sonarqube server page and login.
+   > Note: default credentials for sonar are: admin/admin, we recommend changing them after setting up the infra.
+   
+   * Add your SonarQube server under **Configuration > General Settings > Server base URL**
+   
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
+   
+   * In **Configuration > GitHub** add your GitHub App **Client ID, Client Secret**
+   
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
+   
+   * In **Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key and select Provider as GitHub**
+   
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true "SonarPullRequestConfig")
+   
+   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
+   
+## Configure private SonarQube server(only if you are not using embeded one from the infra)
+
+   * Open your infra.domain/jenkins and login
+   * Go to Manage **Jenkins > System Configuration > Global Properties**
+   * Search for **SONAR_URL** and change the value for your private SonarQube one
+   
+   > Note: Make sure to add the **protocol prefix.** i.e: http://your.sonar.url or https://your.sonar.url if you have an SSL sertificate.
+   
+   
+
 
 ## Troubleshooting
 
