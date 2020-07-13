@@ -119,17 +119,17 @@ In order to enable sonarqube the following components must be configured correct
 ## Install your app
 Installing your GitHub App from the app's settings page.
 
-* Go to your GitHub profile > Developer settings > GitHub Apps > Your app name > Install App
-* Select the organization to install the app
-* Select All repositories
-* Clik install
+   * Go to your GitHub profile > Developer settings > GitHub Apps > Your app name > Install App
+   * Select the organization to install the app
+   * Select All repositories
+   * Clik install
 
   
 ### Configure SonarQUbe server
 In order to enable pull request decoration follow the next steps:
 
    * Go to your sonarqube server page and login.
-   > default credentials for sonar are: admin/admin, we recommend changing them after setting up the infra.
+   > Note: default credentials for sonar are: admin/admin, we recommend changing them after setting up the infra.
    
    * Add your SonarQube server under **Configuration > General Settings > Server base URL**
    
