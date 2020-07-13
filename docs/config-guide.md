@@ -92,7 +92,7 @@ Create Repository:
    
 ## SonarQube Integration
 
-To enable sonarqube integration need to have the following components configured correctly
+In order to enable sonarqube the following components must be configured correctly.
    
 ### Create a [GitHub App](https://developer.github.com/apps/about-apps/)
 
