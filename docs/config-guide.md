@@ -99,7 +99,7 @@ In order to enable sonarqube the following components must be configured correct
    * Follow Steps 1–4 [here](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) to start creating your GitHub App
    * Under **GitHub App name**, give your app a name, such as SonarQubePRDecorator.
    * Add a **Homepage URL**. GitHub requires this, but it isn't important for Pull Request decoration. You can use any URL, such as https://zebrunner.com/.
-   * Enter your **User authorization callback URL**. Set this to your instance's base URL. For example, https://yourinstance.sonarqube.com/oauth2/callback
+   * Enter your **User authorization callback URL**. Set this to your instance's base URL. For example, https://your.infra.domain.com/sonarqube/oauth2/callback
    * Add **Webhook URL**. Set this to your instance's base URL. For example, https://zebrunner.com/.
    * Grant access for the following **Permissions**:
    
