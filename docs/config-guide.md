@@ -148,10 +148,10 @@ In order to enable pull request decoration follow the next steps:
 ## Configure private SonarQube server(only if you are not using embeded one from the infra)
 
    * Open your infra.domain/jenkins and login
-   * Go to Manage Jenkins > System Configuration > Global Properties
-   * Search for SONAR_URL and change the value for your private SonarQube one
+   * Go to Manage **Jenkins > System Configuration > Global Properties**
+   * Search for **SONAR_URL** and change the value for your private SonarQube one
    
-   > Note: Make sure to add the protocol prefix. i.e: http://your.sonar.url or https://your.sonar.url if you have an SSL sertificate.
+   > Note: Make sure to add the **protocol prefix.** i.e: http://your.sonar.url or https://your.sonar.url if you have an SSL sertificate.
    
    
 
