@@ -9,8 +9,8 @@ services:
     container_name: stf-proxy
     volumes:
     - "./configuration/stf-proxy/nginx.conf:/etc/nginx/nginx.conf:ro"
-    ports:
-    - "80:80"     # primary HTTP port
+#    ports:
+#    - "80:80"     # primary HTTP port
     depends_on:
       - stf-app
     restart: always
@@ -32,8 +32,8 @@ services:
      - variables.env
 #    environment:
 #     - JAVA_OPTS=-Dselenium.LOGGER.level=FINEST
-#    ports:
-#     - "4446:4444"
+    ports:
+     - "4446:4444"
     restart: always
   rethinkdb:
     image: "rethinkdb:${TAG_RETHINKDB}"
@@ -60,7 +60,10 @@ services:
     container_name: stf-auth-mock
     env_file:
      - variables.env
-    command: stf auth-mock --port 3000 --app-url http://${STF_HOST}/
+    # http://${STF_HOST}/stf/ with slash at the end produce invalid redirect! /stf/?jwt=e...
+    command: stf auth-mock --port 3000 --app-url http://${STF_HOST}/stf
+    depends_on:
+     - "rethinkdb"
     restart: always
   stf-migrate:
     image: "qaprosoft/stf:${TAG_STF}"
@@ -94,6 +97,8 @@ services:
     env_file:
      - variables.env
     command: stf storage-plugin-apk --port 3000 --storage-url http://${STF_HOST}/
+    depends_on:
+     - "rethinkdb"
     restart: always
   stf-storage-plugin-image:
     image: "qaprosoft/stf:${TAG_STF}"
@@ -101,6 +106,10 @@ services:
     env_file:
      - variables.env
     command: stf storage-plugin-image --port 3000 --storage-url http://${STF_HOST}/
+    env_file:
+     - variables.env
+    depends_on:
+     - "rethinkdb"
     restart: always
   stf-storage-temp:
     image: "qaprosoft/stf:${TAG_STF}"
@@ -110,6 +119,8 @@ services:
     volumes:
      - "stf-temp-volume:/data"
     command: stf storage-temp --port 3000 --save-dir /data --connect-sub tcp://stf-triproxy-app:7150 --connect-push tcp://stf-triproxy-app:7170
+    depends_on:
+     - "rethinkdb"
     restart: always
   stf-triproxy-app:
     image: "qaprosoft/stf:${TAG_STF}"

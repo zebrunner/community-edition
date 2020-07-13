@@ -12,12 +12,29 @@ if [ ! -f .env ] || [ ! -f ./nginx/conf.d/default.conf ] || [ ! -f ./selenoid/br
     exit -1
 fi
 
+echo "
+███████╗███████╗██████╗ ██████╗ ██╗   ██╗███╗   ██╗███╗   ██╗███████╗██████╗
+╚══███╔╝██╔════╝██╔══██╗██╔══██╗██║   ██║████╗  ██║████╗  ██║██╔════╝██╔══██╗
+  ███╔╝ █████╗  ██████╔╝██████╔╝██║   ██║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝
+ ███╔╝  ██╔══╝  ██╔══██╗██╔══██╗██║   ██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗
+███████╗███████╗██████╔╝██║  ██║╚██████╔╝██║ ╚████║██║ ╚████║███████╗██║  ██║
+╚══════╝╚══════╝╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
+
+        ███████╗████████╗ █████╗ ██████╗ ████████╗███████╗██████╗
+        ██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗
+        ███████╗   ██║   ███████║██████╔╝   ██║   █████╗  ██████╔╝
+        ╚════██║   ██║   ██╔══██║██╔══██╗   ██║   ██╔══╝  ██╔══██╗
+        ███████║   ██║   ██║  ██║██║  ██║   ██║   ███████╗██║  ██║
+        ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+
+"
+
 # create infra network only if not exist
 docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
 #-------------- START EVERYTHING ------------------------------
 docker-compose -f selenoid/docker-compose.yml up -d
-#docker-compose -f mcloud/docker-compose.yml up -d
+docker-compose -f mcloud/docker-compose.yml up -d
 docker-compose -f jenkins/docker-compose.yml up -d
 docker-compose -f reporting-service/docker-compose.yml up -d
 docker-compose -f sonarqube/docker-compose.yml up -d
