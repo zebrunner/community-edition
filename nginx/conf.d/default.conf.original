@@ -7,8 +7,8 @@ server {
     listen       80;
     server_name  demo.qaprosoft.com;
 
-    #to resolve issue with uploading to sonar huge project reports (Error 413)
-    client_max_body_size 200M;
+    #to resolve issue with uploading to sonar huge project reports or uploading apk to STF (Error 413)
+    client_max_body_size 1024M;
 
     resolver 127.0.0.11 valid=30s;
     resolver_timeout 10s;
@@ -64,28 +64,32 @@ server {
       proxy_http_version 1.1;
     }
 
-    location /stf {
-#       rewrite http://stf-demo.qaprosoft.com permanent;
+    location ~ /(stf|auth/mock|auth/ldap|auth/contact|auth/api|static/app|static/logo|app/api|api/v1|s/upload|s/image|s/blob|s/apk) {
       set $upstream_stf stf-proxy:80;
       proxy_pass http://$upstream_stf;
       proxy_http_version 1.1;
     }
 
-#    location ~ /(stf|static/app/build|static/logo|auth/mock|auth/contact|auth/api|app/api|api/v1) {
-#      set $upstream_stf stf-proxy:80;
-#      proxy_pass http://$upstream_stf;
-#      proxy_http_version 1.1;
-#    }
+    location /d/ {
+      set $upstream_stf stf-proxy:80;
+      proxy_pass http://$upstream_stf;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection upgrade;
+      proxy_set_header X-Forwarded-For $remote_addr;
+      proxy_set_header X-Real-IP $remote_addr;
+    }
 
-#    location /socket.io {
-#      set $upstream_stf stf-proxy:80;
-#      proxy_pass http://$upstream_stf;
-#      proxy_http_version 1.1;
-#      
-#      # two below headers to support websocket connection
-#      proxy_set_header Upgrade $http_upgrade;
-#      proxy_set_header Connection upgrade;
-#   }
+    location /socket.io {
+      set $upstream_stf stf-proxy:80;
+      proxy_pass http://$upstream_stf;
+      proxy_http_version 1.1;
+
+      # two below headers to support websocket connection
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection upgrade;
+   }
+
 
     location /mcloud {
       set $upstream_zebrunner 127.0.0.1:80;

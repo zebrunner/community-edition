@@ -34,7 +34,7 @@ docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
 #-------------- START EVERYTHING ------------------------------
 docker-compose -f selenoid/docker-compose.yml up -d
-#docker-compose -f mcloud/docker-compose.yml up -d
+docker-compose -f mcloud/docker-compose.yml up -d
 docker-compose -f jenkins/docker-compose.yml up -d
 docker-compose -f reporting-service/docker-compose.yml up -d
 docker-compose -f sonarqube/docker-compose.yml up -d
