@@ -25,7 +25,8 @@ For every registered repository we do set of pre-validations like compilation an
 
   * Open Jenkins -> Credentials
   * Update Username and Password for "ghprbhook-token" credentials   
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true "Credentials") 
+  > Valid github username and password/token
+  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true "Credentials") 
   * Go to Manage Jenkins -> Configure System
   * Specify a value for GitHub Server API URL, for example, https://api.github.com
   > Note: corporate versions of GitHub should have a different value, for example, https://github.mydomain.com/api/v3
