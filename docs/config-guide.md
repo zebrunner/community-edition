@@ -8,7 +8,7 @@
   * New folder is created with default content   
  
  Create organization: 
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Organization.png?raw=true "Organization")
+ ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Organization.png?raw=true "Organization")
 
 ### Register Repository
    * Open your organization folder
@@ -16,7 +16,7 @@
    -> Repository is scanned and TestNG jobs created
      
 Create Repository:
- ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")       
+ ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
 
 #### Setup GitHub WebHook (onPush Job/Event)
    * Go to your GitHub repository
@@ -109,15 +109,15 @@ In order to enable pull request decoration follow the next steps:
    
    * Add your SonarQube server under **Configuration > General Settings > Server base URL**
    
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
    
    * In **Configuration > GitHub** add your GitHub App **Client ID, Client Secret**
    
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
    
    * In **Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key and select Provider as GitHub**
    
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true "SonarPullRequestConfig")
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarPullRequestConfig.png?raw=true "SonarPullRequestConfig")
    
    > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
    
