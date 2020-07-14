@@ -12,8 +12,7 @@
 
 ### Register Repository
    * Open your organization folder
-   * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)
-      * Repository should be scanned and TestNG jobs created
+   * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan) -> Repository is scanned and TestNG jobs created
      
 Create Repository:
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
