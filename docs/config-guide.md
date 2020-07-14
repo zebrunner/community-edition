@@ -12,11 +12,11 @@
 
 ### Register Repository
    * Open your organization folder
-   * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan) -> Repository is scanned and TestNG jobs created
+   * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)
+   -> Repository is scanned and TestNG jobs created
      
 Create Repository:
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
-
 
 #### Setup GitHub WebHook (onPush Job/Event)
    * Go to your GitHub repository
@@ -30,22 +30,6 @@ Create Repository:
    
 #### Trigger onPush Job(s)
    *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
-
-## Source Control Tools Integration
-  For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default:
- <ul>
-   <li>  Manage jenkins -> Configure system 
-   <li>  Global properties -> Add property 
-       <ul>
-       <li type="circle"> GITHUB_API_URL -> https://$GITHUB_HOST/api/v3 
-       <li type="circle"> GITHUB_HOST -> github.mydomain.com 
-       <li type="circle"> GITHUB_HTML_URL -> https://$GITHUB_HOST/$GITHUB_ORGANIZATION 
-       <li type="circle"> GITHUB_ORGANIZATION -> myorganization 
-       <li type="circle"> GITHUB_SSH_URL -> git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
-       </ul>   
- </ul>
- 
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true "Enterprise") 
 
 ### Set up "GitHub Pull Request Builder":
    * Open Jenkins -> Credentials
@@ -82,21 +66,6 @@ Create Repository:
         
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true "PushJobs")
 
-### onPush Job/Event setup
-
-#### Setup GitHub WebHook
-   * Go to your GitHub repository
-   * Click "Settings" tab
-   * Click "Webhooks" menu option
-   * Click "Add webhook" button
-   * Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field
-   * Select application/json in "Content Type" field
-   * Tick "Send me everything." option
-   * Click "Add webhook" button
-   
-#### Trigger onPush Job(s)
-   *  After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
-   
 ## SonarQube Integration
 
 To enable sonarqube integration need to have the following components configured correctly
@@ -153,6 +122,22 @@ In order to enable pull request decoration(auto comments with sonar issues in th
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/RegisterOrganization.png?raw=true "register-organization")
    <li> Pull request created/reopened -> sonar issues published with the user linked to the provided github token as in line comments.
 </ul>
+
+## Source Control Tools Integration
+  For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default:
+ <ul>
+   <li>  Manage jenkins -> Configure system 
+   <li>  Global properties -> Add property 
+       <ul>
+       <li type="circle"> GITHUB_API_URL -> https://$GITHUB_HOST/api/v3 
+       <li type="circle"> GITHUB_HOST -> github.mydomain.com 
+       <li type="circle"> GITHUB_HTML_URL -> https://$GITHUB_HOST/$GITHUB_ORGANIZATION 
+       <li type="circle"> GITHUB_ORGANIZATION -> myorganization 
+       <li type="circle"> GITHUB_SSH_URL -> git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
+       </ul>   
+ </ul>
+ 
+![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true "Enterprise") 
 
 ## Troubleshooting
 
