@@ -38,11 +38,11 @@ Create Repository:
    <li>  Manage jenkins -> Configure system 
    <li>  Global properties -> Add property 
        <ul>
-       <li> GITHUB_API_URL -> https://$GITHUB_HOST/api/v3 
-       <li> GITHUB_HOST -> github.mydomain.com 
-       <li> GITHUB_HTML_URL -> https://$GITHUB_HOST/$GITHUB_ORGANIZATION 
-       <li> GITHUB_ORGANIZATION -> myorganization 
-       <li> GITHUB_SSH_URL -> git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
+       <li type="circle"> GITHUB_API_URL -> https://$GITHUB_HOST/api/v3 
+       <li type="circle"> GITHUB_HOST -> github.mydomain.com 
+       <li type="circle"> GITHUB_HTML_URL -> https://$GITHUB_HOST/$GITHUB_ORGANIZATION 
+       <li type="circle"> GITHUB_ORGANIZATION -> myorganization 
+       <li type="circle"> GITHUB_SSH_URL -> git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
        </ul>   
  </ul>
  
@@ -64,23 +64,22 @@ Create Repository:
 
 ### Restart Jenkins after Update Github Personal access token
 > Note: generate new Personal access token in Github
-   *  Go to Jenkins -> Credentials
-   *  Updade credentials in Jenkins
-   *  Restart Jenkins
-   *  Open/Close Pull request in Github or create a new PL ->
-   *  Verify that Pull request jobs are executed
+  *  Go to Jenkins -> Credentials
+  *  Updade credentials in Jenkins
+  *  Restart Jenkins
+  *  Open/Close Pull request in Github or create a new PL -> Verify that Pull request jobs are executed
 
 #### Test the integration with Github through the Jenkins UI
-   *  Set Credentials -> Test basic connection to GitHub
-   *  Set Repository owner/name -> Test Permissions to a Repository
-   *  Set Issue ID/Comment -> Test adding comment to Pull Request
+  *  Set Credentials -> Test basic connection to GitHub
+  *  Set Repository owner/name -> Test Permissions to a Repository
+  *  Set Issue ID/Comment -> Test adding comment to Pull Request
 
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/TestGithub.png?raw=true "TestGithub") 
 
 #### Send Pull request to launch onPullRequest Job(s)
    * Go to your GitHub repository
-   * Create new Pull Request
-        * Verify in Jenkins that onPullRequest-repo,onPullRequest-repo-trigger jobs launched and succeed        
+   * Create new Pull Request -> onPullRequest-repo, onPullRequest-repo-trigger jobs launched and succeed in Jenkins
+        
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true "PushJobs")
 
 ### onPush Job/Event setup
@@ -107,7 +106,7 @@ To enable sonarqube integration need to have the following components configured
   <ul>
   <li> Open your.domain.com/sonarqube 
   <li> Login with admin/admin(default) or your own credentials
-  <li> [OPTIONAL] change password if you need
+  <li> Change password if you need [OPTIONAL]
   <li> Generate user token (login icon -> My account -> security)
   </ul>
    
