@@ -114,10 +114,10 @@ To enable sonarqube integration need to have the following components configured
   <ul>
    <li> Open Manage jenkins -> Credentials -> System -> Global Credentials
    <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/jenkins-sonar-cred.png?raw=true "sonar-credential")
    <li> Go to Manage Jenkins -> Configure System -> SonarQube servers 
    <li> Assign the new credential to Server and Save
-   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/jenkins-sonar-sv-config.png?raw=true "sonar-sv-config")
    </ul>
    
 ### Configure SonarQube configuration file for enabling static code analysis
@@ -150,7 +150,7 @@ In order to enable pull request decoration(auto comments with sonar issues in th
    <li> Create a new token for your github account with the following permissions
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Github-sonar-token.png?raw=true "github-sonar-token")
    <li> When running registerOrganization job add the generated token under **sonarGithubOAuth**
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/RegisterOrganization.png?raw=true "register-organization")
+![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/RegisterOrganization.png?raw=true "register-organization")
    <li> Pull request created/reopened -> sonar issues published with the user linked to the provided github token as in line comments.
 </ul>
 
