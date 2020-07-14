@@ -782,10 +782,10 @@
 <p><ul>
    <li> Open Manage jenkins -&gt; Credentials -&gt; System -&gt; Global Credentials
    <li> Add Credentials: Kind = secrect text, Secret = your sonar token, ID = sonar-token, Description = sonar-admin 
-   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/jenkins-sonar-cred.png?raw=true" title="sonar-credential" />
    <li> Go to Manage Jenkins -&gt; Configure System -&gt; SonarQube servers 
    <li> Assign the new credential to Server and Save
-   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/sonarqube-docs/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" />
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/jenkins-sonar-sv-config.png?raw=true" title="sonar-sv-config" />
    </ul></p>
 <h3 id="configure-sonarqube-configuration-file-for-enabling-static-code-analysis">Configure SonarQube configuration file for enabling static code analysis</h3>
 <p><ul>
@@ -812,7 +812,7 @@
    <li> Create a new token for your github account with the following permissions
 <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Github-sonar-token.png?raw=true" title="github-sonar-token" />
    <li> When running registerOrganization job add the generated token under <strong>sonarGithubOAuth</strong>
-<img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/RegisterOrganization.png?raw=true" title="register-organization" />
+<img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/RegisterOrganization.png?raw=true" title="register-organization" />
    <li> Pull request created/reopened -&gt; sonar issues published with the user linked to the provided github token as in line comments.
 </ul></p>
 <h2 id="troubleshooting">Troubleshooting</h2>
