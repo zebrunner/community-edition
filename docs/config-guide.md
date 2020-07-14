@@ -64,6 +64,7 @@ Create Repository:
 
 ### Restart Jenkins after Update Github Personal access token
 > Note: generate new Personal access token in Github
+
   *  Go to Jenkins -> Credentials
   *  Updade credentials in Jenkins
   *  Restart Jenkins
