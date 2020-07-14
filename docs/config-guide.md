@@ -26,7 +26,8 @@ For every registered repository we do set of pre-validations like compilation an
   * Open Jenkins -> Credentials
   * Update Username and Password for "ghprbhook-token" credentials
   * Provide GitHub credentials with Admin privileges for your organization
-  > admin privileges required to be able to register web hooks automatically for registered repositories  
+  > admin privileges required to be able to register web hooks automatically 
+  
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true "Credentials") 
   * Go to Manage Jenkins -> Configure System
   * Specify a value for GitHub Server API URL, for example, https://api.github.com
