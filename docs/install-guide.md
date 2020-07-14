@@ -29,23 +29,21 @@
 3. [Optional] Generate new AUTH_TOKEN_SECRET/CRYPTO_SALT values and put into the variables.env
   > Strongly recommended for publicly available environments! AUTH_TOKEN_SECRET is randomized and base64 encoded string. CRYPTO_SALT is randomized alpha-numeric string
 
-4. [Optional] Disable unused component(s) according to the [steps](#disableremove-components).
-
-5. [Optional] Update default credentials in .env.original
+4. [Optional] Update default credentials in .env.original
   > Note: due to the huge refactoring better to ask [assistance](https://t.me/qps_infra) in updating credentials for all configuration files. In 5.2 it is planned to have single point of true only inside .env.original!
 
-6. Launch the setup.sh script providing your hostname as an argument:<br>
+5. Launch the setup.sh script providing your hostname as an argument:<br>
   ```
   git clone https://github.com/qaprosoft/qps-infra.git && cd qps-infra && ./setup.sh myhost.domain.com
   ```
   > Use public ip address if you don't have registered DNS hostname yet
 
-7. Start services<br>
+6. Start services<br>
   ```
   ./start.sh
   ```
   
-8. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
+7. After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:
   > Use your host domain address or IP.
   > admin/admin are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel
   
@@ -72,7 +70,7 @@ QPS-Infra contains such layers of services:
 | MCloud                      	| stf services, selenium-hub, ftp                                      	|
 | Embedded web selenium hub    	| selenoid                                                            	|
   
-Comment/uncomment in the start.sh (stop.sh and clear.sh) appropriate [line](https://github.com/qaprosoft/qps-infra/blob/82f591827b8cbadd886ea9731661a39aba2ed0a4/start.sh#L20) for the component
+Comment/uncomment in the start.sh (stop.sh and clear.sh) appropriate [line](https://github.com/qaprosoft/qps-infra/blob/dcbc0c4c79326766289d1f6595686272a2c13d9b/start.sh#L36) for the component
 
 ## Support Channel
 
