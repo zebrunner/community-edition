@@ -4,10 +4,10 @@
 
 ### GitHub Integration
 
-[github.com](github.com) integration is organized by default. For enterprise github, gitlab etc you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default:
+[Github.com](github.com) is integrated by default. To override integration for Enterprise GitHub, GitLab etc declare the following global variables:
  <ul>
-   <li>  Manage jenkins -> Configure system 
-   <li>  Global properties -> Add property 
+   <li>  Manage jenkins -> Configure System 
+   <li>  Global properties -> Add Property 
        <ul>
        <li type="circle"> GITHUB_HOST -> github.mydomain.com
        <li type="circle"> GITHUB_ORGANIZATION -> myorganization
@@ -21,7 +21,7 @@
 
 ### Set up "GitHub Pull Request Builder":
 
-For every registered repository we do set of pre-validations. Integration should be configured at once to make all OnPullRequest jobs/events configurable in automatic mode
+For every registered repository we do set of pre-validations like compilation and Sonar PR checker. Integration should be configured at once to make all OnPullRequest Jobs/Events auto-configurable
 
   * Open Jenkins -> Credentials
   * Update Username and Password for "ghprbhook-token" credentials   
@@ -44,7 +44,7 @@ For every registered repository we do set of pre-validations. Integration should
 
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/TestGithub.png?raw=true "TestGithub") 
 
-## SonarQube Integration
+## SonarQube Setup
 
 SonarQube is used for static code analysis in updated lines/files during pull requests validations and full code analysis for onPush.
 That's guarantee a good quality of the code, effective code review process and fast engineering team skills growth.
@@ -106,7 +106,7 @@ In order to enable Pull Request decoration follow the next steps:
   
   > Note: update **SONAR_URL** global Jenkins variable to point to private SonarQube instance
    
-## Github Organization Registration  
+## Organization Setup  
 
 ### Register Organization
 
@@ -114,26 +114,26 @@ Each GitHub organization should be registered in Jenkins to be able to setup CI/
    
   * Open Jenkins->Management_Jobs folder.
   * Run "RegisterOrganization" providing your GitHub organization name as folderName
-  * New folder is created with default content (launcher and RegisterRepository jobs) 
+  * _New folder is created with default content (launcher and RegisterRepository jobs)_
  
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Organization.png?raw=true "Organization")
 
 ### Register Repository
 
-Repositories registration process put information about credentials in secured way, setup high-level CI/CD process for test automation and do scanning and automatic jobs creation based on embedded JobDSL rules.
+Repositories registration process save securely access credentials/tokens, setup high-level CI/CD process for test automation and do scanning and automatic jobs creation based on embedded JobDSL rules.
 
    * Open your organization folder
    * Run "RegisterRepository" pointing to your repository
    > Example: https://github.com/qaprosoft/carina-demo
    * Use neccessary runner class
-   > Example: "com.qaprosoft.jenkins.pipeline.runner.maven.TestNG" for any Maven + TestNG repository
-   * Repository is scanned, TestNG jobs created for every suite file
+   > Example: "com.qaprosoft.jenkins.pipeline.runner.maven.TestNG" for any **Maven + TestNG** repository
+   * _Repository is scanned, TestNG jobs created for every suite file_
      
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
 
 #### Setup GitHub WebHooks (onPush Job/Event)
 
-To setup automatic onPush jobs execution for every push into the default branch follow below steps. It guarantee automatic full static code analysis using SonarQube and flexible CI/CD process to recreate Test Automation jobs on CI
+To setup automatic onPush Jobs execution follow below steps. It guarantee automatic full static code analysis by SonarQube and flexible CI/CD process to recreate Test Automation jobs on CI
 
    * Go to your GitHub repository
    * Click "Settings" tab
@@ -143,7 +143,7 @@ To setup automatic onPush jobs execution for every push into the default branch 
    * Select application/json in "Content Type" field
    * Tick "Send me everything." option
    * Click "Add webhook" button
-   * After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
+   * _After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created_
         
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true "PushJobs")
 
