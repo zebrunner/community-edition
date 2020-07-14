@@ -62,8 +62,7 @@ Create Repository:
   *  Save changes
 > Note: be sure to test integration through the Jenkins UI
 
-
-#### Need to restart Jenkins after update Github Personal access token
+### Restart Jenkins after Update Github Personal access token
 > Note: generate new Personal access token in Github
    *  Go to Jenkins -> Credentials
    *  Updade credentials in Jenkins
