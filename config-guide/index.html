@@ -275,11 +275,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sonarqube-integration" class="md-nav__link">
-    SonarQube Integration
+  <a href="#sonarqube-setup" class="md-nav__link">
+    SonarQube Setup
   </a>
   
-    <nav class="md-nav" aria-label="SonarQube Integration">
+    <nav class="md-nav" aria-label="SonarQube Setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -309,11 +309,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#github-organization-registration" class="md-nav__link">
-    Github Organization Registration
+  <a href="#organization-setup" class="md-nav__link">
+    Organization Setup
   </a>
   
-    <nav class="md-nav" aria-label="Github Organization Registration">
+    <nav class="md-nav" aria-label="Organization Setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -452,11 +452,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#sonarqube-integration" class="md-nav__link">
-    SonarQube Integration
+  <a href="#sonarqube-setup" class="md-nav__link">
+    SonarQube Setup
   </a>
   
-    <nav class="md-nav" aria-label="SonarQube Integration">
+    <nav class="md-nav" aria-label="SonarQube Setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -486,11 +486,11 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#github-organization-registration" class="md-nav__link">
-    Github Organization Registration
+  <a href="#organization-setup" class="md-nav__link">
+    Organization Setup
   </a>
   
-    <nav class="md-nav" aria-label="Github Organization Registration">
+    <nav class="md-nav" aria-label="Organization Setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -555,10 +555,10 @@
                 <h1 id="configuration-guide">Configuration Guide</h1>
 <h2 id="jenkins-setup">Jenkins Setup</h2>
 <h3 id="github-integration">GitHub Integration</h3>
-<p><a href="github.com">github.com</a> integration is organized by default. For enterprise github, gitlab etc you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default:
+<p><a href="github.com">Github.com</a> is integrated by default. To override integration for Enterprise GitHub, GitLab etc declare the following global variables:
  <ul>
-   <li>  Manage jenkins -&gt; Configure system 
-   <li>  Global properties -&gt; Add property 
+   <li>  Manage jenkins -&gt; Configure System 
+   <li>  Global properties -&gt; Add Property 
        <ul>
        <li type="circle"> GITHUB_HOST -&gt; github.mydomain.com
        <li type="circle"> GITHUB_ORGANIZATION -&gt; myorganization
@@ -569,7 +569,7 @@
  </ul></p>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true" title="Enterprise" /> </p>
 <h3 id="set-up-github-pull-request-builder">Set up "GitHub Pull Request Builder":</h3>
-<p>For every registered repository we do set of pre-validations. Integration should be configured at once to make all OnPullRequest jobs/events configurable in automatic mode</p>
+<p>For every registered repository we do set of pre-validations like compilation and Sonar PR checker. Integration should be configured at once to make all OnPullRequest Jobs/Events auto-configurable</p>
 <ul>
 <li>Open Jenkins -&gt; Credentials</li>
 <li>Update Username and Password for "ghprbhook-token" credentials <br />
@@ -593,7 +593,7 @@
 <li>Set Issue ID/Comment -&gt; Test adding comment to Pull Request</li>
 </ul>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/TestGithub.png?raw=true" title="TestGithub" /> </p>
-<h2 id="sonarqube-integration">SonarQube Integration</h2>
+<h2 id="sonarqube-setup">SonarQube Setup</h2>
 <p>SonarQube is used for static code analysis in updated lines/files during pull requests validations and full code analysis for onPush.
 That's guarantee a good quality of the code, effective code review process and fast engineering team skills growth.
 In order to enable sonarqube the following components must be configured correctly.</p>
@@ -679,17 +679,17 @@ In order to enable sonarqube the following components must be configured correct
 <p>Note: make sure to copy all content from the .pem file generated in the <strong>Create GitHub App</strong> section</p>
 <p>Note: update <strong>SONAR_URL</strong> global Jenkins variable to point to private SonarQube instance</p>
 </blockquote>
-<h2 id="github-organization-registration">Github Organization Registration</h2>
+<h2 id="organization-setup">Organization Setup</h2>
 <h3 id="register-organization">Register Organization</h3>
 <p>Each GitHub organization should be registered in Jenkins to be able to setup CI/CD process for different repositories inside.</p>
 <ul>
 <li>Open Jenkins-&gt;Management_Jobs folder.</li>
 <li>Run "RegisterOrganization" providing your GitHub organization name as folderName</li>
-<li>New folder is created with default content (launcher and RegisterRepository jobs) </li>
+<li><em>New folder is created with default content (launcher and RegisterRepository jobs)</em></li>
 </ul>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Organization.png?raw=true" title="Organization" /></p>
 <h3 id="register-repository">Register Repository</h3>
-<p>Repositories registration process put information about credentials in secured way, setup high-level CI/CD process for test automation and do scanning and automatic jobs creation based on embedded JobDSL rules.</p>
+<p>Repositories registration process save securely access credentials/tokens, setup high-level CI/CD process for test automation and do scanning and automatic jobs creation based on embedded JobDSL rules.</p>
 <ul>
 <li>Open your organization folder</li>
 <li>Run "RegisterRepository" pointing to your repository<blockquote>
@@ -697,14 +697,14 @@ In order to enable sonarqube the following components must be configured correct
 </blockquote>
 </li>
 <li>Use neccessary runner class<blockquote>
-<p>Example: "com.qaprosoft.jenkins.pipeline.runner.maven.TestNG" for any Maven + TestNG repository</p>
+<p>Example: "com.qaprosoft.jenkins.pipeline.runner.maven.TestNG" for any <strong>Maven + TestNG</strong> repository</p>
 </blockquote>
 </li>
-<li>Repository is scanned, TestNG jobs created for every suite file</li>
+<li><em>Repository is scanned, TestNG jobs created for every suite file</em></li>
 </ul>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true" title="Repository" />       </p>
 <h4 id="setup-github-webhooks-onpush-jobevent">Setup GitHub WebHooks (onPush Job/Event)</h4>
-<p>To setup automatic onPush jobs execution for every push into the default branch follow below steps. It guarantee automatic full static code analysis using SonarQube and flexible CI/CD process to recreate Test Automation jobs on CI</p>
+<p>To setup automatic onPush Jobs execution follow below steps. It guarantee automatic full static code analysis by SonarQube and flexible CI/CD process to recreate Test Automation jobs on CI</p>
 <ul>
 <li>Go to your GitHub repository</li>
 <li>Click "Settings" tab</li>
@@ -714,7 +714,7 @@ In order to enable sonarqube the following components must be configured correct
 <li>Select application/json in "Content Type" field</li>
 <li>Tick "Send me everything." option</li>
 <li>Click "Add webhook" button</li>
-<li>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
+<li><em>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</em></li>
 </ul>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true" title="PushJobs" /></p>
 <h2 id="support-channel">Support Channel</h2>
