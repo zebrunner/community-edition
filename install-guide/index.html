@@ -264,13 +264,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    Troubleshooting
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#support-channel" class="md-nav__link">
     Support Channel
   </a>
@@ -387,13 +380,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    Troubleshooting
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#support-channel" class="md-nav__link">
     Support Channel
   </a>
@@ -479,12 +465,12 @@
 </blockquote>
 </li>
 <li>
-<p>[Optional] Disable unused component according to the <a href="#disableremove-components">steps</a>.</p>
+<p>[Optional] Disable unused component(s) according to the <a href="#disableremove-components">steps</a>.</p>
 </li>
 <li>
 <p>[Optional] Update default credentials in .env.original</p>
 <blockquote>
-<p>Note: due to the huge refactoring better to ask <a href="https://t.me/qps_infra">assistance</a> in updating credentials for all configuration files. In 5.1 it is planned to have single point of true only inside .env.original!</p>
+<p>Note: due to the huge refactoring better to ask <a href="https://t.me/qps_infra">assistance</a> in updating credentials for all configuration files. In 5.2 it is planned to have single point of true only inside .env.original!</p>
 </blockquote>
 </li>
 <li>
@@ -502,7 +488,7 @@
 <p>After QPS-Infra startup, the following components are available. Take a look at variables.env for default credentials:</p>
 <blockquote>
 <p>Use your host domain address or IP.
-admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
+admin/admin are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel</p>
 </blockquote>
 </li>
 </ol>
@@ -516,27 +502,31 @@ admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated ins
 <tbody>
 <tr>
 <td>1st Page</td>
-<td><a href="http://demo.qaprosoft.com">http://demo.qaprosoft.com</a></td>
+<td>http://demo.qaprosoft.com</td>
 </tr>
 <tr>
 <td>Jenkins</td>
-<td><a href="http://demo.qaprosoft.com/jenkins">http://demo.qaprosoft.com/jenkins</a></td>
+<td>http://demo.qaprosoft.com/jenkins</td>
 </tr>
 <tr>
 <td>Zebrunner Insights</td>
-<td><a href="http://demo.qaprosoft.com/app">http://demo.qaprosoft.com/app</a></td>
+<td>http://demo.qaprosoft.com/app</td>
 </tr>
 <tr>
 <td>SonarQube</td>
-<td><a href="http://demo.qaprosoft.com/sonarqube">http://demo.qaprosoft.com/sonarqube</a></td>
+<td>http://demo.qaprosoft.com/sonarqube</td>
 </tr>
 <tr>
 <td>Web Selenium Hub</td>
-<td><a href="http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub">http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub</a></td>
+<td>http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub</td>
 </tr>
 <tr>
 <td>Mobile Selenium Hub</td>
-<td><a href="http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub">http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub</a></td>
+<td>http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub</td>
+</tr>
+<tr>
+<td>Smart Test Farm</td>
+<td>http://demo.qaprosoft.com/stf</td>
 </tr>
 </tbody>
 </table>
@@ -577,10 +567,6 @@ admin/qaprosoft are hardcoded sonarqube credentials, and they can be updated ins
 </tbody>
 </table>
 <p>Comment/uncomment in the start.sh (stop.sh and clear.sh) appropriate <a href="https://github.com/qaprosoft/qps-infra/blob/82f591827b8cbadd886ea9731661a39aba2ed0a4/start.sh#L20">line</a> for the component</p>
-<blockquote>
-<p>that's a temporary solution for 5.0. In 5.1 more convenient way should appear</p>
-</blockquote>
-<h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
 <li>Join <a href="https://t.me/qps_infra">Telegram channel</a> in case of any question</li>
