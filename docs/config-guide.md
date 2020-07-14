@@ -28,7 +28,8 @@ For every registered repository we do set of pre-validations like compilation an
   * Provide GitHub credentials with Admin privileges for your organization
   > admin privileges required to be able to register web hooks automatically 
   
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true "Credentials") 
+![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true "Credentials")
+
   * Go to Manage Jenkins -> Configure System
   * Specify a value for GitHub Server API URL, for example, https://api.github.com
   > Note: corporate versions of GitHub should have a different value, for example, https://github.mydomain.com/api/v3
@@ -133,7 +134,7 @@ Repositories registration process save securely access credentials/tokens, setup
      
  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true "Repository")       
 
-#### Setup GitHub WebHooks (onPush Job/Event)
+#### Setup onPush GitHub WebHook
 
 To setup automatic onPush Jobs execution follow below steps. It guarantee automatic full static code analysis by SonarQube and flexible CI/CD process to recreate Test Automation jobs on CI
 
