@@ -144,7 +144,7 @@ To setup automatic onPush Jobs execution follow below steps. It guarantee automa
    * Click "Add webhook" button
    * Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field
    * Select application/json in "Content Type" field
-   * Tick "Send me everything." option
+   * Click "Send me everything." option
    * Click "Add webhook" button
    * _After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created_
         
