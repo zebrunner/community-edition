@@ -80,7 +80,7 @@ In order to enable sonarqube the following components must be configured correct
 
 Installing your GitHub App from the app's settings page.
 
-  * Go to your GitHub profile > Developer settings > GitHub Apps > Your app name > Install App
+  * Go to your GitHub profile > Developer settings > GitHub Apps > open your recently created app > Install App
   * Select the organization to install the app
   * Select All repositories
   * Clik install
