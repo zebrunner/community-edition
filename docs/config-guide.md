@@ -82,7 +82,7 @@ Installing your GitHub App from the app's settings page.
 
   * Go to your GitHub profile > Developer settings > GitHub Apps > open your recently created app > Install App
   * Select the organization to install the app
-  * Select All repositories
+  * Select required or all repositories
   * Clik install
 
   
