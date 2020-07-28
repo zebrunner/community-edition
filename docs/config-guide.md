@@ -101,7 +101,7 @@ In order to enable Pull Request decoration follow the next steps:
    
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
    
-  * In **Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key and select Provider as GitHub**
+  * In **Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key** and select Provider as **GitHub**
    
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarPullRequestConfig.png?raw=true "SonarPullRequestConfig")
    
