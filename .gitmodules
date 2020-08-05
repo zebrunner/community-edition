@@ -1,0 +1,3 @@
+[submodule "sonarqube"]
+	path = sonarqube
+	url = https://github.com/zebrunner/sonarqube.git
