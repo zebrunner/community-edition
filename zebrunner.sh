@@ -72,9 +72,9 @@
     docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
     #-------------- START EVERYTHING ------------------------------
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml up -d
-    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml up -d
-    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml up -d
+#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml up -d
+#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml up -d
+#    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml up -d
 
     ${BASEDIR}/reporting/zebrunner.sh start
     ${BASEDIR}/sonarqube/zebrunner.sh start
@@ -83,20 +83,20 @@
   }
 
   stop() {
-    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml stop
+#    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml stop
     ${BASEDIR}/reporting/zebrunner.sh stop
     ${BASEDIR}/sonarqube/zebrunner.sh stop
-    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml stop
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml stop
+#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml stop
+#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml stop
     docker-compose stop
   }
 
   down() {
-    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down
+#    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down
     ${BASEDIR}/reporting/zebrunner.sh down
     ${BASEDIR}/sonarqube/zebrunner.sh down
-    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down
+#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down
+#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down
     docker-compose down
   }
 
@@ -106,15 +106,15 @@
     fi
 
 
-    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down -v
+ #   docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down -v
     ${BASEDIR}/reporting/zebrunner.sh shutdown
     ${BASEDIR}/sonarqube/zebrunner.sh shutdown
-    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down -v
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down -v
+#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down -v
+#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down -v
     docker-compose down -v
 
-    rm -rf ./selenoid/video/*.mp4
-    mv selenoid/browsers.json selenoid/browsers.json.bak
+#    rm -rf ./selenoid/video/*.mp4
+#    mv selenoid/browsers.json selenoid/browsers.json.bak
 
   }
 
