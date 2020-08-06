@@ -11,8 +11,53 @@
 "
   }
 
+  setup() {
+    docker network inspect infra >/dev/null 2>&1 || docker network create infra
+    print_banner
+
+    set_global_settings
+    cp ./nginx/conf.d/default.conf.original ./nginx/conf.d/default.conf
+    sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
+    sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
+
+
+    enableLayer "reporting" "Enable Zebrunner Reporting?"
+    if [[ $? -eq 1 ]]; then
+      ${BASEDIR}/reporting/zebrunner.sh setup
+    fi
+
+    enableLayer "sonarqube" "Enable SonarQube?"
+    if [[ $? -eq 1 ]]; then
+      ${BASEDIR}/sonarqube/zebrunner.sh setup
+    fi
+
+    enableLayer "jenkins" "Enable Zebrunner CI (Jenkins)?"
+    if [[ $? -eq 1 ]]; then
+      echo "TODO: implement zebrunner.sh for component..."
+#        ${BASEDIR}/jenkins/zebrunner.sh setup
+    fi
+
+    enableLayer "selenoid" "Enable Zebrunner Engine (Selenium Hub for Web - chrome, firefox and opera)?"
+    if [[ $? -eq 1 ]]; then
+      echo "TODO: implement zebrunner.sh for component..."
+#        ${BASEDIR}/selenoid/zebrunner.sh setup
+    fi
+
+    enableLayer "mcloud" "Enable Zebrunner Engine (Selenium Hub for Mobile - Android, iOS, AppleTV etc)?"
+    if [[ $? -eq 1 ]]; then
+      echo "TODO: implement zebrunner.sh for component..."
+#        ${BASEDIR}/mcloud/zebrunner.sh setup
+    fi
+
+
+#        echo WARNING! Increase vm.max_map_count=262144 appending it to /etc/sysctl.conf on Linux Ubuntu
+#        echo your current value is `sysctl vm.max_map_count`
+
+#        echo Setup finished successfully using $HOST_NAME hostname.
+  }
+
   start() {
-    if [ ! -f .env ] || [ ! -f ./nginx/conf.d/default.conf ]; then
+    if [ ! -f ./nginx/conf.d/default.conf ]; then
       printf 'WARNING! You have to setup services in advance! For example:\n ./zebrunner.sh setup\n\n' "$(basename "$0")" >&2
       exit -1
     fi
@@ -61,7 +106,6 @@
     rm -rf ./selenoid/video/*.mp4
     mv selenoid/browsers.json selenoid/browsers.json.bak
     mv ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
-    mv .env .env.bak
   }
 
   enableLayer() {
@@ -111,11 +155,6 @@
     export ZBR_HOSTNAME=$ZBR_HOSTNAME
     export ZBR_PORT=$ZBR_PORT
 
-    echo generating .env...
-    sed 's/demo.qaprosoft.com/'$HOSTNAME'/g' .env.original > .env
-    echo generating ./nginx/conf.d/default.conf...
-    sed 's/demo.qaprosoft.com/'$HOSTNAME'/g' ./nginx/conf.d/default.conf.original > ./nginx/conf.d/default.conf
-
   }
 
   confirm() {
@@ -144,43 +183,7 @@ cd ${BASEDIR}
 
 case "$1" in
     setup)
-        docker network inspect infra >/dev/null 2>&1 || docker network create infra
-        print_banner
-
-        set_global_settings
-        enableLayer "reporting" "Enable Zebrunner Reporting?"
-        if [[ $? -eq 1 ]]; then
-          ${BASEDIR}/reporting/zebrunner.sh setup
-        fi
-
-        enableLayer "sonarqube" "Enable SonarQube?"
-        if [[ $? -eq 1 ]]; then
-  	  ${BASEDIR}/sonarqube/zebrunner.sh setup
-        fi
-
-        enableLayer "jenkins" "Enable Zebrunner CI (Jenkins)?"
-        if [[ $? -eq 1 ]]; then
-          echo "TODO: implement zebrunner.sh for component..."
-#        ${BASEDIR}/jenkins/zebrunner.sh setup
-        fi
-
-        enableLayer "selenoid" "Enable Zebrunner Engine (Selenium Hub for Web - chrome, firefox and opera)?"
-        if [[ $? -eq 1 ]]; then
-          echo "TODO: implement zebrunner.sh for component..."
-#        ${BASEDIR}/selenoid/zebrunner.sh setup
-        fi
-
-        enableLayer "mcloud" "Enable Zebrunner Engine (Selenium Hub for Mobile - Android, iOS, AppleTV etc)?"
-        if [[ $? -eq 1 ]]; then
-          echo "TODO: implement zebrunner.sh for component..."
-#        ${BASEDIR}/mcloud/zebrunner.sh setup
-        fi
-
-
-#        echo WARNING! Increase vm.max_map_count=262144 appending it to /etc/sysctl.conf on Linux Ubuntu
-#        echo your current value is `sysctl vm.max_map_count`
-
-#        echo Setup finished successfully using $HOST_NAME hostname.
+        setup
         ;;
     start)
 	start
@@ -199,6 +202,8 @@ case "$1" in
         shutdown
         ;;
     backup)
+        cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
+
         ${BASEDIR}/reporting/zebrunner.sh backup
         ${BASEDIR}/sonarqube/zebrunner.sh backup
         ;;
