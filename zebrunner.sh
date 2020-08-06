@@ -16,7 +16,12 @@
     print_banner
 
     set_global_settings
-    cp ./nginx/conf.d/default.conf.original ./nginx/conf.d/default.conf
+
+    if [[ ! -f ${BASEDIR}/nginx/conf.d/default.conf.original ]]; then
+      #make a backup of the original file
+      cp ${BASEDIR}/nginx/conf.d/default.conf ${BASEDIR}/nginx/conf.d/default.conf.original
+    fi
+
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
@@ -105,7 +110,12 @@
 
     rm -rf ./selenoid/video/*.mp4
     mv selenoid/browsers.json selenoid/browsers.json.bak
-    mv ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
+
+    #TODO: uncomment when default.conf will be located in the repo by default
+#    if [[ -f ${BASEDIR}/nginx/conf.d/default.conf.original ]]; then
+#      mv ${BASEDIR}/nginx/conf.d/default.conf.original ${BASEDIR}/nginx/conf.d/default.conf
+#    fi
+
   }
 
   enableLayer() {
