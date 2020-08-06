@@ -25,8 +25,8 @@
     docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml up -d
     docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml up -d
     docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml up -d
-    docker-compose --env-file ${BASEDIR}/.env -f reporting-service/docker-compose.yml up -d
 
+    ${BASEDIR}/reporting/zebrunner.sh start
     ${BASEDIR}/sonarqube/zebrunner.sh start
 
     docker-compose up -d
@@ -34,7 +34,7 @@
 
   stop() {
     docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml stop
-    docker-compose --env-file ${BASEDIR}/.env -f reporting-service/docker-compose.yml stop
+    ${BASEDIR}/reporting/zebrunner.sh stop
     ${BASEDIR}/sonarqube/zebrunner.sh stop
     docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml stop
     docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml stop
@@ -43,7 +43,7 @@
 
   down() {
     docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down
-    docker-compose --env-file ${BASEDIR}/.env -f reporting-service/docker-compose.yml down
+    ${BASEDIR}/reporting/zebrunner.sh down
     ${BASEDIR}/sonarqube/zebrunner.sh down
     docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down
     docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down
@@ -52,7 +52,7 @@
 
   shutdown() {
     docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down -v
-    docker-compose --env-file ${BASEDIR}/.env -f reporting-service/docker-compose.yml down -v
+    ${BASEDIR}/reporting/zebrunner.sh down -v
     ${BASEDIR}/sonarqube/zebrunner.sh shutdown
     docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down -v
     docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down -v
@@ -128,9 +128,12 @@ case "$1" in
         docker network inspect infra >/dev/null 2>&1 || docker network create infra
         print_banner
 
+        set_host
+
+        ${BASEDIR}/reporting/zebrunner.sh setup
+
 	set_sonar
 	${BASEDIR}/sonarqube/zebrunner.sh setup
-        set_host
 	echo
 
 #        echo WARNING! Increase vm.max_map_count=262144 appending it to /etc/sysctl.conf on Linux Ubuntu
@@ -155,9 +158,11 @@ case "$1" in
         shutdown
         ;;
     backup)
+        ${BASEDIR}/reporting/zebrunner.sh backup
         ${BASEDIR}/sonarqube/zebrunner.sh backup
         ;;
     restore)
+        ${BASEDIR}/reporting/zebrunner.sh restore
         ${BASEDIR}/sonarqube/zebrunner.sh restore
         ;;
     *)
