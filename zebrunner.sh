@@ -101,6 +101,11 @@
   }
 
   shutdown() {
+    if [[ -f ${BASEDIR}/nginx/conf.d/default.conf.original ]]; then
+      mv ${BASEDIR}/nginx/conf.d/default.conf.original ${BASEDIR}/nginx/conf.d/default.conf
+    fi
+
+
     docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down -v
     ${BASEDIR}/reporting/zebrunner.sh shutdown
     ${BASEDIR}/sonarqube/zebrunner.sh shutdown
@@ -110,11 +115,6 @@
 
     rm -rf ./selenoid/video/*.mp4
     mv selenoid/browsers.json selenoid/browsers.json.bak
-
-    #TODO: uncomment when default.conf will be located in the repo by default
-#    if [[ -f ${BASEDIR}/nginx/conf.d/default.conf.original ]]; then
-#      mv ${BASEDIR}/nginx/conf.d/default.conf.original ${BASEDIR}/nginx/conf.d/default.conf
-#    fi
 
   }
 
