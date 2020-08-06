@@ -1,3 +1,7 @@
 [submodule "sonarqube"]
 	path = sonarqube
 	url = https://github.com/zebrunner/sonarqube.git
+[submodule "reporting"]
+	path = reporting
+	url = https://github.com/zebrunner/reporting.git
+	branch = develop
