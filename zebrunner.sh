@@ -39,8 +39,7 @@
 
     enableLayer "jenkins" "Enable Zebrunner CI (Jenkins)?"
     if [[ $? -eq 1 ]]; then
-      echo "TODO: implement zebrunner.sh for component..."
-#        ${BASEDIR}/jenkins/zebrunner.sh setup
+        ${BASEDIR}/jenkins/zebrunner.sh setup
     fi
 
     enableLayer "selenoid" "Enable Zebrunner Engine (Selenium Hub for Web - chrome, firefox and opera)?"
@@ -51,11 +50,11 @@
 
     enableLayer "mcloud" "Enable Zebrunner Engine (Selenium Hub for Mobile - Android, iOS, AppleTV etc)?"
     if [[ $? -eq 1 ]]; then
-      echo "TODO: implement zebrunner.sh for component..."
-#        ${BASEDIR}/mcloud/zebrunner.sh setup
+        ${BASEDIR}/mcloud/zebrunner.sh setup
     fi
 
 
+#TODO: moved to reporting setup
 #        echo WARNING! Increase vm.max_map_count=262144 appending it to /etc/sysctl.conf on Linux Ubuntu
 #        echo your current value is `sysctl vm.max_map_count`
 
@@ -73,10 +72,9 @@
     docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
     #-------------- START EVERYTHING ------------------------------
-#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml up -d
-#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml up -d
-#    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml up -d
-
+    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml up -d
+    ${BASEDIR}/mcloud/zebrunner.sh start
+    ${BASEDIR}/jenkins/zebrunner.sh start
     ${BASEDIR}/reporting/zebrunner.sh start
     ${BASEDIR}/sonarqube/zebrunner.sh start
 
@@ -84,20 +82,20 @@
   }
 
   stop() {
-#    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml stop
+    ${BASEDIR}/jenkins/zebrunner.sh stop
     ${BASEDIR}/reporting/zebrunner.sh stop
     ${BASEDIR}/sonarqube/zebrunner.sh stop
-#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml stop
-#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml stop
+    ${BASEDIR}/mcloud/zebrunner.sh stop
+    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml stop
     docker-compose stop
   }
 
   down() {
-#    docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down
+    ${BASEDIR}/jenkins/zebrunner.sh down
     ${BASEDIR}/reporting/zebrunner.sh down
     ${BASEDIR}/sonarqube/zebrunner.sh down
-#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down
-#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down
+    ${BASEDIR}/mcloud/zebrunner.sh down
+    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down
     docker-compose down
   }
 
@@ -107,13 +105,14 @@
     fi
 
 
- #   docker-compose --env-file ${BASEDIR}/.env -f jenkins/docker-compose.yml down -v
+    ${BASEDIR}/jenkins/zebrunner.sh shutdown
     ${BASEDIR}/reporting/zebrunner.sh shutdown
     ${BASEDIR}/sonarqube/zebrunner.sh shutdown
-#    docker-compose --env-file ${BASEDIR}/.env -f mcloud/docker-compose.yml down -v
-#    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down -v
+    ${BASEDIR}/mcloud/zebrunner.sh shutdown
+    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down -v
     docker-compose down -v
 
+#TODO: move to selenoid sub-module shutdown
 #    rm -rf ./selenoid/video/*.mp4
 #    mv selenoid/browsers.json selenoid/browsers.json.bak
 
@@ -188,6 +187,23 @@
     done
   }
 
+  echo_help() {
+    echo "
+      Usage: ./zebrunner.sh [option]
+      Flags:
+          --help | -h    Print help
+      Arguments:
+          start          Start container
+          stop           Stop and keep container
+          restart        Restart container
+          down           Stop and remove container
+          shutdown       Stop and remove container, clear volumes
+          backup         Backup container
+          restore        Restore container
+      For more help join telegram channel https://t.me/qps_infra"
+      exit 0
+  }
+
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd ${BASEDIR}
@@ -215,15 +231,20 @@ case "$1" in
     backup)
         cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
 
+        ${BASEDIR}/jenkins/zebrunner.sh backup
         ${BASEDIR}/reporting/zebrunner.sh backup
         ${BASEDIR}/sonarqube/zebrunner.sh backup
+        ${BASEDIR}/mcloud/zebrunner.sh backup
         ;;
     restore)
+        ${BASEDIR}/jenkins/zebrunner.sh restore
         ${BASEDIR}/reporting/zebrunner.sh restore
         ${BASEDIR}/sonarqube/zebrunner.sh restore
+        ${BASEDIR}/mcloud/zebrunner.sh restore
         ;;
     *)
-        echo "Usage: ./zebrunner-server setup|start|stop|restart|down|shutdown|backup|restore"
+        echo "Invalid option detected: $1"
+        echo_help
         exit 1
         ;;
 esac
