@@ -10,3 +10,7 @@
 	path = jenkins
 	url = https://github.com/zebrunner/jenkins-master.git
 	branch = master
+[submodule "mcloud"]
+	path = mcloud
+	url = https://github.com/zebrunner/mcloud.git
+	branch = master
