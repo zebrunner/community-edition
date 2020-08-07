@@ -5,3 +5,6 @@
 	path = reporting
 	url = https://github.com/zebrunner/reporting.git
 	branch = develop
+[submodule "jenkins"]
+	path = jenkins
+	url = https://github.com/zebrunner/jenkins-master.git
