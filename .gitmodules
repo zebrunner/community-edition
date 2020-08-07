@@ -1,6 +1,7 @@
 [submodule "sonarqube"]
 	path = sonarqube
 	url = https://github.com/zebrunner/sonarqube.git
+	branch = master
 [submodule "reporting"]
 	path = reporting
 	url = https://github.com/zebrunner/reporting.git
@@ -8,3 +9,4 @@
 [submodule "jenkins"]
 	path = jenkins
 	url = https://github.com/zebrunner/jenkins-master.git
+	branch = master
