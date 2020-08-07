@@ -42,13 +42,12 @@
         ${BASEDIR}/jenkins/zebrunner.sh setup
     fi
 
-    enableLayer "selenoid" "Enable Zebrunner Engine (Selenium Hub for Web - chrome, firefox and opera)?"
+    enableLayer "selenoid" "Enable Zebrunner Web Hub (selenoid: chrome, firefox and opera)?"
     if [[ $? -eq 1 ]]; then
-      echo "TODO: implement zebrunner.sh for component..."
-#        ${BASEDIR}/selenoid/zebrunner.sh setup
+        ${BASEDIR}/selenoid/zebrunner.sh setup
     fi
 
-    enableLayer "mcloud" "Enable Zebrunner Engine (Selenium Hub for Mobile - Android, iOS, AppleTV etc)?"
+    enableLayer "mcloud" "Enable Zebrunner Mobile Hub (selenium: Android, iOS, AppleTV...)?"
     if [[ $? -eq 1 ]]; then
         ${BASEDIR}/mcloud/zebrunner.sh setup
     fi
@@ -72,7 +71,7 @@
     docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
     #-------------- START EVERYTHING ------------------------------
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml up -d
+    ${BASEDIR}/selenoid/zebrunner.sh start
     ${BASEDIR}/mcloud/zebrunner.sh start
     ${BASEDIR}/jenkins/zebrunner.sh start
     ${BASEDIR}/reporting/zebrunner.sh start
@@ -86,7 +85,7 @@
     ${BASEDIR}/reporting/zebrunner.sh stop
     ${BASEDIR}/sonarqube/zebrunner.sh stop
     ${BASEDIR}/mcloud/zebrunner.sh stop
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml stop
+    ${BASEDIR}/selenoid/zebrunner.sh stop
     docker-compose stop
   }
 
@@ -95,7 +94,7 @@
     ${BASEDIR}/reporting/zebrunner.sh down
     ${BASEDIR}/sonarqube/zebrunner.sh down
     ${BASEDIR}/mcloud/zebrunner.sh down
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down
+    ${BASEDIR}/selenoid/zebrunner.sh down
     docker-compose down
   }
 
@@ -109,12 +108,8 @@
     ${BASEDIR}/reporting/zebrunner.sh shutdown
     ${BASEDIR}/sonarqube/zebrunner.sh shutdown
     ${BASEDIR}/mcloud/zebrunner.sh shutdown
-    docker-compose --env-file ${BASEDIR}/.env -f selenoid/docker-compose.yml down -v
+    ${BASEDIR}/selenoid/zebrunner.sh shutdown
     docker-compose down -v
-
-#TODO: move to selenoid sub-module shutdown
-#    rm -rf ./selenoid/video/*.mp4
-#    mv selenoid/browsers.json selenoid/browsers.json.bak
 
   }
 
@@ -147,7 +142,7 @@
         ZBR_PROTOCOL=$local_protocol
       fi
 
-      read -p "HOSTNAME [$ZBR_HOSTNAME]: " local_hostname
+      read -p "FQDN HOSTNAME [$ZBR_HOSTNAME]: " local_hostname
       if [[ ! -z $local_hostname ]]; then
         ZBR_HOSTNAME=$local_hostname
       fi
