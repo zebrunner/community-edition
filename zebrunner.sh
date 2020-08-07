@@ -42,15 +42,16 @@
         ${BASEDIR}/jenkins/zebrunner.sh setup
     fi
 
+    enableLayer "mcloud" "Enable Zebrunner Mobile Hub (selenium: Android, iOS, AppleTV...)?"
+    if [[ $? -eq 1 ]]; then
+        ${BASEDIR}/mcloud/zebrunner.sh setup
+    fi
+
     enableLayer "selenoid" "Enable Zebrunner Web Hub (selenoid: chrome, firefox and opera)?"
     if [[ $? -eq 1 ]]; then
         ${BASEDIR}/selenoid/zebrunner.sh setup
     fi
 
-    enableLayer "mcloud" "Enable Zebrunner Mobile Hub (selenium: Android, iOS, AppleTV...)?"
-    if [[ $? -eq 1 ]]; then
-        ${BASEDIR}/mcloud/zebrunner.sh setup
-    fi
 
 
 #TODO: moved to reporting setup
