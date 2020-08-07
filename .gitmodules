@@ -14,3 +14,6 @@
 	path = mcloud
 	url = https://github.com/zebrunner/mcloud.git
 	branch = master
+[submodule "selenoid"]
+	path = selenoid
+	url = https://github.com/zebrunner/selenoid.git
