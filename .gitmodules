@@ -17,3 +17,4 @@
 [submodule "selenoid"]
 	path = selenoid
 	url = https://github.com/zebrunner/selenoid.git
+	branch = master
