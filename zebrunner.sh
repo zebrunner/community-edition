@@ -13,52 +13,54 @@
   }
 
   setup() {
-    docker network inspect infra >/dev/null 2>&1 || docker network create infra
     print_banner
 
     set_global_settings
 
-    if [[ ! -f ${BASEDIR}/nginx/conf.d/default.conf.original ]]; then
-      #make a backup of the original file
-      cp ${BASEDIR}/nginx/conf.d/default.conf ${BASEDIR}/nginx/conf.d/default.conf.original
-    fi
+    cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
 
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
-
     enableLayer "reporting" "Enable Zebrunner Reporting?"
     if [[ $? -eq 1 ]]; then
-      ${BASEDIR}/reporting/zebrunner.sh setup
+      reporting/zebrunner.sh setup
     fi
 
     enableLayer "sonarqube" "Enable SonarQube?"
     if [[ $? -eq 1 ]]; then
-      ${BASEDIR}/sonarqube/zebrunner.sh setup
+      sonarqube/zebrunner.sh setup
     fi
 
     enableLayer "jenkins" "Enable Zebrunner CI (Jenkins)?"
     if [[ $? -eq 1 ]]; then
-        ${BASEDIR}/jenkins/zebrunner.sh setup
+        jenkins/zebrunner.sh setup
     fi
 
     enableLayer "mcloud" "Enable Zebrunner Mobile Hub (selenium: Android, iOS, AppleTV...)?"
     if [[ $? -eq 1 ]]; then
-        ${BASEDIR}/mcloud/zebrunner.sh setup
+        mcloud/zebrunner.sh setup
     fi
 
     enableLayer "selenoid" "Enable Zebrunner Web Hub (selenoid: chrome, firefox and opera)?"
     if [[ $? -eq 1 ]]; then
-        ${BASEDIR}/selenoid/zebrunner.sh setup
+        selenoid/zebrunner.sh setup
     fi
 
+  }
 
+  shutdown() {
+    print_banner
 
-#TODO: moved to reporting setup
-#        echo WARNING! Increase vm.max_map_count=262144 appending it to /etc/sysctl.conf on Linux Ubuntu
-#        echo your current value is `sysctl vm.max_map_count`
+    rm nginx/conf.d/default.conf
 
-#        echo Setup finished successfully using $HOST_NAME hostname.
+    jenkins/zebrunner.sh shutdown
+    reporting/zebrunner.sh shutdown
+    sonarqube/zebrunner.sh shutdown
+    mcloud/zebrunner.sh shutdown
+    selenoid/zebrunner.sh shutdown
+    docker-compose down -v
+
   }
 
   start() {
@@ -67,51 +69,63 @@
       exit -1
     fi
 
+    print_banner
 
     # create infra network only if not exist
     docker network inspect infra >/dev/null 2>&1 || docker network create infra
 
     #-------------- START EVERYTHING ------------------------------
-    ${BASEDIR}/selenoid/zebrunner.sh start
-    ${BASEDIR}/mcloud/zebrunner.sh start
-    ${BASEDIR}/jenkins/zebrunner.sh start
-    ${BASEDIR}/reporting/zebrunner.sh start
-    ${BASEDIR}/sonarqube/zebrunner.sh start
+    selenoid/zebrunner.sh start
+    mcloud/zebrunner.sh start
+    jenkins/zebrunner.sh start
+    reporting/zebrunner.sh start
+    sonarqube/zebrunner.sh start
 
     docker-compose up -d
   }
 
   stop() {
-    ${BASEDIR}/jenkins/zebrunner.sh stop
-    ${BASEDIR}/reporting/zebrunner.sh stop
-    ${BASEDIR}/sonarqube/zebrunner.sh stop
-    ${BASEDIR}/mcloud/zebrunner.sh stop
-    ${BASEDIR}/selenoid/zebrunner.sh stop
+    print_banner
+
+    jenkins/zebrunner.sh stop
+    reporting/zebrunner.sh stop
+    sonarqube/zebrunner.sh stop
+    mcloud/zebrunner.sh stop
+    selenoid/zebrunner.sh stop
     docker-compose stop
   }
 
   down() {
-    ${BASEDIR}/jenkins/zebrunner.sh down
-    ${BASEDIR}/reporting/zebrunner.sh down
-    ${BASEDIR}/sonarqube/zebrunner.sh down
-    ${BASEDIR}/mcloud/zebrunner.sh down
-    ${BASEDIR}/selenoid/zebrunner.sh down
+    print_banner
+
+    jenkins/zebrunner.sh down
+    reporting/zebrunner.sh down
+    sonarqube/zebrunner.sh down
+    mcloud/zebrunner.sh down
+    selenoid/zebrunner.sh down
     docker-compose down
   }
 
-  shutdown() {
-    if [[ -f ${BASEDIR}/nginx/conf.d/default.conf.original ]]; then
-      mv ${BASEDIR}/nginx/conf.d/default.conf.original ${BASEDIR}/nginx/conf.d/default.conf
-    fi
+  backup() {
+    print_banner
 
+    cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
 
-    ${BASEDIR}/jenkins/zebrunner.sh shutdown
-    ${BASEDIR}/reporting/zebrunner.sh shutdown
-    ${BASEDIR}/sonarqube/zebrunner.sh shutdown
-    ${BASEDIR}/mcloud/zebrunner.sh shutdown
-    ${BASEDIR}/selenoid/zebrunner.sh shutdown
-    docker-compose down -v
+    jenkins/zebrunner.sh backup
+    reporting/zebrunner.sh backup
+    sonarqube/zebrunner.sh backup
+    mcloud/zebrunner.sh backup
+  }
 
+  restore() {
+    print_banner
+
+    cp ./nginx/conf.d/default.conf.bak ./nginx/conf.d/default.conf
+
+    jenkins/zebrunner.sh restore
+    reporting/zebrunner.sh restore
+    sonarqube/zebrunner.sh restore
+    mcloud/zebrunner.sh restore
   }
 
   enableLayer() {
@@ -130,7 +144,6 @@
   }
 
   set_global_settings() {
-
     # Setup global settings: protocol, hostname and port
     local is_confirmed=0
     ZBR_PROTOCOL=http
@@ -183,23 +196,34 @@
     done
   }
 
+  echo_warning() {
+    echo "
+      WARNING! $1"
+  }
+
+  echo_telegram() {
+    echo "
+      For more help join telegram channel: https://t.me/zebrunner
+      "
+  }
+
   echo_help() {
     echo "
       Usage: ./zebrunner.sh [option]
       Flags:
           --help | -h    Print help
       Arguments:
-          start          Start container
-          stop           Stop and keep container
-          restart        Restart container
-          down           Stop and remove container
-          shutdown       Stop and remove container, clear volumes
-          backup         Backup container
-          restore        Restore container
-      For more help join telegram channel https://t.me/qps_infra"
+          setup          Setup Zebrunner Server (Community Edition)
+      	  start          Start container
+      	  stop           Stop and keep container
+      	  restart        Restart container
+      	  down           Stop and remove container
+      	  shutdown       Stop and remove container, clear volumes
+      	  backup         Backup container
+      	  restore        Restore container"
+      echo_telegram
       exit 0
   }
-
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd ${BASEDIR}
@@ -225,18 +249,10 @@ case "$1" in
         shutdown
         ;;
     backup)
-        cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
-
-        ${BASEDIR}/jenkins/zebrunner.sh backup
-        ${BASEDIR}/reporting/zebrunner.sh backup
-        ${BASEDIR}/sonarqube/zebrunner.sh backup
-        ${BASEDIR}/mcloud/zebrunner.sh backup
+        backup
         ;;
     restore)
-        ${BASEDIR}/jenkins/zebrunner.sh restore
-        ${BASEDIR}/reporting/zebrunner.sh restore
-        ${BASEDIR}/sonarqube/zebrunner.sh restore
-        ${BASEDIR}/mcloud/zebrunner.sh restore
+        restore
         ;;
     *)
         echo "Invalid option detected: $1"

@@ -1,10 +1,3 @@
-nginx/conf.d/default.conf.original
-nginx/conf.d/default.conf.bak
-.env.original
-.env.bak
-variables.env.original
-variables.env.bak
-selenoid/browsers.json
-selenoid/browsers.json.bak
-selenoid/video/*.mp4
+*.bak
+nginx/conf.d/default.conf
 *.disabled
