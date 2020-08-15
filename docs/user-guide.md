@@ -148,4 +148,4 @@ When it is "abort" we halt the entire pipeline as only failed job detected. It m
 
 ## Support Channel
 
-* Join [Telegram channel](https://t.me/qps_infra) in case of any question
+* Join [Telegram channel](https://t.me/zebrunner) in case of any question

@@ -25,7 +25,7 @@ Zebrunner Starter (QPS Infrastructure)
 * [Zebrunner Insights](https://zebrunner.github.io/documentation/)
 * [Carina manual](http://qaprosoft.github.io/carina)
 * [Demo project](https://github.com/qaprosoft/carina-demo)
-* [Telegram channel](https://t.me/qps_infra)
+* [Telegram channel](https://t.me/zebrunner)
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)

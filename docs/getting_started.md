@@ -94,4 +94,4 @@ cd qps-infra
 
 ## Enjoy!
 
-* Join [Telegram channel](https://t.me/qps_infra) in case of any question
+* Join [Telegram channel](https://t.me/zebrunner) in case of any question
