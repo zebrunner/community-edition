@@ -22,6 +22,8 @@
     if [[ -f backup/settings.env ]]; then
       source backup/settings.env
     fi
+
+    export ZBR_INSTALLER=1
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
