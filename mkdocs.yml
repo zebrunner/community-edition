@@ -1,4 +1,4 @@
-site_name: QPS-Infra
+site_name: Zebrunner
 
 pages:
     - Overview: index.md
@@ -9,5 +9,5 @@ pages:
 
 theme:
   name: 'material'
-repo_url: https://github.com/qaprosoft/qps-infra
+repo_url: https://github.com/zebrunner/zebrunner
 repo_name: Github
