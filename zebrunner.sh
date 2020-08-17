@@ -28,9 +28,13 @@
 
     enableLayer "reporting" "Enable Zebrunner Reporting?"
     ZBR_REPORTING_ENABLED=$?
-
-    enableLayer "reporting/minio-storage" "Enable Zebrunner Minio Storage for Reporting?"
-    ZBR_MINIO_ENABLED=$?
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      enableLayer "reporting/minio-storage" "Enable Zebrunner Minio Storage for Reporting?"
+      ZBR_MINIO_ENABLED=$?
+    else
+      # no need to ask about enabling minio sub-module
+      disableLayer "reporting/minio-storage"
+    fi
 
     enableLayer "sonarqube" "Enable SonarQube?"
     ZBR_SONARQUBE_ENABLED=$?
@@ -72,6 +76,7 @@
     print_banner
 
     rm nginx/conf.d/default.conf
+    rm backup/settings.env
 
     jenkins/zebrunner.sh shutdown
     reporting/zebrunner.sh shutdown
@@ -158,10 +163,15 @@
       fi
       return 1
     else
-      # disbale component/layer
-      echo > $1/.disabled
+      disableLayer $1
       return 0
     fi
+  }
+
+  disableLayer() {
+    # disbale component/layer
+    echo > $1/.disabled
+    return 0
   }
 
   set_global_settings() {
