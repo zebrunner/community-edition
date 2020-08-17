@@ -15,6 +15,10 @@
   setup() {
     print_banner
 
+    # load ./backup/settings.env if exist to declare ZBR* vars from previous run!
+    if [[ -f backup/settings.env ]]; then
+      source backup/settings.env
+    fi
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
@@ -23,30 +27,45 @@
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
     enableLayer "reporting" "Enable Zebrunner Reporting?"
-    if [[ $? -eq 1 ]]; then
+    ZBR_REPORTING_ENABLED=$?
+
+    enableLayer "reporting/minio-storage" "Enable Zebrunner Minio Storage for Reporting?"
+    ZBR_MINIO_ENABLED=$?
+
+    enableLayer "sonarqube" "Enable SonarQube?"
+    ZBR_SONARQUBE_ENABLED=$?
+
+    enableLayer "jenkins" "Enable Zebrunner CI (Jenkins)?"
+    ZBR_JENKINS_ENABLED=$?
+
+    enableLayer "mcloud" "Enable Zebrunner Mobile Hub (selenium: Android, iOS, AppleTV...)?"
+    ZBR_MCLOUD_ENABLED=$?
+
+    enableLayer "selenoid" "Enable Zebrunner Web Hub (selenoid: chrome, firefox and opera)?"
+    ZBR_SELENOID_ENABLED=$?
+
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       reporting/zebrunner.sh setup
     fi
 
-    enableLayer "sonarqube" "Enable SonarQube?"
-    if [[ $? -eq 1 ]]; then
+    if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
     fi
 
-    enableLayer "jenkins" "Enable Zebrunner CI (Jenkins)?"
-    if [[ $? -eq 1 ]]; then
+    if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
         jenkins/zebrunner.sh setup
     fi
 
-    enableLayer "mcloud" "Enable Zebrunner Mobile Hub (selenium: Android, iOS, AppleTV...)?"
-    if [[ $? -eq 1 ]]; then
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
         mcloud/zebrunner.sh setup
     fi
 
-    enableLayer "selenoid" "Enable Zebrunner Web Hub (selenoid: chrome, firefox and opera)?"
-    if [[ $? -eq 1 ]]; then
+    if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
         selenoid/zebrunner.sh setup
     fi
 
+    #TODO: export all ZBR_* variables into the .installer file!
+    export_settings
   }
 
   shutdown() {
@@ -110,6 +129,7 @@
     print_banner
 
     cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
+    cp backup/settings.env backup/settings.env.bak
 
     jenkins/zebrunner.sh backup
     reporting/zebrunner.sh backup
@@ -121,6 +141,7 @@
     print_banner
 
     cp ./nginx/conf.d/default.conf.bak ./nginx/conf.d/default.conf
+    cp backup/settings.env.bak backup/settings.env
 
     jenkins/zebrunner.sh restore
     reporting/zebrunner.sh restore
@@ -146,9 +167,15 @@
   set_global_settings() {
     # Setup global settings: protocol, hostname and port
     local is_confirmed=0
-    ZBR_PROTOCOL=http
-    ZBR_HOSTNAME=$HOSTNAME
-    ZBR_PORT=80
+    if [[ -z $ZBR_PROTOCOL ]]; then
+      ZBR_PROTOCOL=http
+    fi
+    if [[ -z $ZBR_HOSTNAME ]]; then
+      ZBR_HOSTNAME=$HOSTNAME
+    fi
+    if [[ -z $ZBR_PORT ]]; then
+      ZBR_PORT=80
+    fi
 
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "PROTOCOL [$ZBR_PROTOCOL]: " local_protocol
@@ -174,6 +201,10 @@
     export ZBR_HOSTNAME=$ZBR_HOSTNAME
     export ZBR_PORT=$ZBR_PORT
 
+  }
+
+  export_settings() {
+    export -p | grep "ZBR" > backup/settings.env
   }
 
   confirm() {
