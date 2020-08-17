@@ -246,22 +246,16 @@
     echo
     echo "IAM - Identity and Access Management service"
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "IAM postgres user [$ZBR_IAM_POSTGRES_USER]: " local_iam_postgres_user
-      if [[ ! -z $local_iam_postgres_user ]]; then
-        ZBR_IAM_POSTGRES_USER=$local_iam_postgres_user
-      fi
-
       read -p "IAM postgres password [$ZBR_IAM_POSTGRES_PASSWORD]: " local_iam_postgres_password
       if [[ ! -z $local_iam_postgres_password ]]; then
         ZBR_IAM_POSTGRES_PASSWORD=$local_iam_postgres_password
       fi
 
-      echo "Identity and Access Management service postgres credentials: $ZBR_IAM_POSTGRES_USER/$ZBR_IAM_POSTGRES_PASSWORD"
+      echo "Identity and Access Management service postgres password: $ZBR_IAM_POSTGRES_PASSWORD"
       confirm "" "Continue?"
       is_confirmed=$?
     done
 
-    export ZBR_IAM_POSTGRES_USER=$ZBR_IAM_POSTGRES_USER
     export ZBR_IAM_POSTGRES_PASSWORD=$ZBR_IAM_POSTGRES_PASSWORD
 
 
@@ -270,22 +264,16 @@
     echo "Reporting Service database"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Reporting Service postgres user [$ZBR_POSTGRES_USER]: " local_postgres_user
-      if [[ ! -z $local_postgres_user ]]; then
-        ZBR_POSTGRES_USER=$local_postgres_user
-      fi
-
       read -p "Reporting postgres password [$ZBR_POSTGRES_PASSWORD]: " local_postgres_password
       if [[ ! -z $local_postgres_password ]]; then
         ZBR_POSTGRES_PASSWORD=$local_postgres_password
       fi
 
-      echo "Reporting Service postgres credentials: $ZBR_POSTGRES_USER/$ZBR_POSTGRES_PASSWORD"
+      echo "Reporting Service postgres password: $ZBR_POSTGRES_PASSWORD"
       confirm "" "Continue?"
       is_confirmed=$?
     done
 
-    export ZBR_POSTGRES_USER=$ZBR_POSTGRES_USER
     export ZBR_POSTGRES_PASSWORD=$ZBR_POSTGRES_PASSWORD
 
 
