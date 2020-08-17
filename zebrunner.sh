@@ -37,7 +37,11 @@
 
       enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting"
       ZBR_MINIO_ENABLED=$?
-      set_storage_settings
+      if [[ $ZBR_MINIO_ENABLED -eq 1 ]]; then
+        set_minio_storage_settings
+      else
+        set_aws_storage_settings
+      fi
     else
       # no need to ask about enabling minio sub-module
       disableLayer "reporting/minio-storage"
@@ -315,7 +319,8 @@
 
       echo "host=$ZBR_SMTP_HOST:$ZBR_SMTP_PORT"
       echo "email=$ZBR_SMTP_EMAIL"
-      echo "user/password=$ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD"
+      echo "user=$ZBR_SMTP_USER"
+      echo "password=$ZBR_SMTP_PASSWORD"
       confirm "" "Continue?"
       is_confirmed=$?
     done
@@ -369,9 +374,70 @@
     export ZBR_REDIS_PASSWORD=$ZBR_REDIS_PASSWORD
   }
 
-  set_storage_settings() {
-    ## Minio or AWS S3 storage 
-    echo "TODO: implement storage minio creds setup"
+  set_minio_storage_settings() {
+    ## Minio S3 compatible storage 
+    local is_confirmed=0
+    echo
+    echo "Minio S3 compatible storage"
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Minio access key [$ZBR_ACCESS_KEY]: " local_minio_access_key
+      if [[ ! -z $local_minio_access_key ]]; then
+        ZBR_ACCESS_KEY=$local_minio_access_key
+      fi
+
+      read -p "Minio secret key [$ZBR_SECRET_KEY]: " local_minio_secret_key
+      if [[ ! -z $local_minio_secret_key ]]; then
+        ZBR_SECRET_KEY=$local_minio_secret_key
+      fi
+
+      echo "Minio storage credentials: $ZBR_ACCESS_KEY/$ZBR_SECRET_KEY"
+      confirm "" "Continue?"
+      is_confirmed=$?
+    done
+
+    export ZBR_ACCESS_KEY=$ZBR_ACCESS_KEY
+    export ZBR_SECRET_KEY=$ZBR_SECRET_KEY
+  }
+
+  set_aws_storage_settings() {
+    ## AWS S3 storage
+    local is_confirmed=0
+    echo
+    echo "AWS S3 storage"
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Region [$ZBR_REGION]: " local_region
+      if [[ ! -z $local_region ]]; then
+        ZBR_REGION=$local_region
+      fi
+
+      read -p "Bucket [$ZBR_BUCKET]: " local_bucket
+      if [[ ! -z $local_bucket ]]; then
+        ZBR_BUCKET=$local_bucket
+      fi
+
+      read -p "Access key [$ZBR_ACCESS_KEY]: " local_minio_access_key
+      if [[ ! -z $local_minio_access_key ]]; then
+        ZBR_ACCESS_KEY=$local_minio_access_key
+      fi
+
+      read -p "Secret key [$ZBR_SECRET_KEY]: " local_minio_secret_key
+      if [[ ! -z $local_minio_secret_key ]]; then
+        ZBR_SECRET_KEY=$local_minio_secret_key
+      fi
+
+      echo "Region: $ZBR_REGION"
+      echo "Bucket: $ZBR_BUCKET"
+      echo "Access key: $ZBR_ACCESS_KEY"
+      echo "Secret key: $ZBR_SECRET_KEY"
+      confirm "" "Continue?"
+      is_confirmed=$?
+    done
+
+    export ZBR_REGION=$ZBR_REGION
+    export ZBR_BUCKET=$ZBR_BUCKET
+    export ZBR_ACCESS_KEY=$ZBR_ACCESS_KEY
+    export ZBR_SECRET_KEY=$ZBR_SECRET_KEY
+
   }
 
   export_settings() {
