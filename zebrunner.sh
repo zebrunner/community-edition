@@ -34,7 +34,6 @@
     enableLayer "reporting" "Zebrunner Reporting"
     ZBR_REPORTING_ENABLED=$?
     if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
-      reporting/zebrunner.sh setup
       set_reporting_settings
 
       enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting"
@@ -44,6 +43,7 @@
       else
         set_aws_storage_settings
       fi
+      reporting/zebrunner.sh setup
     else
       # no need to ask about enabling minio sub-module
       disableLayer "reporting/minio-storage"
