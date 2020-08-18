@@ -148,6 +148,7 @@
     reporting/zebrunner.sh backup
     sonarqube/zebrunner.sh backup
     mcloud/zebrunner.sh backup
+    selenoid/zebrunner.sh backup
   }
 
   restore() {
@@ -160,6 +161,7 @@
     reporting/zebrunner.sh restore
     sonarqube/zebrunner.sh restore
     mcloud/zebrunner.sh restore
+    selenoid/zebrunner.sh restore
   }
 
   enableLayer() {
