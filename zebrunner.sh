@@ -154,6 +154,7 @@
   restore() {
     print_banner
 
+    stop
     cp ./nginx/conf.d/default.conf.bak ./nginx/conf.d/default.conf
     cp backup/settings.env.bak backup/settings.env
 
@@ -162,6 +163,7 @@
     sonarqube/zebrunner.sh restore
     mcloud/zebrunner.sh restore
     selenoid/zebrunner.sh restore
+    down
   }
 
   enableLayer() {
