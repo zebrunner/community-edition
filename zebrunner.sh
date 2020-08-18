@@ -365,7 +365,7 @@
 
     ## test launchers git integration
     echo
-    echo "Reporting test launcgers git integration"
+    echo "Reporting Test Launchers git integration"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
