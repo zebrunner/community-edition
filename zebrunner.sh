@@ -362,6 +362,40 @@
     done
 
     export ZBR_REDIS_PASSWORD=$ZBR_REDIS_PASSWORD
+
+    ## test launchers git integration
+    echo
+    echo "Reporting test launcgers git integration"
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
+      if [[ ! -z $local_git ]]; then
+        ZBR_GITHUB_HOST=$local_git
+      fi
+
+      read -p "Client ID [$ZBR_GITHUB_CLIENT_ID]: " local_client_id
+      if [[ ! -z $local_client_id ]]; then
+        ZBR_GITHUB_CLIENT_ID=$local_client_id
+      fi
+
+      read -p "client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
+      if [[ ! -z $local_secret_id ]]; then
+        ZBR_GITHUB_CLIENT_SECRET=$local_secret_id
+      fi
+
+      echo
+      echo "Git integration"
+      echo "Host: ${ZBR_GITHUB_HOST}"
+      echo "Client ID: ${ZBR_GITHUB_CLIENT_ID}"
+      echo "Client Secret: ${ZBR_GITHUB_CLIENT_SECRET}"
+      confirm "" "Continue?"
+      is_confirmed=$?
+    done
+
+    export ZBR_GITHUB_HOST=$ZBR_GITHUB_HOST
+    export ZBR_GITHUB_CLIENT_ID=$ZBR_GITHUB_CLIENT_ID
+    export ZBR_GITHUB_CLIENT_SECRET=$ZBR_GITHUB_CLIENT_SECRET
+
   }
 
   set_minio_storage_settings() {
