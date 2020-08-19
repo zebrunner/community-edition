@@ -38,39 +38,6 @@ server {
         }
     }
 
-    location /app {
-      set $upstream_zebrunner zebrunner-proxy:80;
-      proxy_pass http://$upstream_zebrunner;
-      proxy_http_version 1.1;
-
-      # two below headers to support websocket connection
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection upgrade;
-    }
-
-    location /reporting-service) {
-      set $upstream_zebrunner zebrunner-proxy:80;
-      proxy_pass http://$upstream_zebrunner;
-      proxy_http_version 1.1;
-
-     # two below headers to support websocket connection
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection upgrade;
-    }
-
-    location /elasticsearch {
-      set $upstream_zebrunner zebrunner-proxy:80;
-      proxy_pass http://$upstream_zebrunner;
-      proxy_http_version 1.1;
-    }
-
-   #TODO: temporary workaround for API svg icon till 5.2 release where Zafira will be moved onto the root "/" context path
-    location ~* /app/api.*.svg {
-      set $upstream_zebrunner zebrunner-proxy:80;
-      proxy_pass http://$upstream_zebrunner;
-      proxy_http_version 1.1;
-    }
-
     location ~ /(stf|auth/mock|auth/ldap|auth/contact|auth/api|static/app|static/logo|app/api|api/v1|s/upload|s/image|s/blob|s/apk) {
       set $upstream_stf stf-proxy:80;
       proxy_pass http://$upstream_stf;
@@ -95,8 +62,7 @@ server {
       # two below headers to support websocket connection
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection upgrade;
-   }
-
+    }
 
     location /mcloud {
       set $upstream_zebrunner 127.0.0.1:80;
@@ -104,10 +70,6 @@ server {
       proxy_pass http://$upstream_zebrunner;
       proxy_http_version 1.1;
     }
-
-
-    # Important: do not open access to the admin panel for rabbitmq etc
-
 
     #Selenoid VNC WebSocket
     location /vnc {
