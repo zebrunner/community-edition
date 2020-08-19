@@ -71,7 +71,7 @@
       sed -i "s#FOLDER_VALUE##g" reporting/database/reporting/sql/db-jenkins-integration.sql
     fi
 
-    enableLayer "mcloud" "Selenium Hub (Android, iOS, AppleTV etc)"
+    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)"
     export ZBR_MCLOUD_ENABLED=$?
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
         mcloud/zebrunner.sh setup
@@ -84,7 +84,7 @@
       sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
     fi
 
-    enableLayer "selenoid" "Selenium Hub (chrome, firefox and opera)"
+    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)"
     export ZBR_SELENOID_ENABLED=$?
     if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
         selenoid/zebrunner.sh setup
