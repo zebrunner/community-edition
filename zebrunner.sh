@@ -33,13 +33,26 @@
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
+    enableLayer "jenkins" "Jenkins"
+    export ZBR_JENKINS_ENABLED=$?
+    if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
+      jenkins/zebrunner.sh setup
+
+      # update reporting-jenkins integration script 
+      cp reporting/database/reporting/sql/db-jenkins-integration.sql.original reporting/database/reporting/sql/db-jenkins-integration.sql
+      sed -i "s#JENKINS_URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/database/reporting/sql/db-jenkins-integration.sql
+      sed -i "s#JENKINS_USER_VALUE#admin#g" reporting/database/reporting/sql/db-jenkins-integration.sql
+      sed -i "s#JENKINS_PASSWORD_VALUE#changeit#g" reporting/database/reporting/sql/db-jenkins-integration.sql
+      sed -i "s#JENKINS_FOLDER_VALUE##g" reporting/database/reporting/sql/db-jenkins-integration.sql
+    fi
+
     enableLayer "reporting" "Zebrunner Reporting"
-    ZBR_REPORTING_ENABLED=$?
+    export ZBR_REPORTING_ENABLED=$?
     if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       set_reporting_settings
 
       enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting"
-      ZBR_MINIO_ENABLED=$?
+      export ZBR_MINIO_ENABLED=$?
       if [[ $ZBR_MINIO_ENABLED -eq 1 ]]; then
         set_minio_storage_settings
       else
@@ -52,26 +65,20 @@
     fi
 
     enableLayer "sonarqube" "SonarQube"
-    ZBR_SONARQUBE_ENABLED=$?
+    export ZBR_SONARQUBE_ENABLED=$?
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
       export ZBR_SONAR_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube
     fi
 
-    enableLayer "jenkins" "Jenkins"
-    ZBR_JENKINS_ENABLED=$?
-    if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
-        jenkins/zebrunner.sh setup
-    fi
-
     enableLayer "mcloud" "Selenium Hub (Android, iOS, AppleTV etc)"
-    ZBR_MCLOUD_ENABLED=$?
+    export ZBR_MCLOUD_ENABLED=$?
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
         mcloud/zebrunner.sh setup
     fi
 
     enableLayer "selenoid" "Selenium Hub (chrome, firefox and opera)"
-    ZBR_SELENOID_ENABLED=$?
+    export ZBR_SELENOID_ENABLED=$?
     if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
         selenoid/zebrunner.sh setup
     fi
@@ -85,6 +92,10 @@
 
     rm nginx/conf.d/default.conf
     rm backup/settings.env
+
+    if [[ -f reporting/database/reporting/sql/db-jenkins-integration.sql ]]; then
+      rm reporting/database/reporting/sql/db-jenkins-integration.sql
+    fi
 
     jenkins/zebrunner.sh shutdown
     reporting/zebrunner.sh shutdown
@@ -143,6 +154,9 @@
 
     cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
     cp backup/settings.env backup/settings.env.bak
+    if [[ -f reporting/database/reporting/sql/db-jenkins-integration.sql ]]; then
+      cp reporting/database/reporting/sql/db-jenkins-integration.sql reporting/database/reporting/sql/db-jenkins-integration.sql.bak
+    fi
 
     jenkins/zebrunner.sh backup
     reporting/zebrunner.sh backup
@@ -157,6 +171,9 @@
     stop
     cp ./nginx/conf.d/default.conf.bak ./nginx/conf.d/default.conf
     cp backup/settings.env.bak backup/settings.env
+    if [[ -f reporting/database/reporting/sql/db-jenkins-integration.sql.bak ]]; then
+      cp reporting/database/reporting/sql/db-jenkins-integration.sql.bak reporting/database/reporting/sql/db-jenkins-integration.sql
+    fi
 
     jenkins/zebrunner.sh restore
     reporting/zebrunner.sh restore
