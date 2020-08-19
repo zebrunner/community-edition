@@ -33,12 +33,24 @@
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
-    enableLayer "reporting" "Zebrunner Reporting"
+    enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
+    export ZBR_SONARQUBE_ENABLED=$?
+
+    enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
+    export ZBR_JENKINS_ENABLED=$?
+
+    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
+    export ZBR_MCLOUD_ENABLED=$?
+
+    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)" "$ZBR_SELENOID_ENABLED"
+    export ZBR_SELENOID_ENABLED=$?
+
+    enableLayer "reporting" "Zebrunner Reporting" "$ZBR_REPORTING_ENABLED"
     export ZBR_REPORTING_ENABLED=$?
     if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       set_reporting_settings
 
-      enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting"
+      enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting" "$ZBR_MINIO_ENABLED"
       export ZBR_MINIO_ENABLED=$?
       if [[ $ZBR_MINIO_ENABLED -eq 1 ]]; then
         set_minio_storage_settings
@@ -51,15 +63,11 @@
       disableLayer "reporting/minio-storage"
     fi
 
-    enableLayer "sonarqube" "SonarQube"
-    export ZBR_SONARQUBE_ENABLED=$?
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
       export ZBR_SONAR_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube
     fi
 
-    enableLayer "jenkins" "Jenkins"
-    export ZBR_JENKINS_ENABLED=$?
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
       jenkins/zebrunner.sh setup
 
@@ -71,8 +79,6 @@
       sed -i "s#FOLDER_VALUE##g" reporting/database/reporting/sql/db-jenkins-integration.sql
     fi
 
-    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)"
-    export ZBR_MCLOUD_ENABLED=$?
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
         mcloud/zebrunner.sh setup
 
@@ -84,8 +90,6 @@
       sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
     fi
 
-    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)"
-    export ZBR_SELENOID_ENABLED=$?
     if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
         selenoid/zebrunner.sh setup
 
@@ -102,8 +106,6 @@
   }
 
   shutdown() {
-    print_banner
-
     rm nginx/conf.d/default.conf
     rm backup/settings.env
 
@@ -142,8 +144,6 @@
   }
 
   stop() {
-    print_banner
-
     jenkins/zebrunner.sh stop
     reporting/zebrunner.sh stop
     sonarqube/zebrunner.sh stop
@@ -153,8 +153,6 @@
   }
 
   down() {
-    print_banner
-
     jenkins/zebrunner.sh down
     reporting/zebrunner.sh down
     sonarqube/zebrunner.sh down
@@ -165,6 +163,7 @@
 
   backup() {
     print_banner
+    stop
 
     cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
     cp backup/settings.env backup/settings.env.bak
@@ -211,16 +210,20 @@
   }
 
   enableLayer() {
+    local layer=$1
+    local message=$2
+    local isEnabled=$3
+
     echo
-    confirm "$2" "Enable?"
+    confirm "$message" "Enable?" "$isEnabled"
     if [[ $? -eq 1 ]]; then
       # enable component/layer
-      if [[ -f $1/.disabled ]]; then
-        rm $1/.disabled
+      if [[ -f $layer/.disabled ]]; then
+        rm $layer/.disabled
       fi
       return 1
     else
-      disableLayer $1
+      disableLayer $layer
       return 0
     fi
   }
@@ -255,7 +258,7 @@
         ZBR_PORT=$local_port
       fi
 
-      confirm "Zebrunner URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT" "Continue?"
+      confirm "Zebrunner URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -284,7 +287,7 @@
 
       echo "Signin token secret=$ZBR_TOKEN_SIGNING_SECRET"
       echo "Crypto Salt=$ZBR_CRYPTO_SALT"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -303,7 +306,7 @@
       fi
 
       echo "Identity and Access Management service postgres password: $ZBR_IAM_POSTGRES_PASSWORD"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -321,7 +324,7 @@
       fi
 
       echo "Reporting Service postgres password: $ZBR_POSTGRES_PASSWORD"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -362,7 +365,7 @@
       echo "email=$ZBR_SMTP_EMAIL"
       echo "user=$ZBR_SMTP_USER"
       echo "password=$ZBR_SMTP_PASSWORD"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -389,7 +392,7 @@
       fi
 
       echo "Rabbitmq credentials=$ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -408,7 +411,7 @@
 
       echo
       echo "Redis password=$ZBR_REDIS_PASSWORD"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -439,7 +442,7 @@
       echo "Host: ${ZBR_GITHUB_HOST}"
       echo "Client ID: ${ZBR_GITHUB_CLIENT_ID}"
       echo "Client Secret: ${ZBR_GITHUB_CLIENT_SECRET}"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -466,7 +469,7 @@
       fi
 
       echo "Minio storage credentials: $ZBR_ACCESS_KEY/$ZBR_SECRET_KEY"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -504,7 +507,7 @@
       echo "Bucket: $ZBR_BUCKET"
       echo "Access key: $ZBR_ACCESS_KEY"
       echo "Secret key: $ZBR_SECRET_KEY"
-      confirm "" "Continue?"
+      confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
@@ -526,14 +529,33 @@
   }
 
   confirm() {
+    local message=$1
+    local question=$2
+    local isEnabled=$3
+
+    if [[ "$isEnabled" == "1" ]]; then
+      isEnabled="y"
+    fi
+    if [[ "$isEnabled" == "0" ]]; then
+      isEnabled="n"
+    fi
+
     while true; do
-      if [[ ! -z $1 ]]; then
-        echo "$1"
+      if [[ ! -z $message ]]; then
+        echo "$message"
       fi
 
-      read -p "$2 Yes/No [y]:" response
-  #    echo
-      if [[ -z $response || "$response" == "y" || "$response" == "Y" ]]; then
+      read -p "$question Yes/No [$isEnabled]:" response
+      if [[ -z $response ]]; then
+        if [[ "$isEnabled" == "y" ]]; then
+          return 1
+        fi
+        if [[ "$isEnabled" == "n" ]]; then
+          return 0
+        fi
+      fi
+
+      if [[ "$response" == "y" || "$response" == "Y" ]]; then
         return 1
       fi
 
