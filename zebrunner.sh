@@ -28,7 +28,7 @@
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
 
-    export ZBR_INFRA_HOST=$ZBR_HOSTNAME:$ZBR_PORT
+    export ZBR_INFRA_HOST=$ZBR_HOSTNAME
 
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
