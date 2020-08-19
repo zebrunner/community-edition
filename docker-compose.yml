@@ -11,6 +11,7 @@ services:
      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
      - ./nginx/conf.d:/etc/nginx/conf.d:ro
      - ./nginx/htpasswd:/usr/share/nginx/htpasswd:ro
+     - ./nginx/grid:/usr/share/nginx/html/grid
      - ./selenoid/video:/usr/share/nginx/video:ro
 ##TODO: test what is the valid share path! maybe video!
 #     - "data-volume:/usr/share/ftp:rw"

@@ -278,6 +278,10 @@ server {
 
 #TODO: register lamdatest location url
 
+    location /grid {
+        root   /usr/share/nginx/html;
+    }
+
     location / {
       set $upstream_zebrunner zebrunner-proxy:80;
       proxy_pass http://$upstream_zebrunner;
