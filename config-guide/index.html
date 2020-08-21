@@ -15,7 +15,7 @@
     
     
       
-        <title>Configuration Guide - Zebrunner (Community Edition)</title>
+        <title>Configuration Guide - Zebrunner</title>
       
     
     
@@ -59,7 +59,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href=".." title="Zebrunner (Community Edition)" class="md-header-nav__button md-logo" aria-label="Zebrunner (Community Edition)">
+    <a href=".." title="Zebrunner" class="md-header-nav__button md-logo" aria-label="Zebrunner">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -72,7 +72,7 @@
       
         <div class="md-header-nav__ellipsis">
           <span class="md-header-nav__topic md-ellipsis">
-            Zebrunner (Community Edition)
+            Zebrunner
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
@@ -146,13 +146,13 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Zebrunner (Community Edition)" class="md-nav__button md-logo" aria-label="Zebrunner (Community Edition)">
+    <a href=".." title="Zebrunner" class="md-nav__button md-logo" aria-label="Zebrunner">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
-    Zebrunner (Community Edition)
+    Zebrunner
   </label>
   
     <div class="md-nav__source">
@@ -235,80 +235,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#jenkins-setup" class="md-nav__link">
-    Jenkins Setup
-  </a>
-  
-    <nav class="md-nav" aria-label="Jenkins Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#github-integration" class="md-nav__link">
-    GitHub Integration
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#set-up-github-pull-request-builder" class="md-nav__link">
-    Set up "GitHub Pull Request Builder":
-  </a>
-  
-    <nav class="md-nav" aria-label="Set up "GitHub Pull Request Builder":">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-github-pull-request-builder-integration" class="md-nav__link">
-    Test "GitHub Pull Request Builder" integration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sonarqube-setup" class="md-nav__link">
-    SonarQube Setup
-  </a>
-  
-    <nav class="md-nav" aria-label="SonarQube Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#create-a-github-app" class="md-nav__link">
-    Create a GitHub App
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#install-your-app" class="md-nav__link">
-    Install your app
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configure-sonarqube-server" class="md-nav__link">
-    Configure SonarQube server
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#organization-setup" class="md-nav__link">
     Organization Setup
   </a>
@@ -332,8 +258,49 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#setup-onpush-github-webhook" class="md-nav__link">
-    Setup onPush GitHub WebHook
+  <a href="#setup-github-webhook-onpush-jobevent" class="md-nav__link">
+    Setup GitHub WebHook (onPush Job/Event)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-onpush-jobs" class="md-nav__link">
+    Trigger onPush Job(s)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-up-github-pull-request-builder" class="md-nav__link">
+    Set up "GitHub Pull Request Builder":
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restart-jenkins-after-update-github-personal-access-token" class="md-nav__link">
+    Restart Jenkins after Update Github Personal access token
+  </a>
+  
+    <nav class="md-nav" aria-label="Restart Jenkins after Update Github Personal access token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-the-integration-with-github-through-the-jenkins-ui" class="md-nav__link">
+    Test the integration with Github through the Jenkins UI
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#send-pull-request-to-launch-onpullrequest-jobs" class="md-nav__link">
+    Send Pull request to launch onPullRequest Job(s)
   </a>
   
 </li>
@@ -345,6 +312,67 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sonarqube-integration" class="md-nav__link">
+    SonarQube Integration
+  </a>
+  
+    <nav class="md-nav" aria-label="SonarQube Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-github-app" class="md-nav__link">
+    Create a GitHub App
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-your-app" class="md-nav__link">
+    Install your app
+  </a>
+  
+    <nav class="md-nav" aria-label="Install your app">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-server" class="md-nav__link">
+    Configure SonarQube server
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-private-sonarqube-serveronly-if-you-are-not-using-embeded-one-from-the-infra" class="md-nav__link">
+    Configure private SonarQube server(only if you are not using embeded one from the infra)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source-control-tools-integration" class="md-nav__link">
+    Source Control Tools Integration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
   
 </li>
       
@@ -412,80 +440,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#jenkins-setup" class="md-nav__link">
-    Jenkins Setup
-  </a>
-  
-    <nav class="md-nav" aria-label="Jenkins Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#github-integration" class="md-nav__link">
-    GitHub Integration
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#set-up-github-pull-request-builder" class="md-nav__link">
-    Set up "GitHub Pull Request Builder":
-  </a>
-  
-    <nav class="md-nav" aria-label="Set up "GitHub Pull Request Builder":">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-github-pull-request-builder-integration" class="md-nav__link">
-    Test "GitHub Pull Request Builder" integration
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sonarqube-setup" class="md-nav__link">
-    SonarQube Setup
-  </a>
-  
-    <nav class="md-nav" aria-label="SonarQube Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#create-a-github-app" class="md-nav__link">
-    Create a GitHub App
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#install-your-app" class="md-nav__link">
-    Install your app
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#configure-sonarqube-server" class="md-nav__link">
-    Configure SonarQube server
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#organization-setup" class="md-nav__link">
     Organization Setup
   </a>
@@ -509,8 +463,49 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#setup-onpush-github-webhook" class="md-nav__link">
-    Setup onPush GitHub WebHook
+  <a href="#setup-github-webhook-onpush-jobevent" class="md-nav__link">
+    Setup GitHub WebHook (onPush Job/Event)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trigger-onpush-jobs" class="md-nav__link">
+    Trigger onPush Job(s)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-up-github-pull-request-builder" class="md-nav__link">
+    Set up "GitHub Pull Request Builder":
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restart-jenkins-after-update-github-personal-access-token" class="md-nav__link">
+    Restart Jenkins after Update Github Personal access token
+  </a>
+  
+    <nav class="md-nav" aria-label="Restart Jenkins after Update Github Personal access token">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-the-integration-with-github-through-the-jenkins-ui" class="md-nav__link">
+    Test the integration with Github through the Jenkins UI
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#send-pull-request-to-launch-onpullrequest-jobs" class="md-nav__link">
+    Send Pull request to launch onPullRequest Job(s)
   </a>
   
 </li>
@@ -522,6 +517,67 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sonarqube-integration" class="md-nav__link">
+    SonarQube Integration
+  </a>
+  
+    <nav class="md-nav" aria-label="SonarQube Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-github-app" class="md-nav__link">
+    Create a GitHub App
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-your-app" class="md-nav__link">
+    Install your app
+  </a>
+  
+    <nav class="md-nav" aria-label="Install your app">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-server" class="md-nav__link">
+    Configure SonarQube server
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-private-sonarqube-serveronly-if-you-are-not-using-embeded-one-from-the-infra" class="md-nav__link">
+    Configure private SonarQube server(only if you are not using embeded one from the infra)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source-control-tools-integration" class="md-nav__link">
+    Source Control Tools Integration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    Troubleshooting
+  </a>
   
 </li>
       
@@ -553,65 +609,92 @@
                 
                 
                 <h1 id="configuration-guide">Configuration Guide</h1>
-<h2 id="jenkins-setup">Jenkins Setup</h2>
-<h3 id="github-integration">GitHub Integration</h3>
-<p><a href="github.com">Github.com</a> is integrated by default. To override integration for Enterprise GitHub, GitLab etc declare the following global variables:
- <ul>
-   <li>  Manage jenkins -&gt; Configure System 
-   <li>  Global properties -&gt; Add Property 
-       <ul>
-       <li type="circle"> GITHUB_HOST -&gt; github.mydomain.com
-       <li type="circle"> GITHUB_ORGANIZATION -&gt; myorganization
-       <li type="circle"> GITHUB_API_URL -&gt; https://$GITHUB_HOST/api/v3
-       <li type="circle"> GITHUB_HTML_URL -&gt; https://$GITHUB_HOST/$GITHUB_ORGANIZATION
-       <li type="circle"> GITHUB_SSH_URL -&gt; git@$GITHUB_HOST:$GITHUB_ORGANIZATION
-       </ul>
- </ul></p>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true" title="Enterprise" /> </p>
+<h2 id="organization-setup">Organization Setup</h2>
+<h3 id="register-organization">Register Organization</h3>
+<ul>
+<li>Open Jenkins-&gt;Management_Jobs folder.</li>
+<li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName</li>
+<li>New folder is created with default content   </li>
+</ul>
+<p>Create organization: 
+ <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Organization.png?raw=true" title="Organization" /></p>
+<h3 id="register-repository">Register Repository</h3>
+<ul>
+<li>Open your organization folder</li>
+<li>Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)
+   -&gt; Repository is scanned and TestNG jobs created</li>
+</ul>
+<p>Create Repository:
+ <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true" title="Repository" />       </p>
+<h4 id="setup-github-webhook-onpush-jobevent">Setup GitHub WebHook (onPush Job/Event)</h4>
+<ul>
+<li>Go to your GitHub repository</li>
+<li>Click "Settings" tab</li>
+<li>Click "Webhooks" menu option</li>
+<li>Click "Add webhook" button</li>
+<li>Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field</li>
+<li>Select application/json in "Content Type" field</li>
+<li>Tick "Send me everything." option</li>
+<li>Click "Add webhook" button</li>
+</ul>
+<h4 id="trigger-onpush-jobs">Trigger onPush Job(s)</h4>
+<ul>
+<li>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
+</ul>
 <h3 id="set-up-github-pull-request-builder">Set up "GitHub Pull Request Builder":</h3>
-<p>For every registered repository we do set of pre-validations like compilation and Sonar PR checker. Integration should be configured at once to make all OnPullRequest Jobs/Events auto-configurable</p>
 <ul>
 <li>Open Jenkins -&gt; Credentials</li>
-<li>Update Username and Password for "ghprbhook-token" credentials</li>
-<li>Provide GitHub credentials with Admin privileges for your organization<blockquote>
-<p>admin privileges required to be able to register web hooks automatically </p>
-</blockquote>
+<li>
+<p>Update Username and Password for "ghprbhook-token" credentials <br />
+<img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true" title="Credentials" /> </p>
 </li>
-</ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true" title="Credentials" /></p>
-<ul>
-<li>Go to Manage Jenkins -&gt; Configure System</li>
+<li>
+<p>Go to Manage Jenkins -&gt; Configure System</p>
+</li>
 <li>Specify a value for GitHub Server API URL, for example, https://api.github.com<blockquote>
 <p>Note: corporate versions of GitHub should have a different value, for example, https://github.mydomain.com/api/v3</p>
 </blockquote>
 </li>
+<li>Provide GitHub credentials with Admin privileges for your organization</li>
 <li>Check the "Auto-manage webhooks" param</li>
-<li>[Optional] update "Commit Status Context" to a value such as qps-infra to identify that changes in GitHub PR are automatically generated by infra</li>
-<li>Save changes and restart Jenkins</li>
+<li>[Optional] update "Commit Status Context" to "zebrunner" value to identify that changes in GitHub PR are automatically generated by it</li>
+<li>Save changes<blockquote>
+<p>Note: be sure to test integration through the Jenkins UI</p>
+</blockquote>
+</li>
 </ul>
-<h4 id="test-github-pull-request-builder-integration">Test "GitHub Pull Request Builder" integration</h4>
+<h3 id="restart-jenkins-after-update-github-personal-access-token">Restart Jenkins after Update Github Personal access token</h3>
+<blockquote>
+<p>Note: generate new Personal access token in Github</p>
+</blockquote>
 <ul>
-<li>Go to Manage Jenkins -&gt; Configure System</li>
-<li>Scroll to "GitHub Pull Request Builder" and click "Test Credentials"</li>
+<li>Go to Jenkins -&gt; Credentials</li>
+<li>Updade credentials in Jenkins</li>
+<li>Restart Jenkins</li>
+<li>Open/Close Pull request in Github or create a new PL -&gt; Verify that Pull request jobs are executed</li>
+</ul>
+<h4 id="test-the-integration-with-github-through-the-jenkins-ui">Test the integration with Github through the Jenkins UI</h4>
+<ul>
 <li>Set Credentials -&gt; Test basic connection to GitHub</li>
 <li>Set Repository owner/name -&gt; Test Permissions to a Repository</li>
 <li>Set Issue ID/Comment -&gt; Test adding comment to Pull Request</li>
 </ul>
 <p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/TestGithub.png?raw=true" title="TestGithub" /> </p>
-<h2 id="sonarqube-setup">SonarQube Setup</h2>
-<p>SonarQube is used for static code analysis in updated lines/files during pull requests validations and full code analysis for onPush.
-That's guarantee a good quality of the code, effective code review process and fast engineering team skills growth.
-In order to enable sonarqube the following components must be configured correctly.</p>
+<h4 id="send-pull-request-to-launch-onpullrequest-jobs">Send Pull request to launch onPullRequest Job(s)</h4>
+<ul>
+<li>Go to your GitHub repository</li>
+<li>Create new Pull Request -&gt; onPullRequest-repo, onPullRequest-repo-trigger jobs launched and succeed in Jenkins</li>
+</ul>
+<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true" title="PushJobs" /></p>
+<h2 id="sonarqube-integration">SonarQube Integration</h2>
+<p>In order to enable sonarqube the following components must be configured correctly.</p>
 <h3 id="create-a-github-app">Create a <a href="https://developer.github.com/apps/about-apps/">GitHub App</a></h3>
 <ul>
 <li>Follow Steps 1–4 <a href="https://developer.github.com/apps/building-github-apps/creating-a-github-app/">here</a> to start creating your GitHub App</li>
-<li>Under <strong>GitHub App name</strong>, give your app name, such as SonarQubePRDecorator.</li>
-<li>Add a <strong>Homepage URL</strong>. It is required in GitHub but not obligatory for Pull Request decoration. You can use any URL such as https://your.infra.domain.com/.</li>
-<li>Enter your <strong>User authorization callback URL</strong>. Set this to your instance's base URL. <blockquote>
-<p>Example: https://your.infra.domain.com/sonarqube/oauth2/callback</p>
-</blockquote>
-</li>
-<li>Add <strong>Webhook URL</strong>. Set this to your instance's base URL. For example, https://your.infra.domain.com/.</li>
+<li>Under <strong>GitHub App name</strong>, give your app a name, such as SonarQubePRDecorator.</li>
+<li>Add a <strong>Homepage URL</strong>. GitHub requires this, but it isn't important for Pull Request decoration. You can use any URL, such as https://zebrunner.com/.</li>
+<li>Enter your <strong>User authorization callback URL</strong>. Set this to your instance's base URL. For example, https://your.infra.domain.com/sonarqube/oauth2/callback</li>
+<li>Add <strong>Webhook URL</strong>. Set this to your instance's base URL. For example, https://zebrunner.com/.</li>
 <li>
 <p>Grant access for the following <strong>Permissions</strong>:</p>
 <table>
@@ -638,28 +721,32 @@ In order to enable sonarqube the following components must be configured correct
 <td align="center">Commit statuses</td>
 <td>Read-only</td>
 </tr>
+<tr>
+<td align="center">&gt; Note: if your are using <strong>Github Enterprise</strong> the permission "Metadata" is renamed to "Repository Metadata"</td>
+<td></td>
+</tr>
 </tbody>
 </table>
 </li>
-</ul>
-<blockquote>
-<p>Note: if your are using <strong>Github Enterprise</strong> the permission "Metadata" is renamed to "Repository Metadata"</p>
+<li>
+<p>Under "Where can this GitHub App be installed?," select <strong>Any account.</strong></p>
+</li>
+<li>Click <b>Create GitHub App</b>. This will take you to your new GitHub App's page.</li>
+<li>Scroll down to the bottom of your app page and click &lt;<strong>Generate Private Key.</strong> This downloads a .pem file that you'll use in the <strong>Configure SonarQube server section.</strong><blockquote>
+<p>Tip: in order to acces the private key open the .pem file with your favorite text editor.</p>
 </blockquote>
-<ul>
-<li>Under "Where can this GitHub App be installed?," select <strong>Any account.</strong></li>
-<li>Click <strong>Create GitHub App</strong>. This will take you to your new GitHub App's page.</li>
-<li>Scroll down to the bottom of your app page and click <strong>Generate Private Key.</strong> This downloads a .pem file that you'll use in the <strong>Configure SonarQube server section.</strong></li>
+</li>
 </ul>
-<h3 id="install-your-app">Install your app</h3>
+<h2 id="install-your-app">Install your app</h2>
 <p>Installing your GitHub App from the app's settings page.</p>
 <ul>
-<li>Go to your GitHub profile &gt; Developer settings &gt; GitHub Apps &gt; open your recently created app &gt; Install App</li>
+<li>Go to your GitHub profile &gt; Developer settings &gt; GitHub Apps &gt; Your app name &gt; Install App</li>
 <li>Select the organization to install the app</li>
-<li>Select required or all repositories</li>
+<li>Select All repositories</li>
 <li>Clik install</li>
 </ul>
 <h3 id="configure-sonarqube-server">Configure SonarQube server</h3>
-<p>In order to enable Pull Request decoration follow the next steps:</p>
+<p>In order to enable pull request decoration follow the next steps:</p>
 <ul>
 <li>
 <p>Go to your sonarqube server page and login.</p>
@@ -671,60 +758,45 @@ In order to enable sonarqube the following components must be configured correct
 <p>Add your SonarQube server under <strong>Configuration &gt; General Settings &gt; Server base URL</strong></p>
 </li>
 </ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /></p>
+<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /></p>
 <ul>
 <li>In <strong>Configuration &gt; GitHub</strong> add your GitHub App <strong>Client ID, Client Secret</strong></li>
 </ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /></p>
+<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /></p>
 <ul>
-<li>In <strong>Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key</strong> and select Provider as <strong>GitHub</strong></li>
+<li>In <strong>Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key and select Provider as GitHub</strong></li>
 </ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/SonarPullRequestConfig.png?raw=true" title="SonarPullRequestConfig" /></p>
+<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true" title="SonarPullRequestConfig" /></p>
 <blockquote>
 <p>Note: make sure to copy all content from the .pem file generated in the <strong>Create GitHub App</strong> section</p>
-<p>Note: update <strong>SONAR_URL</strong> global Jenkins variable to point to private SonarQube instance</p>
 </blockquote>
-<h2 id="organization-setup">Organization Setup</h2>
-<h3 id="register-organization">Register Organization</h3>
-<p>Each GitHub organization should be registered in Jenkins to be able to setup CI/CD process for different repositories inside.</p>
+<h2 id="configure-private-sonarqube-serveronly-if-you-are-not-using-embeded-one-from-the-infra">Configure private SonarQube server(only if you are not using embeded one from the infra)</h2>
 <ul>
-<li>Open Jenkins-&gt;Management_Jobs folder.</li>
-<li>Run "RegisterOrganization" providing your GitHub organization name as folderName</li>
-<li><em>New folder is created with default content (launcher and RegisterRepository jobs)</em></li>
+<li>Open your infra.domain/jenkins and login</li>
+<li>Go to Manage <strong>Jenkins &gt; System Configuration &gt; Global Properties</strong></li>
+<li>Search for <strong>SONAR_URL</strong> and change the value for your private SonarQube one</li>
 </ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Organization.png?raw=true" title="Organization" /></p>
-<h3 id="register-repository">Register Repository</h3>
-<p>Repositories registration process save securely access credentials/tokens, setup high-level CI/CD process for test automation and do scanning and automatic jobs creation based on embedded JobDSL rules.</p>
-<ul>
-<li>Open your organization folder</li>
-<li>Run "RegisterRepository" pointing to your repository<blockquote>
-<p>Example: https://github.com/qaprosoft/carina-demo</p>
+<blockquote>
+<p>Note: Make sure to add the <strong>protocol prefix.</strong> i.e: http://your.sonar.url or https://your.sonar.url if you have an SSL sertificate.</p>
 </blockquote>
-</li>
-<li>Use neccessary runner class<blockquote>
-<p>Example: "com.qaprosoft.jenkins.pipeline.runner.maven.TestNG" for any <strong>Maven + TestNG</strong> repository</p>
-</blockquote>
-</li>
-<li><em>Repository is scanned, TestNG jobs created for every suite file</em></li>
-</ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Repository.png?raw=true" title="Repository" />       </p>
-<h4 id="setup-onpush-github-webhook">Setup onPush GitHub WebHook</h4>
-<p>To setup automatic onPush Jobs execution follow below steps. It guarantee automatic full static code analysis by SonarQube and flexible CI/CD process to recreate Test Automation jobs on CI</p>
-<ul>
-<li>Go to your GitHub repository</li>
-<li>Click "Settings" tab</li>
-<li>Click "Webhooks" menu option</li>
-<li>Click "Add webhook" button</li>
-<li>Type http://your-jenkins-domain.com/jenkins/github-webhook/ into "Payload URL" field</li>
-<li>Select application/json in "Content Type" field</li>
-<li>Click "Send me everything." option</li>
-<li>Click "Add webhook" button</li>
-<li><em>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</em></li>
-</ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true" title="PushJobs" /></p>
+<h2 id="source-control-tools-integration">Source Control Tools Integration</h2>
+<p>For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default:
+ <ul>
+   <li>  Manage jenkins -&gt; Configure system 
+   <li>  Global properties -&gt; Add property 
+       <ul>
+       <li type="circle"> GITHUB_API_URL -&gt; https://$GITHUB_HOST/api/v3 
+       <li type="circle"> GITHUB_HOST -&gt; github.mydomain.com 
+       <li type="circle"> GITHUB_HTML_URL -&gt; https://$GITHUB_HOST/$GITHUB_ORGANIZATION 
+       <li type="circle"> GITHUB_ORGANIZATION -&gt; myorganization 
+       <li type="circle"> GITHUB_SSH_URL -&gt; git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
+       </ul> <br />
+ </ul></p>
+<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true" title="Enterprise" /> </p>
+<h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
-<li>Join <a href="https://t.me/qps_infra">Telegram channel</a> in case of any question</li>
+<li>Join <a href="https://t.me/zebrunner">Telegram channel</a> in case of any question</li>
 </ul>
                 
               
