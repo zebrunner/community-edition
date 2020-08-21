@@ -52,9 +52,7 @@
 
       enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting" "$ZBR_MINIO_ENABLED"
       export ZBR_MINIO_ENABLED=$?
-      if [[ $ZBR_MINIO_ENABLED -eq 1 ]]; then
-        set_minio_storage_settings
-      else
+      if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
         set_aws_storage_settings
       fi
       reporting/zebrunner.sh setup
@@ -450,33 +448,6 @@
     export ZBR_GITHUB_CLIENT_ID=$ZBR_GITHUB_CLIENT_ID
     export ZBR_GITHUB_CLIENT_SECRET=$ZBR_GITHUB_CLIENT_SECRET
 
-  }
-
-  set_minio_storage_settings() {
-    ## Minio S3 compatible storage 
-    local is_confirmed=0
-    echo
-    echo "Minio S3 compatible storage"
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Minio access key [$ZBR_STORAGE_ACCESS_KEY]: " local_access_key
-      if [[ ! -z $local_access_key ]]; then
-        ZBR_STORAGE_ACCESS_KEY=$local_access_key
-      fi
-
-      read -p "Minio secret key [$ZBR_STORAGE_SECRET_KEY]: " local_secret_key
-      if [[ ! -z $local_secret_key ]]; then
-        ZBR_STORAGE_SECRET_KEY=$local_secret_key
-      fi
-
-      echo "Minio storage credentials: $ZBR_STORAGE_ACCESS_KEY/$ZBR_STORAGE_SECRET_KEY"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
-    export ZBR_STORAGE_ENDPOINT_PROTOCOL="http"
-    export ZBR_STORAGE_ENDPOINT_HOST="minio:9000"
-    export ZBR_STORAGE_ACCESS_KEY=$ZBR_STORAGE_ACCESS_KEY
-    export ZBR_STORAGE_SECRET_KEY=$ZBR_STORAGE_SECRET_KEY
   }
 
   set_aws_storage_settings() {
