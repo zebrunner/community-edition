@@ -458,66 +458,80 @@
     echo
     echo "Minio S3 compatible storage"
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Minio access key [$ZBR_ACCESS_KEY]: " local_minio_access_key
-      if [[ ! -z $local_minio_access_key ]]; then
-        ZBR_ACCESS_KEY=$local_minio_access_key
+      read -p "Minio access key [$ZBR_STORAGE_ACCESS_KEY]: " local_access_key
+      if [[ ! -z $local_access_key ]]; then
+        ZBR_STORAGE_ACCESS_KEY=$local_access_key
       fi
 
-      read -p "Minio secret key [$ZBR_SECRET_KEY]: " local_minio_secret_key
-      if [[ ! -z $local_minio_secret_key ]]; then
-        ZBR_SECRET_KEY=$local_minio_secret_key
+      read -p "Minio secret key [$ZBR_STORAGE_SECRET_KEY]: " local_secret_key
+      if [[ ! -z $local_secret_key ]]; then
+        ZBR_STORAGE_SECRET_KEY=$local_secret_key
       fi
 
-      echo "Minio storage credentials: $ZBR_ACCESS_KEY/$ZBR_SECRET_KEY"
+      echo "Minio storage credentials: $ZBR_STORAGE_ACCESS_KEY/$ZBR_STORAGE_SECRET_KEY"
       confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
-    export ZBR_ACCESS_KEY=$ZBR_ACCESS_KEY
-    export ZBR_SECRET_KEY=$ZBR_SECRET_KEY
+    export ZBR_STORAGE_ACCESS_KEY=$ZBR_STORAGE_ACCESS_KEY
+    export ZBR_STORAGE_SECRET_KEY=$ZBR_STORAGE_SECRET_KEY
   }
 
   set_aws_storage_settings() {
     ## AWS S3 storage
     local is_confirmed=0
+    #TODO: provide a link to documentation howto create valid S3 bucket
     echo
     echo "AWS S3 storage"
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Region [$ZBR_REGION]: " local_region
+      read -p "Region [$ZBR_STORAGE_REGION]: " local_region
       if [[ ! -z $local_region ]]; then
-        ZBR_REGION=$local_region
+        ZBR_STORAGE_REGION=$local_region
       fi
 
-      read -p "Bucket [$ZBR_BUCKET]: " local_bucket
+      export ZBR_STORAGE_ENDPOINT="https://s3.${ZBR_STORAGE_REGION}.amazonaws.com:443"
+      read -p "S3 Endpoint [$ZBR_STORAGE_ENDPOINT]: " local_endpoint
+      if [[ ! -z $local_endpoint ]]; then
+        ZBR_STORAGE_ENDPOINT=$local_endpoint
+      fi
+
+      read -p "Bucket [$ZBR_STORAGE_BUCKET]: " local_bucket
       if [[ ! -z $local_bucket ]]; then
-        ZBR_BUCKET=$local_bucket
+        ZBR_STORAGE_BUCKET=$local_bucket
       fi
 
-      read -p "Access key [$ZBR_ACCESS_KEY]: " local_minio_access_key
-      if [[ ! -z $local_minio_access_key ]]; then
-        ZBR_ACCESS_KEY=$local_minio_access_key
+      read -p "Access key [$ZBR_STORAGE_ACCESS_KEY]: " local_access_key
+      if [[ ! -z $local_access_key ]]; then
+        ZBR_STORAGE_ACCESS_KEY=$local_access_key
       fi
 
-      read -p "Secret key [$ZBR_SECRET_KEY]: " local_minio_secret_key
-      if [[ ! -z $local_minio_secret_key ]]; then
-        ZBR_SECRET_KEY=$local_minio_secret_key
+      read -p "Secret key [$ZBR_STORAGE_SECRET_KEY]: " local_secret_key
+      if [[ ! -z $local_secret_key ]]; then
+        ZBR_STORAGE_SECRET_KEY=$local_secret_key
       fi
 
-      echo "Region: $ZBR_REGION"
-      echo "Bucket: $ZBR_BUCKET"
-      echo "Access key: $ZBR_ACCESS_KEY"
-      echo "Secret key: $ZBR_SECRET_KEY"
+      read -p "UserAgent key [$ZBR_STORAGE_AGENT_KEY]: " local_agent_key
+      if [[ ! -z $local_agent_key ]]; then
+        ZBR_STORAGE_AGENT_KEY=$local_agent_key
+      fi
+
+      #TODO: one more link to the manual about bucket creation!
+      echo "Region: $ZBR_STORAGE_REGION"
+      echo "Endpoint: $ZBR_STORAGE_ENDPOINT"
+      echo "Bucket: $ZBR_STORAGE_BUCKET"
+      echo "Access key: $ZBR_STORAGE_ACCESS_KEY"
+      echo "Secret key: $ZBR_STORAGE_SECRET_KEY"
+      echo "Agent key: $ZBR_STORAGE_AGENT_KEY"
       confirm "" "Continue?" "y"
       is_confirmed=$?
     done
 
-    export ZBR_REGION=$ZBR_REGION
-    export ZBR_BUCKET=$ZBR_BUCKET
-    export ZBR_ACCESS_KEY=$ZBR_ACCESS_KEY
-    export ZBR_SECRET_KEY=$ZBR_SECRET_KEY
-
-    # for AWS S3 integration S3_ENDPOINT should be blank!
-    export ZBR_S3_ENDPOINT=
+    export ZBR_STORAGE_REGION=$ZBR_STORAGE_REGION
+    export ZBR_STORAGE_ENDPOINT=$ZBR_STORAGE_ENDPOINT
+    export ZBR_STORAGE_BUCKET=$ZBR_STORAGE_BUCKET
+    export ZBR_STORAGE_ACCESS_KEY=$ZBR_STORAGE_ACCESS_KEY
+    export ZBR_STORAGE_SECRET_KEY=$ZBR_STORAGE_SECRET_KEY
+    export ZBR_STORAGE_AGENT_KEY=$ZBR_STORAGE_AGENT_KEY
   }
 
   export_settings() {
