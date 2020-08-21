@@ -106,8 +106,8 @@
   }
 
   shutdown() {
-    rm nginx/conf.d/default.conf
-    rm backup/settings.env
+    rm -f nginx/conf.d/default.conf
+    rm -f backup/settings.env
 
     rm -f reporting/database/reporting/sql/db-jenkins-integration.sql
     rm -f reporting/database/reporting/sql/db-mcloud-integration.sql
@@ -473,6 +473,8 @@
       is_confirmed=$?
     done
 
+    export ZBR_STORAGE_ENDPOINT_PROTOCOL="http"
+    export ZBR_STORAGE_ENDPOINT_HOST="minio:9000"
     export ZBR_STORAGE_ACCESS_KEY=$ZBR_STORAGE_ACCESS_KEY
     export ZBR_STORAGE_SECRET_KEY=$ZBR_STORAGE_SECRET_KEY
   }
@@ -489,11 +491,8 @@
         ZBR_STORAGE_REGION=$local_region
       fi
 
-      export ZBR_STORAGE_ENDPOINT="https://s3.${ZBR_STORAGE_REGION}.amazonaws.com:443"
-      read -p "S3 Endpoint [$ZBR_STORAGE_ENDPOINT]: " local_endpoint
-      if [[ ! -z $local_endpoint ]]; then
-        ZBR_STORAGE_ENDPOINT=$local_endpoint
-      fi
+      ZBR_STORAGE_ENDPOINT_PROTOCOL="https"
+      ZBR_STORAGE_ENDPOINT_HOST="s3.${ZBR_STORAGE_REGION}.amazonaws.com:443"
 
       read -p "Bucket [$ZBR_STORAGE_BUCKET]: " local_bucket
       if [[ ! -z $local_bucket ]]; then
@@ -517,7 +516,7 @@
 
       #TODO: one more link to the manual about bucket creation!
       echo "Region: $ZBR_STORAGE_REGION"
-      echo "Endpoint: $ZBR_STORAGE_ENDPOINT"
+      echo "Endpoint: $ZBR_STORAGE_ENDPOINT_PROTOCOL://$ZBR_STORAGE_ENDPOINT_HOST"
       echo "Bucket: $ZBR_STORAGE_BUCKET"
       echo "Access key: $ZBR_STORAGE_ACCESS_KEY"
       echo "Secret key: $ZBR_STORAGE_SECRET_KEY"
@@ -527,7 +526,8 @@
     done
 
     export ZBR_STORAGE_REGION=$ZBR_STORAGE_REGION
-    export ZBR_STORAGE_ENDPOINT=$ZBR_STORAGE_ENDPOINT
+    export ZBR_STORAGE_ENDPOINT_PROTOCOL=$ZBR_STORAGE_ENDPOINT_PROTOCOL
+    export ZBR_STORAGE_ENDPOINT_HOST=$ZBR_STORAGE_ENDPOINT_HOST
     export ZBR_STORAGE_BUCKET=$ZBR_STORAGE_BUCKET
     export ZBR_STORAGE_ACCESS_KEY=$ZBR_STORAGE_ACCESS_KEY
     export ZBR_STORAGE_SECRET_KEY=$ZBR_STORAGE_SECRET_KEY
