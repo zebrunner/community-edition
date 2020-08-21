@@ -22,22 +22,20 @@
 
 ## Initial setup
 
-1. Clone recursive [Zebrunner Server](https://github.com/zebrunner/zebrunner)
-
-2. Launch the setup.sh script providing your hostname as an argument:<br>
+1. Clone [Zebrunner](https://github.com/zebrunner/zebrunner) recursive and launch setup procedure
   ```
   git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git && cd zebrunner && ./zebrunner.sh setup
   ```
   > Provide required details to finish configuration
 
-3. Start services<br>
+2. Start services<br>
   ```
   ./zebrunner.sh start
   ```
 
-4. After startup, the following components are available:
+3. After startup, the following components are available:
   > Use your host domain address or IP.
-  > admin/admin are hardcoded sonarqube credentials, and they can be updated inside the Sonar Administration panel
+  > admin/admin are hardcoded SonarQube credentials, and they can be updated inside the Sonar Administration panel
   
 | Components          	| URL                                                                                                    	   |
 |---------------------	|----------------------------------------------------------------------------------------------------------	   |
@@ -46,7 +44,7 @@
 | SonarQube           	| [http://demo.qaprosoft.com/sonarqube](http://demo.qaprosoft.com/sonarqube)                             	   |
 | Web Selenium Hub    	| [http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub](http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub)       |
 | Mobile Selenium Hub 	| [http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub](http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub) 	   |
-| Mobile SmartTestFarm 	| [http://demo.qaprosoft.com/stf](http://demo.qaprosoft.com/stf)                                         	   |
+| Mobile SmartTest Farm	| [http://demo.qaprosoft.com/stf](http://demo.qaprosoft.com/stf)                                         	   |
 
 ## Support Channel
 
