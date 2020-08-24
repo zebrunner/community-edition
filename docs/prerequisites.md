@@ -35,9 +35,8 @@
 * Under **GitHub App name**, give your app a name, such as "Zebrunner (Community Edition)".
 * Add a **Homepage URL** and **Authorization callback URL**. Set this to your instance's base URL. For example, https://your.zebrunner.domain.com/
 
-### AWS S3
+### [Optional] AWS S3
 
-**Note:**
 Only for case when embedded S3 compatible minio storage not used
 
 #### Create bucket 
@@ -69,12 +68,11 @@ Only for case when embedded S3 compatible minio storage not used
   
 #### Create user
 
-* Create new user with AWS programmatic access:
-  * Goto IAM -> Policies -> Create New Policy-> Active JSON
-  * Put below value, replacing MYBUCKET with actual value
+* Goto IAM -> Policies -> Create New Policy-> Active JSON
+* Put below value, replacing MYBUCKET with actual value
 ```
-  {
-  qwe5
+{
+  qwe6
 }
 ```
 * Click Review policy -> specify name like zebrunner-s3-writer-policy -> Create Policy
