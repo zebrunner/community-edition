@@ -541,8 +541,9 @@ Only for case when embedded S3 compatible minio storage not used</p>
 <li>Create new bucket in AWS S3 (choose region closer to your location)</li>
 <li>In bucket “Public Access Settings” uncheck all properties (later security will be configured on other level)
 <img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true" title="AWS S3 Bucket" /></li>
-<li>In “Bucket Policy” put below json:
-   <code>{
+<li>In “Bucket Policy” put below json:</li>
+</ol>
+<p><code>{
        "Version": "2012-10-17",
        "Statement": [
            {
@@ -558,17 +559,17 @@ Only for case when embedded S3 compatible minio storage not used</p>
                }
            }
        ]
-   }</code><blockquote>
+   }</code></p>
+<blockquote>
 <p>replacing <em>MYBUCKET</em> with actual name and putting as strong password instead of <em>MyStrongPassword</em></p>
 </blockquote>
-</li>
-</ol>
 <h4 id="create-aws-s3-user">Create AWS S3 user</h4>
 <ol>
 <li>Create new user with AWS programmatic access:</li>
 <li>Goto IAM -&gt; Policies -&gt; Create New Policy-&gt; Active JSON</li>
-<li>Put below value, replacing MYBUCKET with actual value
-   <code>{
+<li>Put below value, replacing MYBUCKET with actual value</li>
+</ol>
+<p><code>{
        "Version": "2012-10-17",
        "Statement": [
            {
@@ -585,7 +586,8 @@ Only for case when embedded S3 compatible minio storage not used</p>
                ]
            }
        ]
-   }</code></li>
+   }</code></p>
+<ol>
 <li>Click Review policy -&gt; specify name like zebrunner-s3-writer-policy -&gt; Create Policy</li>
 <li>GOTO IAM -&gt; Users -&gt; Add User</li>
 <li>Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; Next Permissions -&gt; Attach existing policies directly</li>
