@@ -114,8 +114,6 @@ Installing your GitHub App from the app's settings page.
  
 ![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true "Enterprise") 
 
-## Troubleshooting
-
 ## Support Channel
 
   * Join [Telegram channel](https://t.me/zebrunner) in case of any question
