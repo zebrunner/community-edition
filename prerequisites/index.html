@@ -569,9 +569,8 @@ Only for case when embedded S3 compatible minio storage not used</p>
 <ol>
 <li>Create new user with AWS programmatic access:</li>
 <li>Goto IAM -&gt; Policies -&gt; Create New Policy-&gt; Active JSON</li>
-<li>Put below value, replacing MYBUCKET with actual value</li>
-</ol>
-<p><code>{
+<li>Put below value, replacing MYBUCKET with actual value
+ <code>{
     "Version": "2012-10-17",
     "Statement": [
         {
@@ -588,12 +587,13 @@ Only for case when embedded S3 compatible minio storage not used</p>
             ]
         }
     ]
-}</code>
-2. Click Review policy -&gt; specify name like zebrunner-s3-writer-policy -&gt; Create Policy
-3. GOTO IAM -&gt; Users -&gt; Add User
-4. Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; Next Permissions -&gt; Attach existing policies directly
-5. Choose previously created police -&gt; Next: Tags -&gt; Next: Review -&gt; Create User
-6. Remember Access Key ID,  Secret key and UserAgent values</p>
+ }</code></li>
+<li>Click Review policy -&gt; specify name like zebrunner-s3-writer-policy -&gt; Create Policy</li>
+<li>GOTO IAM -&gt; Users -&gt; Add User</li>
+<li>Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; Next Permissions -&gt; Attach existing policies directly</li>
+<li>Choose previously created police -&gt; Next: Tags -&gt; Next: Review -&gt; Create User</li>
+<li>Remember Access Key ID,  Secret key and UserAgent values</li>
+</ol>
                 
               
               
