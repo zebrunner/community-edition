@@ -92,7 +92,7 @@ In order to enable sonarqube the following components must be configured correct
    * Scroll down to the bottom of your app page and click <**Generate Private Key.** This downloads a .pem file that you'll use in the **Configure SonarQube server section.**
    > Tip: in order to acces the private key open the .pem file with your favorite text editor.
   
-## Install your app
+### Install your app
 Installing your GitHub App from the app's settings page.
 
    * Go to your GitHub profile > Developer settings > GitHub Apps > Your app name > Install App
