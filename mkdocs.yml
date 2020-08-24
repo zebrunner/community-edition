@@ -2,6 +2,7 @@ site_name: Zebrunner
 
 pages:
     - Overview: index.md
+    - Prerequisites: prerequisites.md
     - Installation Guide: install-guide.md
     - Configuration Guide: config-guide.md
     - User Guide: user-guide.md
