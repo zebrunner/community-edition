@@ -46,8 +46,7 @@ Only for case when embedded S3 compatible minio storage not used
 2. In bucket “Public Access Settings” uncheck all properties (later security will be configured on other level)
 ![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true "AWS S3 Bucket")
 3. In “Bucket Policy” put below json:
-
-   ```
+```
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -65,7 +64,7 @@ Only for case when embedded S3 compatible minio storage not used
         }
     ]
 }
-   ```
+```
    > replacing _MYBUCKET_ with actual name and putting as strong password instead of _MyStrongPassword_
   
 #### Create AWS S3 user
