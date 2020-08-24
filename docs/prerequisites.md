@@ -67,31 +67,16 @@ Only for case when embedded S3 compatible minio storage not used
 ```
    > replacing _MYBUCKET_ with actual name and putting as strong password instead of _MyStrongPassword_
   
-#### Create AWS S3 user
+#### Create user
  
 1. Create new user with AWS programmatic access:
 * Goto IAM -> Policies -> Create New Policy-> Active JSON
 * Put below value, replacing MYBUCKET with actual value
- ```
- {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "s3:ListAllMyBuckets",
-            "Resource": "arn:aws:s3:::*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": [
-                "arn:aws:s3:::MYBUCKET",
-                "arn:aws:s3:::MYBUCKET/*"
-            ]
-        }
-    ]
- }
- ```
+```
+{
+  qwe
+}
+```
 2. Click Review policy -> specify name like zebrunner-s3-writer-policy -> Create Policy
 3. GOTO IAM -> Users -> Add User
 4. Specify username like zebrunner-s3-user -> Pick “Programmatic access” -> Next Permissions -> Attach existing policies directly
