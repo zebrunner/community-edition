@@ -543,23 +543,25 @@ Only for case when embedded S3 compatible minio storage not used</p>
 <img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true" title="AWS S3 Bucket" /></li>
 <li>In “Bucket Policy” put below json:</li>
 </ol>
-<p><code>{
-    "Version": "2012-10-17",
-    "Statement": [
+<pre><code>{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
         {
-            "Sid": "AllowGetObject",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::MYBUCKET/*",
-            "Condition": {
-                "StringLike": {
-                    "aws:UserAgent": "MyStrongPassword"
+            &quot;Sid&quot;: &quot;AllowGetObject&quot;,
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Principal&quot;: &quot;*&quot;,
+            &quot;Action&quot;: &quot;s3:GetObject&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::MYBUCKET/*&quot;,
+            &quot;Condition&quot;: {
+                &quot;StringLike&quot;: {
+                    &quot;aws:UserAgent&quot;: &quot;MyStrongPassword&quot;
                 }
            }
         }
     ]
-}</code></p>
+}
+</code></pre>
+
 <blockquote>
 <p>replacing <em>MYBUCKET</em> with actual name and putting as strong password instead of <em>MyStrongPassword</em></p>
 </blockquote>
