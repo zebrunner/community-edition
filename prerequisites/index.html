@@ -569,10 +569,14 @@ Only for case when embedded S3 compatible minio storage not used</p>
 <ol>
 <li>Create new user with AWS programmatic access:</li>
 <li>Goto IAM -&gt; Policies -&gt; Create New Policy-&gt; Active JSON</li>
-<li>Put below value, replacing MYBUCKET with actual value
-   <code>{
-    qwe3
-   }</code></li>
+<li>Put below value, replacing MYBUCKET with actual value</li>
+</ol>
+<pre><code>{
+  qwe4
+}
+</code></pre>
+
+<ol>
 <li>Click Review policy -&gt; specify name like zebrunner-s3-writer-policy -&gt; Create Policy</li>
 <li>GOTO IAM -&gt; Users -&gt; Add User</li>
 <li>Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; Next Permissions -&gt; Attach existing policies directly</li>
