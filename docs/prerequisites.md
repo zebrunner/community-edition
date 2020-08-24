@@ -24,10 +24,6 @@
 
 * NGiNX WebServer port is shared
   > By default 80 for http and 443 for https
-  
-### [Optional] SMTP requirements
-
-* Valid smtp host and user for sending notifications
 
 ### GitHub OAuth App
 
