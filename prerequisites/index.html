@@ -566,19 +566,34 @@
 </blockquote>
 <h4 id="create-user">Create user</h4>
 <ul>
-<li>Goto IAM -&gt; Policies -&gt; Create New Policy-&gt; Active JSON</li>
+<li>Goto IAM -&gt; Policies -&gt; <strong>Create Policy</strong> -&gt; Active <strong>JSON</strong></li>
 <li>Put below value, replacing MYBUCKET with actual value</li>
 </ul>
 <pre><code>{
-  qwe6
+  &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: &quot;s3:ListAllMyBuckets&quot;,
+            &quot;Resource&quot;: &quot;arn:aws:s3:::*&quot;
+        },
+        {
+            &quot;Effect&quot;: &quot;Allow&quot;,
+            &quot;Action&quot;: &quot;s3:*&quot;,
+            &quot;Resource&quot;: [
+                &quot;arn:aws:s3:::MYBUCKET&quot;,
+                &quot;arn:aws:s3:::MYBUCKET/*&quot;
+            ]
+        }
+    ]
 }
 </code></pre>
 
 <ul>
-<li>Click Review policy -&gt; specify name like zebrunner-s3-writer-policy -&gt; Create Policy</li>
-<li>GOTO IAM -&gt; Users -&gt; Add User</li>
-<li>Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; Next Permissions -&gt; Attach existing policies directly</li>
-<li>Choose previously created police -&gt; Next: Tags -&gt; Next: Review -&gt; Create User</li>
+<li>Click <strong>Review policy</strong> -&gt; specify name like <em>zebrunner-s3-writer-policy</em> -&gt; <strong>Create Policy</strong></li>
+<li>Goto IAM -&gt; Users -&gt; <strong>Add User</strong></li>
+<li>Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; <strong>Next: Permissions:</strong> -&gt; <strong>Attach existing policies directly</strong></li>
+<li>Choose previously created policy -&gt; <strong>Next: Tags</strong> -&gt; <strong>Next: Review</strong> -&gt; <strong>Create User</strong></li>
 <li>Remember Access Key ID,  Secret key and UserAgent values</li>
 </ul>
                 
