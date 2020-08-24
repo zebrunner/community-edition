@@ -266,9 +266,29 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#aws-s3" class="md-nav__link">
+    AWS S3
+  </a>
+  
+    <nav class="md-nav" aria-label="AWS S3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#aws-s3-bucket" class="md-nav__link">
     AWS S3 bucket
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-aws-s3-user" class="md-nav__link">
+    Create AWS S3 user
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -401,9 +421,29 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#aws-s3" class="md-nav__link">
+    AWS S3
+  </a>
+  
+    <nav class="md-nav" aria-label="AWS S3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#aws-s3-bucket" class="md-nav__link">
     AWS S3 bucket
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-aws-s3-user" class="md-nav__link">
+    Create AWS S3 user
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -493,9 +533,10 @@
 <li>Under <strong>GitHub App name</strong>, give your app a name, such as "Zebrunner (Community Edition)".</li>
 <li>Add a <strong>Homepage URL</strong> and <strong>Authorization callback URL</strong>. Set this to your instance's base URL. For example, https://your.zebrunner.domain.com/</li>
 </ul>
-<h3 id="aws-s3-bucket">AWS S3 bucket</h3>
+<h3 id="aws-s3">AWS S3</h3>
 <p><strong>Note:</strong>
 Only for case when embedded S3 compatible minio storage not used</p>
+<h4 id="aws-s3-bucket">AWS S3 bucket</h4>
 <ol>
 <li>Create new bucket in AWS S3 (choose region closer to your location)</li>
 <li>In bucket “Public Access Settings” uncheck all properties (later security will be configured on other level)
@@ -524,6 +565,7 @@ Only for case when embedded S3 compatible minio storage not used</p>
 <blockquote>
 <p>replacing <em>MYBUCKET</em> with actual name and putting as strong password instead of <em>MyStrongPassword</em></p>
 </blockquote>
+<h4 id="create-aws-s3-user">Create AWS S3 user</h4>
 <ol>
 <li>
 <p>Create new user with AWS programmatic access:</p>
