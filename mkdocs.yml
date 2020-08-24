@@ -6,7 +6,6 @@ pages:
     - Installation Guide: install-guide.md
     - Configuration Guide: config-guide.md
     - User Guide: user-guide.md
-    - FAQ: faq.md
 
 theme:
   name: 'material'
