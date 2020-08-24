@@ -21,7 +21,7 @@ Zebrunner (Community Edition)
 * [Demo project](https://github.com/qaprosoft/carina-demo)
 * [Telegram channel](https://t.me/zebrunner)
 
-# QPS-Infra becomes part of [Zebrunner solution](https://medium.com/@zebrunner_official/qps-infra-becomes-part-of-zebrunner-solution-dbcf233e49f)!
+## QPS-Infra becomes part of [Zebrunner solution](https://medium.com/@zebrunner_official/qps-infra-becomes-part-of-zebrunner-solution-dbcf233e49f)!
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
