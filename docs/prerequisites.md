@@ -74,7 +74,7 @@ Only for case when embedded S3 compatible minio storage not used
 * Put below value, replacing MYBUCKET with actual value
 ```
 {
-  qwe
+  qwe1
 }
 ```
 2. Click Review policy -> specify name like zebrunner-s3-writer-policy -> Create Policy
