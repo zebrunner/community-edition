@@ -295,33 +295,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#restart-jenkins-after-update-github-personal-access-token" class="md-nav__link">
-    Restart Jenkins after Update Github Personal access token
-  </a>
-  
-    <nav class="md-nav" aria-label="Restart Jenkins after Update Github Personal access token">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-the-integration-with-github-through-the-jenkins-ui" class="md-nav__link">
-    Test the integration with Github through the Jenkins UI
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#send-pull-request-to-launch-onpullrequest-jobs" class="md-nav__link">
-    Send Pull request to launch onPullRequest Job(s)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -494,33 +467,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#restart-jenkins-after-update-github-personal-access-token" class="md-nav__link">
-    Restart Jenkins after Update Github Personal access token
-  </a>
-  
-    <nav class="md-nav" aria-label="Restart Jenkins after Update Github Personal access token">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-the-integration-with-github-through-the-jenkins-ui" class="md-nav__link">
-    Test the integration with Github through the Jenkins UI
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#send-pull-request-to-launch-onpullrequest-jobs" class="md-nav__link">
-    Send Pull request to launch onPullRequest Job(s)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -639,14 +585,15 @@
 </ul>
 <h4 id="trigger-onpush-jobs">Trigger onPush Job(s)</h4>
 <ul>
-<li>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created</li>
+<li>After any push or merge into the master onPush-repo job is launched, suites scanned, TestNG jobs created
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true" title="PushJobs" /></li>
 </ul>
 <h3 id="set-up-github-pull-request-builder">Set up "GitHub Pull Request Builder":</h3>
 <ul>
 <li>Open Jenkins -&gt; Credentials</li>
 <li>
-<p>Update Username and Password for "ghprbhook-token" credentials <br />
-<img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true" title="Credentials" /> </p>
+<p>Update Username and Password for "ghprbhook-token" credentials
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Credentials.png?raw=true" title="Credentials" /> </p>
 </li>
 <li>
 <p>Go to Manage Jenkins -&gt; Configure System</p>
@@ -662,30 +609,9 @@
 <p>Note: be sure to test integration through the Jenkins UI</p>
 </blockquote>
 </li>
-</ul>
-<h3 id="restart-jenkins-after-update-github-personal-access-token">Restart Jenkins after Update Github Personal access token</h3>
-<blockquote>
-<p>Note: generate new Personal access token in Github</p>
-</blockquote>
-<ul>
-<li>Go to Jenkins -&gt; Credentials</li>
-<li>Updade credentials in Jenkins</li>
 <li>Restart Jenkins</li>
-<li>Open/Close Pull request in Github or create a new PL -&gt; Verify that Pull request jobs are executed</li>
+<li>Create new Pull Request to your repository -&gt; Verify that Pull request jobs are launched</li>
 </ul>
-<h4 id="test-the-integration-with-github-through-the-jenkins-ui">Test the integration with Github through the Jenkins UI</h4>
-<ul>
-<li>Set Credentials -&gt; Test basic connection to GitHub</li>
-<li>Set Repository owner/name -&gt; Test Permissions to a Repository</li>
-<li>Set Issue ID/Comment -&gt; Test adding comment to Pull Request</li>
-</ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/TestGithub.png?raw=true" title="TestGithub" /> </p>
-<h4 id="send-pull-request-to-launch-onpullrequest-jobs">Send Pull request to launch onPullRequest Job(s)</h4>
-<ul>
-<li>Go to your GitHub repository</li>
-<li>Create new Pull Request -&gt; onPullRequest-repo, onPullRequest-repo-trigger jobs launched and succeed in Jenkins</li>
-</ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/master/docs/img/PushJobs.png?raw=true" title="PushJobs" /></p>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
 <p>In order to enable sonarqube the following components must be configured correctly.</p>
 <h3 id="create-a-github-app">Create a <a href="https://developer.github.com/apps/about-apps/">GitHub App</a></h3>
