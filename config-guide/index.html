@@ -335,13 +335,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-private-sonarqube-serveronly-if-you-are-not-using-embeded-one-from-the-infra" class="md-nav__link">
-    Configure private SonarQube server(only if you are not using embeded one from the infra)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#source-control-tools-integration" class="md-nav__link">
     Source Control Tools Integration
   </a>
@@ -507,13 +500,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configure-private-sonarqube-serveronly-if-you-are-not-using-embeded-one-from-the-infra" class="md-nav__link">
-    Configure private SonarQube server(only if you are not using embeded one from the infra)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#source-control-tools-integration" class="md-nav__link">
     Source Control Tools Integration
   </a>
@@ -560,18 +546,16 @@
 <ul>
 <li>Open Jenkins-&gt;Management_Jobs folder.</li>
 <li>Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName</li>
-<li>New folder is created with default content   </li>
+<li>New folder is created with default content <br />
+<img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Organization.png?raw=true" title="Organization" /></li>
 </ul>
-<p>Create organization: 
- <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Organization.png?raw=true" title="Organization" /></p>
 <h3 id="register-repository">Register Repository</h3>
 <ul>
 <li>Open your organization folder</li>
 <li>Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo as sample repo to scan)
-   -&gt; Repository is scanned and TestNG jobs created</li>
+   -&gt; Repository is scanned and TestNG jobs created
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true" title="Repository" />       </li>
 </ul>
-<p>Create Repository:
- <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true" title="Repository" />       </p>
 <h4 id="setup-github-webhook-onpush-jobevent">Setup GitHub WebHook (onPush Job/Event)</h4>
 <ul>
 <li>Go to your GitHub repository</li>
@@ -613,7 +597,12 @@
 <li>Create new Pull Request to your repository -&gt; Verify that Pull request jobs are launched</li>
 </ul>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
-<p>In order to enable sonarqube the following components must be configured correctly.</p>
+<p>In order to integrate non-embedded SonarQube instance, please:
+  * Login to Jenkins, go to <strong>Manage Jenkins &gt; System Configuration &gt; Global Properties</strong>
+  * Search for <strong>SONAR_URL</strong> and change the value for your private SonarQube instance</p>
+<blockquote>
+<p>Note: Compatible SonarQube version is 7.9.3+</p>
+</blockquote>
 <h3 id="create-a-github-app">Create a <a href="https://developer.github.com/apps/about-apps/">GitHub App</a></h3>
 <ul>
 <li>Follow Steps 1–4 <a href="https://developer.github.com/apps/building-github-apps/creating-a-github-app/">here</a> to start creating your GitHub App</li>
@@ -672,7 +661,6 @@
 <li>Clik install</li>
 </ul>
 <h3 id="configure-sonarqube-server">Configure SonarQube server</h3>
-<p>In order to enable pull request decoration follow the next steps:</p>
 <ul>
 <li>
 <p>Go to your sonarqube server page and login.</p>
@@ -681,29 +669,20 @@
 </blockquote>
 </li>
 <li>
-<p>Add your SonarQube server under <strong>Configuration &gt; General Settings &gt; Server base URL</strong></p>
+<p>Add your SonarQube server under <strong>Configuration &gt; General Settings &gt; Server base URL</strong>
+  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /></p>
+</li>
+<li>
+<p>In <strong>Configuration &gt; GitHub</strong> add your GitHub App <strong>Client ID, Client Secret</strong>
+  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /></p>
+</li>
+<li>
+<p>In <strong>Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key and select Provider as GitHub</strong>
+  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true" title="SonarPullRequestConfig" /></p>
 </li>
 </ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /></p>
-<ul>
-<li>In <strong>Configuration &gt; GitHub</strong> add your GitHub App <strong>Client ID, Client Secret</strong></li>
-</ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /></p>
-<ul>
-<li>In <strong>Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key and select Provider as GitHub</strong></li>
-</ul>
-<p><img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true" title="SonarPullRequestConfig" /></p>
 <blockquote>
 <p>Note: make sure to copy all content from the .pem file generated in the <strong>Create GitHub App</strong> section</p>
-</blockquote>
-<h2 id="configure-private-sonarqube-serveronly-if-you-are-not-using-embeded-one-from-the-infra">Configure private SonarQube server(only if you are not using embeded one from the infra)</h2>
-<ul>
-<li>Open your infra.domain/jenkins and login</li>
-<li>Go to Manage <strong>Jenkins &gt; System Configuration &gt; Global Properties</strong></li>
-<li>Search for <strong>SONAR_URL</strong> and change the value for your private SonarQube one</li>
-</ul>
-<blockquote>
-<p>Note: Make sure to add the <strong>protocol prefix.</strong> i.e: http://your.sonar.url or https://your.sonar.url if you have an SSL sertificate.</p>
 </blockquote>
 <h2 id="source-control-tools-integration">Source Control Tools Integration</h2>
 <p>For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default:
