@@ -70,7 +70,6 @@ Only for case when embedded S3 compatible minio storage not used
 #### Create AWS S3 user
  
 1. Create new user with AWS programmatic access:
-
 * Goto IAM -> Policies -> Create New Policy-> Active JSON
 * Put below value, replacing MYBUCKET with actual value
 ```
