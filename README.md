@@ -3,8 +3,6 @@ Zebrunner (Community Edition)
 
 [![Zebrunner Reporting pulls](https://img.shields.io/docker/pulls/qaprosoft/zafira.svg?label=zafira%20pulls)](https://hub.docker.com/r/qaprosoft/zafira/)
 
-# QPS-Infra becomes part of [Zebrunner solution](https://medium.com/@zebrunner_official/qps-infra-becomes-part-of-zebrunner-solution-dbcf233e49f)!
-
 * Zebrunner is a [Continuous configuration automation](https://en.wikipedia.org/wiki/Infrastructure_as_code#Continuous_configuration_automation) framework for continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
   > It is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
 
@@ -22,6 +20,8 @@ Zebrunner (Community Edition)
 * [Carina manual](http://qaprosoft.github.io/carina)
 * [Demo project](https://github.com/qaprosoft/carina-demo)
 * [Telegram channel](https://t.me/zebrunner)
+
+# QPS-Infra becomes part of [Zebrunner solution](https://medium.com/@zebrunner_official/qps-infra-becomes-part-of-zebrunner-solution-dbcf233e49f)!
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
