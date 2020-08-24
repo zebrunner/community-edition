@@ -6,7 +6,7 @@
   * Open Jenkins->Management_Jobs folder.
   * Run "RegisterOrganization" providing your SCM (GitHub) organization name as folderName
   * New folder is created with default content   
-  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Organization.png?raw=true "Organization")
+  ![Alt text](https://github.com/zebrunner/zebrunner/blob/develop/docs/img/Organization.png?raw=true "Organization")
 
 ### Register Repository
    * Open your organization folder
