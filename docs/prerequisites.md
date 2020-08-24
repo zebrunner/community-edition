@@ -68,15 +68,30 @@ Only for case when embedded S3 compatible minio storage not used
   
 #### Create user
 
-* Goto IAM -> Policies -> Create New Policy-> Active JSON
+* Goto IAM -> Policies -> **Create Policy** -> Active **JSON**
 * Put below value, replacing MYBUCKET with actual value
 ```
 {
-  qwe6
+  "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:ListAllMyBuckets",
+            "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::MYBUCKET",
+                "arn:aws:s3:::MYBUCKET/*"
+            ]
+        }
+    ]
 }
 ```
-* Click Review policy -> specify name like zebrunner-s3-writer-policy -> Create Policy
-* GOTO IAM -> Users -> Add User
-* Specify username like zebrunner-s3-user -> Pick “Programmatic access” -> Next Permissions -> Attach existing policies directly
-* Choose previously created police -> Next: Tags -> Next: Review -> Create User
+* Click **Review policy** -> specify name like _zebrunner-s3-writer-policy_ -> **Create Policy**
+* Goto IAM -> Users -> **Add User**
+* Specify username like zebrunner-s3-user -> Pick “Programmatic access” -> **Next: Permissions:** -> **Attach existing policies directly**
+* Choose previously created policy -> **Next: Tags** -> **Next: Review** -> **Create User**
 * Remember Access Key ID,  Secret key and UserAgent values
