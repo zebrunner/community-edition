@@ -281,8 +281,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#create-aws-s3-user" class="md-nav__link">
-    Create AWS S3 user
+  <a href="#create-user" class="md-nav__link">
+    Create user
   </a>
   
 </li>
@@ -436,8 +436,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#create-aws-s3-user" class="md-nav__link">
-    Create AWS S3 user
+  <a href="#create-user" class="md-nav__link">
+    Create user
   </a>
   
 </li>
@@ -565,29 +565,18 @@ Only for case when embedded S3 compatible minio storage not used</p>
 <blockquote>
 <p>replacing <em>MYBUCKET</em> with actual name and putting as strong password instead of <em>MyStrongPassword</em></p>
 </blockquote>
-<h4 id="create-aws-s3-user">Create AWS S3 user</h4>
+<h4 id="create-user">Create user</h4>
 <ol>
 <li>Create new user with AWS programmatic access:</li>
 <li>Goto IAM -&gt; Policies -&gt; Create New Policy-&gt; Active JSON</li>
-<li>Put below value, replacing MYBUCKET with actual value
- <code>{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "s3:ListAllMyBuckets",
-            "Resource": "arn:aws:s3:::*"
-        },
-        {
-            "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": [
-                "arn:aws:s3:::MYBUCKET",
-                "arn:aws:s3:::MYBUCKET/*"
-            ]
-        }
-    ]
- }</code></li>
+<li>Put below value, replacing MYBUCKET with actual value</li>
+</ol>
+<pre><code>{
+  qwe
+}
+</code></pre>
+
+<ol>
 <li>Click Review policy -&gt; specify name like zebrunner-s3-writer-policy -&gt; Create Policy</li>
 <li>GOTO IAM -&gt; Users -&gt; Add User</li>
 <li>Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; Next Permissions -&gt; Attach existing policies directly</li>
