@@ -46,6 +46,7 @@ Only for case when embedded S3 compatible minio storage not used
 2. In bucket “Public Access Settings” uncheck all properties (later security will be configured on other level)
 ![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true "AWS S3 Bucket")
 3. In “Bucket Policy” put below json:
+
    ```
 {
     "Version": "2012-10-17",
@@ -72,6 +73,7 @@ Only for case when embedded S3 compatible minio storage not used
 1. Create new user with AWS programmatic access:
 * Goto IAM -> Policies -> Create New Policy-> Active JSON
 * Put below value, replacing MYBUCKET with actual value
+
    ```
 {
     "Version": "2012-10-17",
