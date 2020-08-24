@@ -70,13 +70,13 @@ Only for case when embedded S3 compatible minio storage not used
 #### Create user
  
 1. Create new user with AWS programmatic access:
-* Goto IAM -> Policies -> Create New Policy-> Active JSON
-* Put below value, replacing MYBUCKET with actual value
-```
-{
-  qwe1
-}
-```
+  * Goto IAM -> Policies -> Create New Policy-> Active JSON
+  * Put below value, replacing MYBUCKET with actual value
+  ```
+  {
+    qwe2
+  }
+  ```
 2. Click Review policy -> specify name like zebrunner-s3-writer-policy -> Create Policy
 3. GOTO IAM -> Users -> Add User
 4. Specify username like zebrunner-s3-user -> Pick “Programmatic access” -> Next Permissions -> Attach existing policies directly
