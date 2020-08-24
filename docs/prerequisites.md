@@ -42,8 +42,7 @@ Only for case when embedded S3 compatible minio storage not used
 
 1. Create new bucket in AWS S3 (choose region closer to your location)
 2. In bucket “Public Access Settings” uncheck all properties (later security will be configured on other level)
-![Alt text](https://github.com/zebrunner/zebrunner/tree/master/docs/img/s3.png?raw=true "s3")
-
+![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true "AWS S3 Bucket")
 3. In “Bucket Policy” put below json:
 ```
 {
