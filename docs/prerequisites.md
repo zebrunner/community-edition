@@ -29,13 +29,13 @@
 
 * Valid smtp host and user for sending notifications
 
-### Create a GitHub OAuth App
+### GitHub OAuth App
 
 * Follow Steps 1–4 [here](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/) to start creating your GitHub OAuth App
 * Under **GitHub App name**, give your app a name, such as "Zebrunner (Community Edition)".
 * Add a **Homepage URL** and **Authorization callback URL**. Set this to your instance's base URL. For example, https://your.zebrunner.domain.com/
 
-### [Optional] AWS S3
+### [Optional] AWS S3 Bucket
 
 Only for case when embedded S3 compatible minio storage not used
 
