@@ -430,7 +430,7 @@
         ZBR_GITHUB_CLIENT_ID=$local_client_id
       fi
 
-      read -p "client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
+      read -p "Client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
       if [[ ! -z $local_secret_id ]]; then
         ZBR_GITHUB_CLIENT_SECRET=$local_secret_id
       fi
