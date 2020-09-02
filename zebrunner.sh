@@ -104,7 +104,7 @@
   }
 
   shutdown() {
-    echo_warning "Shutdown will destroy all settings and data!"
+    echo_warning "Shutdown will erase all settings and data!"
     confirm "" "      Do you want to continue?" "n"
     if [[ $? -eq 0 ]]; then
       exit
