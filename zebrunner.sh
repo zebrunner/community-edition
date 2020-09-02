@@ -104,6 +104,12 @@
   }
 
   shutdown() {
+    echo_warning "Shutdown will erase all settings and data!"
+    confirm "" "      Do you want to continue?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env
 
