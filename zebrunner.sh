@@ -104,8 +104,8 @@
   }
 
   shutdown() {
-    echo_warning "Please confirm shutdown operation. \nShutdown will completely destroy all settings and historical data"
-    confirm "" "      Do you confirm?" "n"
+    echo_warning "Shutdown will destroy all settings and data!"
+    confirm "" "      Do you want to continue?" "n"
     if [[ $? -eq 0 ]]; then
       exit
     fi
