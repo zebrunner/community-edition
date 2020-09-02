@@ -104,6 +104,12 @@
   }
 
   shutdown() {
+    echo_warning "Please confirm shutdown operation. \nShutdown will completely destroy all settings and historical data"
+    confirm "" "      Do you confirm?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env
 
