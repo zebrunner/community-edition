@@ -13,6 +13,8 @@ server {
     resolver 127.0.0.11 valid=30s;
     resolver_timeout 10s;
 
+    #charset koi8-r;
+
     location /sonarqube {
       set $upstream_sonar 127.0.0.1:80;
       proxy_set_header Host sonarqube;
