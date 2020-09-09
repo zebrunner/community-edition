@@ -216,12 +216,6 @@
   }
 
   setSonarQubeCustomUrl() {
-    local isEnabled=$1
-
-    if [[ -z "$isEnabled" ]]; then
-      return 1
-    fi
-
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Enter custom SonarQube URL: " response
@@ -235,13 +229,16 @@
       confirm "" "Continue?" "y"
       is_confirmed=$?
     done
-
   }
 
   enableCustomLayer() {
     local layer=$1
     local message=$2
     local isEnabled=$3
+
+    if [[ -z "$isEnabled" ]]; then
+      return 1
+    fi
 
     echo
     confirm "$message" "Enable?" "$isEnabled"
