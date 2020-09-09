@@ -35,6 +35,8 @@
 
     enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
     export ZBR_SONARQUBE_ENABLED=$?
+    enableLayer "custom sonarqube" "Custom SonarQube" "0"
+    setSonarQubeCustomUrl "$?"
 
     enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
     export ZBR_JENKINS_ENABLED=$?
@@ -211,6 +213,29 @@
     mcloud/zebrunner.sh restore
     selenoid/zebrunner.sh restore
     down
+  }
+
+  setSonarQubeCustomUrl() {
+    local isEnabled=$1
+
+    if [[ -z "$isEnabled" ]]; then
+      return 1
+    fi
+
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom SonarQube URL: " response
+      if [[ ! -z $response ]]; then
+        ZBR_SONARQUBE_CUSTOM_URL=$response
+      fi
+
+      export ZBR_SONARQUBE_CUSTOM_URL=$ZBR_SONARQUBE_CUSTOM_URL
+      echo "ZBR_SONARQUBE_CUSTOM_URL = $ZBR_SONARQUBE_CUSTOM_URL"
+
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
+
   }
 
   enableLayer() {
