@@ -35,7 +35,7 @@
 
     enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
     export ZBR_SONARQUBE_ENABLED=$?
-    enableLayer "custom sonarqube" "Custom SonarQube" "0"
+    enableLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_ENABLED"
     setSonarQubeCustomUrl "$?"
 
     enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
