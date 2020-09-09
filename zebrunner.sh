@@ -35,9 +35,11 @@
 
     enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
     export ZBR_SONARQUBE_ENABLED=$?
-    enableCustomLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_ENABLED"
-    export ZBR_SONARQUBE_CUSTOM_ENABLED=?
-    setSonarQubeCustomUrl "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+    #if standart == no; then ask for custom
+    if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
+      enableCustomLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+      setSonarQubeCustomUrl
+    fi
 
     enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
     export ZBR_JENKINS_ENABLED=$?
@@ -217,12 +219,6 @@
   }
 
   setSonarQubeCustomUrl() {
-    local isEnabled=$1
-
-    if [[ ! -z "$isEnabled" ]]; then
-      return 1
-    fi
-
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Enter custom SonarQube URL [$ZBR_SONARQUBE_CUSTOM_URL]: " response
@@ -242,10 +238,6 @@
     local layer=$1
     local message=$2
     local isEnabled=$3
-
-    if [[ ! -z "$isEnabled" ]]; then
-      return 1
-    fi
 
     echo
     confirm "$message" "Enable?" "$isEnabled"
