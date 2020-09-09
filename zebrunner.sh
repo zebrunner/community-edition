@@ -238,6 +238,22 @@
 
   }
 
+  enableCustomLayer() {
+    local layer=$1
+    local message=$2
+    local isEnabled=$3
+
+    echo
+    confirm "$message" "Enable?" "$isEnabled"
+    if [[ $? -eq 1 ]]; then
+      # enable
+      return 1
+    else
+      # disable
+      return 0
+    fi
+  }
+
   enableLayer() {
     local layer=$1
     local message=$2
