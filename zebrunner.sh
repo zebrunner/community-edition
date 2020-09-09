@@ -217,7 +217,7 @@
   }
 
   setSonarQubeCustomUrl() {
-    local isEnabled=$3
+    local isEnabled=$1
 
     if [[ ! -z "$isEnabled" ]]; then
       return 1
