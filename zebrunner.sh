@@ -38,7 +38,7 @@
     #if standart == no; then ask for custom
     if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
       enableCustomLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
-      export $ZBR_SONARQUBE_CUSTOM_ENABLED=$?
+      export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
       if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
         setSonarQubeCustomUrl
       fi
