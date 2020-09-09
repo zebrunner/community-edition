@@ -38,7 +38,9 @@
     #if standart == no; then ask for custom
     if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
       enableCustomLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
-      setSonarQubeCustomUrl
+      if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
+        setSonarQubeCustomUrl
+      fi
     fi
 
     enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
