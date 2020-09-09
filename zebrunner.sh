@@ -35,14 +35,6 @@
 
     enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
     export ZBR_SONARQUBE_ENABLED=$?
-    #if standart == no; then ask for custom
-    if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
-      enableCustomLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
-      export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
-      if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
-        setSonarQubeCustomUrl
-      fi
-    fi
 
     enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
     export ZBR_JENKINS_ENABLED=$?
@@ -72,6 +64,15 @@
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
       export ZBR_SONAR_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube
+    else
+      #if standart == no; then ask for custom
+      if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
+        enableCustomLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+        export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
+        if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
+          setSonarQubeCustomUrl
+        fi
+      fi
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
@@ -224,13 +225,11 @@
   setSonarQubeCustomUrl() {
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Enter custom SonarQube URL [$ZBR_SONARQUBE_CUSTOM_URL]: " response
+      read -p "Enter custom SonarQube URL [$ZBR_SONARQUBE_URL]: " response
       if [[ ! -z $response ]]; then
-        ZBR_SONARQUBE_CUSTOM_URL=$response
+        ZBR_SONARQUBE_URL=$response
       fi
-
-      export ZBR_SONARQUBE_CUSTOM_URL=$ZBR_SONARQUBE_CUSTOM_URL
-      echo "ZBR_SONARQUBE_CUSTOM_URL = $ZBR_SONARQUBE_CUSTOM_URL"
+      export ZBR_SONARQUBE_URL=$ZBR_SONARQUBE_URL
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
