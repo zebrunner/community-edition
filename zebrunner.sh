@@ -71,6 +71,7 @@
         export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
         if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
           setSonarQubeCustomUrl
+          #TODO: change nginx properties for sonarqube: use sed for setup custom url
         fi
       fi
     fi
