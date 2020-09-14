@@ -15,7 +15,7 @@ server {
 
     #charset koi8-r;
 
-	location /sonarqube {
+    location /sonarqube {
       set $upstream_sonar http://127.0.0.1:80;
       proxy_set_header Host sonarqube;
       proxy_pass $upstream_sonar;
