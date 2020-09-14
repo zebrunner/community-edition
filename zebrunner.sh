@@ -67,10 +67,10 @@
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
-        enableCustomLayer "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+        confirm "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
         export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
         if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
-          setSonarQubeCustomUrl
+          setCustomSonarQube
         fi
       fi
     fi
@@ -222,7 +222,7 @@
     down
   }
 
-  setSonarQubeCustomUrl() {
+  setCustomSonarQube() {
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Enter custom SonarQube URL [$ZBR_SONARQUBE_URL]: " response
@@ -237,22 +237,6 @@
       confirm "" "Continue?" "y"
       is_confirmed=$?
     done
-  }
-
-  enableCustomLayer() {
-    local layer=$1
-    local message=$2
-    local isEnabled=$3
-
-    echo
-    confirm "$message" "Enable?" "$isEnabled"
-    if [[ $? -eq 1 ]]; then
-      # enable
-      return 1
-    else
-      # disable
-      return 0
-    fi
   }
 
   enableLayer() {
