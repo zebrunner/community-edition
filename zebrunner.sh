@@ -64,6 +64,15 @@
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
       export ZBR_SONAR_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube
+    else
+      #if standart == no; then ask for custom
+      if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
+        confirm "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+        export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
+        if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
+          setCustomSonarQube
+        fi
+      fi
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
@@ -211,6 +220,23 @@
     mcloud/zebrunner.sh restore
     selenoid/zebrunner.sh restore
     down
+  }
+
+  setCustomSonarQube() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom SonarQube URL [$ZBR_SONARQUBE_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_SONARQUBE_URL=$response
+      fi
+      export ZBR_SONARQUBE_URL=$ZBR_SONARQUBE_URL
+
+      sed -i "s#set \$upstream_sonar http://127.0.0.1:80;#set \$upstream_sonar $ZBR_SONARQUBE_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_sonar;#return 301 \$upstream_sonar;#g" nginx/conf.d/default.conf
+
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
   }
 
   enableLayer() {
