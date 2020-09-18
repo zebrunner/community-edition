@@ -67,7 +67,8 @@
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
-        confirm "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+        echo
+        confirm "Custom SonarQube" "Enable?" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
         export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
         if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
           setCustomSonarQube
@@ -84,6 +85,16 @@
       sed -i "s#USER_VALUE#admin#g" reporting/database/reporting/sql/db-jenkins-integration.sql
       sed -i "s#PASSWORD_VALUE#changeit#g" reporting/database/reporting/sql/db-jenkins-integration.sql
       sed -i "s#FOLDER_VALUE##g" reporting/database/reporting/sql/db-jenkins-integration.sql
+    else
+      #if standart == no; then ask for custom
+      if [[ $ZBR_JENKINS_ENABLED -eq 0 ]]; then
+        echo
+        confirm "Custom Jenkins" "Enable?" "$ZBR_JENKINS_CUSTOM_ENABLED"
+        export ZBR_JENKINS_CUSTOM_ENABLED=$?
+        if [[ $ZBR_JENKINS_CUSTOM_ENABLED -eq 1 ]]; then
+          setCustomJenkins
+        fi
+      fi
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
@@ -249,7 +260,7 @@
     done
   }
 
-    setCustomMCloud() {
+  setCustomMCloud() {
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Enter custom MCloud URL [$ZBR_MCLOUD_URL]: " response
@@ -260,6 +271,23 @@
 
       sed -i "s#set \$upstream_zebrunner http://127.0.0.1:80;#set \$upstream_zebrunner $ZBR_MCLOUD_URL;#g" nginx/conf.d/default.conf
       sed -i "s#proxy_pass \$upstream_zebrunner;#return 301 \$upstream_zebrunner;#g" nginx/conf.d/default.conf
+      
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
+  }
+  
+  setCustomJenkins() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom Jenkins URL [$ZBR_JENKINS_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_JENKINS_URL=$response
+      fi
+      export ZBR_JENKINS_URL=$ZBR_JENKINS_URL
+
+      sed -i "s#set \$upstream_jenkins http://jenkins-master:8080;#set \$upstream_jenkins $ZBR_JENKINS_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_jenkins;#return 301 \$upstream_jenkins;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
