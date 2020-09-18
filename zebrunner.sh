@@ -95,6 +95,15 @@
       sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/database/reporting/sql/db-mcloud-integration.sql
       sed -i "s#USER_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
       sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
+    else
+      #if standart == no; then ask for custom
+      if [[ $ZBR_MCLOUD_ENABLED -eq 0 ]]; then
+        confirm "Custom MCloud" "Enable?" "$ZBR_MCLOUD_CUSTOM_ENABLED"
+        export ZBR_MCLOUD_CUSTOM_ENABLED=$?
+        if [[ $ZBR_MCLOUD_CUSTOM_ENABLED -eq 1 ]]; then
+          setCustomMCloud
+        fi
+      fi
     fi
 
     if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
@@ -233,6 +242,23 @@
 
       sed -i "s#set \$upstream_sonar http://127.0.0.1:80;#set \$upstream_sonar $ZBR_SONARQUBE_URL;#g" nginx/conf.d/default.conf
       sed -i "s#proxy_pass \$upstream_sonar;#return 301 \$upstream_sonar;#g" nginx/conf.d/default.conf
+
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
+  }
+
+    setCustomMCloud() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom MCloud URL [$ZBR_MCLOUD_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_MCLOUD_URL=$response
+      fi
+      export ZBR_MCLOUD_URL=$ZBR_MCLOUD_URL
+
+      sed -i "s#set \$upstream_zebrunner http://127.0.0.1:80;#set \$upstream_zebrunner $ZBR_MCLOUD_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_zebrunner;#return 301 \$upstream_zebrunner;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
