@@ -101,6 +101,7 @@
         confirm "Custom MCloud" "Enable?" "$ZBR_MCLOUD_CUSTOM_ENABLED"
         export ZBR_MCLOUD_CUSTOM_ENABLED=$?
         if [[ $ZBR_MCLOUD_CUSTOM_ENABLED -eq 1 ]]; then
+          echo
           setCustomMCloud
         fi
       fi
