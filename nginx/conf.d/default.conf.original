@@ -30,8 +30,8 @@ server {
 	#proxy_redirect http:// https://;
  
         if (!-f $request_filename) {
-            set $upstream_jenkins jenkins-master:8080;
-	    proxy_pass http://$upstream_jenkins;
+            set $upstream_jenkins http://jenkins-master:8080;
+	    proxy_pass $upstream_jenkins;
             break;
         }
     }
