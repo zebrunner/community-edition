@@ -67,7 +67,8 @@
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_SONARQUBE_ENABLED -eq 0 ]]; then
-        confirm "custom sonarqube" "Custom SonarQube" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+        echo
+        confirm "Custom SonarQube" "Enable?" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
         export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
         if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
           setCustomSonarQube
@@ -87,7 +88,8 @@
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_JENKINS_ENABLED -eq 0 ]]; then
-        confirm "custom jenkins" "Custom Jenkins" "$ZBR_JENKINS_CUSTOM_ENABLED"
+        echo
+        confirm "Custom Jenkins" "Enable?" "$ZBR_JENKINS_CUSTOM_ENABLED"
         export ZBR_JENKINS_CUSTOM_ENABLED=$?
         if [[ $ZBR_JENKINS_CUSTOM_ENABLED -eq 1 ]]; then
           setCustomJenkins
@@ -257,7 +259,7 @@
       fi
       export ZBR_JENKINS_URL=$ZBR_JENKINS_URL
 
-      sed -i "s#set \$upstream_jenkins jenkins-master:8080;#set \$upstream_jenkins $ZBR_JENKINS_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#set \$upstream_jenkins http://jenkins-master:8080;#set \$upstream_jenkins $ZBR_JENKINS_URL;#g" nginx/conf.d/default.conf
       sed -i "s#proxy_pass \$upstream_jenkins;#return 301 \$upstream_jenkins;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
