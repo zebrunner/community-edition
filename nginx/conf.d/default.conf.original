@@ -63,9 +63,9 @@ server {
     }
 
     location /mcloud {
-      set $upstream_zebrunner 127.0.0.1:80;
+      set $upstream_zebrunner http://127.0.0.1:80;
       proxy_set_header Host mcloud;
-      proxy_pass http://$upstream_zebrunner;
+      proxy_pass $upstream_zebrunner;
       proxy_http_version 1.1;
     }
 
