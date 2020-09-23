@@ -643,11 +643,11 @@
   version() {
   echo "
     Components versions:
-    Jenkins - $(./jenkins/zebrunner.sh version)
-    MCloud - $(./mcloud/zebrunner.sh version)
-    Reporting Service - $(./reporting/zebrunner.sh version)
-    Selenoid - $(./selenoid/zebrunner.sh version)
-    Sonarqube - $(./sonarqube/zebrunner.sh version)"
+    $(./jenkins/zebrunner.sh version)
+    $(./mcloud/zebrunner.sh version)
+    $(./reporting/zebrunner.sh version)
+    $(./selenoid/zebrunner.sh version)
+    $(./sonarqube/zebrunner.sh version)"
   }
 
   echo_warning() {
