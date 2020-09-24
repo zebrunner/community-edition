@@ -677,7 +677,7 @@
       	  shutdown       Stop and remove container, clear volumes
       	  backup         Backup container
       	  restore        Restore container
-          version        Version of components"
+      	  version        Version of components"
       echo_telegram
       exit 0
   }
