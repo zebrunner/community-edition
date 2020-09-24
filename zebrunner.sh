@@ -644,8 +644,7 @@
     source .env
 
     echo "
-      zebrunner - ${ZEBRUNNER_VERSION}
-      Components versions:
+      zebrunner: ${ZEBRUNNER_VERSION}
       $(./jenkins/zebrunner.sh version)
       $(./mcloud/zebrunner.sh version)
       $(./reporting/zebrunner.sh version)
