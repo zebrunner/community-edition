@@ -71,8 +71,8 @@ server {
 
     #Selenoid VNC WebSocket
     location /vnc {
-      set $upstream_selenoid selenoid:4444;
-      proxy_pass http://$upstream_selenoid;
+      set $upstream_selenoid http://selenoid:4444;
+      proxy_pass $upstream_selenoid;
 
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
@@ -96,8 +96,8 @@ server {
       auth_basic "Private Selenoid Hub";
       auth_basic_user_file /usr/share/nginx/htpasswd/selenoid.htpasswd;
 
-      set $upstream_selenoid selenoid:4444;
-      proxy_pass http://$upstream_selenoid/$1;
+      set $upstream_selenoid http://selenoid:4444;
+      proxy_pass $upstream_selenoid/$1;
 
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
