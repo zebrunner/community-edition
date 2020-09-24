@@ -641,13 +641,16 @@
   }
 
   version() {
-  echo "
-    Components versions:
-    $(./jenkins/zebrunner.sh version)
-    $(./mcloud/zebrunner.sh version)
-    $(./reporting/zebrunner.sh version)
-    $(./selenoid/zebrunner.sh version)
-    $(./sonarqube/zebrunner.sh version)"
+    source .env
+
+    echo "
+      zebrunner - ${ZEBRUNNER_VERSION}
+      Components versions:
+      $(./jenkins/zebrunner.sh version)
+      $(./mcloud/zebrunner.sh version)
+      $(./reporting/zebrunner.sh version)
+      $(./selenoid/zebrunner.sh version)
+      $(./sonarqube/zebrunner.sh version)"
   }
 
   echo_warning() {
