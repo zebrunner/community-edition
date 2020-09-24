@@ -127,6 +127,16 @@
       sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/database/reporting/sql/db-selenium-integration.sql
       sed -i "s#USER_VALUE#demo#g" reporting/database/reporting/sql/db-selenium-integration.sql
       sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-selenium-integration.sql
+    else
+      #if standart == no; then ask for custom
+      if [[ $ZBR_SELENOID_ENABLED -eq 0 ]]; then
+        confirm "Custom Selenoid" "Enable?" "$ZBR_SELENOID_CUSTOM_ENABLED"
+        export ZBR_SELENOID_CUSTOM_ENABLED=$?
+        if [[ $ZBR_SELENOID_CUSTOM_ENABLED -eq 1 ]]; then
+          echo
+          setCustomSelenoid
+        fi
+      fi
     fi
 
     # export all ZBR* variables to save user input
@@ -288,6 +298,22 @@
 
       sed -i "s#set \$upstream_jenkins http://jenkins-master:8080;#set \$upstream_jenkins $ZBR_JENKINS_URL;#g" nginx/conf.d/default.conf
       sed -i "s#proxy_pass \$upstream_jenkins;#return 301 \$upstream_jenkins;#g" nginx/conf.d/default.conf
+
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
+  }
+
+  setCustomSelenoid() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom Selenoid URL [$ZBR_SELENOID_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_SELENOID_URL=$response
+      fi
+      export ZBR_SELENOID_URL=$ZBR_SELENOID_URL
+
+      sed -i "s#set \$upstream_selenoid http://selenoid:4444;#set \$upstream_sonar $ZBR_SELENOID_URL;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
