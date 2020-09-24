@@ -109,6 +109,7 @@
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_MCLOUD_ENABLED -eq 0 ]]; then
+        echo
         confirm "Custom MCloud" "Enable?" "$ZBR_MCLOUD_CUSTOM_ENABLED"
         export ZBR_MCLOUD_CUSTOM_ENABLED=$?
         if [[ $ZBR_MCLOUD_CUSTOM_ENABLED -eq 1 ]]; then
@@ -130,6 +131,7 @@
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_SELENOID_ENABLED -eq 0 ]]; then
+        echo
         confirm "Custom Selenoid" "Enable?" "$ZBR_SELENOID_CUSTOM_ENABLED"
         export ZBR_SELENOID_CUSTOM_ENABLED=$?
         if [[ $ZBR_SELENOID_CUSTOM_ENABLED -eq 1 ]]; then
