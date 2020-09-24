@@ -640,6 +640,18 @@
     done
   }
 
+  version() {
+    source .env
+
+    echo "
+      zebrunner: ${ZEBRUNNER_VERSION}
+      $(./jenkins/zebrunner.sh version)
+      $(./mcloud/zebrunner.sh version)
+      $(./reporting/zebrunner.sh version)
+      $(./selenoid/zebrunner.sh version)
+      $(./sonarqube/zebrunner.sh version)"
+  }
+
   echo_warning() {
     echo "
       WARNING! $1"
@@ -664,7 +676,8 @@
       	  down           Stop and remove container
       	  shutdown       Stop and remove container, clear volumes
       	  backup         Backup container
-      	  restore        Restore container"
+      	  restore        Restore container
+      	  version        Version of components"
       echo_telegram
       exit 0
   }
@@ -697,6 +710,9 @@ case "$1" in
         ;;
     restore)
         restore
+        ;;
+    version)
+        version
         ;;
     *)
         echo "Invalid option detected: $1"
