@@ -315,7 +315,7 @@
       fi
       export ZBR_SELENOID_URL=$ZBR_SELENOID_URL
 
-      sed -i "s#set \$upstream_selenoid http://selenoid:4444;#set \$upstream_sonar $ZBR_SELENOID_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#set \$upstream_selenoid http://selenoid:4444;#set \$upstream_selenoid $ZBR_SELENOID_URL;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
