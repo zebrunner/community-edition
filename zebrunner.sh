@@ -143,6 +143,12 @@
 
     # export all ZBR* variables to save user input
     export_settings
+
+    confirm "" "      Do you want to start service?" "y"
+    if [[ $? -eq 1 ]]; then
+      start
+    fi
+
   }
 
   shutdown() {
