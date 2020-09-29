@@ -674,7 +674,7 @@
       Flags:
           --help | -h    Print help
       Arguments:
-          setup          Setup Zebrunner Server (Community Edition)
+          setup          Setup Zebrunner Community Edition
       	  start          Start container
       	  stop           Stop and keep container
       	  restart        Restart container
@@ -682,6 +682,7 @@
       	  shutdown       Stop and remove container, clear volumes
       	  backup         Backup container
       	  restore        Restore container
+          upgrade        Upgrade to the latest version of Zebrunner Community Edition
       	  version        Version of components"
       echo_telegram
       exit 0
