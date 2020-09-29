@@ -697,6 +697,13 @@
       exit
     fi
 
+    jenkins/zebrunner.sh down
+    reporting/zebrunner.sh down
+    sonarqube/zebrunner.sh down
+    mcloud/zebrunner.sh down
+    selenoid/zebrunner.sh down
+    docker-compose down
+
     patch/1.1.sh
   }
 
