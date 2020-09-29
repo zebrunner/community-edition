@@ -157,8 +157,9 @@
   }
 
   start() {
-    if [ ! -f ./nginx/conf.d/default.conf ]; then
-      printf 'WARNING! You have to setup services in advance! For example:\n ./zebrunner.sh setup\n\n' "$(basename "$0")" >&2
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
       exit -1
     fi
 
@@ -618,7 +619,7 @@
         echo "$message"
       fi
 
-      read -p "$question Yes/No [$isEnabled]:" response
+      read -p "$question y/n [$isEnabled]:" response
       if [[ -z $response ]]; then
         if [[ "$isEnabled" == "y" ]]; then
           return 1
@@ -642,8 +643,20 @@
   }
 
   upgrade() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    echo_warning "Before upgrade it is recommended to make a backup and perform recursive pull..."
+    confirm "" "      Do you want to continue?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
     #TODO: ask about recursive pull and customized files if any
-    ./upgrade/1.1.sh
+    patch/1.1.sh
   }
 
   version() {
@@ -651,11 +664,11 @@
 
     echo "
       zebrunner: ${ZBR_VERSION}
-      $(./jenkins/zebrunner.sh version)
-      $(./mcloud/zebrunner.sh version)
-      $(./reporting/zebrunner.sh version)
-      $(./selenoid/zebrunner.sh version)
-      $(./sonarqube/zebrunner.sh version)"
+      $(jenkins/zebrunner.sh version)
+      $(mcloud/zebrunner.sh version)
+      $(reporting/zebrunner.sh version)
+      $(selenoid/zebrunner.sh version)
+      $(sonarqube/zebrunner.sh version)"
   }
 
   echo_warning() {
