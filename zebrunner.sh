@@ -175,7 +175,21 @@
       exit -1
     fi
 
-    #TODO: warn user to perform upgrade if applied version less then pulled
+    source backup/settings.env
+    if [[ -z ${ZBR_VERSION} ]]; then
+      ZBR_VERSION=1.0
+    fi
+    ACTUAL_VERSION=${ZBR_VERSION}
+
+    source .env
+    DESIRED_VERSION=${ZBR_VERSION}
+
+    if [[ "${ACTUAL_VERSION}" < "${DESIRED_VERSION}" ]]; then
+      echo_warning "You have to upgrade services in advance using: ./zebrunner.sh upgrade"
+      echo_telegram
+      exit -1
+    fi
+
     print_banner
 
     # create infra network only if not exist
