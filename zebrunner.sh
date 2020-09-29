@@ -691,7 +691,7 @@
       exit -1
     fi
 
-    echo_warning "Before upgrade it is recommended to make a backup and perform recursive pull..."
+    echo_warning "Services will be stopped for upgrade!"
     confirm "" "      Do you want to continue?" "n"
     if [[ $? -eq 0 ]]; then
       exit
