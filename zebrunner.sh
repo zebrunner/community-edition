@@ -169,11 +169,13 @@
   }
 
   start() {
-    if [ ! -f ./nginx/conf.d/default.conf ]; then
-      printf 'WARNING! You have to setup services in advance! For example:\n ./zebrunner.sh setup\n\n' "$(basename "$0")" >&2
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
       exit -1
     fi
 
+    #TODO: warn user to perform upgrade if applied version less then pulled
     print_banner
 
     # create infra network only if not exist
@@ -645,7 +647,7 @@
         echo "$message"
       fi
 
-      read -p "$question Yes/No [$isEnabled]:" response
+      read -p "$question y/n [$isEnabled]:" response
       if [[ -z $response ]]; then
         if [[ "$isEnabled" == "y" ]]; then
           return 1
@@ -668,16 +670,32 @@
     done
   }
 
+  upgrade() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    echo_warning "Before upgrade it is recommended to make a backup and perform recursive pull..."
+    confirm "" "      Do you want to continue?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
+    patch/1.1.sh
+  }
+
   version() {
-    source .env
+    source backup/settings.env
 
     echo "
-      zebrunner: ${ZEBRUNNER_VERSION}
-      $(./jenkins/zebrunner.sh version)
-      $(./mcloud/zebrunner.sh version)
-      $(./reporting/zebrunner.sh version)
-      $(./selenoid/zebrunner.sh version)
-      $(./sonarqube/zebrunner.sh version)"
+      zebrunner: ${ZBR_VERSION}
+      $(jenkins/zebrunner.sh version)
+      $(mcloud/zebrunner.sh version)
+      $(reporting/zebrunner.sh version)
+      $(selenoid/zebrunner.sh version)
+      $(sonarqube/zebrunner.sh version)"
   }
 
   echo_warning() {
@@ -697,7 +715,7 @@
       Flags:
           --help | -h    Print help
       Arguments:
-          setup          Setup Zebrunner Server (Community Edition)
+          setup          Setup Zebrunner Community Edition
       	  start          Start container
       	  stop           Stop and keep container
       	  restart        Restart container
@@ -705,6 +723,7 @@
       	  shutdown       Stop and remove container, clear volumes
       	  backup         Backup container
       	  restore        Restore container
+          upgrade        Upgrade to the latest version of Zebrunner Community Edition
       	  version        Version of components"
       echo_telegram
       exit 0
@@ -738,6 +757,9 @@ case "$1" in
         ;;
     restore)
         restore
+        ;;
+    upgrade)
+        upgrade
         ;;
     version)
         version
