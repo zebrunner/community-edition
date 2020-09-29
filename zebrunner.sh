@@ -655,7 +655,6 @@
       exit
     fi
 
-    #TODO: ask about recursive pull and customized files if any
     patch/1.1.sh
   }
 
