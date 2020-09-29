@@ -640,11 +640,16 @@
     done
   }
 
+  upgrade() {
+    #TODO: ask about recursive pull and customized files if any
+    ./upgrade/1.1.sh
+  }
+
   version() {
     source .env
 
     echo "
-      zebrunner: ${ZEBRUNNER_VERSION}
+      zebrunner: ${ZBR_VERSION}
       $(./jenkins/zebrunner.sh version)
       $(./mcloud/zebrunner.sh version)
       $(./reporting/zebrunner.sh version)
@@ -710,6 +715,9 @@ case "$1" in
         ;;
     restore)
         restore
+        ;;
+    upgrade)
+        upgrade
         ;;
     version)
         version
