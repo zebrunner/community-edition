@@ -21,21 +21,24 @@ fi
 
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
 # Zebrunner Reporting steps:
-if [[ ! -f reporting/.disabled ]]; then
-  # apply new logstash settings 
-  cp reporting/configuration/logstash/logstash.conf.original reporting/configuration/logstash/logstash.conf
-  sed -i "s#rabbitmq-user#${ZBR_RABBITMQ_USER}#g" reporting/configuration/logstash/logstash.conf
-  sed -i "s#rabbitmq-password#${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/logstash/logstash.conf
+# apply new logstash settings 
+cp reporting/configuration/logstash/logstash.conf.original reporting/configuration/logstash/logstash.conf
+sed -i "s#rabbitmq-user#${ZBR_RABBITMQ_USER}#g" reporting/configuration/logstash/logstash.conf
+sed -i "s#rabbitmq-password#${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/logstash/logstash.conf
 
-  # apply new rabbitmq definitions
-  cp reporting/configuration/rabbitmq/definitions/001-general-definition.json.original reporting/configuration/rabbitmq/definitions/001-general-definition.json
-  sed -i "s#rabbitmq-user#${ZBR_RABBITMQ_USER}#g" reporting/configuration/rabbitmq/definitions/001-general-definition.json
-  sed -i "s#rabbitmq-password#${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/rabbitmq/definitions/001-general-definition.json
+# apply new rabbitmq settings
+cp reporting/configuration/rabbitmq/variables.env.original reporting/configuration/rabbitmq/variables.env
+sed -i "s#RABBITMQ_DEFAULT_USER=qpsdemo#RABBITMQ_DEFAULT_USER=${ZBR_RABBITMQ_USER}#g" reporting/configuration/rabbitmq/variables.env
+sed -i "s#RABBITMQ_DEFAULT_PASS=qpsdemo#RABBITMQ_DEFAULT_PASS=${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/rabbitmq/variables.env
 
-  #remove old rabbitmq definition file
-  rm -f reporting/configuration/rabbitmq/definitions.json.original
-  rm -f reporting/configuration/rabbitmq/definitions.json
-fi
+# apply new rabbitmq definitions
+cp reporting/configuration/rabbitmq/definitions/001-general-definition.json.original reporting/configuration/rabbitmq/definitions/001-general-definition.json
+sed -i "s#rabbitmq-user#${ZBR_RABBITMQ_USER}#g" reporting/configuration/rabbitmq/definitions/001-general-definition.json
+sed -i "s#rabbitmq-password#${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/rabbitmq/definitions/001-general-definition.json
+
+#remove old rabbitmq definition file
+rm -f reporting/configuration/rabbitmq/definitions.json.original
+rm -f reporting/configuration/rabbitmq/definitions.json
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
