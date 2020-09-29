@@ -277,6 +277,37 @@
     down
   }
 
+  upgrade() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    echo_warning "Services will be stopped for upgrade!"
+    confirm "" "      Do you want to continue?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
+    # stop everything and remove containers
+    down
+
+    patch/1.1.sh
+  }
+
+  version() {
+    source backup/settings.env
+
+    echo "
+      zebrunner: ${ZBR_VERSION}
+      $(jenkins/zebrunner.sh version)
+      $(mcloud/zebrunner.sh version)
+      $(reporting/zebrunner.sh version)
+      $(selenoid/zebrunner.sh version)
+      $(sonarqube/zebrunner.sh version)"
+  }
+
   setCustomSonarQube() {
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
@@ -688,37 +719,6 @@
       echo "Please answer y (yes) or n (no)."
       echo
     done
-  }
-
-  upgrade() {
-    if [ ! -f backup/settings.env ]; then
-      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
-      echo_telegram
-      exit -1
-    fi
-
-    echo_warning "Services will be stopped for upgrade!"
-    confirm "" "      Do you want to continue?" "n"
-    if [[ $? -eq 0 ]]; then
-      exit
-    fi
-
-    # stop everything and remove containers
-    down
-
-    patch/1.1.sh
-  }
-
-  version() {
-    source backup/settings.env
-
-    echo "
-      zebrunner: ${ZBR_VERSION}
-      $(jenkins/zebrunner.sh version)
-      $(mcloud/zebrunner.sh version)
-      $(reporting/zebrunner.sh version)
-      $(selenoid/zebrunner.sh version)
-      $(sonarqube/zebrunner.sh version)"
   }
 
   echo_warning() {
