@@ -162,6 +162,7 @@
       exit -1
     fi
 
+    #TODO: warn user to perform upgrade if applied version less then pulled
     print_banner
 
     # create infra network only if not exist
@@ -646,7 +647,7 @@
   }
 
   version() {
-    source .env
+    source backup/settings.env
 
     echo "
       zebrunner: ${ZBR_VERSION}
