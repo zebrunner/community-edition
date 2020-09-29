@@ -41,7 +41,6 @@ echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
 #remember successfully applied version in settings.env file
 export ZBR_VERSION=${TARGET_VERSION}
-echo ZBR_VERSION: $ZBR_VERSION
 
 #save information about upgraded zebrunner version
 export_settings
