@@ -285,16 +285,18 @@
       exit -1
     fi
 
-    echo_warning "Services will be stopped for upgrade!"
-    confirm "" "      Do you want to continue?" "n"
+    confirm "" "      Do you want to do an upgrade?" "n"
     if [[ $? -eq 0 ]]; then
       exit
     fi
 
-    # stop everything and remove containers
-    down
-
     patch/1.1.sh
+
+    confirm "" "      Do you want to restart services?" "y"
+    if [[ $? -eq 1 ]]; then
+      restart
+    fi
+
   }
 
   version() {
