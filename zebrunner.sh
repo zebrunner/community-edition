@@ -157,6 +157,12 @@
   }
 
   shutdown() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     echo_warning "Shutdown will erase all settings and data for \"${BASEDIR}\"!"
     confirm "" "      Do you want to continue?" "n"
     if [[ $? -eq 0 ]]; then
@@ -217,6 +223,12 @@
   }
 
   stop() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     jenkins/zebrunner.sh stop
     reporting/zebrunner.sh stop
     sonarqube/zebrunner.sh stop
@@ -225,7 +237,24 @@
     docker-compose stop
   }
 
+  restart() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    down
+    start
+  }
+
   down() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     jenkins/zebrunner.sh down
     reporting/zebrunner.sh down
     sonarqube/zebrunner.sh down
@@ -235,6 +264,12 @@
   }
 
   backup() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     print_banner
     stop
 
@@ -259,6 +294,12 @@
   }
 
   restore() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     print_banner
 
     stop
@@ -306,6 +347,12 @@
   }
 
   version() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     source backup/settings.env
 
     echo "
@@ -686,9 +733,9 @@
     export -p | grep "ZBR" > backup/settings.env
   }
 
-  random_string() {
-    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
-  }
+#  random_string() {
+#    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
+#  }
 
   confirm() {
     local message=$1
@@ -775,8 +822,7 @@ case "$1" in
         stop
         ;;
     restart)
-        down
-        start
+        restart
         ;;
     down)
         down
