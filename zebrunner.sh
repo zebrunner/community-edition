@@ -295,7 +295,8 @@
 
     patch/1.1.sh
 
-    confirm "" "      Do you want to restart services?" "y"
+    echo_warning "Your services needs to restart to finish important updates."
+    confirm "" "      Restart now?" "y"
     if [[ $? -eq 1 ]]; then
       restart
     fi
