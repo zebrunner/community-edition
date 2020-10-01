@@ -79,13 +79,6 @@
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
       jenkins/zebrunner.sh setup
-
-      # update reporting-jenkins integration script
-      cp reporting/database/reporting/sql/db-jenkins-integration.sql.original reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#USER_VALUE#admin#g" reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#PASSWORD_VALUE#changeit#g" reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#FOLDER_VALUE##g" reporting/database/reporting/sql/db-jenkins-integration.sql
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_JENKINS_ENABLED -eq 0 ]]; then
@@ -100,13 +93,6 @@
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
         mcloud/zebrunner.sh setup
-
-      # update reporting-mcloud integration script
-      #TODO: generate secure htpasswd for mcloud
-      cp reporting/database/reporting/sql/db-mcloud-integration.sql.original reporting/database/reporting/sql/db-mcloud-integration.sql
-      sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/database/reporting/sql/db-mcloud-integration.sql
-      sed -i "s#USER_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
-      sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_MCLOUD_ENABLED -eq 0 ]]; then
@@ -122,13 +108,6 @@
 
     if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
         selenoid/zebrunner.sh setup
-
-      # update reporting-mcloud integration script
-      #TODO: generate secure htpasswd for selenoid
-      cp reporting/database/reporting/sql/db-selenium-integration.sql.original reporting/database/reporting/sql/db-selenium-integration.sql
-      sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/database/reporting/sql/db-selenium-integration.sql
-      sed -i "s#USER_VALUE#demo#g" reporting/database/reporting/sql/db-selenium-integration.sql
-      sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-selenium-integration.sql
     else
       #if standart == no; then ask for custom
       if [[ $ZBR_SELENOID_ENABLED -eq 0 ]]; then
@@ -140,6 +119,30 @@
           setCustomSelenoid
         fi
       fi
+    fi
+
+    if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      # update reporting-jenkins integration vars
+      sed -i "s#JENKINS_ENABLED=false#JENKINS_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#JENKINS_URL=#JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/configuration/reporting-service/variables.env
+    fi
+
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      # update reporting-mcloud integration vars
+      sed -i "s#MCLOUD_ENABLED=false#MCLOUD_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_URL=#MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/configuration/reporting-service/variables.env
+      #TODO: generate secure htpasswd for mcloud
+      sed -i "s#MCLOUD_USER=#MCLOUD_USER=demo#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_PASSWORD=#MCLOUD_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
+    fi
+
+    if [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      # update reporting-jenkins integration vars
+      sed -i "s#SELENIUM_ENABLED=false#SELENIUM_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_URL=#SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/configuration/reporting-service/variables.env
+      #TODO: generate secure htpasswd for selenoid
+      sed -i "s#SELENIUM_USER=#SELENIUM_USER=demo#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
     fi
 
     # export all ZBR* variables to save user input
