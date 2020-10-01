@@ -156,7 +156,7 @@
   }
 
   shutdown() {
-    echo_warning "Shutdown will erase all settings and data!"
+    echo_warning "Shutdown will erase all settings and data for \"${BASEDIR}\"!"
     confirm "" "      Do you want to continue?" "n"
     if [[ $? -eq 0 ]]; then
       exit
