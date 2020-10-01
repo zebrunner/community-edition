@@ -16,7 +16,6 @@
 ### Software requirements
 
 * Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04), [Amazon Linux 2](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html), [Redhat/Cent OS](https://www.cyberciti.biz/faq/install-use-setup-docker-on-rhel7-centos7-linux/))
-  > MacOS is <b>not recommended</b> for production usage!
   
 * Install [docker-composer](https://docs.docker.com/compose/install/#install-compose) 1.25.5+
 
