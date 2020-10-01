@@ -298,7 +298,8 @@
     echo_warning "Your services needs to restart to finish important updates."
     confirm "" "      Restart now?" "y"
     if [[ $? -eq 1 ]]; then
-      restart
+      down
+      start
     fi
 
   }
