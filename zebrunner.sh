@@ -123,26 +123,26 @@
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-jenkins integration vars
-      sed -i "s|JENKINS_ENABLED=false|JENKINS_ENABLED=true|g" reporting/configuration/reporting-service/variables.env
-      sed -i "s|JENKINS_URL=|JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins|g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#JENKINS_ENABLED=false#JENKINS_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#JENKINS_URL=#JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/configuration/reporting-service/variables.env
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-mcloud integration vars
-      sed -i "s|MCLOUD_ENABLED=false|MCLOUD_ENABLED=true|g" reporting/configuration/reporting-service/variables.env
-      sed -i "s|MCLOUD_URL=|MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub|g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_ENABLED=false#MCLOUD_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_URL=#MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/configuration/reporting-service/variables.env
       #TODO: generate secure htpasswd for mcloud
-      sed -i "s|MCLOUD_USER=|MCLOUD_USER=demo|g" reporting/configuration/reporting-service/variables.env
-      sed -i "s|MCLOUD_PASSWORD=|MCLOUD_PASSWORD=demo|g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_USER=#MCLOUD_USER=demo#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_PASSWORD=#MCLOUD_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
     fi
 
     if [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-jenkins integration vars
-      sed -i "s|SELENIUM_ENABLED=false|SELENIUM_ENABLED=true|g" reporting/configuration/reporting-service/variables.env
-      sed -i "s|SELENIUM_URL=|SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub|g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_ENABLED=false#SELENIUM_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_URL=#SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/configuration/reporting-service/variables.env
       #TODO: generate secure htpasswd for selenoid
-      sed -i "s|SELENIUM_USER=|SELENIUM_USER=demo|g" reporting/configuration/reporting-service/variables.env
-      sed -i "s|SELENIUM_PASSWORD=|SELENIUM_PASSWORD=demo|g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_USER=#SELENIUM_USER=demo#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
     fi
 
     # export all ZBR* variables to save user input
@@ -325,8 +325,8 @@
       fi
       export ZBR_SONARQUBE_URL=$ZBR_SONARQUBE_URL
 
-      sed -i "s|set \$upstream_sonar http://127.0.0.1:80;|set \$upstream_sonar $ZBR_SONARQUBE_URL;|g" nginx/conf.d/default.conf
-      sed -i "s|proxy_pass \$upstream_sonar;|return 301 \$upstream_sonar;|g" nginx/conf.d/default.conf
+      sed -i "s#set \$upstream_sonar http://127.0.0.1:80;#set \$upstream_sonar $ZBR_SONARQUBE_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_sonar;#return 301 \$upstream_sonar;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
@@ -342,8 +342,8 @@
       fi
       export ZBR_MCLOUD_URL=$ZBR_MCLOUD_URL
 
-      sed -i "s|set \$upstream_zebrunner http://127.0.0.1:80;|set \$upstream_zebrunner $ZBR_MCLOUD_URL;|g" nginx/conf.d/default.conf
-      sed -i "s|proxy_pass \$upstream_zebrunner;|return 301 \$upstream_zebrunner;|g" nginx/conf.d/default.conf
+      sed -i "s#set \$upstream_zebrunner http://127.0.0.1:80;#set \$upstream_zebrunner $ZBR_MCLOUD_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_zebrunner;#return 301 \$upstream_zebrunner;#g" nginx/conf.d/default.conf
       
       confirm "" "Continue?" "y"
       is_confirmed=$?
@@ -359,8 +359,8 @@
       fi
       export ZBR_JENKINS_URL=$ZBR_JENKINS_URL
 
-      sed -i "s|set \$upstream_jenkins http://jenkins-master:8080;|set \$upstream_jenkins $ZBR_JENKINS_URL;|g" nginx/conf.d/default.conf
-      sed -i "s|proxy_pass \$upstream_jenkins;|return 301 \$upstream_jenkins;|g" nginx/conf.d/default.conf
+      sed -i "s#set \$upstream_jenkins http://jenkins-master:8080;#set \$upstream_jenkins $ZBR_JENKINS_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_jenkins;#return 301 \$upstream_jenkins;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
@@ -376,7 +376,7 @@
       fi
       export ZBR_SELENOID_URL=$ZBR_SELENOID_URL
 
-      sed -i "s|set \$upstream_selenoid http://selenoid:4444;|set \$upstream_selenoid $ZBR_SELENOID_URL;|g" nginx/conf.d/default.conf
+      sed -i "s#set \$upstream_selenoid http://selenoid:4444;#set \$upstream_selenoid $ZBR_SELENOID_URL;#g" nginx/conf.d/default.conf
 
       confirm "" "Continue?" "y"
       is_confirmed=$?
