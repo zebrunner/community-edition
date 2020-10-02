@@ -141,10 +141,9 @@
 
     echo_warning "Your services needs to be started after setup."
     confirm "" "      Start now?" "y"
-    echo
-    echo
-
     export start_services=$?
+    echo
+    echo
 
     if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
        selenoid/zebrunner.sh setup
