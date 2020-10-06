@@ -65,52 +65,52 @@
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
       export ZBR_SONAR_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube
-    else
-      #if standart == no; then ask for custom
-      echo
-      confirm "Custom SonarQube" "Enable?" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
-      export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
-      if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
-        setCustomSonarQube
-      fi
+#    else
+#      #if standart == no; then ask for custom
+#      echo
+#      confirm "Custom SonarQube" "Enable?" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+#      export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
+#        setCustomSonarQube
+#      fi
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
       jenkins/zebrunner.sh setup
-    else
-      #if standart == no; then ask for custom
-      echo
-      confirm "Custom Jenkins" "Enable?" "$ZBR_JENKINS_CUSTOM_ENABLED"
-      export ZBR_JENKINS_CUSTOM_ENABLED=$?
-      if [[ $ZBR_JENKINS_CUSTOM_ENABLED -eq 1 ]]; then
-        setCustomJenkins
-      fi
+#    else
+#      #if standart == no; then ask for custom
+#      echo
+#      confirm "Custom Jenkins" "Enable?" "$ZBR_JENKINS_CUSTOM_ENABLED"
+#      export ZBR_JENKINS_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_JENKINS_CUSTOM_ENABLED -eq 1 ]]; then
+#        setCustomJenkins
+#      fi
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
         mcloud/zebrunner.sh setup
-    else
-      #if standart == no; then ask for custom
-      echo
-      confirm "Custom MCloud" "Enable?" "$ZBR_MCLOUD_CUSTOM_ENABLED"
-      export ZBR_MCLOUD_CUSTOM_ENABLED=$?
-      if [[ $ZBR_MCLOUD_CUSTOM_ENABLED -eq 1 ]]; then
-        echo
-        setCustomMCloud
-      fi
+#    else
+#      #if standart == no; then ask for custom
+#      echo
+#      confirm "Custom MCloud" "Enable?" "$ZBR_MCLOUD_CUSTOM_ENABLED"
+#      export ZBR_MCLOUD_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_MCLOUD_CUSTOM_ENABLED -eq 1 ]]; then
+#        echo
+#        setCustomMCloud
+#      fi
     fi
 
-    if [[ $ZBR_SELENOID_ENABLED -eq 0 ]]; then
-      # pay attention that for selenoid is comparison ith 0, i.e. for non enabled on this host
-      # required setup moved after asking the question about services startup
-      echo
-      confirm "Custom Selenoid" "Enable?" "$ZBR_SELENOID_CUSTOM_ENABLED"
-      export ZBR_SELENOID_CUSTOM_ENABLED=$?
-      if [[ $ZBR_SELENOID_CUSTOM_ENABLED -eq 1 ]]; then
-        echo
-        setCustomSelenoid
-      fi
-    fi
+#    if [[ $ZBR_SELENOID_ENABLED -eq 0 ]]; then
+#      # pay attention that for selenoid is comparison with 0, i.e. for non enabled on this host
+#      # required setup moved after asking the question about services startup
+#      echo
+#      confirm "Custom Selenoid" "Enable?" "$ZBR_SELENOID_CUSTOM_ENABLED"
+#      export ZBR_SELENOID_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_SELENOID_CUSTOM_ENABLED -eq 1 ]]; then
+#        echo
+#        setCustomSelenoid
+#      fi
+#    fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-jenkins integration vars
