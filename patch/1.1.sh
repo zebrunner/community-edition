@@ -66,8 +66,8 @@ sed -i "s#rabbitmq-password#${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/
 
 # apply new rabbitmq settings
 cp reporting/configuration/rabbitmq/variables.env.original reporting/configuration/rabbitmq/variables.env
-sed -i "s#RABBITMQ_DEFAULT_USER=qpsdemo#RABBITMQ_DEFAULT_USER=${ZBR_RABBITMQ_USER}#g" reporting/configuration/rabbitmq/variables.env
-sed -i "s#RABBITMQ_DEFAULT_PASS=qpsdemo#RABBITMQ_DEFAULT_PASS=${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/rabbitmq/variables.env
+sed -i "s#RABBITMQ_DEFAULT_USER=rabbitmq-user#RABBITMQ_DEFAULT_USER=${ZBR_RABBITMQ_USER}#g" reporting/configuration/rabbitmq/variables.env
+sed -i "s#RABBITMQ_DEFAULT_PASS=rabbitmq-password#RABBITMQ_DEFAULT_PASS=${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/rabbitmq/variables.env
 
 # apply new rabbitmq definitions
 cp reporting/configuration/rabbitmq/definitions/001-general-definition.json.original reporting/configuration/rabbitmq/definitions/001-general-definition.json
