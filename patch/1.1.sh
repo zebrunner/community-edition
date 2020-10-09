@@ -20,6 +20,12 @@ if ! [[ "${TARGET_VERSION}" > "${SOURCE_VERSION}" ]]; then
 fi
 
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
+
+# Zebrunner NGiNX WebServer configuration
+cp ./nginx/conf.d/default.conf.original ./nginx/conf.d/default.conf
+sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
+sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
+
 # Zebrunner Reporting steps:
 
 # apply new nginx rules for logs and screenshots artifacts
