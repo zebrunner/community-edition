@@ -14,13 +14,11 @@ server {
     resolver_timeout 10s;
 
     #charset koi8-r;
-    access_log  /var/log/nginx/default.access.log main;
-    error_log   /var/log/nginx/default.error.log warn;
 
     location /sonarqube {
-      set $upstream_sonar 127.0.0.1:80;
+      set $upstream_sonar http://127.0.0.1:80;
       proxy_set_header Host sonarqube;
-      proxy_pass http://$upstream_sonar;
+      proxy_pass $upstream_sonar;
       proxy_http_version 1.1;
     }
 
@@ -43,8 +41,8 @@ server {
 	#proxy_redirect http:// https://;
  
         if (!-f $request_filename) {
-            set $upstream_jenkins jenkins-master:8080;
-	    proxy_pass http://$upstream_jenkins;
+            set $upstream_jenkins http://jenkins-master:8080;
+	    proxy_pass $upstream_jenkins;
             break;
         }
     }
@@ -76,16 +74,20 @@ server {
     }
 
     location /mcloud {
-      set $upstream_zebrunner 127.0.0.1:80;
+      proxy_connect_timeout   60;
+      proxy_send_timeout      300;
+      proxy_read_timeout      300;
+
+      set $upstream_mcloud http://127.0.0.1:80;
       proxy_set_header Host mcloud;
-      proxy_pass http://$upstream_zebrunner;
+      proxy_pass $upstream_mcloud;
       proxy_http_version 1.1;
     }
 
     #Selenoid VNC WebSocket
     location /vnc {
-      set $upstream_selenoid selenoid:4444;
-      proxy_pass http://$upstream_selenoid;
+      set $upstream_selenoid http://selenoid:4444;
+      proxy_pass $upstream_selenoid;
 
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
@@ -109,15 +111,15 @@ server {
       auth_basic "Private Selenoid Hub";
       auth_basic_user_file /usr/share/nginx/htpasswd/selenoid.htpasswd;
 
-      set $upstream_selenoid selenoid:4444;
-      proxy_pass http://$upstream_selenoid/$1;
+      set $upstream_selenoid http://selenoid:4444;
+      proxy_pass $upstream_selenoid/$1;
 
       proxy_http_version      1.1;
       proxy_set_header        Connection "";
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   10;
+      proxy_connect_timeout   60;
       proxy_send_timeout      300;
       proxy_read_timeout      300;
       proxy_buffers           32 64m;
@@ -148,7 +150,7 @@ server {
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   10;
+      proxy_connect_timeout   60;
       proxy_send_timeout      300;
       proxy_read_timeout      300;
       proxy_buffers           32 64m;
@@ -177,7 +179,7 @@ server {
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   10;
+      proxy_connect_timeout   60;
       proxy_send_timeout      300;
       proxy_read_timeout      300;
       proxy_buffers           32 64m;
@@ -206,7 +208,7 @@ server {
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   10;
+      proxy_connect_timeout   60;
       proxy_send_timeout      300;
       proxy_read_timeout      300;
       proxy_buffers           32 64m;
@@ -235,7 +237,7 @@ server {
       proxy_set_header        Host $host;
       proxy_set_header        X-Real-IP $remote_addr;
       proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   10;
+      proxy_connect_timeout   60;
       proxy_send_timeout      300;
       proxy_read_timeout      300;
       proxy_buffers           32 64m;

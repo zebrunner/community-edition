@@ -24,6 +24,7 @@
     fi
 
     export ZBR_INSTALLER=1
+    export ZBR_VERSION=1.1
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
@@ -64,46 +65,109 @@
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
       export ZBR_SONAR_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube
+#    else
+#      #if standart == no; then ask for custom
+#      echo
+#      confirm "Custom SonarQube" "Enable?" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
+#      export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
+#        setCustomSonarQube
+#      fi
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
       jenkins/zebrunner.sh setup
-
-      # update reporting-jenkins integration script
-      cp reporting/database/reporting/sql/db-jenkins-integration.sql.original reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#USER_VALUE#admin#g" reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#PASSWORD_VALUE#changeit#g" reporting/database/reporting/sql/db-jenkins-integration.sql
-      sed -i "s#FOLDER_VALUE##g" reporting/database/reporting/sql/db-jenkins-integration.sql
+#    else
+#      #if standart == no; then ask for custom
+#      echo
+#      confirm "Custom Jenkins" "Enable?" "$ZBR_JENKINS_CUSTOM_ENABLED"
+#      export ZBR_JENKINS_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_JENKINS_CUSTOM_ENABLED -eq 1 ]]; then
+#        setCustomJenkins
+#      fi
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
         mcloud/zebrunner.sh setup
-
-      # update reporting-mcloud integration script
-      #TODO: generate secure htpasswd for mcloud
-      cp reporting/database/reporting/sql/db-mcloud-integration.sql.original reporting/database/reporting/sql/db-mcloud-integration.sql
-      sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/database/reporting/sql/db-mcloud-integration.sql
-      sed -i "s#USER_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
-      sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-mcloud-integration.sql
+#    else
+#      #if standart == no; then ask for custom
+#      echo
+#      confirm "Custom MCloud" "Enable?" "$ZBR_MCLOUD_CUSTOM_ENABLED"
+#      export ZBR_MCLOUD_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_MCLOUD_CUSTOM_ENABLED -eq 1 ]]; then
+#        echo
+#        setCustomMCloud
+#      fi
     fi
 
-    if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
-        selenoid/zebrunner.sh setup
+#    if [[ $ZBR_SELENOID_ENABLED -eq 0 ]]; then
+#      # pay attention that for selenoid is comparison with 0, i.e. for non enabled on this host
+#      # required setup moved after asking the question about services startup
+#      echo
+#      confirm "Custom Selenoid" "Enable?" "$ZBR_SELENOID_CUSTOM_ENABLED"
+#      export ZBR_SELENOID_CUSTOM_ENABLED=$?
+#      if [[ $ZBR_SELENOID_CUSTOM_ENABLED -eq 1 ]]; then
+#        echo
+#        setCustomSelenoid
+#      fi
+#    fi
 
-      # update reporting-mcloud integration script
+    if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      # update reporting-jenkins integration vars
+      sed -i "s#JENKINS_ENABLED=false#JENKINS_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#JENKINS_URL=#JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/configuration/reporting-service/variables.env
+    fi
+
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      # update reporting-mcloud integration vars
+      sed -i "s#MCLOUD_ENABLED=false#MCLOUD_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_URL=#MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/configuration/reporting-service/variables.env
+      #TODO: generate secure htpasswd for mcloud
+      sed -i "s#MCLOUD_USER=#MCLOUD_USER=demo#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#MCLOUD_PASSWORD=#MCLOUD_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
+    fi
+
+    if [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      # update reporting-jenkins integration vars
+      sed -i "s#SELENIUM_ENABLED=false#SELENIUM_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_URL=#SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/configuration/reporting-service/variables.env
       #TODO: generate secure htpasswd for selenoid
-      cp reporting/database/reporting/sql/db-selenium-integration.sql.original reporting/database/reporting/sql/db-selenium-integration.sql
-      sed -i "s#URL_VALUE#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/database/reporting/sql/db-selenium-integration.sql
-      sed -i "s#USER_VALUE#demo#g" reporting/database/reporting/sql/db-selenium-integration.sql
-      sed -i "s#PASSWORD_VALUE#demo#g" reporting/database/reporting/sql/db-selenium-integration.sql
+      sed -i "s#SELENIUM_USER=#SELENIUM_USER=demo#g" reporting/configuration/reporting-service/variables.env
+      sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
     fi
 
     # export all ZBR* variables to save user input
     export_settings
+
+    echo_warning "Your services needs to be started after setup."
+    confirm "" "      Start now?" "y"
+    export start_services=$?
+    echo
+    echo
+
+    if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
+       selenoid/zebrunner.sh setup
+    fi
+
+    if [[ $start_services -eq 1 ]]; then
+      start
+    fi
+
   }
 
   shutdown() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    echo_warning "Shutdown will erase all settings and data for \"${BASEDIR}\"!"
+    confirm "" "      Do you want to continue?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env
 
@@ -121,8 +185,24 @@
   }
 
   start() {
-    if [ ! -f ./nginx/conf.d/default.conf ]; then
-      printf 'WARNING! You have to setup services in advance! For example:\n ./zebrunner.sh setup\n\n' "$(basename "$0")" >&2
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    source backup/settings.env
+    if [[ -z ${ZBR_VERSION} ]]; then
+      ZBR_VERSION=1.0
+    fi
+    ACTUAL_VERSION=${ZBR_VERSION}
+
+    source .env
+    DESIRED_VERSION=${ZBR_VERSION}
+
+    if [[ "${ACTUAL_VERSION}" < "${DESIRED_VERSION}" ]]; then
+      echo_warning "You have to upgrade services in advance using: ./zebrunner.sh upgrade"
+      echo_telegram
       exit -1
     fi
 
@@ -142,6 +222,12 @@
   }
 
   stop() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     jenkins/zebrunner.sh stop
     reporting/zebrunner.sh stop
     sonarqube/zebrunner.sh stop
@@ -150,7 +236,24 @@
     docker-compose stop
   }
 
+  restart() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    down
+    start
+  }
+
   down() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     jenkins/zebrunner.sh down
     reporting/zebrunner.sh down
     sonarqube/zebrunner.sh down
@@ -160,6 +263,12 @@
   }
 
   backup() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     print_banner
     stop
 
@@ -184,6 +293,12 @@
   }
 
   restore() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
     print_banner
 
     stop
@@ -205,6 +320,114 @@
     mcloud/zebrunner.sh restore
     selenoid/zebrunner.sh restore
     down
+  }
+
+  upgrade() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    confirm "" "      Do you want to do an upgrade?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
+    patch/1.1.sh
+
+    echo_warning "Your services needs to restart to finish important updates."
+    confirm "" "      Restart now?" "y"
+    if [[ $? -eq 1 ]]; then
+      down
+      start
+    fi
+
+  }
+
+  version() {
+    if [ ! -f backup/settings.env ]; then
+      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_telegram
+      exit -1
+    fi
+
+    source backup/settings.env
+
+    echo "
+      zebrunner: ${ZBR_VERSION}
+      $(jenkins/zebrunner.sh version)
+      $(mcloud/zebrunner.sh version)
+      $(reporting/zebrunner.sh version)
+      $(selenoid/zebrunner.sh version)
+      $(sonarqube/zebrunner.sh version)"
+  }
+
+  setCustomSonarQube() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom SonarQube URL [$ZBR_SONARQUBE_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_SONARQUBE_URL=$response
+      fi
+      export ZBR_SONARQUBE_URL=$ZBR_SONARQUBE_URL
+
+      sed -i "s#set \$upstream_sonar http://127.0.0.1:80;#set \$upstream_sonar $ZBR_SONARQUBE_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_sonar;#return 301 \$upstream_sonar;#g" nginx/conf.d/default.conf
+
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
+  }
+
+  setCustomMCloud() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom MCloud URL [$ZBR_MCLOUD_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_MCLOUD_URL=$response
+      fi
+      export ZBR_MCLOUD_URL=$ZBR_MCLOUD_URL
+
+      sed -i "s#set \$upstream_zebrunner http://127.0.0.1:80;#set \$upstream_zebrunner $ZBR_MCLOUD_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_zebrunner;#return 301 \$upstream_zebrunner;#g" nginx/conf.d/default.conf
+      
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
+  }
+  
+  setCustomJenkins() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom Jenkins URL [$ZBR_JENKINS_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_JENKINS_URL=$response
+      fi
+      export ZBR_JENKINS_URL=$ZBR_JENKINS_URL
+
+      sed -i "s#set \$upstream_jenkins http://jenkins-master:8080;#set \$upstream_jenkins $ZBR_JENKINS_URL;#g" nginx/conf.d/default.conf
+      sed -i "s#proxy_pass \$upstream_jenkins;#return 301 \$upstream_jenkins;#g" nginx/conf.d/default.conf
+
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
+  }
+
+  setCustomSelenoid() {
+    local is_confirmed=0
+    while [[ $is_confirmed -eq 0 ]]; do
+      read -p "Enter custom Selenoid URL [$ZBR_SELENOID_URL]: " response
+      if [[ ! -z $response ]]; then
+        ZBR_SELENOID_URL=$response
+      fi
+      export ZBR_SELENOID_URL=$ZBR_SELENOID_URL
+
+      sed -i "s#set \$upstream_selenoid http://selenoid:4444;#set \$upstream_selenoid $ZBR_SELENOID_URL;#g" nginx/conf.d/default.conf
+
+      confirm "" "Continue?" "y"
+      is_confirmed=$?
+    done
   }
 
   enableLayer() {
@@ -509,9 +732,9 @@
     export -p | grep "ZBR" > backup/settings.env
   }
 
-  random_string() {
-    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
-  }
+#  random_string() {
+#    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
+#  }
 
   confirm() {
     local message=$1
@@ -530,7 +753,7 @@
         echo "$message"
       fi
 
-      read -p "$question Yes/No [$isEnabled]:" response
+      read -p "$question y/n [$isEnabled]:" response
       if [[ -z $response ]]; then
         if [[ "$isEnabled" == "y" ]]; then
           return 1
@@ -570,14 +793,16 @@
       Flags:
           --help | -h    Print help
       Arguments:
-          setup          Setup Zebrunner Server (Community Edition)
+          setup          Setup Zebrunner Community Edition
       	  start          Start container
       	  stop           Stop and keep container
       	  restart        Restart container
       	  down           Stop and remove container
       	  shutdown       Stop and remove container, clear volumes
       	  backup         Backup container
-      	  restore        Restore container"
+      	  restore        Restore container
+          upgrade        Upgrade to the latest version of Zebrunner Community Edition
+      	  version        Version of components"
       echo_telegram
       exit 0
   }
@@ -596,8 +821,7 @@ case "$1" in
         stop
         ;;
     restart)
-        down
-        start
+        restart
         ;;
     down)
         down
@@ -610,6 +834,12 @@ case "$1" in
         ;;
     restore)
         restore
+        ;;
+    upgrade)
+        upgrade
+        ;;
+    version)
+        version
         ;;
     *)
         echo "Invalid option detected: $1"
