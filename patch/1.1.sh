@@ -22,7 +22,7 @@ fi
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
 
 # Apply postgres DB migration script only if reporting enabled
-if [! -f reporting/.disabled] ; then
+if [[ ! -f reporting/.disabled ]] ; then
   docker cp patch/reporting-1.12-db-migration.sql postgres:/tmp
   if [[ $? -eq 1 ]]; then
     echo "ERROR! Unable to proceed upgrade as postgres container not available"
