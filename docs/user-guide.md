@@ -134,7 +134,7 @@ If value set to “android” – android native application test job.
 </br>
 <b>jenkinsRegressionPipeline</b> - This property takes a comma separated string of the various pipelines that a specific Test Suite will be attached to. 
 </br>
-<b>jenkinsEnvironments</b> - This property takes a comma separated string of the various environments that will be tested for that particular suite i.e. PROD, QA, DEV, STAGE, BETA, etc. 
+<b>jenkinsEnvironments</b> - This property takes a comma separated string of the various environments that might be tested for that particular suite i.e. PROD, QA, DEV, STAGE, BETA, etc.
 </br>
 <b>jenkinsPipelineEnvironments</b> - This property takes a comma separated string of the various environments that will be tested for a particular suite in a particular pipeline (i.e. PROD,QA,DEV,STAGE) 
 </br>
@@ -161,9 +161,9 @@ When it is "abort" we halt the entire pipeline as only failed job detected. It m
 </br>
 <b>provider</b> - This property is for add provider for test job.
 </br>
-<b>jenkinsAutoScreenshot</b> - This property is for running jobs with screenshots in test results.
+<b>jenkinsAutoScreenshot</b> - This property is a boolean parameter mostly to enable auto_screenshot which is disabled by default.
 </br>
-<b>jenkinsEnableVideo</b> - This property is for running jobs with video recording.
+<b>jenkinsEnableVideo</b> - This property is a boolean parameter mostly to disable video recording which is enabled by default.
 </br>
 
 ## Support Channel
