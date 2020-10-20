@@ -1,4 +1,4 @@
-Zebrunner
+Zebrunner (Community Edition)
 ==================
 
 [![zafira pulls](https://img.shields.io/docker/pulls/qaprosoft/zafira.svg?label=zafira%20pulls)](https://hub.docker.com/r/qaprosoft/zafira/)

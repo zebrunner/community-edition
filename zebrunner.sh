@@ -335,6 +335,11 @@
     fi
 
     patch/1.1.sh
+    if [[ $? -eq -1 ]]; then
+      echo "ERROR! 1.1 patchset was not applied correctly!"
+      exit -1
+    fi
+
 
     echo_warning "Your services needs to restart to finish important updates."
     confirm "" "      Restart now?" "y"
@@ -653,7 +658,7 @@
         ZBR_GITHUB_CLIENT_ID=$local_client_id
       fi
 
-      read -p "client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
+      read -p "Client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
       if [[ ! -z $local_secret_id ]]; then
         ZBR_GITHUB_CLIENT_SECRET=$local_secret_id
       fi

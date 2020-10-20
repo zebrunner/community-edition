@@ -21,6 +21,21 @@ fi
 
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
 
+# Apply postgres DB migration script only if reporting enabled
+if [[ ! -f reporting/.disabled ]] ; then
+  docker cp patch/reporting-1.12-db-migration.sql postgres:/tmp
+  if [[ $? -eq 1 ]]; then
+    echo "ERROR! Unable to proceed upgrade as postgres container not available"
+    exit -1
+  fi
+  docker exec -i postgres /usr/bin/psql -U postgres -f /tmp/reporting-1.12-db-migration.sql
+  if [[ $? -eq 1 ]]; then
+    echo "ERROR! Unable to apply reporting-1.12-db-migration.sql"
+    exit 0
+  fi
+fi
+
+
 # Zebrunner NGiNX WebServer configuration
 cp ./nginx/conf.d/default.conf.original ./nginx/conf.d/default.conf
 sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
@@ -39,11 +54,15 @@ fi
 
 # adding new variables for elasticsearch
 cp reporting/configuration/reporting-service/variables.env.original reporting/configuration/reporting-service/variables.env
-sed -i "s#http://localhost:8081#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT}#g" reporting/configuration/reporting-service/variables.env
+sed -i "s#http://localhost:8081#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT#g" reporting/configuration/reporting-service/variables.env
 
 sed -i "s#GITHUB_HOST=github.com#GITHUB_HOST=${ZBR_GITHUB_HOST}#g" reporting/configuration/reporting-service/variables.env
 sed -i "s#GITHUB_CLIENT_ID=#GITHUB_CLIENT_ID=${ZBR_GITHUB_CLIENT_ID}#g" reporting/configuration/reporting-service/variables.env
 sed -i "s#GITHUB_CLIENT_SECRET=#GITHUB_CLIENT_SECRET=${ZBR_GITHUB_CLIENT_SECRET}#g" reporting/configuration/reporting-service/variables.env
+
+sed -i "s#DATABASE_PASSWORD=db-changeit#DATABASE_PASSWORD=${ZBR_POSTGRES_PASSWORD}#g" reporting/configuration/reporting-service/variables.env
+sed -i "s#REDIS_PASSWORD=MdXVvJgDdz9Hnau7#REDIS_PASSWORD=${ZBR_REDIS_PASSWORD}#g" reporting/configuration/reporting-service/variables.env
+
 # apply new integration settings
 if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
   # update reporting-jenkins integration vars
