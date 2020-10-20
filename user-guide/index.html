@@ -375,13 +375,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    Troubleshooting
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#support-channel" class="md-nav__link">
     Support Channel
   </a>
@@ -532,13 +525,6 @@
         <li class="md-nav__item">
   <a href="#special-annotations" class="md-nav__link">
     Special Annotations
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
-    Troubleshooting
   </a>
   
 </li>
@@ -703,6 +689,8 @@ These parameters are:
 </br>
 <b>jenkinsJobName</b> - This property is just the name that Jenkins should create a job for, the normal pattern here is to include the platform name in the job itself to make it easier to find inside of Jenkins. 
 </br>
+<b>jenkinsJobDisabled</b> - This property is for disable job on Jenkins. 
+</br>
 <b>jenkinsJobType</b> – This property tells Jenkins what type of job it is. This field can take a “web”, “api”, “ios”, “android” value. For each type of job appropriate capabilities and parameter are generated.
 If value set to “api” – Jenkins knows that there is no need to use web browser for run this Test Suite.
 If value set to “web” – Jenkins will use web browser to run the Test. Chrome browser will be used by default.
@@ -711,7 +699,11 @@ If value set to “android” – android native application test job.
 </br>
 <b>capabilities</b> - This property is extended W3C driver capabilities.
 </br>
-<b> jenkinsEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite will be emailed to. 
+<b>scheduling</b> - This property is for running jobs by the schedule.
+</br>
+<b>jenkinsGroups</b> - This property is for running jobs in accordance with testng groups annotation. 
+</br>
+<b>jenkinsEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite will be emailed to. 
 </br>
 <b>jenkinsFailedEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite that contains failures will be emailed to. 
 </br>
@@ -731,8 +723,23 @@ When it is "abort" we halt the entire pipeline as only failed job detected. It m
 <b>overrideFields</b> - This property takes any number of custom fields that need to be available at run-time for a job to run successfully. They can override any CI parameter forcibly.
 </br>
 <b>jenkinsSlackChannels</b> - This property is responsible for send test run results to Slack channel via slack-api.
+</br>
+<b>jenkinsFailedSlackChannels</b> - This property takes a comma separated list of slack channels to notify about failures.
+</br>
+<b>jenkinsQueueRegistration</b> - This property is a boolean parameter to manage queue registration. Disabling is recommended for suites with dynamic number of tests or dynamic test names.
+</br>
+<b>jenkinsDefaultRetryCount</b> - This property allows to provide custom retry_count property (number of extra attempts for test execution).
+</br>
+<b>jenkinsNodeLabel</b> - This property allows to override slave label and execute test on custom server.
+</br>
+<b>overrideFields</b> - This property allows to add custom Fields that can override default fields.
+</br>
+<b>provider</b> - This property is for add provider for test job.
+</br>
+<b>jenkinsAutoScreenshot</b> - This property is for running jobs with screenshots in test results.
+</br>
+<b>jenkinsEnableVideo</b> - This property is for running jobs with video recording.
 </br></p>
-<h2 id="troubleshooting">Troubleshooting</h2>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
 <li>Join <a href="https://t.me/zebrunner">Telegram channel</a> in case of any question</li>
