@@ -340,6 +340,11 @@
       exit -1
     fi
 
+    patch/1.2.sh
+    if [[ $? -eq -1 ]]; then
+      echo "ERROR! 1.2 patchset was not applied correctly!"
+      exit -1
+    fi
 
     echo_warning "Your services needs to restart to finish important updates."
     confirm "" "      Restart now?" "y"
