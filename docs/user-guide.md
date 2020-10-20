@@ -114,6 +114,8 @@ These parameters are:
 </br>
 <b>jenkinsJobName</b> - This property is just the name that Jenkins should create a job for, the normal pattern here is to include the platform name in the job itself to make it easier to find inside of Jenkins. 
 </br>
+<b>jenkinsJobDisabled</b> - This property is for disable job on Jenkins. 
+</br>
 <b>jenkinsJobType</b> – This property tells Jenkins what type of job it is. This field can take a “web”, “api”, “ios”, “android” value. For each type of job appropriate capabilities and parameter are generated.
 If value set to “api” – Jenkins knows that there is no need to use web browser for run this Test Suite.
 If value set to “web” – Jenkins will use web browser to run the Test. Chrome browser will be used by default.
@@ -122,7 +124,11 @@ If value set to “android” – android native application test job.
 </br>
 <b>capabilities</b> - This property is extended W3C driver capabilities.
 </br>
-<b> jenkinsEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite will be emailed to. 
+<b>scheduling</b> - This property is for running jobs by the schedule.
+</br>
+<b>jenkinsGroups</b> - This property is for running jobs in accordance with testng groups annotation. 
+</br>
+<b>jenkinsEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite will be emailed to. 
 </br>
 <b>jenkinsFailedEmail</b> - This property takes a comma separated list of emails/distribution lists that end results of a Test Suite that contains failures will be emailed to. 
 </br>
@@ -143,8 +149,22 @@ When it is "abort" we halt the entire pipeline as only failed job detected. It m
 </br>
 <b>jenkinsSlackChannels</b> - This property is responsible for send test run results to Slack channel via slack-api.
 </br>
-
-## Troubleshooting
+<b>jenkinsFailedSlackChannels</b> - This property takes a comma separated list of slack channels to notify about failures.
+</br>
+<b>jenkinsQueueRegistration</b> - This property is a boolean parameter to manage queue registration. Disabling is recommended for suites with dynamic number of tests or dynamic test names.
+</br>
+<b>jenkinsDefaultRetryCount</b> - This property allows to provide custom retry_count property (number of extra attempts for test execution).
+</br>
+<b>jenkinsNodeLabel</b> - This property allows to override slave label and execute test on custom server.
+</br>
+<b>overrideFields</b> - This property allows to add custom Fields that can override default fields.
+</br>
+<b>provider</b> - This property is for add provider for test job.
+</br>
+<b>jenkinsAutoScreenshot</b> - This property is for running jobs with screenshots in test results.
+</br>
+<b>jenkinsEnableVideo</b> - This property is for running jobs with video recording.
+</br>
 
 ## Support Channel
 
