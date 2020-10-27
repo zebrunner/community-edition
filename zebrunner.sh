@@ -40,12 +40,6 @@
     enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
     export ZBR_JENKINS_ENABLED=$?
 
-    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
-    export ZBR_MCLOUD_ENABLED=$?
-
-    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)" "$ZBR_SELENOID_ENABLED"
-    export ZBR_SELENOID_ENABLED=$?
-
     enableLayer "reporting" "Zebrunner Reporting" "$ZBR_REPORTING_ENABLED"
     export ZBR_REPORTING_ENABLED=$?
     if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
@@ -61,6 +55,12 @@
       # no need to ask about enabling minio sub-module
       disableLayer "reporting/minio-storage"
     fi
+
+    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
+    export ZBR_MCLOUD_ENABLED=$?
+
+    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)" "$ZBR_SELENOID_ENABLED"
+    export ZBR_SELENOID_ENABLED=$?
 
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
