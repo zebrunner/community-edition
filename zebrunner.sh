@@ -34,12 +34,6 @@
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
-    enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
-    export ZBR_SONARQUBE_ENABLED=$?
-
-    enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
-    export ZBR_JENKINS_ENABLED=$?
-
     enableLayer "reporting" "Zebrunner Reporting" "$ZBR_REPORTING_ENABLED"
     export ZBR_REPORTING_ENABLED=$?
     if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
@@ -55,6 +49,13 @@
       # no need to ask about enabling minio sub-module
       disableLayer "reporting/minio-storage"
     fi
+
+    enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
+    export ZBR_SONARQUBE_ENABLED=$?
+
+    # jenkins after sonar to detect and put valid SONAR_URL value
+    enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
+    export ZBR_JENKINS_ENABLED=$?
 
     enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
     export ZBR_MCLOUD_ENABLED=$?
