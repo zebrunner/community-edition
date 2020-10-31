@@ -169,6 +169,8 @@
       exit
     fi
 
+    print_banner
+
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env
 
