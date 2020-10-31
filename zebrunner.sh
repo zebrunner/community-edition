@@ -270,7 +270,13 @@
       exit -1
     fi
 
+    confirm "" "      Your services will be stopped. Do you want to do a backup now?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
     print_banner
+
     stop
 
     cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
@@ -305,6 +311,11 @@
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
+    fi
+
+    confirm "" "      Your services will be stopped and current data might be lost. Do you want to do a restore now?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
     fi
 
     print_banner
