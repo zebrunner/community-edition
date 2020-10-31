@@ -15,8 +15,8 @@ SOURCE_VERSION=${ZBR_VERSION}
 
 if ! [[ "${TARGET_VERSION}" > "${SOURCE_VERSION}" ]]; then
   #target Zebrunner version less or equal existing
-  echo "No need to perform upgrade from ${SOURCE_VERSION} to ${TARGET_VERSION}"
-  exit 0
+  echo "No need to perform upgrade to ${TARGET_VERSION}"
+  exit 1
 fi
 
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
@@ -31,7 +31,7 @@ if [[ ! -f reporting/.disabled ]] ; then
   docker exec -i postgres /usr/bin/psql -U postgres -f /tmp/reporting-1.12-db-migration.sql
   if [[ $? -eq 1 ]]; then
     echo "ERROR! Unable to apply reporting-1.12-db-migration.sql"
-    exit 0
+    exit -1
   fi
 fi
 
