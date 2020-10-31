@@ -507,7 +507,7 @@
     echo "Reporting Service Crypto:"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Signin token secret (randomized base64 encoded string) [$ZBR_TOKEN_SIGNING_SECRET]: " local_token
+      read -p "Signin token secret (randomized string) [$ZBR_TOKEN_SIGNING_SECRET]: " local_token
       if [[ ! -z $local_token ]]; then
         ZBR_TOKEN_SIGNING_SECRET=$local_token
       fi
