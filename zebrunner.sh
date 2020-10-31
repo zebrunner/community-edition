@@ -291,6 +291,13 @@
     sonarqube/zebrunner.sh backup
     mcloud/zebrunner.sh backup
     selenoid/zebrunner.sh backup
+
+    echo_warning "Your services needs to be started after backup."
+    confirm "" "      Start now?" "y"
+    if [[ $? -eq 1 ]]; then
+      start
+    fi
+
   }
 
   restore() {
@@ -321,6 +328,13 @@
     mcloud/zebrunner.sh restore
     selenoid/zebrunner.sh restore
     down
+
+    echo_warning "Your services needs to be started after restore."
+    confirm "" "      Start now?" "y"
+    if [[ $? -eq 1 ]]; then
+      start
+    fi
+
   }
 
   upgrade() {
