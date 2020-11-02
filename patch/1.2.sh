@@ -74,13 +74,13 @@ if [[ ! -f jenkins/.disabled ]] ; then
   fi
 
   # ask about presence of any private Global Pipeline Library. If not - replace by new value.
-  confirm "" "      Do you have custom Global Pipeline Libraries registered? If answer \"n\" they will be overwritten by new Zebrunner-CE?" "n"
+  confirm "" "      Do you have custom Global Pipeline Libraries registered? Answer \"n\" to overwrite by new Zebrunner-CE library." "n"
   if [[ $? -eq 0 ]]; then
     docker cp jenkins/resources/configs/org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml jenkins-master:/var/jenkins_home/
   fi
 
   # ask about presence of any custom global choice lists. If not - replace by new values.
-  confirm "" "      Do you have custom Global Pipeline Libraries registered? If answer \"n\" they will be overwritten by new Zebrunner-CE?" "n"
+  confirm "" "      Do you have custom Global Choices registered? Answer \"n\" to overwrite by new Zebrunner-CE choices." "n"
   if [[ $? -eq 0 ]]; then
     docker cp jenkins/resources/configs/jp.ikedam.jenkins.plugins.extensible_choice_parameter.GlobalTextareaChoiceListProvider.xml jenkins-master:/var/jenkins_home/
   fi
