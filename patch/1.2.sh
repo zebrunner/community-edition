@@ -52,7 +52,7 @@ SOURCE_VERSION=${ZBR_VERSION}
 if ! [[ "${TARGET_VERSION}" > "${SOURCE_VERSION}" ]]; then
   #target Zebrunner version less or equal existing
   echo "No need to perform upgrade to ${TARGET_VERSION}"
-  exit 1
+  exit 2
 fi
 
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
@@ -63,14 +63,14 @@ if [[ ! -f jenkins/.disabled ]] ; then
   docker cp jenkins/resources/init.groovy.d jenkins-master:/var/jenkins_home/
   if [[ $? -ne 0 ]]; then
     echo "ERROR! Unable to proceed upgrade as jenkins-master container not available!"
-    exit -1
+    exit 1
   fi
 
   # override all default jobs by new ones
   docker cp jenkins/resources/jobs jenkins-master:/var/jenkins_home/
   if [[ $? -ne 0 ]]; then
     echo "ERROR! Unable to proceed upgrade as jenkins-master container not available!"
-    exit -1
+    exit 1
   fi
 
   # ask about presence of any private Global Pipeline Library. If not - replace by new value.

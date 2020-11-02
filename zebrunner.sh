@@ -364,20 +364,20 @@
 
     patch/1.1.sh
     p1_1=$?
-    if [[ ${p1_1} -eq -1 ]]; then
+    if [[ ${p1_1} -eq 1 ]]; then
       echo "ERROR! 1.1 patchset was not applied correctly!"
       exit -1
     fi
 
     patch/1.2.sh
     p1_2=$?
-    if [[ ${p1_2} -eq -1 ]]; then
+    if [[ ${p1_2} -eq 1 ]]; then
       echo "ERROR! 1.2 patchset was not applied correctly!"
       exit -1
     fi
 
     # Important! Increment latest verification to new version, i.e. 1.3, 1.4 etc to verify latest upgrade status
-    if [[ ${p1_2} -eq 1 ]]; then
+    if [[ ${p1_2} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
