@@ -24,7 +24,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=1.1
+    export ZBR_VERSION=1.2
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
@@ -33,18 +33,6 @@
 
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
-
-    enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
-    export ZBR_SONARQUBE_ENABLED=$?
-
-    enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
-    export ZBR_JENKINS_ENABLED=$?
-
-    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
-    export ZBR_MCLOUD_ENABLED=$?
-
-    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)" "$ZBR_SELENOID_ENABLED"
-    export ZBR_SELENOID_ENABLED=$?
 
     enableLayer "reporting" "Zebrunner Reporting" "$ZBR_REPORTING_ENABLED"
     export ZBR_REPORTING_ENABLED=$?
@@ -61,6 +49,19 @@
       # no need to ask about enabling minio sub-module
       disableLayer "reporting/minio-storage"
     fi
+
+    enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
+    export ZBR_SONARQUBE_ENABLED=$?
+
+    # jenkins after sonar to detect and put valid SONAR_URL value
+    enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
+    export ZBR_JENKINS_ENABLED=$?
+
+    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)" "$ZBR_SELENOID_ENABLED"
+    export ZBR_SELENOID_ENABLED=$?
+
+    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
+    export ZBR_MCLOUD_ENABLED=$?
 
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
@@ -168,6 +169,8 @@
       exit
     fi
 
+    print_banner
+
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env
 
@@ -269,7 +272,13 @@
       exit -1
     fi
 
+    confirm "" "      Your services will be stopped. Do you want to do a backup now?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
+    fi
+
     print_banner
+
     stop
 
     cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
@@ -290,6 +299,13 @@
     sonarqube/zebrunner.sh backup
     mcloud/zebrunner.sh backup
     selenoid/zebrunner.sh backup
+
+    echo_warning "Your services needs to be started after backup."
+    confirm "" "      Start now?" "y"
+    if [[ $? -eq 1 ]]; then
+      start
+    fi
+
   }
 
   restore() {
@@ -297,6 +313,11 @@
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
+    fi
+
+    confirm "" "      Your services will be stopped and current data might be lost. Do you want to do a restore now?" "n"
+    if [[ $? -eq 0 ]]; then
+      exit
     fi
 
     print_banner
@@ -320,6 +341,13 @@
     mcloud/zebrunner.sh restore
     selenoid/zebrunner.sh restore
     down
+
+    echo_warning "Your services needs to be started after restore."
+    confirm "" "      Start now?" "y"
+    if [[ $? -eq 1 ]]; then
+      start
+    fi
+
   }
 
   upgrade() {
@@ -335,11 +363,24 @@
     fi
 
     patch/1.1.sh
-    if [[ $? -eq -1 ]]; then
+    p1_1=$?
+    if [[ ${p1_1} -eq 1 ]]; then
       echo "ERROR! 1.1 patchset was not applied correctly!"
       exit -1
     fi
 
+    patch/1.2.sh
+    p1_2=$?
+    if [[ ${p1_2} -eq 1 ]]; then
+      echo "ERROR! 1.2 patchset was not applied correctly!"
+      exit -1
+    fi
+
+    # Important! Increment latest verification to new version, i.e. 1.3, 1.4 etc to verify latest upgrade status
+    if [[ ${p1_2} -eq 2 ]]; then
+      echo "No need to restart service as nothing was upgraded."
+      exit -1
+    fi
 
     echo_warning "Your services needs to restart to finish important updates."
     confirm "" "      Restart now?" "y"
@@ -501,7 +542,7 @@
     echo "Reporting Service Crypto:"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Signin token secret (randomized base64 encoded string) [$ZBR_TOKEN_SIGNING_SECRET]: " local_token
+      read -p "Signin token secret (randomized string) [$ZBR_TOKEN_SIGNING_SECRET]: " local_token
       if [[ ! -z $local_token ]]; then
         ZBR_TOKEN_SIGNING_SECRET=$local_token
       fi
