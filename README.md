@@ -1,4 +1,6 @@
-Zebrunner (Community Edition)
+<p style="padding: 10px;" align="left">
+  <img src="./docs/img/zebrunner_logo.png">
+</p>
 ==================
 
 * Zebrunner is a [Continuous configuration automation](https://en.wikipedia.org/wiki/Infrastructure_as_code#Continuous_configuration_automation) framework for continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
