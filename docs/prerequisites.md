@@ -30,6 +30,13 @@
 * Under **GitHub App name**, give your app a name, such as "Zebrunner (Community Edition)".
 * Add a **Homepage URL** and **Authorization callback URL**. Set this to your instance's base URL. For example, https://your.zebrunner.domain.com/
 
+### GitHub Webhook
+  > Note: Github personal access token shold be created
+* Go to your repository -> Settings page -> Webhook -> Add Webhook
+* Enter Payload URL e.g. http://zb-domain/jenkins/generic-webhook-trigger/invoke?token=your-token-here
+* Select Content type: application/json
+* Select "let me send individual events" and tap [Pull requests, Pushes]
+
 ### [Optional] AWS S3 Bucket
 
 Only for case when embedded S3 compatible minio storage not used
