@@ -20,7 +20,9 @@
 
  In order to enable full ci/cd workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the ci component(Jenkins by default) as builds. 
  
- Provided the configuration steps below were executed correctly, after each Push and Pull Request to the master branch related Jenkins jobs will pull your code run the specified test and execute the sonarqube analysys. if the webhook event is a pull request the reports from the sonarqube analysis will be decorated into the pull request for the correspondant scm system.
+ After each Push and Pull Request related Jenkins jobs will pull your repository, run the specified test and execute the sonarqube analysys. if the webhook event is a pull request the reports from the sonarqube analysis will be decorated into the pull request for the correspondant scm system.
+ 
+ > Note: if the sonarqube server specified its not available the scan will be skipped
  
  #### GitHub
    
