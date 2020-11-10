@@ -123,7 +123,7 @@ Installing your GitHub App from the app's settings page.
   
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
   
-  > Note: for **gitlab** add the token generated in the **Setup scm webhook events (push and pull requests)** step into the gitlab token input found in the **integration with gitlab** section.
+  > Note: for **gitlab** add the token generated in the **Setup scm webhook events (push and pull requests)** step into the gitlab token input found in the **integration with gitlab** section in your sonarqube instance.
 
 
 ## Support Channel
