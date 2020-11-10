@@ -259,13 +259,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#github-webhook" class="md-nav__link">
-    GitHub Webhook
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#optional-aws-s3-bucket" class="md-nav__link">
     [Optional] AWS S3 Bucket
   </a>
@@ -402,13 +395,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#github-webhook" class="md-nav__link">
-    GitHub Webhook
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#optional-aws-s3-bucket" class="md-nav__link">
     [Optional] AWS S3 Bucket
   </a>
@@ -514,14 +500,6 @@
 <li>Under <strong>GitHub App name</strong>, give your app a name, such as "Zebrunner (Community Edition)".</li>
 <li>Add a <strong>Homepage URL</strong> and <strong>Authorization callback URL</strong>. Set this to your instance's base URL. For example, https://your.zebrunner.domain.com/</li>
 </ul>
-<h3 id="github-webhook">GitHub Webhook</h3>
-<blockquote>
-<p>Note: Github personal access token shold be created
-* Go to your repository -&gt; Settings page -&gt; Webhook -&gt; Add Webhook
-* Enter Payload URL e.g. http://zb-domain/jenkins/generic-webhook-trigger/invoke?token=your-token-here
-* Select Content type: application/json
-* Select "let me send individual events" and tap [Pull requests, Pushes]</p>
-</blockquote>
 <h3 id="optional-aws-s3-bucket">[Optional] AWS S3 Bucket</h3>
 <p>Only for case when embedded S3 compatible minio storage not used</p>
 <h4 id="create-bucket">Create bucket</h4>
