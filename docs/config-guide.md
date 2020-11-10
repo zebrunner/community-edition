@@ -20,11 +20,11 @@
 
  In order to enable full ci/cd workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the ci component(Jenkins by default) as builds. 
  
- After each Push and Pull Request related Jenkins jobs will pull your repository, run the specified test and execute the sonarqube analysys. if the webhook event is a pull request the reports from the sonarqube analysis will be decorated into the pull request for the correspondant scm system.
+ After each Push and Pull Request related Jenkins jobs will pull your repository, run the specified test and execute the sonarqube analysys. If the webhook event is a pull request the reports from the sonarqube analysis will be decorated into the pull request for the correspondant scm system.
  
  > Note: if the sonarqube server specified its not available the scan will be skipped
  
- #### GitHub
+ #### GitHub: Configure Webhook for Pushes,Pull Requests
    
    * Follow steps 1-6 [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) to create your GitHub personal access token.
    * Grant access for the following permissions: **repo and admin:reopo_hook**.
@@ -34,7 +34,7 @@
    * Click **Let me select individual events** and select **Pushes, Pull Requests**.
    * Click **Add webhook**.
    
-#### Gitlab 
+#### Gitlab: Configure Webhook for Pushes,Pull Requests 
 
    * Follow steps 1-7 [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to create your Gitlab personal access token.
    * In step **5** select the **api** scope.
@@ -44,11 +44,11 @@
    * Select **Push and Merge Requests events**.
    * Click **Add webhook**.
    
-   #### BitBucket Cloud 
+   #### BitBucket Cloud: Configure Webhook for Pushes
 
    * Open your terminal and run the following command ```echo -n username:password | base64``` where username and password are your BitBucket credentials, this will return a token encoded in base64.
    * Go to your **BitBucket repository page > Repository Settings > Webhooks > add webhook**.
-   * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=bitbucket-token-here` into **URL** field.
+   * Enter `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=bitbucket-token-here` into **URL** field.
    * Check that **Repository push** is selected.
    * Click **Save**.
    
@@ -123,7 +123,7 @@ Installing your GitHub App from the app's settings page.
   
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
   
-  > Note: for **gitlab** add the token generated in the **Setup scm webhook events (push and pull requests)** step into the gitlab token input found in the **integration with gitlab** section in your sonarqube instance.
+  > Note: for **gitlab** add the token generated in the **Setup scm webhook events (push and pull requests)** in Sonarqube instance->Administration ->Configuration-> Pull request tab -> **integration with gitlab** section
 
 
 ## Support Channel
