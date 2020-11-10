@@ -10,13 +10,11 @@
 
 ### Register Repository
    * Open your organization folder
-   * Select the scm type of your repository
+   * Select the scm type of your repository(GitHub, Gitlab or BitBucket)
    * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo.git as sample repo to scan)
    -> Repository is scanned and TestNG jobs created
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")
-   > Note: make sure that your repository url ends with **.git**
-   
-   > Note: the supported scm are **GitHub, Gitlab and BitBucket(Cloud and Server)**
+   > Note: https and ssh cloning are suported, just make sure that you repository url ends up with **.git**
 
 ### Setup scm webhook events (push and pull requests)
 
@@ -36,15 +34,38 @@
    
 #### Gitlab 
 
-   * Follow steps 1-7 [here](* Click **Let me select individual events** and select **Pushes, Pull Requests**.) to create your Gitlab personal access token.
-   * In step 6 select the **api** scope.
-   * Go to your **Gitlab repository page > Settings > Webhooks.
+   * Follow steps 1-7 [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to create your Gitlab personal access token.
+   * In step **5** select the **api** scope.
+   * Go to your **Gitlab repository page > Settings > Webhooks**.
    * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=gitlab-token-here` into "Payload URL" field.
    * Select application/json in "Content Type" field.
    * Select **Push and Merge Requests events**.
    * Click **Add webhook**.
    
+   #### BitBucket Cloud 
+
+   * Open your terminal and run the following command ```echo -n username:password | base64``` where username and password are your BitBucket credentials, this will return a token encoded in base64.
+   * Go to your **BitBucket repository page > Repository Settings > Webhooks > add webhook**.
+   * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=bitbucket-token-here` into **URL** field.
+   * Check that **Repository push** is selected.
+   * Click **Save**.
+   
+> Note: make sure to copy your token as your are going to need it in the **Update Jenkins Credentials**.
+
+## Update Jenkins Credentials
+
+When you register a repository a credential is generated with the format of `orgName-scmType-webhook-token`, this credential needs to be updated with the correspondant scm token created in the **Setup scm webhook events (push and pull requests)** step.
+
+* Go to **Jenkins > Manage Jenkins > Manage credentials**.
+* Find your credential and click on the id.
+* Update the **Secret text** with your correspondant scm token.
+* Click save.
+
+> Note: this webhook credentials are globally used for each repository of an organisation registered in zebrunner.
+
 ## SonarQube Integration
+
+Sonarqube pull request decoration is supported for **github and gitlab**
 
 In order to integrate non-embedded SonarQube instance, please:
   * Login to Jenkins, go to **Manage Jenkins > System Configuration > Global Properties**
@@ -58,7 +79,7 @@ In order to integrate non-embedded SonarQube instance, please:
   * Follow Steps 1–4 [here](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) to start creating your GitHub App
   * Under **GitHub App name**, give your app a name, such as SonarQubePRDecorator.
   * Add a **Homepage URL**. GitHub requires this, but it isn't important for Pull Request decoration. You can use any URL, such as https://zebrunner.com/.
-  * Enter your **User authorization callback URL**. Set this to your instance's base URL. For example, https://your.infra.domain.com/sonarqube/oauth2/callback
+  * Enter your **User authorization callback URL**. Set this to your instance's base URL. For example, `https://your-zebrunner-domain/sonarqube/oauth2/callback`
   * Add **Webhook URL**. Set this to your instance's base URL. For example, https://zebrunner.com/.
   * Grant access for the following **Permissions**:
   
@@ -86,35 +107,22 @@ Installing your GitHub App from the app's settings page.
   
 ### Configure SonarQube server
 
-  * Go to your sonarqube server page and login.
-  > Note: default credentials for sonar are: admin/admin, we recommend changing them after setting up the infra.
+  * Login into your sonarqube instance.
+  > Note: default credentials for embeded sonarqube are: admin/admin, we recommend changing them after setting up the zebrunner.
   
   * Add your SonarQube server under **Configuration > General Settings > Server base URL**
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
   
-  * In **Configuration > GitHub** add your GitHub App **Client ID, Client Secret**
+  * For Github go to **Configuration > GitHub** add your GitHub App **Client ID, Client Secret**
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
    
-  * In **Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key and select Provider as GitHub**
+  * In **Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key**
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true "SonarPullRequestConfig")
   
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
-     
-## Source Control Tools Integration
-  For enterprise github or gitlab, you can declare the following global variables in Jenkins and the entire infrastructure will use them immediately by default:
- <ul>
-   <li>  Manage jenkins -> Configure system 
-   <li>  Global properties -> Add property 
-       <ul>
-       <li type="circle"> GITHUB_API_URL -> https://$GITHUB_HOST/api/v3 
-       <li type="circle"> GITHUB_HOST -> github.mydomain.com 
-       <li type="circle"> GITHUB_HTML_URL -> https://$GITHUB_HOST/$GITHUB_ORGANIZATION 
-       <li type="circle"> GITHUB_ORGANIZATION -> myorganization 
-       <li type="circle"> GITHUB_SSH_URL -> git@$GITHUB_HOST:$GITHUB_ORGANIZATION 
-       </ul>   
- </ul>
- 
-![Alt text](https://github.com/qaprosoft/qps-infra/blob/master/docs/img/Enterprise.png?raw=true "Enterprise") 
+  
+  > Note: for **gitlab** add the token generated in the **Setup scm webhook events (push and pull requests)** step into the gitlab token input found in the **integration with gitlab** section.
+
 
 ## Support Channel
 
