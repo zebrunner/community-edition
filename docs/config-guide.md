@@ -34,7 +34,7 @@ After you register a repository a jenkins credential is generated with the forma
 
 ##### Github access token
 
-   * Follow steps 1-6 [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) to create your GitHub personal access token.
+   * Follow steps 1-9 [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) to create your GitHub personal access token.
    * Grant access for the following permissions: **repo and admin:reopo_hook**.
 
 ##### Gitlab access token
@@ -54,23 +54,23 @@ After you register a repository a jenkins credential is generated with the forma
    * Update the **Secret text** with your correspondant scm token.
    * Click save.
    
-### Configure Webhooks
+#### Configure Webhooks
 
-#### GitHub: Configure Webhook for Pushes and Pull Requests
+##### GitHub: Configure Webhook for Pushes and Pull Requests
    * Go to your **GitHub repository page > Settings > Webhooks > Add webhook**.
    * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=github-token-here` into "Payload URL" field.
    * Select application/json in "Content Type" field.
    * Click **Let me select individual events** and select **Pushes, Pull Requests**.
    * Click **Add webhook**.
    
-#### Gitlab: Configure Webhook for Pushes and Pull Requests 
+##### Gitlab: Configure Webhook for Pushes and Pull Requests 
    * Go to your **Gitlab repository page > Settings > Webhooks**.
    * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=gitlab-token-here` into "Payload URL" field.
    * Select application/json in "Content Type" field.
    * Select **Push and Merge Requests events**.
    * Click **Add webhook**.
    
-#### BitBucket Cloud: Configure Webhook for Pushes
+##### BitBucket Cloud: Configure Webhook for Pushes
    * Go to your **BitBucket repository page > Repository Settings > Webhooks > add webhook**.
    * Enter `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=bitbucket-token-here` into **URL** field.
    * Check that **Repository push** is selected.
@@ -106,7 +106,7 @@ In order to integrate non-embedded SonarQube instance, please:
 
   * Under "Where can this GitHub App be installed?," select **Any account.**
   * Click **Create GitHub App**. This will take you to your new GitHub App's page.
-  * Scroll down to the bottom of your app page and click <**Generate Private Key.** This downloads a .pem file that you'll use in the **Configure SonarQube server section.**
+  * Scroll down to the bottom of your app page and click **Generate Private Key.** This downloads a .pem file that you'll use in the **Configure SonarQube server section.**
   > Tip: in order to acces the private key open the .pem file with your favorite text editor.
   
 #### Install your app
