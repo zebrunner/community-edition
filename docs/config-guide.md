@@ -81,8 +81,8 @@ After you register a repository a jenkins credential is generated with the forma
 Sonarqube pull request decoration is supported for **github and gitlab**
 
 In order to integrate non-embedded SonarQube instance, please:
-  * Login to Jenkins, go to **Manage Jenkins > System Configuration > Global Properties**
-  * Search for **SONAR_URL** and change the value for your private SonarQube instance
+   * Login to Jenkins, go to **Manage Jenkins > System Configuration > Global Properties**
+   * Search for **SONAR_URL** and change the value for your private SonarQube instance
   > Note: Compatible SonarQube version is 7.9.3+
    
 ### GitHub
