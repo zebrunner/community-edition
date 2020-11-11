@@ -19,7 +19,7 @@
    
    > Note: https and ssh cloning are suported, make sure that you repository url ends up with **.git**
 
-### Setup scm webhook events (push and pull requests)
+### Setup webhook events (push and pull requests)
 
  In order to enable full ci/cd workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the ci component(Jenkins by default) as builds. 
  
@@ -27,46 +27,54 @@
  
  > Note: if the sonarqube server is not available the scan will be skipped
  
-#### GitHub: Configure Webhook for Pushes,Pull Requests
-   
+#### Configure required credentials
+
+After you register a repository a jenkins credential is generated with the format of `orgName-scmType-webhook-token`, this credential needs to be updated with a personal access token generated in your repository scm.
+> Note: this jenkins credentials are globally used for each repository of an organization registered in zebrunner.
+
+##### Github access token
+
    * Follow steps 1-6 [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) to create your GitHub personal access token.
    * Grant access for the following permissions: **repo and admin:reopo_hook**.
+
+##### Gitlab access token
+   * Follow steps 1-7 [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to create your Gitlab personal access token.
+   * In step **5** select the **api** scope.
+
+
+##### BitBucket Cloud token
+   * Open your terminal and run the following command ```echo -n username:password | base64``` where username and password are your BitBucket credentials, this will return a token encoded in base64.
+   
+> Note: make sure to copy your token as your are going to need it in the **Configure Webhooks** and **Update Jenkins Credentials** sections.
+
+##### Update Jenkins Credentials
+
+   * Go to **Jenkins > Manage Jenkins > Manage credentials**.
+   * Find your credential and click on the id.
+   * Update the **Secret text** with your correspondant scm token.
+   * Click save.
+   
+### Configure Webhooks
+
+#### GitHub: Configure Webhook for Pushes and Pull Requests
    * Go to your **GitHub repository page > Settings > Webhooks > Add webhook**.
    * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=github-token-here` into "Payload URL" field.
    * Select application/json in "Content Type" field.
    * Click **Let me select individual events** and select **Pushes, Pull Requests**.
    * Click **Add webhook**.
    
-#### Gitlab: Configure Webhook for Pushes,Pull Requests 
-
-   * Follow steps 1-7 [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to create your Gitlab personal access token.
-   * In step **5** select the **api** scope.
+#### Gitlab: Configure Webhook for Pushes and Pull Requests 
    * Go to your **Gitlab repository page > Settings > Webhooks**.
    * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=gitlab-token-here` into "Payload URL" field.
    * Select application/json in "Content Type" field.
    * Select **Push and Merge Requests events**.
    * Click **Add webhook**.
    
-   #### BitBucket Cloud: Configure Webhook for Pushes
-
-   * Open your terminal and run the following command ```echo -n username:password | base64``` where username and password are your BitBucket credentials, this will return a token encoded in base64.
+#### BitBucket Cloud: Configure Webhook for Pushes
    * Go to your **BitBucket repository page > Repository Settings > Webhooks > add webhook**.
    * Enter `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=bitbucket-token-here` into **URL** field.
    * Check that **Repository push** is selected.
    * Click **Save**.
-   
-> Note: make sure to copy your token as your are going to need it in the **Update Jenkins Credentials**.
-
-## Update Jenkins Credentials
-
-When you register a repository a credential is generated with the format of `orgName-scmType-webhook-token`, this credential needs to be updated with the correspondant scm token created in the **Setup scm webhook events (push and pull requests)** step.
-
-* Go to **Jenkins > Manage Jenkins > Manage credentials**.
-* Find your credential and click on the id.
-* Update the **Secret text** with your correspondant scm token.
-* Click save.
-
-> Note: this webhook credentials are globally used for each repository of an organization registered in zebrunner.
 
 ## SonarQube Integration
 
@@ -126,7 +134,7 @@ Installing your GitHub App from the app's settings page.
   
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
   
-  > Note: for **gitlab** add the token generated in the **Setup scm webhook events (push and pull requests)** in Sonarqube instance go to **Administration > Configuration > Pull request >integration with gitlab** section
+  > Note: for **gitlab** add the token generated in the **Setup webhook events (push and pull requests)**. In Sonarqube instance go to **Administration > Configuration > Pull request >integration with gitlab** section
 
 
 ## Support Channel
