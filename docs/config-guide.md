@@ -12,8 +12,9 @@
    * Open your organization folder
    * Select the scm type of your repository(GitHub, Gitlab or BitBucket)
    * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo.git as sample repo to scan)
-   -> Repository is scanned and TestNG jobs created
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")
+   > Note: Repository is scanned and TestNG jobs created
+   
    > Note: https and ssh cloning are suported, make sure that you repository url ends up with **.git**
 
 ### Setup scm webhook events (push and pull requests)

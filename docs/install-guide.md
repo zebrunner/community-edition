@@ -12,7 +12,8 @@
   ```
   ./zebrunner.sh start
   ```
-
+  > If services need to be started after setup
+  
 3. After startup, the following components are available:
   > Use your host domain address or IP.
   > admin/admin are hardcoded SonarQube credentials, and they can be updated inside the Sonar Administration panel
