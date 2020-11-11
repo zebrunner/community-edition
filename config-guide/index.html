@@ -317,11 +317,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#configure-webhooks" class="md-nav__link">
     Configure Webhooks
@@ -348,6 +343,11 @@
   <a href="#bitbucket-cloud-configure-webhook-for-pushes" class="md-nav__link">
     BitBucket Cloud: Configure Webhook for Pushes
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -530,11 +530,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#configure-webhooks" class="md-nav__link">
     Configure Webhooks
@@ -561,6 +556,11 @@
   <a href="#bitbucket-cloud-configure-webhook-for-pushes" class="md-nav__link">
     BitBucket Cloud: Configure Webhook for Pushes
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -685,7 +685,7 @@
 </blockquote>
 <h5 id="github-access-token">Github access token</h5>
 <ul>
-<li>Follow steps 1-6 <a href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token">here</a> to create your GitHub personal access token.</li>
+<li>Follow steps 1-9 <a href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token">here</a> to create your GitHub personal access token.</li>
 <li>Grant access for the following permissions: <strong>repo and admin:reopo_hook</strong>.</li>
 </ul>
 <h5 id="gitlab-access-token">Gitlab access token</h5>
@@ -707,8 +707,8 @@
 <li>Update the <strong>Secret text</strong> with your correspondant scm token.</li>
 <li>Click save.</li>
 </ul>
-<h3 id="configure-webhooks">Configure Webhooks</h3>
-<h4 id="github-configure-webhook-for-pushes-and-pull-requests">GitHub: Configure Webhook for Pushes and Pull Requests</h4>
+<h4 id="configure-webhooks">Configure Webhooks</h4>
+<h5 id="github-configure-webhook-for-pushes-and-pull-requests">GitHub: Configure Webhook for Pushes and Pull Requests</h5>
 <ul>
 <li>Go to your <strong>GitHub repository page &gt; Settings &gt; Webhooks &gt; Add webhook</strong>.</li>
 <li>Add <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=github-token-here</code> into "Payload URL" field.</li>
@@ -716,7 +716,7 @@
 <li>Click <strong>Let me select individual events</strong> and select <strong>Pushes, Pull Requests</strong>.</li>
 <li>Click <strong>Add webhook</strong>.</li>
 </ul>
-<h4 id="gitlab-configure-webhook-for-pushes-and-pull-requests">Gitlab: Configure Webhook for Pushes and Pull Requests</h4>
+<h5 id="gitlab-configure-webhook-for-pushes-and-pull-requests">Gitlab: Configure Webhook for Pushes and Pull Requests</h5>
 <ul>
 <li>Go to your <strong>Gitlab repository page &gt; Settings &gt; Webhooks</strong>.</li>
 <li>Add <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=gitlab-token-here</code> into "Payload URL" field.</li>
@@ -724,7 +724,7 @@
 <li>Select <strong>Push and Merge Requests events</strong>.</li>
 <li>Click <strong>Add webhook</strong>.</li>
 </ul>
-<h4 id="bitbucket-cloud-configure-webhook-for-pushes">BitBucket Cloud: Configure Webhook for Pushes</h4>
+<h5 id="bitbucket-cloud-configure-webhook-for-pushes">BitBucket Cloud: Configure Webhook for Pushes</h5>
 <ul>
 <li>Go to your <strong>BitBucket repository page &gt; Repository Settings &gt; Webhooks &gt; add webhook</strong>.</li>
 <li>Enter <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=bitbucket-token-here</code> into <strong>URL</strong> field.</li>
@@ -784,7 +784,7 @@
 <p>Under "Where can this GitHub App be installed?," select <strong>Any account.</strong></p>
 </li>
 <li>Click <strong>Create GitHub App</strong>. This will take you to your new GitHub App's page.</li>
-<li>Scroll down to the bottom of your app page and click &lt;<strong>Generate Private Key.</strong> This downloads a .pem file that you'll use in the <strong>Configure SonarQube server section.</strong><blockquote>
+<li>Scroll down to the bottom of your app page and click <strong>Generate Private Key.</strong> This downloads a .pem file that you'll use in the <strong>Configure SonarQube server section.</strong><blockquote>
 <p>Tip: in order to acces the private key open the .pem file with your favorite text editor.</p>
 </blockquote>
 </li>
