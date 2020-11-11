@@ -4,7 +4,7 @@
 ### Register Organization
    
   * Open Jenkins->Management_Jobs folder.
-  * Run "RegisterOrganization" providing your SCM organization name as folderName
+  * Run "RegisterOrganization" providing your organization name as folderName
   * New folder is created with default content   
   ![Alt text](https://github.com/zebrunner/zebrunner/blob/develop/docs/img/Organization.png?raw=true "Organization")
 
@@ -12,9 +12,10 @@
    * Open your organization folder
    * Select the scm type of your repository(GitHub, Gitlab or BitBucket)
    * Run "RegisterRepository" pointing to your TestNG repository (use https://github.com/qaprosoft/carina-demo.git as sample repo to scan)
-   -> Repository is scanned and TestNG jobs created
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")
    > Note: https and ssh cloning are suported, make sure that you repository url ends up with **.git**
+
+   > Note: Repository is scanned and TestNG jobs created
 
 ### Setup scm webhook events (push and pull requests)
 
@@ -22,7 +23,7 @@
  
  After each Push and Pull Request related Jenkins jobs will pull your repository, run the specified test and execute the sonarqube analysys. If the webhook event is a pull request the reports from the sonarqube analysis will be decorated into the pull request for the correspondant scm system.
  
- > Note: if the sonarqube server specified its not available the scan will be skipped
+ > Note: if the sonarqube server is not available the scan will be skipped
  
 #### GitHub: Configure Webhook for Pushes,Pull Requests
    
@@ -63,7 +64,7 @@ When you register a repository a credential is generated with the format of `org
 * Update the **Secret text** with your correspondant scm token.
 * Click save.
 
-> Note: this webhook credentials are globally used for each repository of an organisation registered in zebrunner.
+> Note: this webhook credentials are globally used for each repository of an organization registered in zebrunner.
 
 ## SonarQube Integration
 
