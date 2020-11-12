@@ -23,7 +23,7 @@
 
  In order to enable full ci/cd workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the ci component(Jenkins by default) as builds. 
  
- After each Push and Pull Request events, related Jenkins jobs will pull your repository, build your code and execute the sonarqube analysys.
+ After each Push and Pull Request events, related Jenkins jobs will pull your repository, build your code and execute the sonarqube analysis.
  
 #### Configure required credentials
 
@@ -78,14 +78,14 @@ After you register a repository a jenkins credential is generated with the forma
 
 The sonarqube static analysis is invoked for each webhook event triggered on your target repository(pushes and/or pull/merge requests).
 
-If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysys will run for push events.
+If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysis will run for push events.
 
 
 > Note: default credentials for embedded sonarqube are: admin/admin, we recommend changing them after setting up zebrunner
 
 > Note: Sonarqube pull request decoration is supported for **Github** and **Gitlab**
 
-> Note: if the sonarqube server is not available the analysys will be skipped
+> Note: if the sonarqube server is not available the analysis will be skipped
 
 ### Integrate private sonarqube server
 
