@@ -716,7 +716,7 @@
 </blockquote>
 <h3 id="setup-webhook-events-push-and-pull-requests">Setup webhook events (push and pull requests)</h3>
 <p>In order to enable full ci/cd workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the ci component(Jenkins by default) as builds. </p>
-<p>After each Push and Pull Request events, related Jenkins jobs will pull your repository, build your code and execute the sonarqube analysys.</p>
+<p>After each Push and Pull Request events, related Jenkins jobs will pull your repository, build your code and execute the sonarqube analysis.</p>
 <h4 id="configure-required-credentials">Configure required credentials</h4>
 <p>After you register a repository a jenkins credential is generated with the format of <code>orgName-scmType-webhook-token</code>, this credential needs to be updated with a personal access token generated in your repository scm.</p>
 <blockquote>
@@ -772,11 +772,11 @@
 </ul>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
 <p>The sonarqube static analysis is invoked for each webhook event triggered on your target repository(pushes and/or pull/merge requests).</p>
-<p>If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysys will run for push events.</p>
+<p>If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysis will run for push events.</p>
 <blockquote>
 <p>Note: default credentials for embedded sonarqube are: admin/admin, we recommend changing them after setting up zebrunner</p>
 <p>Note: Sonarqube pull request decoration is supported for <strong>Github</strong> and <strong>Gitlab</strong></p>
-<p>Note: if the sonarqube server is not available the analysys will be skipped</p>
+<p>Note: if the sonarqube server is not available the analysis will be skipped</p>
 </blockquote>
 <h3 id="integrate-private-sonarqube-server">Integrate private sonarqube server</h3>
 <p>If you have a private sonarqube instance and you have decided to use it, please follow the steps bellow:</p>
