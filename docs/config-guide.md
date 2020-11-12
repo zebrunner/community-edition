@@ -37,7 +37,7 @@ After you register a repository a jenkins credential is generated with the forma
 
 ##### Gitlab access token
    * Follow steps 1-7 [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to create your Gitlab personal access token.
-   * In step **5** select the **api** scope.
+   * In step **5** select the **api, read_repository, write_repositoryi** scopes.
 
 
 ##### BitBucket Cloud token
