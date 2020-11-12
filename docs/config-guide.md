@@ -150,7 +150,7 @@ Install your GitHub App from the app's settings page.
 To enable **merge requests decoration** on your gitlab repository we are going to use the token generated in **Gitlab access token** step.
    
    * Login into your sonarqube instance
-   * Go to **Administration > Configuration > Pull Requests > Integration with Gitlab** and in the token inout paste your gitlab acces token.
+   * Go to **Administration > Configuration > Pull Requests > Integration with Gitlab** and in the token input paste your gitlab acces token.
    
 ### Configure sonarqube base URL
 
