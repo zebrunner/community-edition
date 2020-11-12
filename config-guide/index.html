@@ -370,11 +370,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#github" class="md-nav__link">
-    GitHub
+  <a href="#integrate-private-sonarqube-server" class="md-nav__link">
+    Integrate private sonarqube server
   </a>
   
-    <nav class="md-nav" aria-label="GitHub">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#github-configuration" class="md-nav__link">
+    GitHub configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="GitHub configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -391,14 +398,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-with-your-app" class="md-nav__link">
+    Configure sonarqube with your app
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#configure-sonarqube-server" class="md-nav__link">
-    Configure SonarQube server
+  <a href="#gitlab-configuration" class="md-nav__link">
+    Gitlab configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-base-url" class="md-nav__link">
+    Configure sonarqube base URL
   </a>
   
 </li>
@@ -583,11 +604,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#github" class="md-nav__link">
-    GitHub
+  <a href="#integrate-private-sonarqube-server" class="md-nav__link">
+    Integrate private sonarqube server
   </a>
   
-    <nav class="md-nav" aria-label="GitHub">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#github-configuration" class="md-nav__link">
+    GitHub configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="GitHub configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -604,14 +632,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-with-your-app" class="md-nav__link">
+    Configure sonarqube with your app
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#configure-sonarqube-server" class="md-nav__link">
-    Configure SonarQube server
+  <a href="#gitlab-configuration" class="md-nav__link">
+    Gitlab configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-base-url" class="md-nav__link">
+    Configure sonarqube base URL
   </a>
   
 </li>
@@ -674,10 +716,7 @@
 </blockquote>
 <h3 id="setup-webhook-events-push-and-pull-requests">Setup webhook events (push and pull requests)</h3>
 <p>In order to enable full ci/cd workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the ci component(Jenkins by default) as builds. </p>
-<p>After each Push and Pull Request related Jenkins jobs will pull your repository, run the specified test and execute the sonarqube analysys. If the webhook event is a pull request the reports from the sonarqube analysis will be decorated into the pull request for the correspondant scm system.</p>
-<blockquote>
-<p>Note: if the sonarqube server is not available the scan will be skipped</p>
-</blockquote>
+<p>After each Push and Pull Request events, related Jenkins jobs will pull your repository, build your code and execute the sonarqube analysys.</p>
 <h4 id="configure-required-credentials">Configure required credentials</h4>
 <p>After you register a repository a jenkins credential is generated with the format of <code>orgName-scmType-webhook-token</code>, this credential needs to be updated with a personal access token generated in your repository scm.</p>
 <blockquote>
@@ -732,14 +771,24 @@
 <li>Click <strong>Save</strong>.</li>
 </ul>
 <h2 id="sonarqube-integration">SonarQube Integration</h2>
-<p>Sonarqube pull request decoration is supported for <strong>github and gitlab</strong></p>
-<p>In order to integrate non-embedded SonarQube instance, please:
-   * Login to Jenkins, go to <strong>Manage Jenkins &gt; System Configuration &gt; Global Properties</strong>
-   * Search for <strong>SONAR_URL</strong> and change the value for your private SonarQube instance</p>
+<p>The sonarqube static analysis is invoked for each webhook event triggered on your target repository(pushes and/or pull/merge requests).</p>
+<p>If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysys will run for push events.</p>
 <blockquote>
-<p>Note: Compatible SonarQube version is 7.9.3+</p>
+<p>Note: default credentials for embedded sonarqube are: admin/admin, we recommend changing them after setting up zebrunner</p>
+<p>Note: Sonarqube pull request decoration is supported for <strong>Github</strong> and <strong>Gitlab</strong></p>
+<p>Note: if the sonarqube server is not available the analysys will be skipped</p>
 </blockquote>
-<h3 id="github">GitHub</h3>
+<h3 id="integrate-private-sonarqube-server">Integrate private sonarqube server</h3>
+<p>If you have a private sonarqube instance and you have decided to use it, please follow the steps bellow:</p>
+<ul>
+<li>Login to Jenkins, go to <strong>Manage Jenkins &gt; System Configuration &gt; Global Properties</strong></li>
+<li>Search for <strong>SONAR_URL</strong> and change the value with your private SonarQube instance url<blockquote>
+<p>Note: Compatible SonarQube version is 7.9.3 - 8.0</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="github-configuration">GitHub configuration</h3>
+<p>To enable <strong>pull rqeuest decoration</strong> on your github repository you need to create a <strong>GitHub App</strong>, his purpose is to publish the sonarqube reports generated on the webhook event being processed as <strong>checks</strong> into the pull request itself on github. </p>
 <h4 id="create-a-github-app">Create a <a href="https://developer.github.com/apps/about-apps/">GitHub App</a></h4>
 <ul>
 <li>Follow Steps 1–4 <a href="https://developer.github.com/apps/building-github-apps/creating-a-github-app/">here</a> to start creating your GitHub App</li>
@@ -790,37 +839,44 @@
 </li>
 </ul>
 <h4 id="install-your-app">Install your app</h4>
-<p>Installing your GitHub App from the app's settings page.</p>
+<p>Once the app is created, you need to install it in your target organization(the one that will hold your repositories). By doing this you are <strong>granting acces</strong> to all of your repositories with the permissions specified in the <strong>Create a [GitHub App]</strong> section.</p>
+<p>Install your GitHub App from the app's settings page.</p>
 <ul>
 <li>Go to your <strong>GitHub profile &gt; Developer settings &gt; GitHub Apps &gt; Your app name &gt; Install App</strong></li>
 <li>Select the organization to install the app</li>
 <li>Select <strong>All repositories</strong></li>
-<li>Click install</li>
-</ul>
-<h3 id="configure-sonarqube-server">Configure SonarQube server</h3>
-<ul>
-<li>
-<p>Login into your sonarqube instance.</p>
-<blockquote>
-<p>Note: default credentials for embeded sonarqube are: admin/admin, we recommend changing them after setting up the zebrunner.</p>
+<li>Click install<blockquote>
+<p>Note: You can select specific repositories, so the github application will have access <strong>only for those specified</strong></p>
 </blockquote>
 </li>
+</ul>
+<h4 id="configure-sonarqube-with-your-app">Configure sonarqube with your app</h4>
+<ul>
+<li>Login into your sonarqube instance</li>
 <li>
-<p>Add your SonarQube server under <strong>Configuration &gt; General Settings &gt; Server base URL</strong>
-  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /></p>
-</li>
-<li>
-<p>For Github go to <strong>Configuration &gt; GitHub</strong> add your GitHub App <strong>Client ID, Client Secret</strong>
+<p>Go to <strong>Administration &gt; Configuration &gt; GitHub</strong> add your GitHub App <strong>Client ID, Client Secret</strong>
   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /></p>
 </li>
 <li>
-<p>In <strong>Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key</strong>
+<p>In <strong>Administration &gt; Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key</strong>
   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true" title="SonarPullRequestConfig" /></p>
 </li>
 </ul>
 <blockquote>
 <p>Note: make sure to copy all content from the .pem file generated in the <strong>Create GitHub App</strong> section</p>
-<p>Note: for <strong>gitlab</strong> add the token generated in the <strong>Setup webhook events (push and pull requests)</strong>. In Sonarqube instance go to <strong>Administration &gt; Configuration &gt; Pull request &gt;integration with gitlab</strong> section</p>
+</blockquote>
+<h3 id="gitlab-configuration">Gitlab configuration</h3>
+<p>To enable <strong>merge requests decoration</strong> on your gitlab repository we are going to use the token generated in <strong>Gitlab access token</strong> step.</p>
+<ul>
+<li>Login into your sonarqube instance</li>
+<li>Go to <strong>Administration &gt; Configuration &gt; Pull Requests &gt; Integration with Gitlab</strong> and in the token inout paste your gitlab acces token.</li>
+</ul>
+<h3 id="configure-sonarqube-base-url">Configure sonarqube base URL</h3>
+<p>This will serve static context(such as images, links, etc) for pull/merge requests decoration. Follow the below steps to configure your server base URL: 
+   * Add your SonarQube server under <strong>Administration &gt; Configuration &gt; General Settings &gt; Server base URL</strong>
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /></p>
+<blockquote>
+<p>Tip: If you are missing images in your decorated pull/merge request it is probally due to this step being skipped or the sonarqube server is unavailable at that momment.</p>
 </blockquote>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
