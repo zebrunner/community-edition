@@ -15,8 +15,7 @@
   > If services need to be started after setup
   
 3. After startup, the following components are available:
-  > Use your host domain address or IP.
-  > admin/admin are hardcoded SonarQube credentials, and they can be updated inside the Sonar Administration panel
+  > Use your host domain address or IP.  
   
 | Components          	| URL                                                                                                    	   |
 |---------------------	|----------------------------------------------------------------------------------------------------------	   |
@@ -26,6 +25,8 @@
 | Web Selenium Hub    	| [http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub](http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub)       |
 | Mobile Selenium Hub 	| [http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub](http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub) 	   |
 | Mobile SmartTest Farm	| [http://demo.qaprosoft.com/stf](http://demo.qaprosoft.com/stf)                                         	   |
+
+> admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
 
 ## Support Channel
 
