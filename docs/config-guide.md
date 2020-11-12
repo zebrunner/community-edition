@@ -23,9 +23,7 @@
 
  In order to enable full ci/cd workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the ci component(Jenkins by default) as builds. 
  
- After each Push and Pull Request related Jenkins jobs will pull your repository, run the specified test and execute the sonarqube analysys. If the webhook event is a pull request the reports from the sonarqube analysis will be decorated into the pull request for the correspondant scm system.
- 
- > Note: if the sonarqube server is not available the scan will be skipped
+ After each Push and Pull Request events, related Jenkins jobs will pull your repository, build your code and execute the sonarqube analysys.
  
 #### Configure required credentials
 
@@ -78,14 +76,28 @@ After you register a repository a jenkins credential is generated with the forma
 
 ## SonarQube Integration
 
-Sonarqube pull request decoration is supported for **github and gitlab**
+The sonarqube static analysis is invoked for each webhook event triggered on your target repository(pushes and/or pull/merge requests).
 
-In order to integrate non-embedded SonarQube instance, please:
+If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysys will run for push events.
+
+
+> Note: default credentials for embedded sonarqube are: admin/admin, we recommend changing them after setting up zebrunner
+
+> Note: Sonarqube pull request decoration is supported for **Github** and **Gitlab**
+
+> Note: if the sonarqube server is not available the analysys will be skipped
+
+### Integrate private sonarqube server
+
+If you have a private sonarqube instance and you have decided to use it, please follow the steps bellow:
+
    * Login to Jenkins, go to **Manage Jenkins > System Configuration > Global Properties**
-   * Search for **SONAR_URL** and change the value for your private SonarQube instance
-  > Note: Compatible SonarQube version is 7.9.3+
-   
-### GitHub
+   * Search for **SONAR_URL** and change the value with your private SonarQube instance url
+   > Note: Compatible SonarQube version is 7.9.3 - 8.0
+     
+### GitHub configuration
+
+To enable **pull rqeuest decoration** on your github repository you need to create a **GitHub App**, his purpose is to publish the sonarqube reports generated on the webhook event being processed as **checks** into the pull request itself on github. 
 
 #### Create a [GitHub App](https://developer.github.com/apps/about-apps/)
 
@@ -110,33 +122,44 @@ In order to integrate non-embedded SonarQube instance, please:
   > Tip: in order to acces the private key open the .pem file with your favorite text editor.
   
 #### Install your app
-Installing your GitHub App from the app's settings page.
+
+Once the app is created, you need to install it in your target organization(the one that will hold your repositories). By doing this you are **granting acces** to all of your repositories with the permissions specified in the **Create a [GitHub App]** section.
+
+Install your GitHub App from the app's settings page.
 
   * Go to your **GitHub profile > Developer settings > GitHub Apps > Your app name > Install App**
   * Select the organization to install the app
   * Select **All repositories**
   * Click install
+  > Note: You can select specific repositories, so the github application will have access **only for those specified**
 
   
-### Configure SonarQube server
+#### Configure sonarqube with your app
 
-  * Login into your sonarqube instance.
-  > Note: default credentials for embeded sonarqube are: admin/admin, we recommend changing them after setting up the zebrunner.
-  
-  * Add your SonarQube server under **Configuration > General Settings > Server base URL**
-  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
-  
-  * For Github go to **Configuration > GitHub** add your GitHub App **Client ID, Client Secret**
+  * Login into your sonarqube instance
+  * Go to **Administration > Configuration > GitHub** add your GitHub App **Client ID, Client Secret**
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
    
-  * In **Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key**
+  * In **Administration > Configuration > Pull Request** add your GitHub **App ID, App Name, App Private Key**
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true "SonarPullRequestConfig")
   
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
   
-  > Note: for **gitlab** add the token generated in the **Setup webhook events (push and pull requests)**. In Sonarqube instance go to **Administration > Configuration > Pull request >integration with gitlab** section
+### Gitlab configuration
+  
+To enable **merge requests decoration** on your gitlab repository we are going to use the token generated in **Gitlab access token** step.
+   
+   * Login into your sonarqube instance
+   * Go to **Administration > Configuration > Pull Requests > Integration with Gitlab** and in the token inout paste your gitlab acces token.
+   
+### Configure sonarqube base URL
 
-
+This will serve static context(such as images, links, etc) for pull/merge requests decoration. Follow the below steps to configure your server base URL: 
+   * Add your SonarQube server under **Administration > Configuration > General Settings > Server base URL**
+   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
+   > Tip: If you are missing images in your decorated pull/merge request it is probally due to this step being skipped or the sonarqube server is unavailable at that momment.
+   
+   
 ## Support Channel
 
   * Join [Telegram channel](https://t.me/zebrunner) in case of any question
