@@ -133,7 +133,6 @@ Install your GitHub App from the app's settings page.
   * Click install
   > Note: You can select specific repositories, so the github application will have access **only for those specified**
 
-  
 #### Configure sonarqube with your app
 
   * Login into your sonarqube instance
@@ -145,12 +144,26 @@ Install your GitHub App from the app's settings page.
   
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
   
+#### Pull Request decoration example
+
+When you create a pull and the sonar analysis reported issues, your pull request will be decorated with those issues and links to the sonarqube instance holding your project.
+
+![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco1.png?raw=true "github-pr-deco1")
+![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco2.png?raw=true "github-pr-deco2")
+  
 ### Gitlab configuration
   
-To enable **merge requests decoration** on your gitlab repository we are going to use the token generated in **Gitlab access token** step.
+To enable **merge requests decoration** on your gitlab repository we are going to use the token generated in **Gitlab access token** step. The sonarqube report is published as pipeline status and comments into the merge request itself.
    
    * Login into your sonarqube instance
    * Go to **Administration > Configuration > Pull Requests > Integration with Gitlab** and in the token input paste your gitlab acces token.
+
+#### Merge request decoration exmaple
+
+When you create a merge request and the sonar analysis reported issues, your merge request will be decorated with those issues and links to the sonarqube instance holding your project.
+
+![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco1.png?raw=true "gitlab-mr-deco1")
+![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco2.png?raw=true "gitlab-mr-deco2")
    
 ### Configure sonarqube base URL
 
@@ -158,7 +171,7 @@ This will serve static context(such as images, links, etc) for pull/merge reques
 
    * Add your SonarQube server under **Administration > Configuration > General Settings > Server base URL**
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
-   > Tip: If you are missing images in your decorated pull/merge request it is probably due to configuration issues or the sonarqube server is not available now.
+   > Tip: If you are missing images in your decorated pull/merge request it is probably due to configuration issues or the sonarqube server being unavailable at that moment.
    
    
 ## Support Channel
