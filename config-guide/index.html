@@ -788,7 +788,7 @@
 </li>
 </ul>
 <h3 id="github-configuration">GitHub configuration</h3>
-<p>To enable <strong>pull rqeuest decoration</strong> on your github repository you need to create a <strong>GitHub App</strong>, his purpose is to publish the sonarqube reports generated on the webhook event being processed as <strong>checks</strong> into the pull request itself on github. </p>
+<p>To enable <strong>pull reqeuest decoration</strong> on your github repository you need to create a <strong>GitHub App</strong>, his purpose is to publish the sonarqube reports generated on the webhook event being processed as <strong>checks</strong> into the pull request itself on github. </p>
 <h4 id="create-a-github-app">Create a <a href="https://developer.github.com/apps/about-apps/">GitHub App</a></h4>
 <ul>
 <li>Follow Steps 1–4 <a href="https://developer.github.com/apps/building-github-apps/creating-a-github-app/">here</a> to start creating your GitHub App</li>
@@ -839,7 +839,7 @@
 </li>
 </ul>
 <h4 id="install-your-app">Install your app</h4>
-<p>Once the app is created, you need to install it in your target organization(the one that will hold your repositories). By doing this you are <strong>granting acces</strong> to all of your repositories with the permissions specified in the <strong>Create a [GitHub App]</strong> section.</p>
+<p>Once the app is created, you need to install it in your target organization to <strong>grant acces</strong> to all of your repositories with the permissions specified in the <strong>Create a [GitHub App]</strong> section.</p>
 <p>Install your GitHub App from the app's settings page.</p>
 <ul>
 <li>Go to your <strong>GitHub profile &gt; Developer settings &gt; GitHub Apps &gt; Your app name &gt; Install App</strong></li>
@@ -872,12 +872,14 @@
 <li>Go to <strong>Administration &gt; Configuration &gt; Pull Requests &gt; Integration with Gitlab</strong> and in the token input paste your gitlab acces token.</li>
 </ul>
 <h3 id="configure-sonarqube-base-url">Configure sonarqube base URL</h3>
-<p>This will serve static context(such as images, links, etc) for pull/merge requests decoration. Follow the below steps to configure your server base URL: 
-   * Add your SonarQube server under <strong>Administration &gt; Configuration &gt; General Settings &gt; Server base URL</strong>
-   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /></p>
-<blockquote>
-<p>Tip: If you are missing images in your decorated pull/merge request it is probally due to this step being skipped or the sonarqube server is unavailable at that momment.</p>
+<p>This will serve static context(such as images, links, etc) for pull/merge requests decoration. Follow the below steps to configure your server base URL:</p>
+<ul>
+<li>Add your SonarQube server under <strong>Administration &gt; Configuration &gt; General Settings &gt; Server base URL</strong>
+   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /><blockquote>
+<p>Tip: If you are missing images in your decorated pull/merge request it is probably due to configuration issues or the sonarqube server is not available now.</p>
 </blockquote>
+</li>
+</ul>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
 <li>Join <a href="https://t.me/zebrunner">Telegram channel</a> in case of any question</li>
