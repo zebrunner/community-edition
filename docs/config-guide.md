@@ -97,7 +97,7 @@ If you have a private sonarqube instance and you have decided to use it, please 
      
 ### GitHub configuration
 
-To enable **pull rqeuest decoration** on your github repository you need to create a **GitHub App**, his purpose is to publish the sonarqube reports generated on the webhook event being processed as **checks** into the pull request itself on github. 
+To enable **pull reqeuest decoration** on your github repository you need to create a **GitHub App**, his purpose is to publish the sonarqube reports generated on the webhook event being processed as **checks** into the pull request itself on github. 
 
 #### Create a [GitHub App](https://developer.github.com/apps/about-apps/)
 
@@ -123,7 +123,7 @@ To enable **pull rqeuest decoration** on your github repository you need to crea
   
 #### Install your app
 
-Once the app is created, you need to install it in your target organization(the one that will hold your repositories). By doing this you are **granting acces** to all of your repositories with the permissions specified in the **Create a [GitHub App]** section.
+Once the app is created, you need to install it in your target organization to **grant acces** to all of your repositories with the permissions specified in the **Create a [GitHub App]** section.
 
 Install your GitHub App from the app's settings page.
 
@@ -154,10 +154,11 @@ To enable **merge requests decoration** on your gitlab repository we are going t
    
 ### Configure sonarqube base URL
 
-This will serve static context(such as images, links, etc) for pull/merge requests decoration. Follow the below steps to configure your server base URL: 
+This will serve static context(such as images, links, etc) for pull/merge requests decoration. Follow the below steps to configure your server base URL:
+
    * Add your SonarQube server under **Administration > Configuration > General Settings > Server base URL**
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
-   > Tip: If you are missing images in your decorated pull/merge request it is probally due to this step being skipped or the sonarqube server is unavailable at that momment.
+   > Tip: If you are missing images in your decorated pull/merge request it is probably due to configuration issues or the sonarqube server is not available now.
    
    
 ## Support Channel
