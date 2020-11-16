@@ -33,7 +33,7 @@ After you register a repository a jenkins credential is generated with the forma
 ##### Github access token
 
    * Follow steps 1-9 [here](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token) to create your GitHub personal access token.
-   * Grant access for the following permissions: **repo and admin:reopo_hook**.
+   * Grant access for the following permissions: **repo and admin:repo_hook**.
 
 ##### Gitlab access token
    * Follow steps 1-7 [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to create your Gitlab personal access token.
