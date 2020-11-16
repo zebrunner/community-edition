@@ -37,7 +37,7 @@ After you register a repository a jenkins credential is generated with the forma
 
 ##### Gitlab access token
    * Follow steps 1-7 [here](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token) to create your Gitlab personal access token.
-   * In step **5** select the **api, read_repository, write_repositoryi** scopes.
+   * In step **5** select the **api, read_repository, write_repository** scopes.
 
 
 ##### BitBucket Cloud token
@@ -48,8 +48,8 @@ After you register a repository a jenkins credential is generated with the forma
 ##### Update Jenkins Credentials
 
    * Go to **Jenkins > Manage Jenkins > Manage credentials**.
-   * Find your credential and click on the id.
-   * Update the **Secret text** with your correspondant scm token.
+   * Find your `orgName-scmType-webhook-token` credential and click on the ID.
+   * Update the **Secret text** with your correspondent scm token.
    * Click save.
    
 #### Configure Webhooks
@@ -81,7 +81,7 @@ The sonarqube static analysis is invoked for each webhook event triggered on you
 If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysis will run for push events.
 
 
-> Note: default credentials for embedded sonarqube are: admin/admin, we recommend changing them after setting up zebrunner
+> Note: default credentials for embedded sonarqube are: admin/admin, we recommend to change them after setting up zebrunner
 
 > Note: Sonarqube pull request decoration is supported for **Github** and **Gitlab**
 
@@ -116,7 +116,7 @@ To enable **pull reqeuest decoration** on your github repository you need to cre
      |      Commit statuses     | Read-only     |
   > Note: if your are using **Github Enterprise** the permission "Metadata" is renamed to "Repository Metadata"
 
-  * Under "Where can this GitHub App be installed?," select **Any account.**
+  * Under "Where can this GitHub App be installed?" select **Any account.**
   * Click **Create GitHub App**. This will take you to your new GitHub App's page.
   * Scroll down to the bottom of your app page and click **Generate Private Key.** This downloads a .pem file that you'll use in the **Configure SonarQube server section.**
   > Tip: in order to acces the private key open the .pem file with your favorite text editor.
@@ -146,7 +146,7 @@ Install your GitHub App from the app's settings page.
   
 #### Pull Request decoration example
 
-When you create a pull and the sonar analysis reported issues, your pull request will be decorated with those issues and links to the sonarqube instance holding your project.
+When you create a pull and the sonar analysis reported issues, your pull request will be decorated with those issues and links to the sonarqube instance with your project.
 
 ![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco1.png?raw=true "github-pr-deco1")
 ![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco2.png?raw=true "github-pr-deco2")
@@ -160,14 +160,14 @@ To enable **merge requests decoration** on your gitlab repository we are going t
 
 #### Merge request decoration exmaple
 
-When you create a merge request and the sonar analysis reported issues, your merge request will be decorated with those issues and links to the sonarqube instance holding your project.
+When you create a merge request and the sonar analysis reports issues, your merge request will be decorated with those issues and links to the sonarqube instance with your project.
 
 ![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco1.png?raw=true "gitlab-mr-deco1")
 ![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco2.png?raw=true "gitlab-mr-deco2")
    
 ### Configure sonarqube base URL
 
-This will serve static context(such as images, links, etc) for pull/merge requests decoration. Follow the below steps to configure your server base URL:
+This will serve static context(such as images, links, etc.) for pull/merge requests decoration. Follow the below steps to configure your server base URL:
 
    * Add your SonarQube server under **Administration > Configuration > General Settings > Server base URL**
    ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true "SonarBaseUrlConfig")
