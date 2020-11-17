@@ -64,7 +64,7 @@ After you register a repository a jenkins credential is generated with the forma
 ##### Gitlab: Configure Webhook for Pushes and Pull Requests 
    * Go to your **Gitlab repository page > Settings > Webhooks**.
    * Add `http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=gitlab-token-here` into "Payload URL" field.
-   * Select application/json in "Content Type" field.
+   * "Secret Token" is empty field.
    * Select **Push and Merge Requests events**.
    * Click **Add webhook**.
    
