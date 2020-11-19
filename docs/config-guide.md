@@ -127,6 +127,7 @@ Once the app is created, you need to install it in your target organization to *
 
 Install your GitHub App from the app's settings page.
 
+
   * Go to your **GitHub profile > Developer settings > GitHub Apps > Your app name > Install App**
   * Select the organization to install the app
   * Select **All repositories**
