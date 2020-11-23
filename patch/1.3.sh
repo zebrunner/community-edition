@@ -25,6 +25,18 @@ if [[ ! -f jenkins/.disabled ]] ; then
     echo "ERROR! Unable to proceed upgrade as jenkins-master container not available!"
     exit 1
   fi
+
+  # regenerage variables.env to register new ZEBRUNNER_VERSION var
+  local url="$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins"
+
+  cp jenkins/variables.env.original jenkins/variables.env
+  sed -i "s#http://localhost:8080/jenkins#${url}#g" jenkins/variables.env
+  sed -i "s#INFRA_HOST=localhost:8080#INFRA_HOST=${ZBR_INFRA_HOST}#g" jenkins/variables.env
+
+  if [[ ! -z $ZBR_SONAR_URL ]]; then
+    sed -i "s#SONAR_URL=#SONAR_URL=${ZBR_SONAR_URL}#g" jenkins/variables.env
+  fi
+
 fi
 
 
