@@ -376,8 +376,15 @@
       exit -1
     fi
 
-    # Important! Increment latest verification to new version, i.e. 1.3, 1.4 etc to verify latest upgrade status
-    if [[ ${p1_2} -eq 2 ]]; then
+    patch/1.3.sh
+    p1_3=$?
+    if [[ ${p1_3} -eq 1 ]]; then
+      echo "ERROR! 1.3 patchset was not applied correctly!"
+      exit -1
+    fi
+
+    # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
+    if [[ ${p1_3} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
