@@ -4,6 +4,26 @@
     export -p | grep "ZBR" > backup/settings.env
   }
 
+  replace() {
+    #TODO: https://github.com/zebrunner/zebrunner/issues/328 organize debug logging for setup/replace
+    file=$1
+    #echo "file: $file"
+    content=$(<$file) # read the file's content into
+    #echo "content: $content"
+
+    old=$2
+    #echo "old: $old"
+
+    new=$3
+    #echo "new: $new"
+    content=${content//"$old"/$new}
+
+    #echo "content: $content"
+
+    printf '%s' "$content" >$file    # write new content to disk
+  }
+
+
 TARGET_VERSION=1.3
 
 source backup/settings.env
@@ -36,8 +56,8 @@ if [[ ! -f jenkins/.disabled ]] ; then
   fi
 fi
 
-# https://github.com/zebrunner/reporting/issues/2266 regenerating reporting-service/variables.env
 if [[ ! -f reporting/.disabled ]] ; then
+  # https://github.com/zebrunner/reporting/issues/2266 regenerating reporting-service/variables.env
   cp reporting/configuration/reporting-service/variables.env.original reporting/configuration/reporting-service/variables.env
   sed -i "s#http://localhost:8081#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT#g" reporting/configuration/reporting-service/variables.env
 
@@ -69,6 +89,18 @@ if [[ ! -f reporting/.disabled ]] ; then
     sed -i "s#SELENIUM_USER=#SELENIUM_USER=demo#g" reporting/configuration/reporting-service/variables.env
     sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
   fi
+
+  # https://github.com/zebrunner/reporting/issues/2267 regenerating s3.env using new variable
+  cp reporting/configuration/_common/s3.env.original reporting/configuration/_common/s3.env
+  if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
+    # use case with AWS S3
+    sed -i "s#S3_REGION=us-east-1#S3_REGION=${ZBR_STORAGE_REGION}#g" reporting/configuration/_common/s3.env
+    sed -i "s#ZEBRUNNER_AWSS3_ENDPOINT=http://minio:9000#ZEBRUNNER_AWSS3_ENDPOINT=${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}#g" reporting/configuration/_common/s3.env
+    sed -i "s#S3_BUCKET=zebrunner#S3_BUCKET=${ZBR_STORAGE_BUCKET}#g" reporting/configuration/_common/s3.env
+    sed -i "s#S3_ACCESS_KEY_ID=zebrunner#S3_ACCESS_KEY_ID=${ZBR_STORAGE_ACCESS_KEY}#g" reporting/configuration/_common/s3.env
+    replace reporting/configuration/_common/s3.env "S3_SECRET=J33dNyeTDj" "S3_SECRET=${ZBR_STORAGE_SECRET_KEY}"
+  fi
+
 fi
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
