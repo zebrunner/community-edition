@@ -70,6 +70,10 @@ if [[ ! -f reporting/.disabled ]] ; then
     sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
   fi
 
+  # https://github.com/zebrunner/zebrunner/issues/366 remove db-migration-ttol container and volume
+  docker rm -f db-migration-tool
+  docker volume rm migration-tool-volume
+
 fi
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
