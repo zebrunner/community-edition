@@ -1,7 +1,9 @@
 #!/bin/bash
 
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-docker cp 347.sql postgres:/tmp
+
+docker cp $BASEDIR/347.sql postgres:/tmp
 if [[ $? -ne 0 ]]; then
   echo "ERROR! Unable to proceed with #347 hotfix as postgres container not available"
   exit 1
