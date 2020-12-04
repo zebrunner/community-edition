@@ -87,6 +87,11 @@ if [[ ! -f jenkins/.disabled ]] ; then
 fi
 
 
+# apply reporting hotfix #347
+if [[ ! -f reporting/.disabled ]] ; then
+  patch/hotfixes/347.sh
+fi
+
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
 #remember successfully applied version in settings.env file
