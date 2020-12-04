@@ -72,7 +72,7 @@ if [[ ! -f reporting/.disabled ]] ; then
 
   # https://github.com/zebrunner/zebrunner/issues/366 remove db-migration-ttol container and volume
   docker rm -f db-migration-tool
-  docker volume rm migration-tool-volume
+  docker volume rm reporting_migration-tool-volume
 
 fi
 
