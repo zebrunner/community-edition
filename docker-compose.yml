@@ -13,12 +13,6 @@ services:
      - ./nginx/htpasswd:/usr/share/nginx/htpasswd:ro
      - ./nginx/grid:/usr/share/nginx/html/grid
      - ./selenoid/video:/usr/share/nginx/video:ro
-##TODO: test what is the valid share path! maybe video!
-#     - "data-volume:/usr/share/ftp:rw"
     ports:
      - "80:80"
     restart: always
-#volumes:
-#  data-volume:
-#    external:
-#      name: mcloud_data-volume
