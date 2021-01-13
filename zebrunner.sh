@@ -24,7 +24,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=1.3
+    export ZBR_VERSION=1.4
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
