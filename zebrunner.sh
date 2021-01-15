@@ -108,11 +108,13 @@
       sed -i 's/default-proxy-server/stf-proxy:80/g' ./nginx/conf.d/default.conf
       sed -i 's/default-proxy-host/stf-proxy/g' ./nginx/conf.d/default.conf
     elif [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
-      sed -i 's/default-proxy-server/jenkins-master:8080/g' ./nginx/conf.d/default.conf
-      sed -i 's/default-proxy-host/jenkins-master/g' ./nginx/conf.d/default.conf
+      sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_pass http://$upstream_default;|rewrite / /jenkins;|g' ./nginx/conf.d/default.conf
     elif [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
-      sed -i 's/default-proxy-server/127.0.0.1:80/g' ./nginx/conf.d/default.conf
-      sed -i 's/default-proxy-host/sonarqube/g' ./nginx/conf.d/default.conf
+      sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_pass http://$upstream_default;|rewrite / /sonarqube;|g' ./nginx/conf.d/default.conf
     else
       sed -i 's|proxy_pass http://$upstream_default;|root   /usr/share/nginx/html;|g' ./nginx/conf.d/default.conf
     fi
