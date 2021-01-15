@@ -100,6 +100,23 @@
       sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
     fi
 
+    # finish with NGiNX default tool selection
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      sed -i 's/default-proxy-server/zebrunner-proxy:80/g' ./nginx/conf.d/default.conf
+      sed -i 's/default-proxy-host/zebrunner-proxy/g' ./nginx/conf.d/default.conf
+    elif [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
+      sed -i 's/default-proxy-server/stf-proxy:80/g' ./nginx/conf.d/default.conf
+      sed -i 's/default-proxy-host/stf-proxy/g' ./nginx/conf.d/default.conf
+    elif [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
+      sed -i 's/default-proxy-server/jenkins-master:8080/g' ./nginx/conf.d/default.conf
+      sed -i 's/default-proxy-host/jenkins-master/g' ./nginx/conf.d/default.conf
+    elif [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
+      sed -i 's/default-proxy-server/127.0.0.1:80/g' ./nginx/conf.d/default.conf
+      sed -i 's/default-proxy-host/sonarqube/g' ./nginx/conf.d/default.conf
+    else
+      sed -i 's|proxy_pass http://$upstream_default;|root   /usr/share/nginx/html;|g' ./nginx/conf.d/default.conf
+    fi
+
     # export all ZBR* variables to save user input
     export_settings
 
