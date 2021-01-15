@@ -73,17 +73,6 @@ server {
       proxy_set_header Connection upgrade;
     }
 
-    location /mcloud {
-      proxy_connect_timeout   60;
-      proxy_send_timeout      300;
-      proxy_read_timeout      300;
-
-      set $upstream_mcloud http://127.0.0.1:80;
-      proxy_set_header Host mcloud;
-      proxy_pass $upstream_mcloud;
-      proxy_http_version 1.1;
-    }
-
     #Selenoid VNC WebSocket
     location /vnc {
       set $upstream_selenoid http://selenoid:4444;
@@ -103,9 +92,13 @@ server {
         root   /usr/share/nginx;
     }
 
-# IMPORTANT!!! make sure to generate secure Selenoid credentials and put them into the INFRA_HOME/nginx/htpasswd/selenoid.htpasswd
-# TODO: provide valid link onto the help howto secure this site
-# internal hub providers integration
+# IMPORTANT!!! make sure to generate secure Selenoid/MCloud credentials and put them into the nginx/htpasswd/selenoid.htpasswd and mcloud.htpasswd files
+#  1. install htpasswd utility and regenerate default credentials in *.htpasswd, for example
+#       htpasswd -bc nginx/htpasswd/selenoid.htpasswd username password
+#  2. Update appropriate Selenium/MCloud provider urls in Reporting and CI
+#       http://username:password/hostname/selenoid/wd/hub
+#       http://username:password/hostname/mcloud/wd/hub
+
     # Selenoid Hub
     location  ~ ^/selenoid/(.*)$ {
       auth_basic "Private Selenoid Hub";
@@ -133,125 +126,19 @@ server {
       add_header Access-Control-Allow-Credentials "true";
     }
 
-# external hub providers integration
-    # ZEBRUNNER
-    location  ~ ^/zebrunner/(.*)$ {
-      auth_basic "External Zebrunner Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/zebrunner.htpasswd;
+   location /mcloud {
+      auth_basic "Private MCloud Selenium Hub";
+      auth_basic_user_file /usr/share/nginx/htpasswd/mcloud.htpasswd;
 
-      # Replace ZEBRUNNER_TOKEN with base64 encoded string of your "user:password" credentials.
-      proxy_set_header Authorization "Basic ZEBRUNNER_TOKEN";
-
-      set $upstream_zebranner hub.zebrunner.com:4444;
-
-      proxy_pass              https://upstream_zebranner/$1;
-      proxy_http_version      1.1;
-      proxy_set_header        Connection "";
-      proxy_set_header        Host $host;
-      proxy_set_header        X-Real-IP $remote_addr;
-      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_connect_timeout   60;
       proxy_send_timeout      300;
       proxy_read_timeout      300;
-      proxy_buffers           32 64m;
-      proxy_buffer_size       64k;
-      proxy_next_upstream    error timeout http_502 http_503 http_504;
-      client_max_body_size    64m;
-      client_body_buffer_size 64m;
-      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
-      add_header Access-Control-Allow-Origin "*";
-      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
-      add_header Access-Control-Allow-Credentials "true";
+
+      set $upstream_mcloud http://127.0.0.1:80;
+      proxy_set_header Host mcloud;
+      proxy_pass $upstream_mcloud;
+      proxy_http_version 1.1;
     }
-
-    # Aerokube
-    location  ~ ^/aerokube/(.*)$ {
-      auth_basic "External Aerokube Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/aerokube.htpasswd;
-
-      # Replace AEROKUBE_TOKEN with base64 encoded string of your "user:password" credentials.
-      proxy_set_header Authorization "Basic AEROKUBE_TOKEN";
-
-      set $upstream_aerokube browsers.aerokube.com:4444;
-      proxy_pass              https://$upstream_aerokube/$1;
-      proxy_http_version      1.1;
-      proxy_set_header        Connection "";
-      proxy_set_header        Host $host;
-      proxy_set_header        X-Real-IP $remote_addr;
-      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   60;
-      proxy_send_timeout      300;
-      proxy_read_timeout      300;
-      proxy_buffers           32 64m;
-      proxy_buffer_size       64k;
-      proxy_next_upstream    error timeout http_502 http_503 http_504;
-      client_max_body_size    64m;
-      client_body_buffer_size 64m;
-      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
-      add_header Access-Control-Allow-Origin "*";
-      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
-      add_header Access-Control-Allow-Credentials "true";
-    }
-
-    # BrowserStack
-    location  ~ ^/browserstack/(.*)$ {
-      auth_basic "External Browserstack Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/browserstack.htpasswd;
-
-      # Replace BROWSERSTACK_TOKEN with base64 encoded string of your "user:password" credentials.
-      proxy_set_header Authorization "Basic BROWSERSTACK_TOKEN";
-
-      set $upstream_browserstack hub-cloud.browserstack.com;
-      proxy_pass              http://$upstream_browserstack/$1;
-      proxy_http_version      1.1;
-      proxy_set_header        Connection "";
-      proxy_set_header        Host $host;
-      proxy_set_header        X-Real-IP $remote_addr;
-      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   60;
-      proxy_send_timeout      300;
-      proxy_read_timeout      300;
-      proxy_buffers           32 64m;
-      proxy_buffer_size       64k;
-      proxy_next_upstream    error timeout http_502 http_503 http_504;
-      client_max_body_size    64m;
-      client_body_buffer_size 64m;
-      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
-      add_header Access-Control-Allow-Origin "*";
-      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
-      add_header Access-Control-Allow-Credentials "true";
-    }
-
-    # SauceLabs - not tested yet
-    location  ~ ^/saucelabs/(.*)$ {
-      auth_basic "External SauceLabs Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/saucelabs.htpasswd;
-
-      # Replace SAUCELABS_TOKEN with base64 encoded string of your "user:password" credentials.
-      proxy_set_header Authorization "Basic SAUCELABS_TOKEN";
-
-      set $upstream_saucelabs ondemand.saucelabs.com;
-      proxy_pass              http://$upstream_saucelabs/$1;
-      proxy_http_version      1.1;
-      proxy_set_header        Connection "";
-      proxy_set_header        Host $host;
-      proxy_set_header        X-Real-IP $remote_addr;
-      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_connect_timeout   60;
-      proxy_send_timeout      300;
-      proxy_read_timeout      300;
-      proxy_buffers           32 64m;
-      proxy_buffer_size       64k;
-      proxy_next_upstream    error timeout http_502 http_503 http_504;
-      client_max_body_size    64m;
-      client_body_buffer_size 64m;
-      add_header Access-Control-Allow-Methods "GET,PUT,OPTIONS,POST,DELETE";
-      add_header Access-Control-Allow-Origin "*";
-      add_header Access-Control-Allow-Headers "Content-Type,Authorization";
-      add_header Access-Control-Allow-Credentials "true";
-    }
-
-#TODO: register lamdatest location url
 
     location /grid {
         root   /usr/share/nginx/html;
