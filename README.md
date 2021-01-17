@@ -11,8 +11,6 @@ All components are deployed under NGINX WebServer which can be configured in a f
 
 Zebrunner subcomponents all together can be used as an effective Test Automation infrastructure for test automation development, execution, management, etc.
 
-![Alt text](./docs/img/qps-infra.png?raw=true "Zebrunner (Community Edition)")
-
 ## Documentation and free support
 * [Guides](https://zebrunner.github.io/zebrunner)
 * [Zebrunner Reporting](https://zebrunner.github.io/documentation/)
