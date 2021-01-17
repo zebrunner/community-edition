@@ -73,6 +73,7 @@
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 0 ]]; then
+      export ZBR_MINIO_ENABLED=0
       set_aws_storage_settings
     fi
 
