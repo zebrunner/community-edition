@@ -72,8 +72,12 @@
       jenkins/zebrunner.sh setup
     fi
 
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 0 ]] || [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 0 ]]; then
+      set_aws_storage_settings
+    fi
+
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
-        mcloud/zebrunner.sh setup
+      mcloud/zebrunner.sh setup
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
@@ -671,9 +675,17 @@
         ZBR_STORAGE_SECRET_KEY=$local_secret_key
       fi
 
-      read -p "UserAgent key [$ZBR_STORAGE_AGENT_KEY]: " local_agent_key
-      if [[ ! -z $local_agent_key ]]; then
-        ZBR_STORAGE_AGENT_KEY=$local_agent_key
+      if [[ $ZBR_REPORTING_ENABLED -eq 0 ]]; then
+        export ZBR_MINIO_ENABLED=0
+        read -p "[Optional] Tenant [$ZBR_STORAGE_TENANT]: " local_value
+        if [[ ! -z $local_value ]]; then
+          ZBR_STORAGE_TENANT=$local_value
+        fi
+      else
+        read -p "UserAgent key [$ZBR_STORAGE_AGENT_KEY]: " local_agent_key
+        if [[ ! -z $local_agent_key ]]; then
+          ZBR_STORAGE_AGENT_KEY=$local_agent_key
+        fi
       fi
 
       #TODO: one more link to the manual about bucket creation!
@@ -683,6 +695,7 @@
       echo "Access key: $ZBR_STORAGE_ACCESS_KEY"
       echo "Secret key: $ZBR_STORAGE_SECRET_KEY"
       echo "Agent key: $ZBR_STORAGE_AGENT_KEY"
+      echo "Tenant: $ZBR_STORAGE_TENANT"
       confirm "" "Continue?" "y"
       is_confirmed=$?
     done
