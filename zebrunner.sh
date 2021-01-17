@@ -72,8 +72,12 @@
       jenkins/zebrunner.sh setup
     fi
 
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 0 ]]; then
+      set_aws_storage_settings
+    fi
+
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
-        mcloud/zebrunner.sh setup
+      mcloud/zebrunner.sh setup
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
