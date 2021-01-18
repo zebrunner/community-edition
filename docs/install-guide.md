@@ -6,25 +6,19 @@
   ```
   git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git && cd zebrunner && ./zebrunner.sh setup
   ```
-  > Provide required details to finish configuration
-
-2. Start services<br>
-  ```
-  ./zebrunner.sh start
-  ```
-  > If services need to be started after setup
+  > Provide required details to finish configuration and start services
   
-3. After startup, the following components are available:
+2. After startup, the following components might be available:
   > Use your host domain address or IP.  
   
 | Components          	| URL                                                                                                    	   |
 |---------------------	|----------------------------------------------------------------------------------------------------------	   |
-| Zebrunner Reporting  	| [http://demo.qaprosoft.com](http://demo.qaprosoft.com)                                                 	   |
-| Jenkins             	| [http://demo.qaprosoft.com/jenkins](http://demo.qaprosoft.com/jenkins)                                 	   |
-| SonarQube           	| [http://demo.qaprosoft.com/sonarqube](http://demo.qaprosoft.com/sonarqube)                             	   |
-| Web Selenium Hub    	| [http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub](http://demo:demo@demo.qaprosoft.com/selenoid/wd/hub)       |
-| Mobile Selenium Hub 	| [http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub](http://demo:demo@demo.qaprosoft.com/mcloud/wd/hub) 	   |
-| Mobile SmartTest Farm	| [http://demo.qaprosoft.com/stf](http://demo.qaprosoft.com/stf)                                         	   |
+| Zebrunner Reporting  	| [http://demo.zebrunner.com](http://demo.zebrunner.com)                                                 	   |
+| Jenkins             	| [http://demo.zebrunner.com/jenkins](http://demo.zebrunner.com/jenkins)                                 	   |
+| SonarQube           	| [http://demo.zebrunner.com/sonarqube](http://demo.zebrunner.com/sonarqube)                             	   |
+| Web Selenium Hub    	| [http://demo:demo@demo.zebrunner.com/selenoid/wd/hub](http://demo:demo@demo.zebrunner.com/selenoid/wd/hub)       |
+| Mobile Selenium Hub 	| [http://demo:demo@demo.zebrunner.com/mcloud/wd/hub](http://demo:demo@demo.zebrunner.com/mcloud/wd/hub) 	   |
+| Mobile SmartTest Farm	| [http://demo.zebrunner.com/stf](http://demo.zebrunner.com/stf)                                         	   |
 
 > admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
 
