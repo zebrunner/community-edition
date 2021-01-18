@@ -466,27 +466,21 @@
     ## Crypto token and salt
     echo
     echo "Reporting Service Crypto:"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Signin token secret (randomized string) [$ZBR_TOKEN_SIGNING_SECRET]: " local_token
-      if [[ ! -z $local_token ]]; then
-        ZBR_TOKEN_SIGNING_SECRET=$local_token
-      fi
+    if [[ -z $ZBR_TOKEN_SIGNING_SECRET ]]; then
+      # generate random value as it is first setup
+      ZBR_TOKEN_SIGNING_SECRET=`random_string`
+    fi
 
-      read -p "Crypto salt (randomized string) [$ZBR_CRYPTO_SALT]: " local_salt
-      if [[ ! -z $local_salt ]]; then
-        ZBR_CRYPTO_SALT=$local_salt
-      fi
+    if [[ -z $ZBR_CRYPTO_SALT ]]; then
+      # generate random value as it is first setup
+      ZBR_CRYPTO_SALT=`random_string`
+    fi
 
-      echo "Signin token secret=$ZBR_TOKEN_SIGNING_SECRET"
-      echo "Crypto Salt=$ZBR_CRYPTO_SALT"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
+    echo "Signin token secret=$ZBR_TOKEN_SIGNING_SECRET"
+    echo "Crypto Salt=$ZBR_CRYPTO_SALT"
 
     export ZBR_TOKEN_SIGNING_SECRET=$ZBR_TOKEN_SIGNING_SECRET
     export ZBR_CRYPTO_SALT=$ZBR_CRYPTO_SALT
-
 
     ## iam-service posgtres
     local is_confirmed=0
@@ -708,9 +702,9 @@
     export -p | grep "ZBR" > backup/settings.env
   }
 
-#  random_string() {
-#    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
-#  }
+  random_string() {
+    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
+  }
 
   confirm() {
     local message=$1
