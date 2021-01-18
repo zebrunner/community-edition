@@ -12,7 +12,7 @@ All components are deployed under NGINX WebServer which can be configured in a f
 Zebrunner subcomponents all together can be used as an effective Test Automation infrastructure for test automation development, execution, management, etc.
 
 ## Initial setup
-Visit [Zebrunner Guide] for detailed installation and configuration instructions.
+Visit [Zebrunner Guide](https://zebrunner.github.io/zebrunner) for detailed installation and configuration instructions.
 
 1. Clone [Zebrunner](https://github.com/zebrunner/zebrunner) recursive and launch setup procedure
   ```
