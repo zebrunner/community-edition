@@ -3,3 +3,4 @@ nginx/conf.d/default.conf
 .disabled
 backup/settings.env
 backup/*tar.gz
+NOTICE.txt

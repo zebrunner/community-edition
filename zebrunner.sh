@@ -127,6 +127,78 @@
     # export all ZBR* variables to save user input
     export_settings
 
+    #TODO: redirect info to file as well
+    echo
+    notice=NOTICE.txt
+    echo "NOTICES AND INFORMATION" > $notice
+    echo >> $notice
+    echo >> $notice
+
+    echo "ZEBRUNNER URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT" | tee -a $notice
+    echo | tee -a $notice
+
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      echo "REPORTING SERVICE CREDENTIALS:" | tee -a $notice
+      echo "USER: admin/changeit" | tee -a $notice
+      echo "IAM POSTGRES: postgres/$ZBR_IAM_POSTGRES_PASSWORD" | tee -a $notice
+      echo "REPORTING POSTGRES: postgres/$ZBR_POSTGRES_PASSWORD" | tee -a $notice
+      echo "RABBITMQ: $ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD" | tee -a $notice
+      echo "REDIS: $ZBR_REDIS_PASSWORD" | tee -a $notice
+      echo | tee -a $notice
+      echo "REPORTING SERVICE INTEGRATIONS:" | tee -a $notice
+      echo "SMTP HOST: $ZBR_SMTP_HOST:$ZBR_SMTP_PORT                           " | tee -a $notice
+      echo "EMAIL: $ZBR_SMTP_EMAIL                                         " | tee -a $notice
+      echo "USER: $ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD                       " | tee -a $notice
+      echo | tee -a $notice
+      echo "GIT HOST: ${ZBR_GITHUB_HOST}                                      " | tee -a $notice
+      echo "CLIENT ID/SECRET: ${ZBR_GITHUB_CLIENT_ID}/${ZBR_GITHUB_CLIENT_SECRET}     " | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
+      echo "JENKINS URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins" | tee -a $notice
+      echo "JENKINS USER: admin/changeit" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
+      echo "SONARQUBE URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube" | tee -a $notice
+      echo "SONARQUBE USER: admin/admin" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
+      echo "SELENIUM HUB URL: $ZBR_PROTOCOL://demo:demo@$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
+      echo "APPIUM HUB URL: $ZBR_PROTOCOL://demo:demo@$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    # append copyright and licensing info
+    echo >> $notice
+    echo "Copyright 2018-2021 ZEBRUNNER" >> $notice
+    echo >> $notice
+
+    echo "Licensed under the Apache License, Version 2.0 (the \"License\");" >> $notice
+    echo "you may not use this file except in compliance with the License." >> $notice
+    echo "You may obtain a copy of the License at" >> $notice
+    echo >> $notice
+
+    echo "http://www.apache.org/licenses/LICENSE-2.0" >> $notice
+    echo >> $notice
+
+    echo "Unless required by applicable law or agreed to in writing, software" >> $notice
+    echo "distributed under the License is distributed on an \"AS IS\" BASIS," >> $notice
+    echo "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied." >> $notice
+    echo "See the License for the specific language governing permissions and" >> $notice
+    echo "limitations under the License." >> $notice
+
+    echo
+    echo_warning "Detailed information about installed component and credentials can be found in NOTICE.txt"
+
     echo_warning "Your services needs to be started after setup."
     confirm "" "      Start now?" "y"
     export start_services=$?
@@ -586,27 +658,6 @@
     export ZBR_GITHUB_CLIENT_ID=$ZBR_GITHUB_CLIENT_ID
     export ZBR_GITHUB_CLIENT_SECRET=$ZBR_GITHUB_CLIENT_SECRET
 
-    #TODO: redirect info to file as well
-    echo
-    echo "=============================================================================="
-    echo "                        REPORTING SERVICE CREDENTIALS                         "
-    echo "------------------------------------------------------------------------------"
-    echo "SIGNIN TOKEN:		$ZBR_TOKEN_SIGNING_SECRET"
-    echo "CRYPTO SALT: 		$ZBR_CRYPTO_SALT"
-    echo "IAM POSTGRES:		postgres/$ZBR_IAM_POSTGRES_PASSWORD"
-    echo "REPORTINGPOSTGRES: 	postgres/$ZBR_POSTGRES_PASSWORD"
-    echo "RABBITMQ:		$ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD"
-    echo "REDIS: 			$ZBR_REDIS_PASSWORD"
-    echo "=============================================================================="
-    echo "                        REPORTING SERVICE INTEGRATIONS                        "
-    echo "------------------------------------------------------------------------------"
-    echo "SMTP HOST:		$ZBR_SMTP_HOST:$ZBR_SMTP_PORT"
-    echo "EMAIL: 			$ZBR_SMTP_EMAIL"
-    echo "USER: 			$ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD"
-    echo "------------------------------------------------------------------------------"
-    echo "GIT HOST: 		${ZBR_GITHUB_HOST}"
-    echo "CLIENT ID/SECRET:	${ZBR_GITHUB_CLIENT_ID}/${ZBR_GITHUB_CLIENT_SECRET}"
-    echo "=============================================================================="
   }
 
   set_aws_storage_settings() {
