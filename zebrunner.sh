@@ -127,8 +127,9 @@
     # export all ZBR* variables to save user input
     export_settings
 
-    #TODO: redirect info to file as well
     echo
+    echo_warning "Copy and save auto-generated crendentials. Detailes can be found also in NOTICE.txt"
+
     notice=NOTICE.txt
     echo "NOTICES AND INFORMATION" > $notice
     echo >> $notice
@@ -195,9 +196,6 @@
     echo "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied." >> $notice
     echo "See the License for the specific language governing permissions and" >> $notice
     echo "limitations under the License." >> $notice
-
-    echo
-    echo_warning "Detailed information about installed component and credentials can be found in NOTICE.txt"
 
     echo_warning "Your services needs to be started after setup."
     confirm "" "      Start now?" "y"
