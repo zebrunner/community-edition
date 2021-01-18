@@ -174,6 +174,7 @@
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
+      echo "STF URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/stf" | tee -a $notice
       echo "APPIUM HUB URL: $ZBR_PROTOCOL://demo:demo@$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub" | tee -a $notice
       echo | tee -a $notice
     fi
