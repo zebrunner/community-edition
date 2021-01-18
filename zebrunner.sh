@@ -34,9 +34,8 @@
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
-    enableLayer "reporting" "Zebrunner Reporting" "$ZBR_REPORTING_ENABLED"
-    export ZBR_REPORTING_ENABLED=$?
-    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+    # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
       set_reporting_settings
 
       enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting" "$ZBR_MINIO_ENABLED"
@@ -46,6 +45,8 @@
       fi
       reporting/zebrunner.sh setup
     else
+      # explicitly disable reporting as it was disabled by engineer via REPORTING_DISABLED env var
+      export ZBR_REPORTING_ENABLED=0
       # no need to ask about enabling minio sub-module
       disableLayer "reporting/minio-storage"
     fi
@@ -429,7 +430,7 @@
 
   set_global_settings() {
     # Setup global settings: protocol, hostname and port
-    echo "Zebrunner Global Settings"
+    echo "Zebrunner General Settings"
     local is_confirmed=0
     if [[ -z $ZBR_HOSTNAME ]]; then
       ZBR_HOSTNAME=$HOSTNAME
@@ -492,7 +493,7 @@
 
     ## email-service (smtp)
     echo
-    echo "Reporting SMTP integration"
+    echo "Reporting SMTP Integration"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Host [$ZBR_SMTP_HOST]: " local_smtp_host
@@ -520,6 +521,8 @@
         ZBR_SMTP_PASSWORD=$local_smtp_password
       fi
 
+      echo
+      echo "SMTP Integration"
       echo "host=$ZBR_SMTP_HOST:$ZBR_SMTP_PORT"
       echo "email=$ZBR_SMTP_EMAIL"
       echo "user=$ZBR_SMTP_USER"
@@ -552,7 +555,7 @@
 
     ## test launchers git integration
     echo
-    echo "Reporting GIT integration"
+    echo "Reporting GIT Integration"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
@@ -571,7 +574,7 @@
       fi
 
       echo
-      echo "Git integration"
+      echo "GIT Integration"
       echo "Host: ${ZBR_GITHUB_HOST}"
       echo "Client ID: ${ZBR_GITHUB_CLIENT_ID}"
       echo "Client Secret: ${ZBR_GITHUB_CLIENT_SECRET}"
