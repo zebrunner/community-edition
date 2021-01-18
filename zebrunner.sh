@@ -464,63 +464,35 @@
   set_reporting_settings() {
     # Collect reporting settings
     ## Crypto token and salt
-    echo
-    echo "Reporting Service Crypto:"
     if [[ -z $ZBR_TOKEN_SIGNING_SECRET ]]; then
       # generate random value as it is first setup
       ZBR_TOKEN_SIGNING_SECRET=`random_string`
     fi
-
     if [[ -z $ZBR_CRYPTO_SALT ]]; then
       # generate random value as it is first setup
       ZBR_CRYPTO_SALT=`random_string`
     fi
-
-    echo "Signin token secret=$ZBR_TOKEN_SIGNING_SECRET"
-    echo "Crypto Salt=$ZBR_CRYPTO_SALT"
-
     export ZBR_TOKEN_SIGNING_SECRET=$ZBR_TOKEN_SIGNING_SECRET
     export ZBR_CRYPTO_SALT=$ZBR_CRYPTO_SALT
 
     ## iam-service posgtres
-    local is_confirmed=0
-    echo
-    echo "IAM - Identity and Access Management service"
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "IAM postgres password [$ZBR_IAM_POSTGRES_PASSWORD]: " local_iam_postgres_password
-      if [[ ! -z $local_iam_postgres_password ]]; then
-        ZBR_IAM_POSTGRES_PASSWORD=$local_iam_postgres_password
-      fi
-
-      echo "Identity and Access Management service postgres password: $ZBR_IAM_POSTGRES_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
+    if [[ -z $ZBR_IAM_POSTGRES_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_IAM_POSTGRES_PASSWORD=`random_string`
+    fi
     export ZBR_IAM_POSTGRES_PASSWORD=$ZBR_IAM_POSTGRES_PASSWORD
 
-
     ## reporting posgtres instance
-    echo
-    echo "Reporting Service database"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Reporting postgres password [$ZBR_POSTGRES_PASSWORD]: " local_postgres_password
-      if [[ ! -z $local_postgres_password ]]; then
-        ZBR_POSTGRES_PASSWORD=$local_postgres_password
-      fi
-
-      echo "Reporting Service postgres password: $ZBR_POSTGRES_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
+    if [[ -z $ZBR_POSTGRES_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_POSTGRES_PASSWORD=`random_string`
+    fi
     export ZBR_POSTGRES_PASSWORD=$ZBR_POSTGRES_PASSWORD
 
 
     ## email-service (smtp)
     echo
-    echo "Reporting smtp email settings"
+    echo "Reporting SMTP integration"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Host [$ZBR_SMTP_HOST]: " local_smtp_host
@@ -564,31 +536,23 @@
 
 
     ## reporting rabbitmq
-    echo
-    echo "Reporting Rabbitmq - messaging queue credentials"
     if [[ -z $ZBR_RABBITMQ_PASSWORD ]]; then
       # generate random value as it is first setup
       ZBR_RABBITMQ_PASSWORD=`random_string`
     fi
-    echo "Rabbitmq credentials=$ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD"
-
     export ZBR_RABBITMQ_USER=$ZBR_RABBITMQ_USER
     export ZBR_RABBITMQ_PASSWORD=$ZBR_RABBITMQ_PASSWORD
 
     ## reporting redis
-    echo
-    echo "Reporting Redis - in-memory cache database"
     if [[ -z $ZBR_REDIS_PASSWORD ]]; then
       # generate random value as it is first setup
       ZBR_REDIS_PASSWORD=`random_string`
     fi
-    echo "Redis password=$ZBR_REDIS_PASSWORD"
-
     export ZBR_REDIS_PASSWORD=$ZBR_REDIS_PASSWORD
 
     ## test launchers git integration
     echo
-    echo "Reporting Test Launchers git integration"
+    echo "Reporting GIT integration"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
@@ -619,6 +583,27 @@
     export ZBR_GITHUB_CLIENT_ID=$ZBR_GITHUB_CLIENT_ID
     export ZBR_GITHUB_CLIENT_SECRET=$ZBR_GITHUB_CLIENT_SECRET
 
+    #TODO: redirect info to file as well
+    echo
+    echo "=============================================================================="
+    echo "                        REPORTING SERVICE CREDENTIALS                         "
+    echo "------------------------------------------------------------------------------"
+    echo "SIGNIN TOKEN:		$ZBR_TOKEN_SIGNING_SECRET"
+    echo "CRYPTO SALT: 		$ZBR_CRYPTO_SALT"
+    echo "IAM POSTGRES:		postgres/$ZBR_IAM_POSTGRES_PASSWORD"
+    echo "REPORTINGPOSTGRES: 	postgres/$ZBR_POSTGRES_PASSWORD"
+    echo "RABBITMQ:		$ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD"
+    echo "REDIS: 			$ZBR_REDIS_PASSWORD"
+    echo "=============================================================================="
+    echo "                        REPORTING SERVICE INTEGRATIONS                        "
+    echo "------------------------------------------------------------------------------"
+    echo "SMTP HOST:		$ZBR_SMTP_HOST:$ZBR_SMTP_PORT"
+    echo "EMAIL: 			$ZBR_SMTP_EMAIL"
+    echo "USER: 			$ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD"
+    echo "------------------------------------------------------------------------------"
+    echo "GIT HOST: 		${ZBR_GITHUB_HOST}"
+    echo "CLIENT ID/SECRET:	${ZBR_GITHUB_CLIENT_ID}/${ZBR_GITHUB_CLIENT_SECRET}"
+    echo "=============================================================================="
   }
 
   set_aws_storage_settings() {
