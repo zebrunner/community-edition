@@ -574,11 +574,6 @@
     echo "Reporting Rabbitmq - messaging queue credentials"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Rabbitmq user [$ZBR_RABBITMQ_USER]: " local_rabbitmq_user
-      if [[ ! -z $local_rabbitmq_user ]]; then
-        ZBR_RABBITMQ_USER=$local_rabbitmq_user
-      fi
-
       read -p "Rabbitmq password [$ZBR_RABBITMQ_PASSWORD]: " local_rabbitmq_password
       if [[ ! -z $local_rabbitmq_password ]]; then
         ZBR_RABBITMQ_PASSWORD=$local_rabbitmq_password
