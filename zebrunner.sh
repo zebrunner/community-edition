@@ -566,17 +566,11 @@
     ## reporting rabbitmq
     echo
     echo "Reporting Rabbitmq - messaging queue credentials"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Rabbitmq password [$ZBR_RABBITMQ_PASSWORD]: " local_rabbitmq_password
-      if [[ ! -z $local_rabbitmq_password ]]; then
-        ZBR_RABBITMQ_PASSWORD=$local_rabbitmq_password
-      fi
-
-      echo "Rabbitmq credentials=$ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
+    if [[ -z $ZBR_RABBITMQ_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_RABBITMQ_PASSWORD=`random_string`
+    fi
+    echo "Rabbitmq credentials=$ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD"
 
     export ZBR_RABBITMQ_USER=$ZBR_RABBITMQ_USER
     export ZBR_RABBITMQ_PASSWORD=$ZBR_RABBITMQ_PASSWORD
@@ -584,18 +578,11 @@
     ## reporting redis
     echo
     echo "Reporting Redis - in-memory cache database"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Redis password [$ZBR_REDIS_PASSWORD]: " local_redis_password
-      if [[ ! -z $local_redis_password ]]; then
-        ZBR_REDIS_PASSWORD=$local_redis_password
-      fi
-
-      echo
-      echo "Redis password=$ZBR_REDIS_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
+    if [[ -z $ZBR_REDIS_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_REDIS_PASSWORD=`random_string`
+    fi
+    echo "Redis password=$ZBR_REDIS_PASSWORD"
 
     export ZBR_REDIS_PASSWORD=$ZBR_REDIS_PASSWORD
 
