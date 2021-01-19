@@ -35,6 +35,24 @@ if [[ ! -f jenkins/.disabled ]] ; then
   fi
 fi
 
+# apply selenoid changes
+if [[ ! -f selenoid/.disabled ]] ; then
+  #.env.original -> .env to adjust s3 key pattern
+  cp selenoid/.env.original selenoid/.env
+  if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
+    # use case with AWS S3
+    sed -i "s#S3_REGION=us-east-1#S3_REGION=${ZBR_STORAGE_REGION}#g" selenoid/.env
+    sed -i "s#S3_ENDPOINT=http://minio:9000#S3_ENDPOINT=${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}#g" selenoid/.env
+    sed -i "s#S3_BUCKET=zebrunner#S3_BUCKET=${ZBR_STORAGE_BUCKET}#g" selenoid/.env
+    sed -i "s#S3_ACCESS_KEY_ID=zebrunner#S3_ACCESS_KEY_ID=${ZBR_STORAGE_ACCESS_KEY}#g" selenoid/.env
+    sed -i "s#S3_SECRET=J33dNyeTDj#S3_SECRET=${ZBR_STORAGE_SECRET_KEY}#g" selenoid/.env
+
+    if [[ ! -z $ZBR_STORAGE_TENANT ]]; then
+      sed -i "s#/artifacts#${ZBR_STORAGE_TENANT}/artifacts#g" selenoid/.env
+    fi
+  fi
+fi
+
 #TODO: finish upgrade steps for mcloud/reporting/selenoid if necessary
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
