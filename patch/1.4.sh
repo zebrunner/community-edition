@@ -4,6 +4,25 @@
     export -p | grep "ZBR" > backup/settings.env
   }
 
+  replace() {
+    #TODO: https://github.com/zebrunner/zebrunner/issues/328 organize debug logging for setup/replace
+    file=$1
+    #echo "file: $file"
+    content=$(<$file) # read the file's content into
+    #echo "content: $content"
+
+    old=$2
+    #echo "old: $old"
+
+    new=$3
+    #echo "new: $new"
+    content=${content//"$old"/$new}
+
+    #echo "content: $content"
+
+    printf '%s' "$content" >$file    # write new content to disk
+  }
+
 TARGET_VERSION=1.4
 
 source backup/settings.env
@@ -53,7 +72,19 @@ if [[ ! -f selenoid/.disabled ]] ; then
   fi
 fi
 
-#TODO: finish upgrade steps for mcloud/reporting/selenoid if necessary
+# apply reporting changes
+if [[ ! -f reporting/.disabled ]] ; then
+  # apply new nginx rules for test and run artifacts
+  cp reporting/configuration/zebrunner-proxy/nginx.conf.original reporting/configuration/zebrunner-proxy/nginx.conf
+  if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
+    # use case with AWS S3
+    replace reporting/configuration/zebrunner-proxy/nginx.conf "custom_secret_value" "${ZBR_STORAGE_AGENT_KEY}"
+    sed -i "s#/zebrunner/#/${ZBR_STORAGE_BUCKET}/#g" reporting/configuration/zebrunner-proxy/nginx.conf
+    sed -i "s#http://minio:9000#${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}#g" reporting/configuration/zebrunner-proxy/nginx.conf
+  fi
+fi
+
+#TODO: finish upgrade steps for mcloud
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
