@@ -671,6 +671,9 @@
 
   }
 
+  # https://github.com/zebrunner/zebrunner/issues/384 investigate possibility to make sub-components configurable independently
+  # https://github.com/zebrunner/selenoid/issues/16 investigate possibility to make selenoid auto-configurable
+  # IMPORTANT! copy of this method exists in selenoid/zebrunner.sh and maybe will be added to reporting/zebrunner.sh
   set_aws_storage_settings() {
     ## AWS S3 storage
     local is_confirmed=0
@@ -714,7 +717,6 @@
         fi
       fi
 
-      #TODO: one more link to the manual about bucket creation!
       echo "Region: $ZBR_STORAGE_REGION"
       echo "Endpoint: $ZBR_STORAGE_ENDPOINT_PROTOCOL://$ZBR_STORAGE_ENDPOINT_HOST"
       echo "Bucket: $ZBR_STORAGE_BUCKET"
