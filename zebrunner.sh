@@ -129,6 +129,7 @@
 
     echo
     echo_warning "Copy and save auto-generated crendentials. Detailes can be found also in NOTICE.txt"
+    echo
 
     notice=NOTICE.txt
     echo "NOTICES AND INFORMATION" > $notice
@@ -147,12 +148,16 @@
       echo "REDIS: $ZBR_REDIS_PASSWORD" | tee -a $notice
       echo | tee -a $notice
       echo "REPORTING SERVICE INTEGRATIONS:" | tee -a $notice
-      echo "SMTP HOST: $ZBR_SMTP_HOST:$ZBR_SMTP_PORT                           " | tee -a $notice
-      echo "EMAIL: $ZBR_SMTP_EMAIL                                         " | tee -a $notice
-      echo "USER: $ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD                       " | tee -a $notice
+      echo "SMTP HOST: $ZBR_SMTP_HOST:$ZBR_SMTP_PORT" | tee -a $notice
+      if [[ ! -z $ZBR_SMTP_EMAIL && ! -z $ZBR_SMTP_USER && ! -z $ZBR_SMTP_PASSWORD ]]; then
+        echo "EMAIL: $ZBR_SMTP_EMAIL" | tee -a $notice
+        echo "USER: $ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD" | tee -a $notice
+      fi
       echo | tee -a $notice
-      echo "GIT HOST: ${ZBR_GITHUB_HOST}                                      " | tee -a $notice
-      echo "CLIENT ID/SECRET: ${ZBR_GITHUB_CLIENT_ID}/${ZBR_GITHUB_CLIENT_SECRET}     " | tee -a $notice
+      echo "GIT HOST: ${ZBR_GITHUB_HOST}" | tee -a $notice
+      if [[ ! -z $ZBR_GITHUB_CLIENT_ID && ! -z $ZBR_GITHUB_CLIENT_SECRET ]]; then
+        echo "CLIENT ID/SECRET: $ZBR_GITHUB_CLIENT_ID/$ZBR_GITHUB_CLIENT_SECRET" | tee -a $notice
+      fi
       echo | tee -a $notice
     fi
 
