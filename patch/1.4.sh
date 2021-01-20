@@ -4,6 +4,46 @@
     export -p | grep "ZBR" > backup/settings.env
   }
 
+  confirm() {
+    local message=$1
+    local question=$2
+    local isEnabled=$3
+
+    if [[ "$isEnabled" == "1" ]]; then
+      isEnabled="y"
+    fi
+    if [[ "$isEnabled" == "0" ]]; then
+      isEnabled="n"
+    fi
+
+    while true; do
+      if [[ ! -z $message ]]; then
+        echo "$message"
+      fi
+
+      read -p "$question y/n [$isEnabled]:" response
+      if [[ -z $response ]]; then
+        if [[ "$isEnabled" == "y" ]]; then
+          return 1
+        fi
+        if [[ "$isEnabled" == "n" ]]; then
+          return 0
+        fi
+      fi
+
+      if [[ "$response" == "y" || "$response" == "Y" ]]; then
+        return 1
+      fi
+
+      if [[ "$response" == "n" ||  "$response" == "N" ]]; then
+        return 0
+      fi
+
+      echo "Please answer y (yes) or n (no)."
+      echo
+    done
+  }
+
   replace() {
     #TODO: https://github.com/zebrunner/zebrunner/issues/328 organize debug logging for setup/replace
     file=$1
@@ -84,7 +124,38 @@ if [[ ! -f reporting/.disabled ]] ; then
   fi
 fi
 
-#TODO: finish upgrade steps for mcloud
+# apply mcloud changes
+if [[ ! -f mcloud/.disabled ]] ; then
+  # apply new changes to .env using .env.original
+  cp mcloud/.env.original mcloud/.env
+  replace mcloud/.env "localhost" "${ZBR_HOSTNAME}"
+
+  # apply new changes to variables.env using variables.env.original
+  cp mcloud/variables.env.original mcloud/variables.env
+  replace mcloud/variables.env "http://localhost:8082" "${url}"
+  replace mcloud/variables.env "localhost" "${ZBR_HOSTNAME}"
+
+  if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
+    # use case with AWS S3
+    replace mcloud/variables.env "S3_REGION=us-east-1" "S3_REGION=${ZBR_STORAGE_REGION}"
+    replace mcloud/variables.env "S3_ENDPOINT=http://minio:9000" "S3_ENDPOINT=${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}"
+    replace mcloud/variables.env "S3_BUCKET=zebrunner" "S3_BUCKET=${ZBR_STORAGE_BUCKET}"
+    replace mcloud/variables.env "S3_ACCESS_KEY_ID=zebrunner" "S3_ACCESS_KEY_ID=${ZBR_STORAGE_ACCESS_KEY}"
+    replace mcloud/variables.env "S3_SECRET=J33dNyeTDj" "S3_SECRET=${ZBR_STORAGE_SECRET_KEY}"
+    replace mcloud/variables.env "S3_TENANT=" "S3_TENANT=${ZBR_STORAGE_TENANT}"
+  fi
+
+  # remove deprecated containers
+  docker rm -f selenium-hub ftp
+
+  # ask about removal of the ftp data volume
+  confirm "" "      Do you want to remove MCloud FTP data volume? You might lose old video recordings! Answer \"n\" to keep FTP artifacts." "n"
+  if [[ $? -eq 1 ]]; then
+    docker volume rm mcloud_data-volume
+  fi
+
+fi
+
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
