@@ -441,8 +441,15 @@
       exit -1
     fi
 
+    patch/1.4.sh
+    p1_4=$?
+    if [[ ${p1_4} -eq 1 ]]; then
+      echo "ERROR! 1.4 patchset was not applied correctly!"
+      exit -1
+    fi
+
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p1_3} -eq 2 ]]; then
+    if [[ ${p1_4} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
