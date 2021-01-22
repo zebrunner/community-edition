@@ -84,6 +84,13 @@ if [[ ! -f jenkins/.disabled ]] ; then
     exit 1
   fi
 
+  # override default RegisterRepository job by new one
+  docker cp jenkins/resources/jobs/RegisterRepository/config.xml jenkins-master:/var/jenkins_home/jobs/RegisterRepository/
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to proceed upgrade as jenkins-master container not available!"
+    exit 1
+  fi
+
   # regenerage variables.env to register new ZEBRUNNER_VERSION var
   cp jenkins/variables.env.original jenkins/variables.env
   sed -i "s#http://localhost:8080/jenkins#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" jenkins/variables.env
