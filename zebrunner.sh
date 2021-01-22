@@ -24,7 +24,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=1.3
+    export ZBR_VERSION=1.4
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
@@ -34,9 +34,8 @@
     sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
     sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 
-    enableLayer "reporting" "Zebrunner Reporting" "$ZBR_REPORTING_ENABLED"
-    export ZBR_REPORTING_ENABLED=$?
-    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+    # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
       set_reporting_settings
 
       enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting" "$ZBR_MINIO_ENABLED"
@@ -46,6 +45,8 @@
       fi
       reporting/zebrunner.sh setup
     else
+      # explicitly disable reporting as it was disabled by engineer via REPORTING_DISABLED env var
+      export ZBR_REPORTING_ENABLED=0
       # no need to ask about enabling minio sub-module
       disableLayer "reporting/minio-storage"
     fi
@@ -66,52 +67,19 @@
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
       sonarqube/zebrunner.sh setup
       export ZBR_SONAR_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube
-#    else
-#      #if standart == no; then ask for custom
-#      echo
-#      confirm "Custom SonarQube" "Enable?" "$ZBR_SONARQUBE_CUSTOM_ENABLED"
-#      export ZBR_SONARQUBE_CUSTOM_ENABLED=$?
-#      if [[ $ZBR_SONARQUBE_CUSTOM_ENABLED -eq 1 ]]; then
-#        setCustomSonarQube
-#      fi
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
       jenkins/zebrunner.sh setup
-#    else
-#      #if standart == no; then ask for custom
-#      echo
-#      confirm "Custom Jenkins" "Enable?" "$ZBR_JENKINS_CUSTOM_ENABLED"
-#      export ZBR_JENKINS_CUSTOM_ENABLED=$?
-#      if [[ $ZBR_JENKINS_CUSTOM_ENABLED -eq 1 ]]; then
-#        setCustomJenkins
-#      fi
+    fi
+
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 0 ]] || [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 0 ]]; then
+      set_aws_storage_settings
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
-        mcloud/zebrunner.sh setup
-#    else
-#      #if standart == no; then ask for custom
-#      echo
-#      confirm "Custom MCloud" "Enable?" "$ZBR_MCLOUD_CUSTOM_ENABLED"
-#      export ZBR_MCLOUD_CUSTOM_ENABLED=$?
-#      if [[ $ZBR_MCLOUD_CUSTOM_ENABLED -eq 1 ]]; then
-#        echo
-#        setCustomMCloud
-#      fi
+      mcloud/zebrunner.sh setup
     fi
-
-#    if [[ $ZBR_SELENOID_ENABLED -eq 0 ]]; then
-#      # pay attention that for selenoid is comparison with 0, i.e. for non enabled on this host
-#      # required setup moved after asking the question about services startup
-#      echo
-#      confirm "Custom Selenoid" "Enable?" "$ZBR_SELENOID_CUSTOM_ENABLED"
-#      export ZBR_SELENOID_CUSTOM_ENABLED=$?
-#      if [[ $ZBR_SELENOID_CUSTOM_ENABLED -eq 1 ]]; then
-#        echo
-#        setCustomSelenoid
-#      fi
-#    fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-jenkins integration vars
@@ -137,8 +105,103 @@
       sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
     fi
 
+    # finish with NGiNX default tool selection
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      sed -i 's/default-proxy-server/zebrunner-proxy:80/g' ./nginx/conf.d/default.conf
+      sed -i 's/default-proxy-host/zebrunner-proxy/g' ./nginx/conf.d/default.conf
+    elif [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
+      sed -i 's/default-proxy-server/stf-proxy:80/g' ./nginx/conf.d/default.conf
+      sed -i 's/default-proxy-host/stf-proxy/g' ./nginx/conf.d/default.conf
+    elif [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
+      sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_pass http://$upstream_default;|rewrite / /jenkins;|g' ./nginx/conf.d/default.conf
+    elif [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
+      sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
+      sed -i 's|proxy_pass http://$upstream_default;|rewrite / /sonarqube;|g' ./nginx/conf.d/default.conf
+    else
+      sed -i 's|proxy_pass http://$upstream_default;|root   /usr/share/nginx/html;|g' ./nginx/conf.d/default.conf
+    fi
+
     # export all ZBR* variables to save user input
     export_settings
+
+    echo
+    echo_warning "Copy and save auto-generated crendentials. Detailes can be found also in NOTICE.txt"
+    echo
+
+    notice=NOTICE.txt
+    echo "NOTICES AND INFORMATION" > $notice
+    echo >> $notice
+    echo >> $notice
+
+    echo "ZEBRUNNER URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT" | tee -a $notice
+    echo | tee -a $notice
+
+    if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+      echo "REPORTING SERVICE CREDENTIALS:" | tee -a $notice
+      echo "USER: admin/changeit" | tee -a $notice
+      echo "IAM POSTGRES: postgres/$ZBR_IAM_POSTGRES_PASSWORD" | tee -a $notice
+      echo "REPORTING POSTGRES: postgres/$ZBR_POSTGRES_PASSWORD" | tee -a $notice
+      echo "RABBITMQ: $ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD" | tee -a $notice
+      echo "REDIS: $ZBR_REDIS_PASSWORD" | tee -a $notice
+      echo | tee -a $notice
+      echo "REPORTING SERVICE INTEGRATIONS:" | tee -a $notice
+      echo "SMTP HOST: $ZBR_SMTP_HOST:$ZBR_SMTP_PORT" | tee -a $notice
+      if [[ ! -z $ZBR_SMTP_EMAIL && ! -z $ZBR_SMTP_USER && ! -z $ZBR_SMTP_PASSWORD ]]; then
+        echo "EMAIL: $ZBR_SMTP_EMAIL" | tee -a $notice
+        echo "USER: $ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD" | tee -a $notice
+      fi
+      echo | tee -a $notice
+      echo "GIT HOST: ${ZBR_GITHUB_HOST}" | tee -a $notice
+      if [[ ! -z $ZBR_GITHUB_CLIENT_ID && ! -z $ZBR_GITHUB_CLIENT_SECRET ]]; then
+        echo "CLIENT ID/SECRET: $ZBR_GITHUB_CLIENT_ID/$ZBR_GITHUB_CLIENT_SECRET" | tee -a $notice
+      fi
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
+      echo "JENKINS URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins" | tee -a $notice
+      echo "JENKINS USER: admin/changeit" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
+      echo "SONARQUBE URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/sonarqube" | tee -a $notice
+      echo "SONARQUBE USER: admin/admin" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
+      echo "SELENIUM HUB URL: $ZBR_PROTOCOL://demo:demo@$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
+      echo "STF URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/stf" | tee -a $notice
+      echo "APPIUM HUB URL: $ZBR_PROTOCOL://demo:demo@$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub" | tee -a $notice
+      echo | tee -a $notice
+    fi
+
+    # append copyright and licensing info
+    echo >> $notice
+    echo "Copyright 2018-2021 ZEBRUNNER" >> $notice
+    echo >> $notice
+
+    echo "Licensed under the Apache License, Version 2.0 (the \"License\");" >> $notice
+    echo "you may not use this file except in compliance with the License." >> $notice
+    echo "You may obtain a copy of the License at" >> $notice
+    echo >> $notice
+
+    echo "http://www.apache.org/licenses/LICENSE-2.0" >> $notice
+    echo >> $notice
+
+    echo "Unless required by applicable law or agreed to in writing, software" >> $notice
+    echo "distributed under the License is distributed on an \"AS IS\" BASIS," >> $notice
+    echo "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied." >> $notice
+    echo "See the License for the specific language governing permissions and" >> $notice
+    echo "limitations under the License." >> $notice
 
     echo_warning "Your services needs to be started after setup."
     confirm "" "      Start now?" "y"
@@ -383,8 +446,15 @@
       exit -1
     fi
 
+    patch/1.4.sh
+    p1_4=$?
+    if [[ ${p1_4} -eq 1 ]]; then
+      echo "ERROR! 1.4 patchset was not applied correctly!"
+      exit -1
+    fi
+
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p1_3} -eq 2 ]]; then
+    if [[ ${p1_4} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
@@ -416,73 +486,6 @@
       $(sonarqube/zebrunner.sh version)"
   }
 
-  setCustomSonarQube() {
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Enter custom SonarQube URL [$ZBR_SONARQUBE_URL]: " response
-      if [[ ! -z $response ]]; then
-        ZBR_SONARQUBE_URL=$response
-      fi
-      export ZBR_SONARQUBE_URL=$ZBR_SONARQUBE_URL
-
-      sed -i "s#set \$upstream_sonar http://127.0.0.1:80;#set \$upstream_sonar $ZBR_SONARQUBE_URL;#g" nginx/conf.d/default.conf
-      sed -i "s#proxy_pass \$upstream_sonar;#return 301 \$upstream_sonar;#g" nginx/conf.d/default.conf
-
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-  }
-
-  setCustomMCloud() {
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Enter custom MCloud URL [$ZBR_MCLOUD_URL]: " response
-      if [[ ! -z $response ]]; then
-        ZBR_MCLOUD_URL=$response
-      fi
-      export ZBR_MCLOUD_URL=$ZBR_MCLOUD_URL
-
-      sed -i "s#set \$upstream_zebrunner http://127.0.0.1:80;#set \$upstream_zebrunner $ZBR_MCLOUD_URL;#g" nginx/conf.d/default.conf
-      sed -i "s#proxy_pass \$upstream_zebrunner;#return 301 \$upstream_zebrunner;#g" nginx/conf.d/default.conf
-      
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-  }
-  
-  setCustomJenkins() {
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Enter custom Jenkins URL [$ZBR_JENKINS_URL]: " response
-      if [[ ! -z $response ]]; then
-        ZBR_JENKINS_URL=$response
-      fi
-      export ZBR_JENKINS_URL=$ZBR_JENKINS_URL
-
-      sed -i "s#set \$upstream_jenkins http://jenkins-master:8080;#set \$upstream_jenkins $ZBR_JENKINS_URL;#g" nginx/conf.d/default.conf
-      sed -i "s#proxy_pass \$upstream_jenkins;#return 301 \$upstream_jenkins;#g" nginx/conf.d/default.conf
-
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-  }
-
-  setCustomSelenoid() {
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Enter custom Selenoid URL [$ZBR_SELENOID_URL]: " response
-      if [[ ! -z $response ]]; then
-        ZBR_SELENOID_URL=$response
-      fi
-      export ZBR_SELENOID_URL=$ZBR_SELENOID_URL
-
-      sed -i "s#set \$upstream_selenoid http://selenoid:4444;#set \$upstream_selenoid $ZBR_SELENOID_URL;#g" nginx/conf.d/default.conf
-
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-  }
-
   enableLayer() {
     local layer=$1
     local message=$2
@@ -510,7 +513,7 @@
 
   set_global_settings() {
     # Setup global settings: protocol, hostname and port
-    echo "Zebrunner Global Settings"
+    echo "Zebrunner General Settings"
     local is_confirmed=0
     if [[ -z $ZBR_HOSTNAME ]]; then
       ZBR_HOSTNAME=$HOSTNAME
@@ -545,69 +548,35 @@
   set_reporting_settings() {
     # Collect reporting settings
     ## Crypto token and salt
-    echo
-    echo "Reporting Service Crypto:"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Signin token secret (randomized string) [$ZBR_TOKEN_SIGNING_SECRET]: " local_token
-      if [[ ! -z $local_token ]]; then
-        ZBR_TOKEN_SIGNING_SECRET=$local_token
-      fi
-
-      read -p "Crypto salt (randomized string) [$ZBR_CRYPTO_SALT]: " local_salt
-      if [[ ! -z $local_salt ]]; then
-        ZBR_CRYPTO_SALT=$local_salt
-      fi
-
-      echo "Signin token secret=$ZBR_TOKEN_SIGNING_SECRET"
-      echo "Crypto Salt=$ZBR_CRYPTO_SALT"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
+    if [[ -z $ZBR_TOKEN_SIGNING_SECRET ]]; then
+      # generate random value as it is first setup
+      ZBR_TOKEN_SIGNING_SECRET=`random_string`
+    fi
+    if [[ -z $ZBR_CRYPTO_SALT ]]; then
+      # generate random value as it is first setup
+      ZBR_CRYPTO_SALT=`random_string`
+    fi
     export ZBR_TOKEN_SIGNING_SECRET=$ZBR_TOKEN_SIGNING_SECRET
     export ZBR_CRYPTO_SALT=$ZBR_CRYPTO_SALT
 
-
     ## iam-service posgtres
-    local is_confirmed=0
-    echo
-    echo "IAM - Identity and Access Management service"
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "IAM postgres password [$ZBR_IAM_POSTGRES_PASSWORD]: " local_iam_postgres_password
-      if [[ ! -z $local_iam_postgres_password ]]; then
-        ZBR_IAM_POSTGRES_PASSWORD=$local_iam_postgres_password
-      fi
-
-      echo "Identity and Access Management service postgres password: $ZBR_IAM_POSTGRES_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
+    if [[ -z $ZBR_IAM_POSTGRES_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_IAM_POSTGRES_PASSWORD=`random_string`
+    fi
     export ZBR_IAM_POSTGRES_PASSWORD=$ZBR_IAM_POSTGRES_PASSWORD
 
-
     ## reporting posgtres instance
-    echo
-    echo "Reporting Service database"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Reporting postgres password [$ZBR_POSTGRES_PASSWORD]: " local_postgres_password
-      if [[ ! -z $local_postgres_password ]]; then
-        ZBR_POSTGRES_PASSWORD=$local_postgres_password
-      fi
-
-      echo "Reporting Service postgres password: $ZBR_POSTGRES_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
+    if [[ -z $ZBR_POSTGRES_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_POSTGRES_PASSWORD=`random_string`
+    fi
     export ZBR_POSTGRES_PASSWORD=$ZBR_POSTGRES_PASSWORD
 
 
     ## email-service (smtp)
     echo
-    echo "Reporting smtp email settings"
+    echo "Reporting SMTP Integration"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Host [$ZBR_SMTP_HOST]: " local_smtp_host
@@ -635,6 +604,8 @@
         ZBR_SMTP_PASSWORD=$local_smtp_password
       fi
 
+      echo
+      echo "SMTP Integration"
       echo "host=$ZBR_SMTP_HOST:$ZBR_SMTP_PORT"
       echo "email=$ZBR_SMTP_EMAIL"
       echo "user=$ZBR_SMTP_USER"
@@ -651,49 +622,23 @@
 
 
     ## reporting rabbitmq
-    echo
-    echo "Reporting Rabbitmq - messaging queue credentials"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Rabbitmq user [$ZBR_RABBITMQ_USER]: " local_rabbitmq_user
-      if [[ ! -z $local_rabbitmq_user ]]; then
-        ZBR_RABBITMQ_USER=$local_rabbitmq_user
-      fi
-
-      read -p "Rabbitmq password [$ZBR_RABBITMQ_PASSWORD]: " local_rabbitmq_password
-      if [[ ! -z $local_rabbitmq_password ]]; then
-        ZBR_RABBITMQ_PASSWORD=$local_rabbitmq_password
-      fi
-
-      echo "Rabbitmq credentials=$ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
+    if [[ -z $ZBR_RABBITMQ_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_RABBITMQ_PASSWORD=`random_string`
+    fi
     export ZBR_RABBITMQ_USER=$ZBR_RABBITMQ_USER
     export ZBR_RABBITMQ_PASSWORD=$ZBR_RABBITMQ_PASSWORD
 
     ## reporting redis
-    echo
-    echo "Reporting Redis - in-memory cache database"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Redis password [$ZBR_REDIS_PASSWORD]: " local_redis_password
-      if [[ ! -z $local_redis_password ]]; then
-        ZBR_REDIS_PASSWORD=$local_redis_password
-      fi
-
-      echo
-      echo "Redis password=$ZBR_REDIS_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
-
+    if [[ -z $ZBR_REDIS_PASSWORD ]]; then
+      # generate random value as it is first setup
+      ZBR_REDIS_PASSWORD=`random_string`
+    fi
     export ZBR_REDIS_PASSWORD=$ZBR_REDIS_PASSWORD
 
     ## test launchers git integration
     echo
-    echo "Reporting Test Launchers git integration"
+    echo "Reporting GIT Integration"
     local is_confirmed=0
     while [[ $is_confirmed -eq 0 ]]; do
       read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
@@ -712,7 +657,7 @@
       fi
 
       echo
-      echo "Git integration"
+      echo "GIT Integration"
       echo "Host: ${ZBR_GITHUB_HOST}"
       echo "Client ID: ${ZBR_GITHUB_CLIENT_ID}"
       echo "Client Secret: ${ZBR_GITHUB_CLIENT_SECRET}"
@@ -726,6 +671,9 @@
 
   }
 
+  # https://github.com/zebrunner/zebrunner/issues/384 investigate possibility to make sub-components configurable independently
+  # https://github.com/zebrunner/selenoid/issues/16 investigate possibility to make selenoid auto-configurable
+  # IMPORTANT! copy of this method exists in selenoid/zebrunner.sh and maybe will be added to reporting/zebrunner.sh
   set_aws_storage_settings() {
     ## AWS S3 storage
     local is_confirmed=0
@@ -756,18 +704,26 @@
         ZBR_STORAGE_SECRET_KEY=$local_secret_key
       fi
 
-      read -p "UserAgent key [$ZBR_STORAGE_AGENT_KEY]: " local_agent_key
-      if [[ ! -z $local_agent_key ]]; then
-        ZBR_STORAGE_AGENT_KEY=$local_agent_key
+      if [[ $ZBR_REPORTING_ENABLED -eq 0 ]]; then
+        export ZBR_MINIO_ENABLED=0
+        read -p "[Optional] Tenant [$ZBR_STORAGE_TENANT]: " local_value
+        if [[ ! -z $local_value ]]; then
+          ZBR_STORAGE_TENANT=$local_value
+        fi
+      else
+        read -p "UserAgent key [$ZBR_STORAGE_AGENT_KEY]: " local_agent_key
+        if [[ ! -z $local_agent_key ]]; then
+          ZBR_STORAGE_AGENT_KEY=$local_agent_key
+        fi
       fi
 
-      #TODO: one more link to the manual about bucket creation!
       echo "Region: $ZBR_STORAGE_REGION"
       echo "Endpoint: $ZBR_STORAGE_ENDPOINT_PROTOCOL://$ZBR_STORAGE_ENDPOINT_HOST"
       echo "Bucket: $ZBR_STORAGE_BUCKET"
       echo "Access key: $ZBR_STORAGE_ACCESS_KEY"
       echo "Secret key: $ZBR_STORAGE_SECRET_KEY"
       echo "Agent key: $ZBR_STORAGE_AGENT_KEY"
+      echo "Tenant: $ZBR_STORAGE_TENANT"
       confirm "" "Continue?" "y"
       is_confirmed=$?
     done
@@ -785,9 +741,9 @@
     export -p | grep "ZBR" > backup/settings.env
   }
 
-#  random_string() {
-#    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
-#  }
+  random_string() {
+    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
+  }
 
   confirm() {
     local message=$1
