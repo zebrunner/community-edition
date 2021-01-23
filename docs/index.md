@@ -18,8 +18,6 @@ Zebrunner (Community Edition) is a [Continuous configuration automation](https:/
 
 * Zebrunner and its subcomponents all together can be used as an effective Test Automation infrastructure for test automation development, execution, management, etc.
 
-![Alt text](https://raw.githubusercontent.com/qaprosoft/qps-infra/master/docs/img/qps-infra.png?raw=true "Zebrunner")
-
 ## Purpose
 Welcome to the Zebrunner Tutorial. This manual is designed to help you install, configure and maintain your system, and to optimize and extend or re-configure it to meet the changing needs of your business. 
 > In short, the aim of this manual is to explain the tasks involved in administering Zebrunner (Community Edition)
