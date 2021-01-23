@@ -91,6 +91,8 @@ if [[ ! -f jenkins/.disabled ]] ; then
     exit 1
   fi
 
+  # backup previous file
+  cp jenkins/variables.env jenkins/variables.env_1.3
   # regenerage variables.env to register new ZEBRUNNER_VERSION var
   cp jenkins/variables.env.original jenkins/variables.env
   sed -i "s#http://localhost:8080/jenkins#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" jenkins/variables.env
@@ -103,6 +105,7 @@ fi
 
 # apply selenoid changes
 if [[ ! -f selenoid/.disabled ]] ; then
+  cp selenoid/.env selenoid/.env_1.3
   #.env.original -> .env to adjust s3 key pattern
   cp selenoid/.env.original selenoid/.env
   if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
@@ -121,6 +124,7 @@ fi
 
 # apply reporting changes
 if [[ ! -f reporting/.disabled ]] ; then
+  cp reporting/configuration/zebrunner-proxy/nginx.conf reporting/configuration/zebrunner-proxy/nginx.conf_1.3
   # apply new nginx rules for test and run artifacts
   cp reporting/configuration/zebrunner-proxy/nginx.conf.original reporting/configuration/zebrunner-proxy/nginx.conf
   if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
@@ -133,10 +137,12 @@ fi
 
 # apply mcloud changes
 if [[ ! -f mcloud/.disabled ]] ; then
+  cp mcloud/.env mcloud/.env_1.3
   # apply new changes to .env using .env.original
   cp mcloud/.env.original mcloud/.env
   replace mcloud/.env "localhost" "${ZBR_HOSTNAME}"
 
+  cp mcloud/variables.env mcloud/variables.env_1.3
   # apply new changes to variables.env using variables.env.original
   cp mcloud/variables.env.original mcloud/variables.env
   replace mcloud/variables.env "http://localhost:8082" "${url}"
@@ -163,6 +169,31 @@ if [[ ! -f mcloud/.disabled ]] ; then
 
 fi
 
+# apply nginx changes
+cp nginx/conf.d/default.conf nginx/conf.d/default.conf_1.3
+cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
+
+sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
+sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
+
+# finish with NGiNX default tool selection
+if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+  sed -i 's/default-proxy-server/zebrunner-proxy:80/g' ./nginx/conf.d/default.conf
+  sed -i 's/default-proxy-host/zebrunner-proxy/g' ./nginx/conf.d/default.conf
+elif [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
+  sed -i 's/default-proxy-server/stf-proxy:80/g' ./nginx/conf.d/default.conf
+  sed -i 's/default-proxy-host/stf-proxy/g' ./nginx/conf.d/default.conf
+elif [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
+  sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
+  sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
+  sed -i 's|proxy_pass http://$upstream_default;|rewrite / /jenkins;|g' ./nginx/conf.d/default.conf
+elif [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
+  sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
+  sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
+  sed -i 's|proxy_pass http://$upstream_default;|rewrite / /sonarqube;|g' ./nginx/conf.d/default.conf
+else
+  sed -i 's|proxy_pass http://$upstream_default;|root   /usr/share/nginx/html;|g' ./nginx/conf.d/default.conf
+fi
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
