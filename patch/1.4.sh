@@ -90,6 +90,13 @@ if [[ ! -f jenkins/.disabled ]] ; then
     echo "ERROR! Unable to proceed upgrade as jenkins-master container not available!"
     exit 1
   fi
+  # override default launcher job by new one
+  docker cp jenkins/resources/jobs/launcher/config.xml jenkins-master:/var/jenkins_home/jobs/launcher/
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to proceed upgrade as jenkins-master container not available!"
+    exit 1
+  fi
+
 
   # backup previous file
   cp jenkins/variables.env jenkins/variables.env_1.3
