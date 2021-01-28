@@ -19,6 +19,8 @@
   
 * Install [docker-composer](https://docs.docker.com/compose/install/#install-compose) 1.25.5+
 
+* Install git 2.20.0+
+
 ### Security requirements
 
 * NGiNX WebServer port is shared
