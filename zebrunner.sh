@@ -571,7 +571,7 @@
 
 
     echo
-    confirm "Use AWS S3 for storing test artifacts (logs, video, screenshots etc)? Embedded Minio Storage can be configured if you don't have Amazon account." "Use?" "$ZBR_AWS_S3_ENABLED"
+    confirm "Use AWS S3 bucket for storing test artifacts (logs, video, screenshots etc)? Embedded Minio Storage can be configured if you don't have Amazon account." "Use?" "$ZBR_AWS_S3_ENABLED"
     if [[ $? -eq 1 ]]; then
       ZBR_AWS_S3_ENABLED=1
       ZBR_MINIO_ENABLED=0
