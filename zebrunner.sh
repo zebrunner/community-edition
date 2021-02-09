@@ -45,17 +45,17 @@
       disableLayer "reporting/minio-storage"
     fi
 
-    enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
+    enableLayer "sonarqube" "Use embedded SonarQube to organize static code analysis and guiding your team?" "$ZBR_SONARQUBE_ENABLED"
     export ZBR_SONARQUBE_ENABLED=$?
 
     # jenkins after sonar to detect and put valid SONAR_URL value
-    enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
+    enableLayer "jenkins" "Use embedded Jenkins as recommended CI tool?" "$ZBR_JENKINS_ENABLED"
     export ZBR_JENKINS_ENABLED=$?
 
-    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)" "$ZBR_SELENOID_ENABLED"
+    enableLayer "selenoid" "Use embedded Web Selenium Hub for testing on chrome, firefox, opera and MicrosoftEdge browsers?" "$ZBR_SELENOID_ENABLED"
     export ZBR_SELENOID_ENABLED=$?
 
-    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
+    enableLayer "mcloud" "Use embedded Mobile Device Farm and Selenium/Appium Hub for testing on Android, iOS, AppleTV etc devices?" "$ZBR_MCLOUD_ENABLED"
     export ZBR_MCLOUD_ENABLED=$?
 
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
