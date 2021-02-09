@@ -45,9 +45,9 @@
       fi
       reporting/zebrunner.sh setup
     else
-      # explicitly disable reporting as it was disabled by engineer via REPORTING_DISABLED env var
+      # explicitly disable reporting and minio as it was disabled by engineer via REPORTING_DISABLED env var
       export ZBR_REPORTING_ENABLED=0
-      # no need to ask about enabling minio sub-module
+      disableLayer "reporting"
       disableLayer "reporting/minio-storage"
     fi
 
