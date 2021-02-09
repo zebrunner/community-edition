@@ -25,7 +25,7 @@ echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
 if [[ ! -f reporting/.disabled ]] ; then
   docker stop reporting-service
   sleep 3
-  docker cp patch/reporting-1.12-db-migration.sql postgres:/tmp
+  docker cp patch/sql/reporting-1.12-db-migration.sql postgres:/tmp
   if [[ $? -ne 0 ]]; then
     echo "ERROR! Unable to proceed upgrade as postgres container not available"
     exit 1
