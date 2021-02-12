@@ -94,6 +94,9 @@ fi
 
 # apply mcloud changes
 if [[ ! -f mcloud/.disabled ]] ; then
+  # regenerate .env to bump up to mcloud-grid:1.1
+  cp mcloud/.env.original mcloud/.env
+  replace mcloud/.env "localhost" "${ZBR_HOSTNAME}"
 fi
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
