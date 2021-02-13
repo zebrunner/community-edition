@@ -3888,3 +3888,11 @@ chart.setOption(option);',
 	HIDDEN=false
 WHERE NAME='PASS RATE (CALENDAR)';
 
+
+#413: adjust cron refresh schedule using new names and time
+set schema 'cron';
+DELETE FROM JOB;
+SELECT cron.schedule ('1 0 * * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY zafira.LAST_32_DAYS_VIEW$$);
+SELECT cron.schedule ('5 0 * * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY zafira.LAST_93_DAYS_VIEW$$);
+SELECT cron.schedule ('10 0 * * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY zafira.TOTAL_VIEW$$);
+
