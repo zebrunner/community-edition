@@ -24,7 +24,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=1.4
+    export ZBR_VERSION=1.5
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
@@ -37,31 +37,25 @@
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
     if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
       set_reporting_settings
-
-      enableLayer "reporting/minio-storage" "Minio S3 Storage for Reporting" "$ZBR_MINIO_ENABLED"
-      export ZBR_MINIO_ENABLED=$?
-      if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
-        set_aws_storage_settings
-      fi
       reporting/zebrunner.sh setup
     else
-      # explicitly disable reporting as it was disabled by engineer via REPORTING_DISABLED env var
+      # explicitly disable reporting and minio as it was disabled by engineer via REPORTING_DISABLED env var
       export ZBR_REPORTING_ENABLED=0
-      # no need to ask about enabling minio sub-module
+      disableLayer "reporting"
       disableLayer "reporting/minio-storage"
     fi
 
-    enableLayer "sonarqube" "SonarQube" "$ZBR_SONARQUBE_ENABLED"
+    enableLayer "sonarqube" "Use embedded SonarQube to organize static code analysis and guiding your team?" "$ZBR_SONARQUBE_ENABLED"
     export ZBR_SONARQUBE_ENABLED=$?
 
     # jenkins after sonar to detect and put valid SONAR_URL value
-    enableLayer "jenkins" "Jenkins" "$ZBR_JENKINS_ENABLED"
+    enableLayer "jenkins" "Use embedded Jenkins as recommended CI tool?" "$ZBR_JENKINS_ENABLED"
     export ZBR_JENKINS_ENABLED=$?
 
-    enableLayer "selenoid" "Web Selenium Hub (chrome, firefox and opera)" "$ZBR_SELENOID_ENABLED"
+    enableLayer "selenoid" "Use embedded Web Selenium Hub for testing on chrome, firefox, opera and MicrosoftEdge browsers?" "$ZBR_SELENOID_ENABLED"
     export ZBR_SELENOID_ENABLED=$?
 
-    enableLayer "mcloud" "Mobile Selenium Hub (Android, iOS, AppleTV etc)" "$ZBR_MCLOUD_ENABLED"
+    enableLayer "mcloud" "Use embedded Mobile Device Farm and Selenium/Appium Hub for testing on Android, iOS, AppleTV etc devices?" "$ZBR_MCLOUD_ENABLED"
     export ZBR_MCLOUD_ENABLED=$?
 
     if [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
@@ -147,18 +141,20 @@
       echo "RABBITMQ: $ZBR_RABBITMQ_USER/$ZBR_RABBITMQ_PASSWORD" | tee -a $notice
       echo "REDIS: $ZBR_REDIS_PASSWORD" | tee -a $notice
       echo | tee -a $notice
-      echo "REPORTING SERVICE INTEGRATIONS:" | tee -a $notice
-      echo "SMTP HOST: $ZBR_SMTP_HOST:$ZBR_SMTP_PORT" | tee -a $notice
-      if [[ ! -z $ZBR_SMTP_EMAIL && ! -z $ZBR_SMTP_USER && ! -z $ZBR_SMTP_PASSWORD ]]; then
+
+      if [[ ZBR_SMTP_ENABLED -eq 1 ]]; then
+        echo "REPORTING SMTP INTEGRATIONS:" | tee -a $notice
+        echo "SMTP HOST: $ZBR_SMTP_HOST:$ZBR_SMTP_PORT" | tee -a $notice
         echo "EMAIL: $ZBR_SMTP_EMAIL" | tee -a $notice
         echo "USER: $ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD" | tee -a $notice
+        echo | tee -a $notice
       fi
-      echo | tee -a $notice
-      echo "GIT HOST: ${ZBR_GITHUB_HOST}" | tee -a $notice
-      if [[ ! -z $ZBR_GITHUB_CLIENT_ID && ! -z $ZBR_GITHUB_CLIENT_SECRET ]]; then
+      if [[ ZBR_GITHUB_ENABLED -eq 1 ]]; then
+        echo "REPORTING GITHUB INTEGRATIONS:" | tee -a $notice
+        echo "GIT HOST: ${ZBR_GITHUB_HOST}" | tee -a $notice
         echo "CLIENT ID/SECRET: $ZBR_GITHUB_CLIENT_ID/$ZBR_GITHUB_CLIENT_SECRET" | tee -a $notice
+        echo | tee -a $notice
       fi
-      echo | tee -a $notice
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
@@ -243,6 +239,8 @@
 
     jenkins/zebrunner.sh shutdown
     reporting/zebrunner.sh shutdown
+    #411: There is ".disabled" present in minio-storage after setup all  components
+    reporting/minio-storage/zebrunner.sh shutdown
     sonarqube/zebrunner.sh shutdown
     mcloud/zebrunner.sh shutdown
     selenoid/zebrunner.sh shutdown
@@ -453,8 +451,15 @@
       exit -1
     fi
 
+    patch/1.5.sh
+    p1_5=$?
+    if [[ ${p1_5} -eq 1 ]]; then
+      echo "ERROR! 1.5 patchset was not applied correctly!"
+      exit -1
+    fi
+
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p1_4} -eq 2 ]]; then
+    if [[ ${p1_5} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
@@ -574,45 +579,60 @@
     export ZBR_POSTGRES_PASSWORD=$ZBR_POSTGRES_PASSWORD
 
 
+    echo
+    confirm "Use AWS S3 bucket for storing test artifacts (logs, video, screenshots etc)? Embedded Minio Storage can be configured if you don't have Amazon account." "Use?" "$ZBR_AWS_S3_ENABLED"
+    if [[ $? -eq 1 ]]; then
+      ZBR_AWS_S3_ENABLED=1
+      ZBR_MINIO_ENABLED=0
+      set_aws_storage_settings
+    else
+      ZBR_MINIO_ENABLED=1
+    fi
+
     ## email-service (smtp)
     echo
-    echo "Reporting SMTP Integration"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Host [$ZBR_SMTP_HOST]: " local_smtp_host
-      if [[ ! -z $local_smtp_host ]]; then
-        ZBR_SMTP_HOST=$local_smtp_host
-      fi
+    confirm "Use SMTP for emailing test results?" "Use?" "$ZBR_SMTP_ENABLED"
+    if [[ $? -eq 0 ]]; then
+      ZBR_SMTP_ENABLED=0
+    else
+      ZBR_SMTP_ENABLED=1
+      local is_confirmed=0
+      while [[ $is_confirmed -eq 0 ]]; do
+        read -p "Host [$ZBR_SMTP_HOST]: " local_smtp_host
+        if [[ ! -z $local_smtp_host ]]; then
+          ZBR_SMTP_HOST=$local_smtp_host
+        fi
 
-      read -p "Port [$ZBR_SMTP_PORT]: " local_smtp_port
-      if [[ ! -z $local_smtp_port ]]; then
-        ZBR_SMTP_PORT=$local_smtp_port
-      fi
+        read -p "Port [$ZBR_SMTP_PORT]: " local_smtp_port
+        if [[ ! -z $local_smtp_port ]]; then
+          ZBR_SMTP_PORT=$local_smtp_port
+        fi
 
-      read -p "Sender email [$ZBR_SMTP_EMAIL]: " local_smtp_email
-      if [[ ! -z $local_smtp_email ]]; then
-        ZBR_SMTP_EMAIL=$local_smtp_email
-      fi
+        read -p "Sender email [$ZBR_SMTP_EMAIL]: " local_smtp_email
+        if [[ ! -z $local_smtp_email ]]; then
+          ZBR_SMTP_EMAIL=$local_smtp_email
+        fi
 
-      read -p "User [$ZBR_SMTP_USER]: " local_smtp_user
-      if [[ ! -z $local_smtp_user ]]; then
-        ZBR_SMTP_USER=$local_smtp_user
-      fi
+        read -p "User [$ZBR_SMTP_USER]: " local_smtp_user
+        if [[ ! -z $local_smtp_user ]]; then
+          ZBR_SMTP_USER=$local_smtp_user
+        fi
 
-      read -p "Password [$ZBR_SMTP_PASSWORD]: " local_smtp_password
-      if [[ ! -z $local_smtp_password ]]; then
-        ZBR_SMTP_PASSWORD=$local_smtp_password
-      fi
+        read -p "Password [$ZBR_SMTP_PASSWORD]: " local_smtp_password
+        if [[ ! -z $local_smtp_password ]]; then
+          ZBR_SMTP_PASSWORD=$local_smtp_password
+        fi
 
-      echo
-      echo "SMTP Integration"
-      echo "host=$ZBR_SMTP_HOST:$ZBR_SMTP_PORT"
-      echo "email=$ZBR_SMTP_EMAIL"
-      echo "user=$ZBR_SMTP_USER"
-      echo "password=$ZBR_SMTP_PASSWORD"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
+        echo
+        echo "SMTP Integration"
+        echo "host=$ZBR_SMTP_HOST:$ZBR_SMTP_PORT"
+        echo "email=$ZBR_SMTP_EMAIL"
+        echo "user=$ZBR_SMTP_USER"
+        echo "password=$ZBR_SMTP_PASSWORD"
+        confirm "" "Continue?" "y"
+        is_confirmed=$?
+      done
+    fi
 
     export ZBR_SMTP_HOST=$ZBR_SMTP_HOST
     export ZBR_SMTP_PORT=$ZBR_SMTP_PORT
@@ -638,32 +658,37 @@
 
     ## test launchers git integration
     echo
-    echo "Reporting GIT Integration"
-    local is_confirmed=0
-    while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
-      if [[ ! -z $local_git ]]; then
-        ZBR_GITHUB_HOST=$local_git
-      fi
+    confirm "Use GitHub integration for Test Launchers in Reporting UI?" "Use?" "$ZBR_GITHUB_ENABLED"
+    if [[ $? -eq 0 ]]; then
+      ZBR_GITHUB_ENABLED=0
+    else
+      ZBR_GITHUB_ENABLED=1
+      local is_confirmed=0
+      while [[ $is_confirmed -eq 0 ]]; do
+        read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
+        if [[ ! -z $local_git ]]; then
+          ZBR_GITHUB_HOST=$local_git
+        fi
 
-      read -p "Client ID [$ZBR_GITHUB_CLIENT_ID]: " local_client_id
-      if [[ ! -z $local_client_id ]]; then
-        ZBR_GITHUB_CLIENT_ID=$local_client_id
-      fi
+        read -p "Client ID [$ZBR_GITHUB_CLIENT_ID]: " local_client_id
+        if [[ ! -z $local_client_id ]]; then
+          ZBR_GITHUB_CLIENT_ID=$local_client_id
+        fi
 
-      read -p "Client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
-      if [[ ! -z $local_secret_id ]]; then
-        ZBR_GITHUB_CLIENT_SECRET=$local_secret_id
-      fi
+        read -p "Client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
+        if [[ ! -z $local_secret_id ]]; then
+          ZBR_GITHUB_CLIENT_SECRET=$local_secret_id
+        fi
 
-      echo
-      echo "GIT Integration"
-      echo "Host: ${ZBR_GITHUB_HOST}"
-      echo "Client ID: ${ZBR_GITHUB_CLIENT_ID}"
-      echo "Client Secret: ${ZBR_GITHUB_CLIENT_SECRET}"
-      confirm "" "Continue?" "y"
-      is_confirmed=$?
-    done
+        echo
+        echo "GIT Integration"
+        echo "Host: ${ZBR_GITHUB_HOST}"
+        echo "Client ID: ${ZBR_GITHUB_CLIENT_ID}"
+        echo "Client Secret: ${ZBR_GITHUB_CLIENT_SECRET}"
+        confirm "" "Continue?" "y"
+        is_confirmed=$?
+      done
+    fi
 
     export ZBR_GITHUB_HOST=$ZBR_GITHUB_HOST
     export ZBR_GITHUB_CLIENT_ID=$ZBR_GITHUB_CLIENT_ID

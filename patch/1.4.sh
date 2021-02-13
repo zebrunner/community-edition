@@ -112,7 +112,9 @@ fi
 
 # apply selenoid changes
 if [[ ! -f selenoid/.disabled ]] ; then
-  cp selenoid/.env selenoid/.env_1.3
+  if [[ -f selenoid/.env ]]; then
+    cp selenoid/.env selenoid/.env_1.3
+  fi
   #.env.original -> .env to adjust s3 key pattern
   cp selenoid/.env.original selenoid/.env
   if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
