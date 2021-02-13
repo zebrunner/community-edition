@@ -239,6 +239,8 @@
 
     jenkins/zebrunner.sh shutdown
     reporting/zebrunner.sh shutdown
+    #411: There is ".disabled" present in minio-storage after setup all  components
+    reporting/minio-storage/zebrunner.sh shutdown
     sonarqube/zebrunner.sh shutdown
     mcloud/zebrunner.sh shutdown
     selenoid/zebrunner.sh shutdown
