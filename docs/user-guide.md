@@ -151,8 +151,6 @@ When it is "abort" we halt the entire pipeline as only failed job detected. It m
 </br>
 <b>jenkinsFailedSlackChannels</b> - This property takes a comma separated list of slack channels to notify about failures.
 </br>
-<b>jenkinsQueueRegistration</b> - This property is a boolean parameter to manage queue registration. Disabling is recommended for suites with dynamic number of tests or dynamic test names.
-</br>
 <b>jenkinsDefaultRetryCount</b> - This property allows to provide custom retry_count property (number of extra attempts for test execution).
 </br>
 <b>jenkinsNodeLabel</b> - This property allows to override slave label and execute test on custom server.
