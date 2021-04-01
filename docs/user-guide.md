@@ -161,8 +161,6 @@ When it is "abort" we halt the entire pipeline as only failed job detected. It m
 </br>
 <b>jenkinsAutoScreenshot</b> - This property is a boolean parameter mostly to enable auto_screenshot which is disabled by default.
 </br>
-<b>jenkinsEnableVideo</b> - This property is a boolean parameter mostly to disable video recording which is enabled by default.
-</br>
 
 ## Support Channel
 
