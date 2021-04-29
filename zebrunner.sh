@@ -24,7 +24,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=1.6
+    export ZBR_VERSION=1.7
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
@@ -463,8 +463,15 @@
       exit -1
     fi
 
+    patch/1.7.sh
+    p1_7=$?
+    if [[ ${p1_7} -eq 1 ]]; then
+      echo "ERROR! 1.7 patchset was not applied correctly!"
+      exit -1
+    fi
+
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p1_6} -eq 2 ]]; then
+    if [[ ${p1_7} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
