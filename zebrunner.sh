@@ -149,12 +149,6 @@
         echo "USER: $ZBR_SMTP_USER/$ZBR_SMTP_PASSWORD" | tee -a $notice
         echo | tee -a $notice
       fi
-      if [[ ZBR_GITHUB_ENABLED -eq 1 ]]; then
-        echo "REPORTING GITHUB INTEGRATIONS:" | tee -a $notice
-        echo "GIT HOST: ${ZBR_GITHUB_HOST}" | tee -a $notice
-        echo "CLIENT ID/SECRET: $ZBR_GITHUB_CLIENT_ID/$ZBR_GITHUB_CLIENT_SECRET" | tee -a $notice
-        echo | tee -a $notice
-      fi
     fi
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
@@ -667,44 +661,6 @@
       ZBR_REDIS_PASSWORD=`random_string`
     fi
     export ZBR_REDIS_PASSWORD=$ZBR_REDIS_PASSWORD
-
-    ## test launchers git integration
-    echo
-    confirm "Use GitHub integration for Test Launchers in Reporting UI?" "Use?" "$ZBR_GITHUB_ENABLED"
-    if [[ $? -eq 0 ]]; then
-      ZBR_GITHUB_ENABLED=0
-    else
-      ZBR_GITHUB_ENABLED=1
-      local is_confirmed=0
-      while [[ $is_confirmed -eq 0 ]]; do
-        read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
-        if [[ ! -z $local_git ]]; then
-          ZBR_GITHUB_HOST=$local_git
-        fi
-
-        read -p "Client ID [$ZBR_GITHUB_CLIENT_ID]: " local_client_id
-        if [[ ! -z $local_client_id ]]; then
-          ZBR_GITHUB_CLIENT_ID=$local_client_id
-        fi
-
-        read -p "Client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
-        if [[ ! -z $local_secret_id ]]; then
-          ZBR_GITHUB_CLIENT_SECRET=$local_secret_id
-        fi
-
-        echo
-        echo "GIT Integration"
-        echo "Host: ${ZBR_GITHUB_HOST}"
-        echo "Client ID: ${ZBR_GITHUB_CLIENT_ID}"
-        echo "Client Secret: ${ZBR_GITHUB_CLIENT_SECRET}"
-        confirm "" "Continue?" "y"
-        is_confirmed=$?
-      done
-    fi
-
-    export ZBR_GITHUB_HOST=$ZBR_GITHUB_HOST
-    export ZBR_GITHUB_CLIENT_ID=$ZBR_GITHUB_CLIENT_ID
-    export ZBR_GITHUB_CLIENT_SECRET=$ZBR_GITHUB_CLIENT_SECRET
 
   }
 
