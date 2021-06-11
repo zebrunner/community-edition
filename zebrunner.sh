@@ -16,10 +16,12 @@
     print_banner
 
     # load default interactive installer settings
+    # shellcheck disable=SC1091
     source backup/settings.env.original
 
     # load ./backup/settings.env if exist to declare ZBR* vars from previous run!
     if [[ -f backup/settings.env ]]; then
+      # shellcheck disable=SC1091
       source backup/settings.env
     fi
 
@@ -31,8 +33,8 @@
 
     export ZBR_INFRA_HOST=$ZBR_HOSTNAME
 
-    sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
-    sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
+    replace ./nginx/conf.d/default.conf "server_name localhost" "server_name '$ZBR_HOSTNAME'"
+    replace ./nginx/conf.d/default.conf "listen 80" "listen '$ZBR_PORT'"
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
     if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
@@ -77,45 +79,45 @@
 
     if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-jenkins integration vars
-      sed -i "s#JENKINS_ENABLED=false#JENKINS_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
-      sed -i "s#JENKINS_URL=#JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/configuration/reporting-service/variables.env
+      replace reporting/configuration/reporting-service/variables.env "JENKINS_ENABLED=false" "JENKINS_ENABLED=true"
+      replace reporting/configuration/reporting-service/variables.env "JENKINS_URL=" "JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins"
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-mcloud integration vars
-      sed -i "s#MCLOUD_ENABLED=false#MCLOUD_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
-      sed -i "s#MCLOUD_URL=#MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/configuration/reporting-service/variables.env
+      replace reporting/configuration/reporting-service/variables.env "MCLOUD_ENABLED=false" "MCLOUD_ENABLED=true"
+      replace reporting/configuration/reporting-service/variables.env "MCLOUD_URL=" "MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub"
       #TODO: generate secure htpasswd for mcloud
-      sed -i "s#MCLOUD_USER=#MCLOUD_USER=demo#g" reporting/configuration/reporting-service/variables.env
-      sed -i "s#MCLOUD_PASSWORD=#MCLOUD_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
+      replace reporting/configuration/reporting-service/variables.env "MCLOUD_USER=" "MCLOUD_USER=demo"
+      replace reporting/configuration/reporting-service/variables.env "MCLOUD_PASSWORD=" "MCLOUD_PASSWORD=demo"
     fi
 
     if [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       # update reporting-jenkins integration vars
-      sed -i "s#SELENIUM_ENABLED=false#SELENIUM_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
-      sed -i "s#SELENIUM_URL=#SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/configuration/reporting-service/variables.env
+      replace reporting/configuration/reporting-service/variables.env "SELENIUM_ENABLED=false" "SELENIUM_ENABLED=true"
+      replace reporting/configuration/reporting-service/variables.env "SELENIUM_URL=" "SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub"
       #TODO: generate secure htpasswd for selenoid
-      sed -i "s#SELENIUM_USER=#SELENIUM_USER=demo#g" reporting/configuration/reporting-service/variables.env
-      sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
+      replace reporting/configuration/reporting-service/variables.env "SELENIUM_USER=" "SELENIUM_USER=demo"
+      replace reporting/configuration/reporting-service/variables.env "SELENIUM_PASSWORD=" "SELENIUM_PASSWORD=demo"
     fi
 
     # finish with NGiNX default tool selection
     if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
-      sed -i 's/default-proxy-server/zebrunner-proxy:80/g' ./nginx/conf.d/default.conf
-      sed -i 's/default-proxy-host/zebrunner-proxy/g' ./nginx/conf.d/default.conf
+      replace ./nginx/conf.d/default.conf "default-proxy-server" "zebrunner-proxy:80"
+      replace ./nginx/conf.d/default.conf "default-proxy-host" "zebrunner-proxy"
     elif [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
-      sed -i 's/default-proxy-server/stf-proxy:80/g' ./nginx/conf.d/default.conf
-      sed -i 's/default-proxy-host/stf-proxy/g' ./nginx/conf.d/default.conf
+      replace ./nginx/conf.d/default.conf "default-proxy-server" "stf-proxy:80"
+      replace ./nginx/conf.d/default.conf "default-proxy-host" "stf-proxy"
     elif [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
-      sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
-      sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
-      sed -i 's|proxy_pass http://$upstream_default;|rewrite / /jenkins;|g' ./nginx/conf.d/default.conf
+      replace ./nginx/conf.d/default.conf 'set $upstream_default default-proxy-server;' ""
+      replace ./nginx/conf.d/default.conf "proxy_set_header Host default-proxy-host;" ""
+      replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "rewrite / /jenkins;"
     elif [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
-      sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
-      sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
-      sed -i 's|proxy_pass http://$upstream_default;|rewrite / /sonarqube;|g' ./nginx/conf.d/default.conf
+      replace ./nginx/conf.d/default.conf 'set $upstream_default default-proxy-server;' ""
+      replace ./nginx/conf.d/default.conf "proxy_set_header Host default-proxy-host;" ""
+      replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "rewrite / /sonarqube;"
     else
-      sed -i 's|proxy_pass http://$upstream_default;|root   /usr/share/nginx/html;|g' ./nginx/conf.d/default.conf
+      replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "root   /usr/share/nginx/html;"
     fi
 
     # export all ZBR* variables to save user input
@@ -253,12 +255,14 @@
       exit -1
     fi
 
+    # shellcheck disable=SC1091
     source backup/settings.env
     if [[ -z ${ZBR_VERSION} ]]; then
       ZBR_VERSION=1.0
     fi
     ACTUAL_VERSION=${ZBR_VERSION}
 
+    # shellcheck disable=SC1091
     source .env
     DESIRED_VERSION=${ZBR_VERSION}
 
@@ -492,6 +496,7 @@
       exit -1
     fi
 
+    # shellcheck disable=SC1091
     source backup/settings.env
 
     echo "
@@ -513,18 +518,18 @@
     if [[ $? -eq 1 ]]; then
       # enable component/layer
       if [[ -f $layer/.disabled ]]; then
-        rm $layer/.disabled
+        rm "$layer"/.disabled
       fi
       return 1
     else
-      disableLayer $layer
+      disableLayer "$layer"
       return 0
     fi
   }
 
   disableLayer() {
     # disbale component/layer
-    echo > $1/.disabled
+    echo > "$1"/.disabled
     return 0
   }
 
@@ -537,18 +542,18 @@
     fi
 
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Protocol [$ZBR_PROTOCOL]: " local_protocol
-      if [[ ! -z $local_protocol ]]; then
+      read -r -p "Protocol [$ZBR_PROTOCOL]: " local_protocol
+      if [[ -n $local_protocol ]]; then
         ZBR_PROTOCOL=$local_protocol
       fi
 
-      read -p "Fully qualified domain name (ip) [$ZBR_HOSTNAME]: " local_hostname
-      if [[ ! -z $local_hostname ]]; then
+      read -r -p "Fully qualified domain name (ip) [$ZBR_HOSTNAME]: " local_hostname
+      if [[ -n $local_hostname ]]; then
         ZBR_HOSTNAME=$local_hostname
       fi
 
-      read -p "Port [$ZBR_PORT]: " local_port
-      if [[ ! -z $local_port ]]; then
+      read -r -p "Port [$ZBR_PORT]: " local_port
+      if [[ -n $local_port ]]; then
         ZBR_PORT=$local_port
       fi
 
@@ -567,11 +572,11 @@
     ## Crypto token and salt
     if [[ -z $ZBR_TOKEN_SIGNING_SECRET ]]; then
       # generate random value as it is first setup
-      ZBR_TOKEN_SIGNING_SECRET=`random_string`
+      ZBR_TOKEN_SIGNING_SECRET=$(random_string)
     fi
     if [[ -z $ZBR_CRYPTO_SALT ]]; then
       # generate random value as it is first setup
-      ZBR_CRYPTO_SALT=`random_string`
+      ZBR_CRYPTO_SALT=$(random_string)
     fi
     export ZBR_TOKEN_SIGNING_SECRET=$ZBR_TOKEN_SIGNING_SECRET
     export ZBR_CRYPTO_SALT=$ZBR_CRYPTO_SALT
@@ -579,14 +584,14 @@
     ## iam-service posgtres
     if [[ -z $ZBR_IAM_POSTGRES_PASSWORD ]]; then
       # generate random value as it is first setup
-      ZBR_IAM_POSTGRES_PASSWORD=`random_string`
+      ZBR_IAM_POSTGRES_PASSWORD=$(random_string)
     fi
     export ZBR_IAM_POSTGRES_PASSWORD=$ZBR_IAM_POSTGRES_PASSWORD
 
     ## reporting posgtres instance
     if [[ -z $ZBR_POSTGRES_PASSWORD ]]; then
       # generate random value as it is first setup
-      ZBR_POSTGRES_PASSWORD=`random_string`
+      ZBR_POSTGRES_PASSWORD=$(random_string)
     fi
     export ZBR_POSTGRES_PASSWORD=$ZBR_POSTGRES_PASSWORD
 
@@ -610,28 +615,28 @@
       ZBR_SMTP_ENABLED=1
       local is_confirmed=0
       while [[ $is_confirmed -eq 0 ]]; do
-        read -p "Host [$ZBR_SMTP_HOST]: " local_smtp_host
-        if [[ ! -z $local_smtp_host ]]; then
+        read -r -p "Host [$ZBR_SMTP_HOST]: " local_smtp_host
+        if [[ -n $local_smtp_host ]]; then
           ZBR_SMTP_HOST=$local_smtp_host
         fi
 
-        read -p "Port [$ZBR_SMTP_PORT]: " local_smtp_port
-        if [[ ! -z $local_smtp_port ]]; then
+        read -r -p "Port [$ZBR_SMTP_PORT]: " local_smtp_port
+        if [[ -n $local_smtp_port ]]; then
           ZBR_SMTP_PORT=$local_smtp_port
         fi
 
-        read -p "Sender email [$ZBR_SMTP_EMAIL]: " local_smtp_email
-        if [[ ! -z $local_smtp_email ]]; then
+        read -r -p "Sender email [$ZBR_SMTP_EMAIL]: " local_smtp_email
+        if [[ -n $local_smtp_email ]]; then
           ZBR_SMTP_EMAIL=$local_smtp_email
         fi
 
-        read -p "User [$ZBR_SMTP_USER]: " local_smtp_user
-        if [[ ! -z $local_smtp_user ]]; then
+        read -r -p "User [$ZBR_SMTP_USER]: " local_smtp_user
+        if [[ -n $local_smtp_user ]]; then
           ZBR_SMTP_USER=$local_smtp_user
         fi
 
-        read -p "Password [$ZBR_SMTP_PASSWORD]: " local_smtp_password
-        if [[ ! -z $local_smtp_password ]]; then
+        read -r -p "Password [$ZBR_SMTP_PASSWORD]: " local_smtp_password
+        if [[ -n $local_smtp_password ]]; then
           ZBR_SMTP_PASSWORD=$local_smtp_password
         fi
 
@@ -656,7 +661,7 @@
     ## reporting rabbitmq
     if [[ -z $ZBR_RABBITMQ_PASSWORD ]]; then
       # generate random value as it is first setup
-      ZBR_RABBITMQ_PASSWORD=`random_string`
+      ZBR_RABBITMQ_PASSWORD=$(random_string)
     fi
     export ZBR_RABBITMQ_USER=$ZBR_RABBITMQ_USER
     export ZBR_RABBITMQ_PASSWORD=$ZBR_RABBITMQ_PASSWORD
@@ -664,7 +669,7 @@
     ## reporting redis
     if [[ -z $ZBR_REDIS_PASSWORD ]]; then
       # generate random value as it is first setup
-      ZBR_REDIS_PASSWORD=`random_string`
+      ZBR_REDIS_PASSWORD=$(random_string)
     fi
     export ZBR_REDIS_PASSWORD=$ZBR_REDIS_PASSWORD
 
@@ -677,18 +682,18 @@
       ZBR_GITHUB_ENABLED=1
       local is_confirmed=0
       while [[ $is_confirmed -eq 0 ]]; do
-        read -p "Git host [$ZBR_GITHUB_HOST]: " local_git
-        if [[ ! -z $local_git ]]; then
+        read -r -p "Git host [$ZBR_GITHUB_HOST]: " local_git
+        if [[ -n $local_git ]]; then
           ZBR_GITHUB_HOST=$local_git
         fi
 
-        read -p "Client ID [$ZBR_GITHUB_CLIENT_ID]: " local_client_id
-        if [[ ! -z $local_client_id ]]; then
+        read -r -p "Client ID [$ZBR_GITHUB_CLIENT_ID]: " local_client_id
+        if [[ -n $local_client_id ]]; then
           ZBR_GITHUB_CLIENT_ID=$local_client_id
         fi
 
-        read -p "Client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
-        if [[ ! -z $local_secret_id ]]; then
+        read -r -p "Client Secret [$ZBR_GITHUB_CLIENT_SECRET]: " local_secret_id
+        if [[ -n $local_secret_id ]]; then
           ZBR_GITHUB_CLIENT_SECRET=$local_secret_id
         fi
 
@@ -718,38 +723,38 @@
     echo
     echo "AWS S3 storage"
     while [[ $is_confirmed -eq 0 ]]; do
-      read -p "Region [$ZBR_STORAGE_REGION]: " local_region
-      if [[ ! -z $local_region ]]; then
+      read -r -p "Region [$ZBR_STORAGE_REGION]: " local_region
+      if [[ -n $local_region ]]; then
         ZBR_STORAGE_REGION=$local_region
       fi
 
       ZBR_STORAGE_ENDPOINT_PROTOCOL="https"
       ZBR_STORAGE_ENDPOINT_HOST="s3.${ZBR_STORAGE_REGION}.amazonaws.com:443"
 
-      read -p "Bucket [$ZBR_STORAGE_BUCKET]: " local_bucket
-      if [[ ! -z $local_bucket ]]; then
+      read -r -p "Bucket [$ZBR_STORAGE_BUCKET]: " local_bucket
+      if [[ -n $local_bucket ]]; then
         ZBR_STORAGE_BUCKET=$local_bucket
       fi
 
-      read -p "Access key [$ZBR_STORAGE_ACCESS_KEY]: " local_access_key
-      if [[ ! -z $local_access_key ]]; then
+      read -r -p "Access key [$ZBR_STORAGE_ACCESS_KEY]: " local_access_key
+      if [[ -n $local_access_key ]]; then
         ZBR_STORAGE_ACCESS_KEY=$local_access_key
       fi
 
-      read -p "Secret key [$ZBR_STORAGE_SECRET_KEY]: " local_secret_key
-      if [[ ! -z $local_secret_key ]]; then
+      read -r -p "Secret key [$ZBR_STORAGE_SECRET_KEY]: " local_secret_key
+      if [[ -n $local_secret_key ]]; then
         ZBR_STORAGE_SECRET_KEY=$local_secret_key
       fi
 
       if [[ $ZBR_REPORTING_ENABLED -eq 0 ]]; then
         export ZBR_MINIO_ENABLED=0
-        read -p "[Optional] Tenant [$ZBR_STORAGE_TENANT]: " local_value
-        if [[ ! -z $local_value ]]; then
+        read -r -p "[Optional] Tenant [$ZBR_STORAGE_TENANT]: " local_value
+        if [[ -n $local_value ]]; then
           ZBR_STORAGE_TENANT=$local_value
         fi
       else
-        read -p "UserAgent key [$ZBR_STORAGE_AGENT_KEY]: " local_agent_key
-        if [[ ! -z $local_agent_key ]]; then
+        read -r -p "UserAgent key [$ZBR_STORAGE_AGENT_KEY]: " local_agent_key
+        if [[ -n $local_agent_key ]]; then
           ZBR_STORAGE_AGENT_KEY=$local_agent_key
         fi
       fi
@@ -795,11 +800,11 @@
     fi
 
     while true; do
-      if [[ ! -z $message ]]; then
+      if [[ -n $message ]]; then
         echo "$message"
       fi
 
-      read -p "$question y/n [$isEnabled]:" response
+      read -r -p "$question y/n [$isEnabled]:" response
       if [[ -z $response ]]; then
         if [[ "$isEnabled" == "y" ]]; then
           return 1
@@ -820,6 +825,25 @@
       echo "Please answer y (yes) or n (no)."
       echo
     done
+  }
+
+  replace() {
+    #TODO: https://github.com/zebrunner/zebrunner/issues/328 organize debug logging for setup/replace
+    file=$1
+    #echo "file: $file"
+    content=$(<"$file") # read the file's content into
+    #echo "content: $content"
+
+    old=$2
+    #echo "old: $old"
+
+    new=$3
+    #echo "new: $new"
+    content=${content//"$old"/$new}
+
+    #echo "content: $content"
+
+    printf '%s' "$content" >"$file"    # write new content to disk
   }
 
   echo_warning() {
@@ -854,7 +878,7 @@
   }
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd ${BASEDIR}
+cd "${BASEDIR}" || exit
 
 case "$1" in
     setup)
