@@ -4,6 +4,21 @@ export_settings() {
   export -p | grep "ZBR" > backup/settings.env
 }
 
+random_string() {
+    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
+}
+
+echo_warning() {
+    echo "
+      WARNING! $1"
+}
+
+echo_telegram() {
+    echo "
+      For more help join telegram channel: https://t.me/zebrunner
+      "
+}
+
 replace() {
     #TODO: https://github.com/zebrunner/zebrunner/issues/328 organize debug logging for setup/replace
     file=$1

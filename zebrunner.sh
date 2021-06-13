@@ -734,21 +734,6 @@ source patch/utility.sh
     export ZBR_STORAGE_AGENT_KEY=$ZBR_STORAGE_AGENT_KEY
   }
 
-  random_string() {
-    cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
-  }
-
-  echo_warning() {
-    echo "
-      WARNING! $1"
-  }
-
-  echo_telegram() {
-    echo "
-      For more help join telegram channel: https://t.me/zebrunner
-      "
-  }
-
   echo_help() {
     echo "
       Usage: ./zebrunner.sh [option]
