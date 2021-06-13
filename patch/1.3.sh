@@ -3,10 +3,6 @@
 # shellcheck disable=SC1091
 source utility.sh
 
-  export_settings() {
-    export -p | grep "ZBR" > backup/settings.env
-  }
-
 TARGET_VERSION=1.3
 
 source backup/settings.env

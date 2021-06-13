@@ -734,52 +734,8 @@ source patch/utility.sh
     export ZBR_STORAGE_AGENT_KEY=$ZBR_STORAGE_AGENT_KEY
   }
 
-  export_settings() {
-    export -p | grep "ZBR" > backup/settings.env
-  }
-
   random_string() {
     cat /dev/urandom | env LC_CTYPE=C tr -dc a-zA-Z0-9 | head -c 48; echo
-  }
-
-  confirm() {
-    local message=$1
-    local question=$2
-    local isEnabled=$3
-
-    if [[ "$isEnabled" == "1" ]]; then
-      isEnabled="y"
-    fi
-    if [[ "$isEnabled" == "0" ]]; then
-      isEnabled="n"
-    fi
-
-    while true; do
-      if [[ ! -z $message ]]; then
-        echo "$message"
-      fi
-
-      read -r -p "$question y/n [$isEnabled]:" response
-      if [[ -z $response ]]; then
-        if [[ "$isEnabled" == "y" ]]; then
-          return 1
-        fi
-        if [[ "$isEnabled" == "n" ]]; then
-          return 0
-        fi
-      fi
-
-      if [[ "$response" == "y" || "$response" == "Y" ]]; then
-        return 1
-      fi
-
-      if [[ "$response" == "n" ||  "$response" == "N" ]]; then
-        return 0
-      fi
-
-      echo "Please answer y (yes) or n (no)."
-      echo
-    done
   }
 
   echo_warning() {
