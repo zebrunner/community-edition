@@ -17,6 +17,18 @@ fi
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
 # apply reporting changes
 if [[ ! -f reporting/.disabled ]] ; then
+  cp reporting/configuration/zebrunner-proxy/nginx.conf reporting/configuration/zebrunner-proxy/nginx.conf_1.7
+  # apply new nginx rules for screenshots: https://github.com/zebrunner/zebrunner/issues/458
+  cp reporting/configuration/zebrunner-proxy/nginx.conf.original reporting/configuration/zebrunner-proxy/nginx.conf
+  if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
+    # use case with AWS S3
+    replace reporting/configuration/zebrunner-proxy/nginx.conf "custom_secret_value" "${ZBR_STORAGE_AGENT_KEY}"
+    replace reporting/configuration/zebrunner-proxy/nginx.conf "/zebrunner/" "/${ZBR_STORAGE_BUCKET}/"
+    replace reporting/configuration/zebrunner-proxy/nginx.conf "http://minio:9000" "${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}"
+  fi
+fi
+
+if [[ ! -f reporting/.disabled ]] ; then
   docker stop reporting-service
   sleep 3
   docker cp patch/sql/reporting-1.24-db-migration.sql postgres:/tmp
