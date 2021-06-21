@@ -15,6 +15,16 @@ if ! [[ "${TARGET_VERSION}" > "${SOURCE_VERSION}" ]]; then
 fi
 
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
+# apply jenkins changes
+if [[ ! -f jenkins/.disabled ]] ; then
+  # override all default jobs by new ones
+  docker cp jenkins/resources/jobs jenkins-master:/var/jenkins_home/
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to proceed upgrade as jenkins-master container not available!"
+    exit 1
+  fi
+fi
+
 # apply reporting changes
 if [[ ! -f reporting/.disabled ]] ; then
   cp reporting/configuration/zebrunner-proxy/nginx.conf reporting/configuration/zebrunner-proxy/nginx.conf_1.7
