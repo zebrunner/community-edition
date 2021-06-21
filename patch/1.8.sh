@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # shellcheck disable=SC1091
-source utility.sh
+source patch/utility.sh
 
 TARGET_VERSION=1.8
 
