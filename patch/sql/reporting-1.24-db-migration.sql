@@ -1,5 +1,12 @@
-SET SCHEMA 'management';
+--#456 upgrade: remove all cron expressions and register new one
+SET SCHEMA 'cron';
+DELETE FROM JOBS;
+SELECT cron.schedule ('0 0 1 * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY zafira.LAST_365_DAYS_MATERIALIZED$$);
+SELECT cron.schedule ('15 0 1 * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY zafira.TOTAL_MATERIALIZED$$);
 
+
+--#434 upgrade: bump up to the new version of widget templates
+SET SCHEMA 'management';
 --APPLICATION ISSUES (BLOCKERS) COUNT
 UPDATE WIDGET_TEMPLATES 
 SET NAME='DEFECTS COUNT', DESCRIPTION='A number of unique application bugs discovered and submitted by automation.', TYPE='TABLE', 
