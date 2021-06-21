@@ -1,6 +1,6 @@
 --#456 upgrade: remove all cron expressions and register new one
 SET SCHEMA 'cron';
-DELETE FROM JOBS;
+DELETE FROM JOB;
 SELECT cron.schedule ('0 0 1 * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY zafira.LAST_365_DAYS_MATERIALIZED$$);
 SELECT cron.schedule ('15 0 1 * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY zafira.TOTAL_MATERIALIZED$$);
 
