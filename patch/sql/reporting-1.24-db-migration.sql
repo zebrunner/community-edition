@@ -4203,7 +4203,7 @@ SELECT
   "RUNS": {
     "value": "",
     "required": false
-  },  
+  },
   "MILESTONE": {
     "value": "",
     "required": false
@@ -4212,7 +4212,7 @@ SELECT
     "value": "",
     "required": false
   }
-}', 
+}',
 	PARAMS_CONFIG_SAMPLE='{
   "PERIOD": "Total",
   "GROUP_BY": "OWNER",
@@ -4233,3 +4233,57 @@ SELECT
 WHERE NAME='TESTS SUMMARY';
 
 
+--#464 upgrade: adjust 2 widgets on the general board
+set schema 'zafira';
+UPDATE WIDGETS SET TITLE='30 DAYS PASS RATE BY OWNER (%)',
+	DESCRIPTION='Pass rate percent by owner for last 30 days.',
+	PARAMS_CONFIG='{
+  "PERIOD": "Last 30 days",
+  "GROUP_BY": "OWNER",
+  "currentUserId": 2,
+  "dashboardName": "",
+  "ENV": [],
+  "PLATFORM": [],
+  "BROWSER": [],
+  "LOCALE": [],
+  "PRIORITY": [],
+  "BUILDS": "",
+  "RUNS": "",
+  "MILESTONE": "",
+  "MILESTONE_VERSION": "",
+  "USERS": ""
+}' WHERE TITLE='30 DAYS PASS RATE BY PROJECT (%)';
+
+UPDATE WIDGETS SET
+        PARAMS_CONFIG='{
+  "PERIOD": "Last 30 Days",
+  "GROUP_BY": "OWNER",
+  "currentUserId": 2,
+  "dashboardName": "General",
+  "ENV": [],
+  "PLATFORM": [],
+  "BROWSER": [],
+  "LOCALE": [],
+  "PRIORITY": [],
+  "BUILDS": "",
+  "RUNS": "",
+  "MILESTONE": "",
+  "MILESTONE_VERSION": "",
+  "USERS": ""
+}',
+	LEGEND_CONFIG='{
+   "OWNER": true,
+   "RUN_NAME": false,
+   "PASS": true,
+   "FAIL": true,
+   "DEFECT": false,
+   "SKIP": true,
+   "ABORT": false,
+   "TOTAL": true,
+   "PASSED (%)": true,
+   "FAILED (%)": false,
+   "KNOWN ISSUE (%)": false,
+   "SKIPPED (%)": false,
+   "FAIL RATE (%)": false
+ }'
+ WHERE TITLE='30 DAYS TEST DETAILS';
