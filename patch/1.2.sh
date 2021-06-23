@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
+source patch/utility.sh
+
 TARGET_VERSION=1.2
 
 source backup/settings.env
