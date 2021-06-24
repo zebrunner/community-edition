@@ -4287,3 +4287,6 @@ UPDATE WIDGETS SET
    "FAIL RATE (%)": false
  }'
  WHERE TITLE='30 DAYS TEST DETAILS';
+
+-- https://github.com/zebrunner/reporting/issues/2303
+UPDATE DASHBOARDS SET EDITABLE=TRUE;
