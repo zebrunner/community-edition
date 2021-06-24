@@ -51,6 +51,11 @@ if [[ ! -f reporting/.disabled ]] ; then
   patch/hotfixes/347.sh
 fi
 
+# apply selenoid hotfix
+if [[ ! -f selenoid/backup/settings.env ]] ; then
+  cp selenoid/backup/settings.env.original selenoid/backup/settings.env
+fi
+
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
 #remember successfully applied version in settings.env file
