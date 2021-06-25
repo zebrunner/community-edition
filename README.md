@@ -2,8 +2,6 @@
   <img src="./docs/img/zebrunner_logo.png">
 </p>
 
-More features with [Zebrunner PRO (Cloud) >>>](https://zebrunner.com/)
-
 Zebrunner CE (Community Edition) is a Test Automation Management Tool for continuous testing and continuous deployment. It allows you to run various kinds of tests and gain successive levels of confidence in the code quality. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
   > Zebrunner is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
 
@@ -15,6 +13,10 @@ Zebrunner subcomponents all together can be used as an effective Test Automation
 
 ## Support Zebrunner CE
 Enjoy using Zebrunner Reporting in your testing process! Feel free to support the development with a [**donation**](https://www.paypal.com/donate?hosted_button_id=JLQ4U468TWQPS) for the next improvements.
+
+<p align="center">
+  <a href="https://zebrunner.com/"><img alt="Zebrunner" src="./docs/img/zebrunner_intro.png"></a>
+</p>
 
 ## Initial setup
 Visit [Zebrunner Guide](https://zebrunner.github.io/zebrunner) for detailed installation and configuration instructions.
