@@ -1,67 +1,7 @@
 #!/bin/bash
 
-  export_settings() {
-    export -p | grep "ZBR" > backup/settings.env
-  }
-
-  confirm() {
-    local message=$1
-    local question=$2
-    local isEnabled=$3
-
-    if [[ "$isEnabled" == "1" ]]; then
-      isEnabled="y"
-    fi
-    if [[ "$isEnabled" == "0" ]]; then
-      isEnabled="n"
-    fi
-
-    while true; do
-      if [[ ! -z $message ]]; then
-        echo "$message"
-      fi
-
-      read -p "$question y/n [$isEnabled]:" response
-      if [[ -z $response ]]; then
-        if [[ "$isEnabled" == "y" ]]; then
-          return 1
-        fi
-        if [[ "$isEnabled" == "n" ]]; then
-          return 0
-        fi
-      fi
-
-      if [[ "$response" == "y" || "$response" == "Y" ]]; then
-        return 1
-      fi
-
-      if [[ "$response" == "n" ||  "$response" == "N" ]]; then
-        return 0
-      fi
-
-      echo "Please answer y (yes) or n (no)."
-      echo
-    done
-  }
-
-  replace() {
-    #TODO: https://github.com/zebrunner/zebrunner/issues/328 organize debug logging for setup/replace
-    file=$1
-    #echo "file: $file"
-    content=$(<$file) # read the file's content into
-    #echo "content: $content"
-
-    old=$2
-    #echo "old: $old"
-
-    new=$3
-    #echo "new: $new"
-    content=${content//"$old"/$new}
-
-    #echo "content: $content"
-
-    printf '%s' "$content" >$file    # write new content to disk
-  }
+# shellcheck disable=SC1091
+source patch/utility.sh
 
 TARGET_VERSION=1.4
 
@@ -102,11 +42,11 @@ if [[ ! -f jenkins/.disabled ]] ; then
   cp jenkins/variables.env jenkins/variables.env_1.3
   # regenerage variables.env to register new ZEBRUNNER_VERSION var
   cp jenkins/variables.env.original jenkins/variables.env
-  sed -i "s#http://localhost:8080/jenkins#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" jenkins/variables.env
-  sed -i "s#INFRA_HOST=localhost:8080#INFRA_HOST=${ZBR_INFRA_HOST}#g" jenkins/variables.env
+  replace jenkins/variables.env "http://localhost:8080/jenkins" "$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins"
+  replace jenkins/variables.env "INFRA_HOST=localhost:8080" "INFRA_HOST=${ZBR_INFRA_HOST}"
 
   if [[ ! -z $ZBR_SONAR_URL ]]; then
-    sed -i "s#SONAR_URL=#SONAR_URL=${ZBR_SONAR_URL}#g" jenkins/variables.env
+    replace jenkins/variables.env "SONAR_URL=" "SONAR_URL=${ZBR_SONAR_URL}"
   fi
 fi
 
@@ -119,14 +59,14 @@ if [[ ! -f selenoid/.disabled ]] ; then
   cp selenoid/.env.original selenoid/.env
   if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
     # use case with AWS S3
-    sed -i "s#S3_REGION=us-east-1#S3_REGION=${ZBR_STORAGE_REGION}#g" selenoid/.env
-    sed -i "s#S3_ENDPOINT=http://minio:9000#S3_ENDPOINT=${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}#g" selenoid/.env
-    sed -i "s#S3_BUCKET=zebrunner#S3_BUCKET=${ZBR_STORAGE_BUCKET}#g" selenoid/.env
-    sed -i "s#S3_ACCESS_KEY_ID=zebrunner#S3_ACCESS_KEY_ID=${ZBR_STORAGE_ACCESS_KEY}#g" selenoid/.env
-    sed -i "s#S3_SECRET=J33dNyeTDj#S3_SECRET=${ZBR_STORAGE_SECRET_KEY}#g" selenoid/.env
+    replace selenoid/.env "S3_REGION=us-east-1" "S3_REGION=${ZBR_STORAGE_REGION}"
+    replace selenoid/.env "S3_ENDPOINT=http://minio:9000" "S3_ENDPOINT=${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}"
+    replace selenoid/.env "S3_BUCKET=zebrunner" "S3_BUCKET=${ZBR_STORAGE_BUCKET}"
+    replace selenoid/.env "S3_ACCESS_KEY_ID=zebrunner" "S3_ACCESS_KEY_ID=${ZBR_STORAGE_ACCESS_KEY}"
+    replace selenoid/.env "S3_SECRET=J33dNyeTDj" "S3_SECRET=${ZBR_STORAGE_SECRET_KEY}"
 
     if [[ ! -z $ZBR_STORAGE_TENANT ]]; then
-      sed -i "s#/artifacts#${ZBR_STORAGE_TENANT}/artifacts#g" selenoid/.env
+      replace selenoid/.env "/artifacts" "${ZBR_STORAGE_TENANT}/artifacts"
     fi
   fi
 fi
@@ -139,8 +79,8 @@ if [[ ! -f reporting/.disabled ]] ; then
   if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
     # use case with AWS S3
     replace reporting/configuration/zebrunner-proxy/nginx.conf "custom_secret_value" "${ZBR_STORAGE_AGENT_KEY}"
-    sed -i "s#/zebrunner/#/${ZBR_STORAGE_BUCKET}/#g" reporting/configuration/zebrunner-proxy/nginx.conf
-    sed -i "s#http://minio:9000#${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}#g" reporting/configuration/zebrunner-proxy/nginx.conf
+    replace reporting/configuration/zebrunner-proxy/nginx.conf "/zebrunner/" "/${ZBR_STORAGE_BUCKET}/"
+    replace reporting/configuration/zebrunner-proxy/nginx.conf "http://minio:9000" "${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}"
   fi
 fi
 
@@ -182,26 +122,26 @@ fi
 cp nginx/conf.d/default.conf nginx/conf.d/default.conf_1.3
 cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
 
-sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
-sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
+replace ./nginx/conf.d/default.conf "server_name localhost" "server_name '$ZBR_HOSTNAME'"
+replace ./nginx/conf.d/default.conf "listen 80" "listen '$ZBR_PORT'"
 
 # finish with NGiNX default tool selection
 if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
-  sed -i 's/default-proxy-server/zebrunner-proxy:80/g' ./nginx/conf.d/default.conf
-  sed -i 's/default-proxy-host/zebrunner-proxy/g' ./nginx/conf.d/default.conf
+  replace ./nginx/conf.d/default.conf "default-proxy-server" "zebrunner-proxy:80"
+  replace ./nginx/conf.d/default.conf "default-proxy-host" "zebrunner-proxy"
 elif [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
-  sed -i 's/default-proxy-server/stf-proxy:80/g' ./nginx/conf.d/default.conf
-  sed -i 's/default-proxy-host/stf-proxy/g' ./nginx/conf.d/default.conf
+  replace ./nginx/conf.d/default.conf "default-proxy-server" "stf-proxy:80"
+  replace ./nginx/conf.d/default.conf "default-proxy-host" "stf-proxy"
 elif [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
-  sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
-  sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
-  sed -i 's|proxy_pass http://$upstream_default;|rewrite / /jenkins;|g' ./nginx/conf.d/default.conf
+  replace ./nginx/conf.d/default.conf 'set $upstream_default default-proxy-server;' ""
+  replace ./nginx/conf.d/default.conf "proxy_set_header Host default-proxy-host;" ""
+  replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "rewrite / /jenkins;"
 elif [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
-  sed -i 's|set $upstream_default default-proxy-server;||g' ./nginx/conf.d/default.conf
-  sed -i 's|proxy_set_header Host default-proxy-host;||g' ./nginx/conf.d/default.conf
-  sed -i 's|proxy_pass http://$upstream_default;|rewrite / /sonarqube;|g' ./nginx/conf.d/default.conf
+  replace ./nginx/conf.d/default.conf 'set $upstream_default default-proxy-server;' ""
+  replace ./nginx/conf.d/default.conf "proxy_set_header Host default-proxy-host;" ""
+  replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "rewrite / /sonarqube;"
 else
-  sed -i 's|proxy_pass http://$upstream_default;|root   /usr/share/nginx/html;|g' ./nginx/conf.d/default.conf
+  replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "root   /usr/share/nginx/html;"
 fi
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"

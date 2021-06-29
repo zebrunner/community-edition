@@ -1,9 +1,7 @@
 #!/bin/bash
 
-export_settings() {
-  export -p | grep "ZBR" > backup/settings.env
-}
-
+# shellcheck disable=SC1091
+source patch/utility.sh
 
 TARGET_VERSION=1.1
 
@@ -40,8 +38,8 @@ fi
 
 # Zebrunner NGiNX WebServer configuration
 cp ./nginx/conf.d/default.conf.original ./nginx/conf.d/default.conf
-sed -i 's/server_name localhost/server_name '$ZBR_HOSTNAME'/g' ./nginx/conf.d/default.conf
-sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
+replace ./nginx/conf.d/default.conf "server_name localhost" "server_name '$ZBR_HOSTNAME'"
+replace ./nginx/conf.d/default.conf "listen 80" "listen '$ZBR_PORT'"
 
 # Zebrunner Reporting steps:
 
@@ -49,57 +47,53 @@ sed -i 's/listen 80/listen '$ZBR_PORT'/g' ./nginx/conf.d/default.conf
 cp reporting/configuration/zebrunner-proxy/nginx.conf.original reporting/configuration/zebrunner-proxy/nginx.conf
 if [[ $ZBR_MINIO_ENABLED -eq 0 ]]; then
   # use case with AWS S3
-  sed -i "s#custom_secret_value#${ZBR_STORAGE_AGENT_KEY}#g" reporting/configuration/zebrunner-proxy/nginx.conf
-  sed -i "s#/zebrunner/#/${ZBR_STORAGE_BUCKET}/#g" reporting/configuration/zebrunner-proxy/nginx.conf
-  sed -i "s#http://minio:9000#${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}#g" reporting/configuration/zebrunner-proxy/nginx.conf
+  replace reporting/configuration/zebrunner-proxy/nginx.conf "custom_secret_value" "${ZBR_STORAGE_AGENT_KEY}"
+  replace reporting/configuration/zebrunner-proxy/nginx.conf "/zebrunner/" "/${ZBR_STORAGE_BUCKET}/"
+  replace reporting/configuration/zebrunner-proxy/nginx.conf "http://minio:9000" "${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}"
 fi
 
 # adding new variables for elasticsearch
 cp reporting/configuration/reporting-service/variables.env.original reporting/configuration/reporting-service/variables.env
-sed -i "s#http://localhost:8081#$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT#g" reporting/configuration/reporting-service/variables.env
+replace reporting/configuration/reporting-service/variables.env "http://localhost:8081" "$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT"
 
-sed -i "s#GITHUB_HOST=github.com#GITHUB_HOST=${ZBR_GITHUB_HOST}#g" reporting/configuration/reporting-service/variables.env
-sed -i "s#GITHUB_CLIENT_ID=#GITHUB_CLIENT_ID=${ZBR_GITHUB_CLIENT_ID}#g" reporting/configuration/reporting-service/variables.env
-sed -i "s#GITHUB_CLIENT_SECRET=#GITHUB_CLIENT_SECRET=${ZBR_GITHUB_CLIENT_SECRET}#g" reporting/configuration/reporting-service/variables.env
-
-sed -i "s#DATABASE_PASSWORD=db-changeit#DATABASE_PASSWORD=${ZBR_POSTGRES_PASSWORD}#g" reporting/configuration/reporting-service/variables.env
-sed -i "s#REDIS_PASSWORD=MdXVvJgDdz9Hnau7#REDIS_PASSWORD=${ZBR_REDIS_PASSWORD}#g" reporting/configuration/reporting-service/variables.env
+replace reporting/configuration/reporting-service/variables.env "DATABASE_PASSWORD=db-changeit" "DATABASE_PASSWORD=${ZBR_POSTGRES_PASSWORD}"
+replace reporting/configuration/reporting-service/variables.env "REDIS_PASSWORD=MdXVvJgDdz9Hnau7" "REDIS_PASSWORD=${ZBR_REDIS_PASSWORD}"
 
 # apply new integration settings
 if [[ $ZBR_JENKINS_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
   # update reporting-jenkins integration vars
-  sed -i "s#JENKINS_ENABLED=false#JENKINS_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
-  sed -i "s#JENKINS_URL=#JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins#g" reporting/configuration/reporting-service/variables.env
+  replace reporting/configuration/reporting-service/variables.env "JENKINS_ENABLED=false" "JENKINS_ENABLED=true"
+  replace reporting/configuration/reporting-service/variables.env "JENKINS_URL=" "JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins"
 fi
 if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
   # update reporting-mcloud integration vars
-  sed -i "s#MCLOUD_ENABLED=false#MCLOUD_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
-  sed -i "s#MCLOUD_URL=#MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub#g" reporting/configuration/reporting-service/variables.env
-  sed -i "s#MCLOUD_USER=#MCLOUD_USER=demo#g" reporting/configuration/reporting-service/variables.env
-  sed -i "s#MCLOUD_PASSWORD=#MCLOUD_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
+  replace reporting/configuration/reporting-service/variables.env "MCLOUD_ENABLED=false" "MCLOUD_ENABLED=true"
+  replace reporting/configuration/reporting-service/variables.env "MCLOUD_URL=" "MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub"
+  replace reporting/configuration/reporting-service/variables.env "MCLOUD_USER=" "MCLOUD_USER=demo"
+  replace reporting/configuration/reporting-service/variables.env "MCLOUD_PASSWORD=" "MCLOUD_PASSWORD=demo"
 fi
 if [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
   # update reporting-jenkins integration vars
-  sed -i "s#SELENIUM_ENABLED=false#SELENIUM_ENABLED=true#g" reporting/configuration/reporting-service/variables.env
-  sed -i "s#SELENIUM_URL=#SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub#g" reporting/configuration/reporting-service/variables.env
-  sed -i "s#SELENIUM_USER=#SELENIUM_USER=demo#g" reporting/configuration/reporting-service/variables.env
-  sed -i "s#SELENIUM_PASSWORD=#SELENIUM_PASSWORD=demo#g" reporting/configuration/reporting-service/variables.env
+  replace reporting/configuration/reporting-service/variables.env "SELENIUM_ENABLED=false" "SELENIUM_ENABLED=true"
+  replace reporting/configuration/reporting-service/variables.env "SELENIUM_URL=" "SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub"
+  replace reporting/configuration/reporting-service/variables.env "SELENIUM_USER=" "SELENIUM_USER=demo"
+  replace reporting/configuration/reporting-service/variables.env "SELENIUM_PASSWORD=" "SELENIUM_PASSWORD=demo"
 fi
 
 # apply new logstash settings 
 cp reporting/configuration/logstash/logstash.conf.original reporting/configuration/logstash/logstash.conf
-sed -i "s#rabbitmq-user#${ZBR_RABBITMQ_USER}#g" reporting/configuration/logstash/logstash.conf
-sed -i "s#rabbitmq-password#${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/logstash/logstash.conf
+replace reporting/configuration/logstash/logstash.conf "rabbitmq-user" "${ZBR_RABBITMQ_USER}"
+replace reporting/configuration/logstash/logstash.conf "rabbitmq-password" "${ZBR_RABBITMQ_PASSWORD}"
 
 # apply new rabbitmq settings
 cp reporting/configuration/rabbitmq/variables.env.original reporting/configuration/rabbitmq/variables.env
-sed -i "s#RABBITMQ_DEFAULT_USER=rabbitmq-user#RABBITMQ_DEFAULT_USER=${ZBR_RABBITMQ_USER}#g" reporting/configuration/rabbitmq/variables.env
-sed -i "s#RABBITMQ_DEFAULT_PASS=rabbitmq-password#RABBITMQ_DEFAULT_PASS=${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/rabbitmq/variables.env
+replace reporting/configuration/rabbitmq/variables.env "RABBITMQ_DEFAULT_USER=rabbitmq-user" "RABBITMQ_DEFAULT_USER=${ZBR_RABBITMQ_USER}"
+replace reporting/configuration/rabbitmq/variables.env "RABBITMQ_DEFAULT_PASS=rabbitmq-password" "RABBITMQ_DEFAULT_PASS=${ZBR_RABBITMQ_PASSWORD}"
 
 # apply new rabbitmq definitions
 cp reporting/configuration/rabbitmq/001-general-definition.json.original reporting/configuration/rabbitmq/definitions/001-general-definition.json
-sed -i "s#rabbitmq-user#${ZBR_RABBITMQ_USER}#g" reporting/configuration/rabbitmq/definitions/001-general-definition.json
-sed -i "s#rabbitmq-password#${ZBR_RABBITMQ_PASSWORD}#g" reporting/configuration/rabbitmq/definitions/001-general-definition.json
+replace reporting/configuration/rabbitmq/definitions/001-general-definition.json "rabbitmq-user" "${ZBR_RABBITMQ_USER}"
+replace reporting/configuration/rabbitmq/definitions/001-general-definition.json "rabbitmq-password" "${ZBR_RABBITMQ_PASSWORD}"
 
 #remove old rabbitmq definition file
 rm -f reporting/configuration/rabbitmq/definitions.json.original
