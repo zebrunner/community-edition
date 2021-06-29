@@ -43,12 +43,12 @@ Visit [Zebrunner Guide](https://zebrunner.github.io/zebrunner) for detailed inst
 
 
 ## Documentation and free support
+* [Zebrunner PRO](https://zebrunner.com)
 * [Zebrunner CE](https://zebrunner.github.io/zebrunner)
 * [Zebrunner Reporting](https://zebrunner.com/documentation)
-* [Carina Guide](http://qaprosoft.github.io/carina)
-* [Demo Project](https://github.com/qaprosoft/carina-demo)
+* [Carina Guide](http://zebrunner.github.io/carina)
+* [Demo Project](https://github.com/zebrunner/carina-demo)
 * [Telegram Channel](https://t.me/zebrunner)
-* [Zebrunner PRO](https://zebrunner.com)
 
 ## License
 Code - [Apache Software License v2.0](http://www.apache.org/licenses/LICENSE-2.0)
