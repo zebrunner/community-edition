@@ -1,5 +1,5 @@
 <p style="padding: 10px;" align="left">
-  <img src="./docs/img/zebrunner_logo.png">
+  <img src="https://github.com/zebrunner/zebrunner/raw/master/docs/img/zebrunner_logo.png">
 </p>
 
 Zebrunner CE (Community Edition) is a Test Automation Management Tool for continuous testing and continuous deployment. It allows you to run various kinds of tests and gain successive levels of confidence in the code quality. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
@@ -15,7 +15,7 @@ Zebrunner subcomponents all together can be used as an effective Test Automation
 Enjoy using Zebrunner Reporting in your testing process! Feel free to support the development with a [**donation**](https://www.paypal.com/donate?hosted_button_id=JLQ4U468TWQPS) for the next improvements.
 
 <p align="center">
-  <a href="https://zebrunner.com/"><img alt="Zebrunner" src="./docs/img/zebrunner_intro.png"></a>
+  <a href="https://zebrunner.com/"><img alt="Zebrunner" src="https://github.com/zebrunner/zebrunner/raw/master/docs/img/zebrunner_intro.png"></a>
 </p>
 
 ## Initial setup
