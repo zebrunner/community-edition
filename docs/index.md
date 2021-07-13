@@ -23,7 +23,7 @@ Welcome to the Zebrunner Tutorial. This manual is designed to help you install, 
 > In short, the aim of this manual is to explain the tasks involved in administering Zebrunner (Community Edition)
 
 ## Audience
-This guide is written for all levels of administrators, from those responsible for deployment and setup, to those who oversee the entire system and its usage. In addition, some information from [User Guide](https://qaprosoft.github.io/qps-infra/user-guide/) is intended for TestOps engineers who want to build effective Test Automation process and follow best practices.
+This guide is written for all levels of administrators, from those responsible for deployment and setup, to those who oversee the entire system and its usage. In addition, some information from [User Guide](https://zebrunner.github.io/zebrunner/user-guide/) is intended for TestOps engineers who want to build effective Test Automation process and follow best practices.
 
 ## Assumed Knowledge
 Installation and Configuration guides are for administrators who install, deploy and Manage Zebrunner products. It assumes the following knowledge:
