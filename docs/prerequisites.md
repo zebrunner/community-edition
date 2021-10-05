@@ -6,7 +6,7 @@
 
 |                         	| Requirements                                                     	|
 |:-----------------------:	|------------------------------------------------------------------	|
-| <b>Operating System</b> 	| Linux Ubuntu 16.04, 18.04<br> Linux CentOS 7+<br> Amazon Linux 2 	|
+| <b>Operating System</b> 	| Ubuntu 16.04, 18.04, 20.04<br>Linux CentOS 7+<br>Amazon Linux 2 	|
 | <b>       CPU      </b> 	| 8+ Cores                                                         	|
 | <b>      Memory    </b> 	| 32 Gb RAM                                                        	|
 | <b>    Free space  </b> 	| SSD 128Gb+ of free space                                         	|
