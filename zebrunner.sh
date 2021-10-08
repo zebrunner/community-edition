@@ -28,7 +28,7 @@ source patch/utility.sh
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=1.8
+    export ZBR_VERSION=1.9
     set_global_settings
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
