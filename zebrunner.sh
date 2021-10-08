@@ -31,10 +31,13 @@ source patch/utility.sh
     export ZBR_VERSION=1.9
     set_global_settings
 
+    cp .env.original .env
+    replace .env "ZBR_PORT=80" "ZBR_PORT=${ZBR_PORT}"
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
 
     replace ./nginx/conf.d/default.conf "server_name localhost" "server_name '$ZBR_HOSTNAME'"
-    replace ./nginx/conf.d/default.conf "listen 80" "listen '$ZBR_PORT'"
+    # no need to replace listen port inside the container
+    #replace ./nginx/conf.d/default.conf "listen 80" "listen '$ZBR_PORT'"
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
     if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
@@ -226,6 +229,7 @@ source patch/utility.sh
 
     print_banner
 
+    rm -f .env
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env
 
@@ -243,7 +247,7 @@ source patch/utility.sh
   }
 
   start() {
-    if [ ! -f backup/settings.env ]; then
+    if [ ! -f .env ]; then
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
@@ -280,7 +284,7 @@ source patch/utility.sh
   }
 
   stop() {
-    if [ ! -f backup/settings.env ]; then
+    if [ ! -f .env ]; then
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
@@ -295,7 +299,7 @@ source patch/utility.sh
   }
 
   restart() {
-    if [ ! -f backup/settings.env ]; then
+    if [ ! -f .env ]; then
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
@@ -306,7 +310,7 @@ source patch/utility.sh
   }
 
   down() {
-    if [ ! -f backup/settings.env ]; then
+    if [ ! -f .env ]; then
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
@@ -321,7 +325,7 @@ source patch/utility.sh
   }
 
   backup() {
-    if [ ! -f backup/settings.env ]; then
+    if [ ! -f .env ]; then
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
@@ -336,6 +340,7 @@ source patch/utility.sh
 
     stop
 
+    cp .env .env.bak
     cp ./nginx/conf.d/default.conf ./nginx/conf.d/default.conf.bak
     cp backup/settings.env backup/settings.env.bak
     if [[ -f reporting/database/reporting/sql/db-jenkins-integration.sql ]]; then
@@ -364,7 +369,7 @@ source patch/utility.sh
   }
 
   restore() {
-    if [ ! -f backup/settings.env ]; then
+    if [ ! -f .env ]; then
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
@@ -378,6 +383,7 @@ source patch/utility.sh
     print_banner
 
     stop
+    cp .env.bak .env
     cp ./nginx/conf.d/default.conf.bak ./nginx/conf.d/default.conf
     cp backup/settings.env.bak backup/settings.env
     if [[ -f reporting/database/reporting/sql/db-jenkins-integration.sql.bak ]]; then
@@ -489,7 +495,7 @@ source patch/utility.sh
   }
 
   version() {
-    if [ ! -f backup/settings.env ]; then
+    if [ ! -f .env ]; then
       echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
       echo_telegram
       exit -1
