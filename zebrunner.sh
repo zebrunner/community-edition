@@ -33,8 +33,6 @@ source patch/utility.sh
 
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
 
-    export ZBR_INFRA_HOST=$ZBR_HOSTNAME
-
     replace ./nginx/conf.d/default.conf "server_name localhost" "server_name '$ZBR_HOSTNAME'"
     replace ./nginx/conf.d/default.conf "listen 80" "listen '$ZBR_PORT'"
 
