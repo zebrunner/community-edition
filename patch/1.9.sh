@@ -25,6 +25,25 @@ if [[ ! -f jenkins/.disabled ]] ; then
   fi
 fi
 
+# apply selenoid changes
+if [[ ! -f selenoid/.disabled ]] ; then
+  cp selenoid/.env selenoid/.env_1.8
+  cp selenoid/.env.original selenoid/.env
+  if [[ ! $ZBR_MINIO_ENABLED -eq 1 ]]; then
+    # use case with AWS S3
+    replace selenoid/.env "S3_REGION=us-east-1" "S3_REGION=${ZBR_STORAGE_REGION}"
+    replace selenoid/.env "S3_ENDPOINT=http://minio:9000" "S3_ENDPOINT=${ZBR_STORAGE_ENDPOINT_PROTOCOL}://${ZBR_STORAGE_ENDPOINT_HOST}"
+    replace selenoid/.env "S3_BUCKET=zebrunner" "S3_BUCKET=${ZBR_STORAGE_BUCKET}"
+    replace selenoid/.env "S3_ACCESS_KEY_ID=zebrunner" "S3_ACCESS_KEY_ID=${ZBR_STORAGE_ACCESS_KEY}"
+    replace selenoid/.env "S3_SECRET=J33dNyeTDj" "S3_SECRET=${ZBR_STORAGE_SECRET_KEY}"
+
+    if [[ ! -z $ZBR_STORAGE_TENANT ]]; then
+      replace selenoid/.env "/artifacts" "${ZBR_STORAGE_TENANT}/artifacts"
+    fi
+  fi
+fi
+
+
 # apply reporting changes
 if [[ ! -f reporting/.disabled ]] ; then
 #  docker stop reporting-service
