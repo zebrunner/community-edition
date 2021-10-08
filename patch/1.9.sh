@@ -46,18 +46,18 @@ fi
 
 # apply reporting changes
 if [[ ! -f reporting/.disabled ]] ; then
-#  docker stop reporting-service
-#  sleep 3
-#  docker cp patch/sql/reporting-1.26-db-migration.sql postgres:/tmp
-#  if [[ $? -ne 0 ]]; then
-#    echo "ERROR! Unable to proceed upgrade as postgres container not available."
-#    exit 1
-#  fi
-#  docker exec -i postgres /usr/bin/psql -U postgres -f /tmp/reporting-1.26-db-migration.sql
-#  if [[ $? -ne 0 ]]; then
-#    echo "ERROR! Unable to apply reporting-1.26-db-migration.sql"
-#    exit 1
-#  fi
+  docker stop reporting-service
+  sleep 3
+  docker cp patch/sql/reporting-1.26-db-migration.sql postgres:/tmp
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to proceed upgrade as postgres container not available."
+    exit 1
+  fi
+  docker exec -i postgres /usr/bin/psql -U postgres -f /tmp/reporting-1.26-db-migration.sql
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to apply reporting-1.26-db-migration.sql"
+    exit 1
+  fi
 fi
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
