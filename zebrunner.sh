@@ -36,8 +36,19 @@ source patch/utility.sh
     cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
 
     replace ./nginx/conf.d/default.conf "server_name localhost" "server_name '$ZBR_HOSTNAME'"
-    # no need to replace listen port inside the container
-    #replace ./nginx/conf.d/default.conf "listen 80" "listen '$ZBR_PORT'"
+    # declare ssl protocol for NGiNX default config
+    if [[ "$ZBR_PROTOCOL" == "https" ]]; then
+      replace ./nginx/conf.d/default.conf "listen 80" "listen 80 ssl"
+
+      # uncomment default ssl settings
+      replace ./nginx/conf.d/default.conf "#    ssl_" "    ssl_"
+
+      # configure valid jenkins rules
+      replace ./nginx/conf.d/default.conf "set $upstream_jenkins http://jenkins-master:8080;" "set $upstream_jenkins https://jenkins-master:8443;"
+
+      # TODO: move warning closer to the end so user can see it right before start
+      echo_warning "Make sure to put valid ssl.crt and ssl.key into ./nginx/ssl before startup!"
+    fi
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
     if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
@@ -229,6 +240,13 @@ source patch/utility.sh
 
     print_banner
 
+    jenkins/zebrunner.sh shutdown
+    reporting/zebrunner.sh shutdown
+    sonarqube/zebrunner.sh shutdown
+    mcloud/zebrunner.sh shutdown
+    selenoid/zebrunner.sh shutdown
+    docker-compose down -v
+
     rm -f .env
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env
@@ -236,13 +254,6 @@ source patch/utility.sh
     rm -f reporting/database/reporting/sql/db-jenkins-integration.sql
     rm -f reporting/database/reporting/sql/db-mcloud-integration.sql
     rm -f reporting/database/reporting/sql/db-selenium-integration.sql
-
-    jenkins/zebrunner.sh shutdown
-    reporting/zebrunner.sh shutdown
-    sonarqube/zebrunner.sh shutdown
-    mcloud/zebrunner.sh shutdown
-    selenoid/zebrunner.sh shutdown
-    docker-compose down -v
 
   }
 

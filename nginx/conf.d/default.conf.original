@@ -8,7 +8,6 @@ server {
     server_name localhost;
 
     # Uncomment below block to setup SSL on this NGiNX instance. make sure to put ssl.crt and ssl.key to nginx/ssl shared folder
-#    listen 443 ssl;
 #    ssl_certificate /etc/nginx/ssl/ssl.crt;
 #    ssl_certificate_key /etc/nginx/ssl/ssl.key;
 #    ssl_session_timeout 5m;
@@ -47,8 +46,6 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $http_host;
 
-        #proxy_redirect off;
-	#proxy_redirect http:// https://;
  
         if (!-f $request_filename) {
             set $upstream_jenkins http://jenkins-master:8080;
