@@ -44,7 +44,7 @@ source patch/utility.sh
       replace ./nginx/conf.d/default.conf "#    ssl_" "    ssl_"
 
       # configure valid jenkins rules
-      replace ./nginx/conf.d/default.conf "set $upstream_jenkins http://jenkins-master:8080;" "set $upstream_jenkins https://jenkins-master:8443;"
+      replace ./nginx/conf.d/default.conf "http://jenkins-master:8080;" "https://jenkins-master:8443;"
     fi
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
@@ -135,7 +135,7 @@ source patch/utility.sh
     export_settings
 
     echo
-    echo_warning "Copy and save auto-generated crendentials. Detailes can be found also in NOTICE.txt"
+    echo "Copy and save auto-generated crendentials. Detailes can be found also in NOTICE.txt"
     echo
 
     notice=NOTICE.txt
@@ -207,7 +207,7 @@ source patch/utility.sh
     echo "limitations under the License." >> $notice
 
     if [[ "$ZBR_PROTOCOL" == "https" ]]; then
-      echo_warning "Make sure to put valid ssl.crt and ssl.key into ./nginx/ssl before startup!"
+      echo_warning "Replace self-signed ssl.crt and ssl.key in ./nginx/ssl onto valid ones!"
     fi
 
     echo_warning "Your services needs to be started after setup."
