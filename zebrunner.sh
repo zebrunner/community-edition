@@ -45,9 +45,6 @@ source patch/utility.sh
 
       # configure valid jenkins rules
       replace ./nginx/conf.d/default.conf "set $upstream_jenkins http://jenkins-master:8080;" "set $upstream_jenkins https://jenkins-master:8443;"
-
-      # TODO: move warning closer to the end so user can see it right before start
-      echo_warning "Make sure to put valid ssl.crt and ssl.key into ./nginx/ssl before startup!"
     fi
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
@@ -208,6 +205,10 @@ source patch/utility.sh
     echo "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied." >> $notice
     echo "See the License for the specific language governing permissions and" >> $notice
     echo "limitations under the License." >> $notice
+
+    if [[ "$ZBR_PROTOCOL" == "https" ]]; then
+      echo_warning "Make sure to put valid ssl.crt and ssl.key into ./nginx/ssl before startup!"
+    fi
 
     echo_warning "Your services needs to be started after setup."
     confirm "" "      Start now?" "y"
@@ -553,7 +554,7 @@ source patch/utility.sh
     echo "Zebrunner General Settings"
     local is_confirmed=0
     if [[ -z $ZBR_HOSTNAME ]]; then
-      ZBR_HOSTNAME=$HOSTNAME
+      ZBR_HOSTNAME=`curl -s ifconfig.me`
     fi
 
     while [[ $is_confirmed -eq 0 ]]; do
