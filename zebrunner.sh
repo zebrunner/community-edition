@@ -94,24 +94,6 @@ source patch/utility.sh
       replace reporting/configuration/reporting-service/variables.env "JENKINS_URL=" "JENKINS_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins"
     fi
 
-    if [[ $ZBR_MCLOUD_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
-      # update reporting-mcloud integration vars
-      replace reporting/configuration/reporting-service/variables.env "MCLOUD_ENABLED=false" "MCLOUD_ENABLED=true"
-      replace reporting/configuration/reporting-service/variables.env "MCLOUD_URL=" "MCLOUD_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub"
-      #TODO: generate secure htpasswd for mcloud
-      replace reporting/configuration/reporting-service/variables.env "MCLOUD_USER=" "MCLOUD_USER=demo"
-      replace reporting/configuration/reporting-service/variables.env "MCLOUD_PASSWORD=" "MCLOUD_PASSWORD=demo"
-    fi
-
-    if [[ $ZBR_SELENOID_ENABLED -eq 1 && $ZBR_REPORTING_ENABLED -eq 1 ]]; then
-      # update reporting-jenkins integration vars
-      replace reporting/configuration/reporting-service/variables.env "SELENIUM_ENABLED=false" "SELENIUM_ENABLED=true"
-      replace reporting/configuration/reporting-service/variables.env "SELENIUM_URL=" "SELENIUM_URL=$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub"
-      #TODO: generate secure htpasswd for selenoid
-      replace reporting/configuration/reporting-service/variables.env "SELENIUM_USER=" "SELENIUM_USER=demo"
-      replace reporting/configuration/reporting-service/variables.env "SELENIUM_PASSWORD=" "SELENIUM_PASSWORD=demo"
-    fi
-
     # finish with NGiNX default tool selection
     if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
       replace ./nginx/conf.d/default.conf "default-proxy-server" "zebrunner-proxy:80"
@@ -177,13 +159,13 @@ source patch/utility.sh
     fi
 
     if [[ $ZBR_SELENOID_ENABLED -eq 1 ]]; then
-      echo "SELENIUM HUB URL: $ZBR_PROTOCOL://demo:demo@$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub" | tee -a $notice
+      echo "SELENIUM HUB URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/selenoid/wd/hub" | tee -a $notice
       echo | tee -a $notice
     fi
 
     if [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
       echo "STF URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/stf" | tee -a $notice
-      echo "APPIUM HUB URL: $ZBR_PROTOCOL://demo:demo@$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub" | tee -a $notice
+      echo "APPIUM HUB URL: $ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/mcloud/wd/hub" | tee -a $notice
       echo | tee -a $notice
     fi
 
@@ -248,6 +230,7 @@ source patch/utility.sh
     selenoid/zebrunner.sh shutdown
     docker-compose down -v
 
+    rm -f NOTICE.txt
     rm -f .env
     rm -f nginx/conf.d/default.conf
     rm -f backup/settings.env

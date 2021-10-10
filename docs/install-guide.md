@@ -11,14 +11,14 @@
 2. After startup, the following components might be available:
   > Use your host domain address or IP.  
   
-| Components          	| URL                                                                                                    	   |
-|---------------------	|----------------------------------------------------------------------------------------------------------	   |
-| Zebrunner Reporting  	| [http://demo.zebrunner.com](http://demo.zebrunner.com)                                                 	   |
-| Jenkins             	| [http://demo.zebrunner.com/jenkins](http://demo.zebrunner.com/jenkins)                                 	   |
-| SonarQube           	| [http://demo.zebrunner.com/sonarqube](http://demo.zebrunner.com/sonarqube)                             	   |
-| Web Selenium Hub    	| [http://demo:demo@demo.zebrunner.com/selenoid/wd/hub](http://demo:demo@demo.zebrunner.com/selenoid/wd/hub)       |
-| Mobile Selenium Hub 	| [http://demo:demo@demo.zebrunner.com/mcloud/wd/hub](http://demo:demo@demo.zebrunner.com/mcloud/wd/hub) 	   |
-| Mobile SmartTest Farm	| [http://demo.zebrunner.com/stf](http://demo.zebrunner.com/stf)                                         	   |
+| Components            | URL                                                                |
+|---------------------	|------------------------------------------------------------------- |
+| Zebrunner Reporting   | [http://hostname](http://hostname)                                 |
+| Jenkins               | [http://hostname/jenkins](http://hostname/jenkins)                 |
+| SonarQube             | [http://hostname/sonarqube](http://hostname/sonarqube)             |
+| Web Selenium Hub      | [http://hostname/selenoid/wd/hub](http://hostname/selenoid/wd/hub) |
+| Mobile Selenium Hub   | [http://hostname/mcloud/wd/hub](http://hostname/mcloud/wd/hub)     |
+| Mobile SmartTest Farm	| [http://hostname/stf](http://hostname/stf)                         |
 
 > admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
 
