@@ -44,7 +44,7 @@ Visit [Zebrunner Guide](https://zebrunner.github.io/zebrunner) for detailed inst
 
 ## Documentation and free support
 * [Zebrunner PRO](https://zebrunner.com)
-* [Zebrunner CE](https://zebrunner.github.io/zebrunner)
+* [Zebrunner CE](https://zebrunner.github.io/community-edition)
 * [Zebrunner Reporting](https://zebrunner.com/documentation)
 * [Carina Guide](http://zebrunner.github.io/carina)
 * [Demo Project](https://github.com/zebrunner/carina-demo)
