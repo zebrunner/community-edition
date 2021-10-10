@@ -115,18 +115,8 @@ server {
         root   /usr/share/nginx;
     }
 
-# IMPORTANT!!! make sure to generate secure Selenoid/MCloud credentials and put them into the nginx/htpasswd/selenoid.htpasswd and mcloud.htpasswd files
-#  1. install htpasswd utility and regenerate default credentials in *.htpasswd, for example
-#       htpasswd -bc nginx/htpasswd/selenoid.htpasswd username password
-#  2. Update appropriate Selenium/MCloud provider urls in Reporting and CI
-#       http://username:password/hostname/selenoid/wd/hub
-#       http://username:password/hostname/mcloud/wd/hub
-
     # Selenoid Hub
     location  ~ ^/selenoid/(.*)$ {
-      auth_basic "Private Selenoid Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/selenoid.htpasswd;
-
       set $upstream_selenoid http://selenoid:4444;
       proxy_pass $upstream_selenoid/$1;
 
@@ -150,9 +140,6 @@ server {
     }
 
    location /mcloud {
-      auth_basic "Private MCloud Selenium Hub";
-      auth_basic_user_file /usr/share/nginx/htpasswd/mcloud.htpasswd;
-
       proxy_connect_timeout   60;
       proxy_send_timeout      300;
       proxy_read_timeout      300;
