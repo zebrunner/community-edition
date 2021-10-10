@@ -19,7 +19,7 @@ Enjoy using Zebrunner Reporting in your testing process! Feel free to support th
 </p>
 
 ## Initial setup
-Visit [Zebrunner Guide](https://zebrunner.github.io/zebrunner) for detailed installation and configuration instructions.
+Visit [Zebrunner Guide](https://zebrunner.github.io/community-edition) for detailed installation and configuration instructions.
 
 1. Clone [Zebrunner](https://github.com/zebrunner/zebrunner) recursive and launch setup procedure:
   ```
