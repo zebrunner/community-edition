@@ -43,8 +43,10 @@ source patch/utility.sh
       # uncomment default ssl settings
       replace ./nginx/conf.d/default.conf "#    ssl_" "    ssl_"
 
-      # configure valid jenkins rules
+      # configure valid sub-modules rules
       replace ./nginx/conf.d/default.conf "http://jenkins-master:8080;" "https://jenkins-master:8443;"
+      replace ./nginx/conf.d/default.conf "upstream_sonar http://127.0.0.1:80;" "upstream_sonar https://127.0.0.1:80;"
+      replace ./nginx/conf.d/default.conf "upstream_mcloud http://127.0.0.1:80;" "upstream_mcloud https://127.0.0.1:80;"
     fi
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
