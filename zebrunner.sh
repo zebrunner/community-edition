@@ -245,8 +245,8 @@ source patch/utility.sh
 
   start() {
     if [ ! -f .env ]; then
-      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
-      echo_telegram
+      # need proceed with setup steps in advance!
+      setup
       exit -1
     fi
 
