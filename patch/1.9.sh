@@ -51,6 +51,8 @@ fi
 
 # apply reporting changes
 if [[ ! -f reporting/.disabled ]] ; then
+  cp reporting/.env.original reporting/.env
+
   docker stop reporting-service
   sleep 3
   docker cp patch/sql/reporting-1.26-db-migration.sql postgres:/tmp
@@ -66,11 +68,11 @@ if [[ ! -f reporting/.disabled ]] ; then
 fi
 
 #apply mcloud changes
-cp mcloud/.env.original mcloud/.env
-ZBR_MCLOUD_PORT=8082
-stf_url="$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT"
-replace mcloud/.env "STF_URL=http://localhost:8082" "STF_URL=${stf_url}"
-replace mcloud/.env "STF_PORT=8082" "STF_PORT=$ZBR_MCLOUD_PORT"
+if [[ ! -f mcloud/.disabled ]] ; then
+  cp mcloud/.env.original mcloud/.env
+  stf_url="$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT"
+  replace mcloud/.env "STF_URL=http://localhost:8082" "STF_URL=${stf_url}"
+fi
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
