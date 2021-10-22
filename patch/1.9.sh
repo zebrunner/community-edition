@@ -22,6 +22,8 @@ replace .env "ZBR_PORT=80" "ZBR_PORT=${ZBR_PORT}"
 
 # apply jenkins changes
 if [[ ! -f jenkins/.disabled ]] ; then
+  # copy resources/ssl/keystore.jks to /var/jenkins_home
+  docker cp jenkins/resources/ssl/keystore.jks jenkins-master:/var/jenkins_home
   # remove ./jobs/Management_Jobs/jobs/RegisterQTestCredentials
   docker run --rm --volumes-from jenkins-master "ubuntu" bash -c "rm -rf /var/jenkins_home/jobs/Management_Jobs/jobs/RegisterQTestCredentials /var/jenkins_home/jobs/Management_Jobs/jobs/RegisterTestRailCredentials /var/jenkins_home/jobs/Management_Jobs/jobs/SmartJobsRerun"
   if [[ $? -ne 0 ]]; then
