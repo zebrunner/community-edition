@@ -15,6 +15,11 @@ if ! [[ "${TARGET_VERSION}" > "${SOURCE_VERSION}" ]]; then
 fi
 
 echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
+# apply zebrunner-ce changes
+cp .env.original .env
+replace .env "ZBR_PORT=80" "ZBR_PORT=${ZBR_PORT}"
+
+
 # apply jenkins changes
 if [[ ! -f jenkins/.disabled ]] ; then
   # remove ./jobs/Management_Jobs/jobs/RegisterQTestCredentials
