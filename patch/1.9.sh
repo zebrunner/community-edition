@@ -19,6 +19,41 @@ echo "Upgrading Zebrunner from ${SOURCE_VERSION} to ${TARGET_VERSION}"
 cp .env.original .env
 replace .env "ZBR_PORT=80" "ZBR_PORT=${ZBR_PORT}"
 
+# apply nginx changes
+cp nginx/conf.d/default.conf nginx/conf.d/default.conf.bak_1.8
+cp nginx/conf.d/default.conf.original nginx/conf.d/default.conf
+
+replace ./nginx/conf.d/default.conf "server_name localhost" "server_name '$ZBR_HOSTNAME'"
+# declare ssl protocol for NGiNX default config
+if [[ "$ZBR_PROTOCOL" == "https" ]]; then
+  replace ./nginx/conf.d/default.conf "listen 80" "listen 80 ssl"
+
+  # uncomment default ssl settings
+  replace ./nginx/conf.d/default.conf "#    ssl_" "    ssl_"
+
+  # configure valid sub-modules rules
+  replace ./nginx/conf.d/default.conf "http://jenkins-master:8080;" "https://jenkins-master:8443;"
+  replace ./nginx/conf.d/default.conf "upstream_sonar http://127.0.0.1:80;" "upstream_sonar https://127.0.0.1:80;"
+  replace ./nginx/conf.d/default.conf "upstream_mcloud http://127.0.0.1:80;" "upstream_mcloud https://127.0.0.1:80;"
+fi
+
+if [[ $ZBR_REPORTING_ENABLED -eq 1 ]]; then
+  replace ./nginx/conf.d/default.conf "default-proxy-server" "zebrunner-proxy:80"
+  replace ./nginx/conf.d/default.conf "default-proxy-host" "zebrunner-proxy"
+elif [[ $ZBR_MCLOUD_ENABLED -eq 1 ]]; then
+  replace ./nginx/conf.d/default.conf "default-proxy-server" "stf-proxy:80"
+  replace ./nginx/conf.d/default.conf "default-proxy-host" "stf-proxy"
+elif [[ $ZBR_JENKINS_ENABLED -eq 1 ]]; then
+  replace ./nginx/conf.d/default.conf 'set $upstream_default default-proxy-server;' ""
+  replace ./nginx/conf.d/default.conf "proxy_set_header Host default-proxy-host;" ""
+  replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "rewrite / /jenkins;"
+elif [[ $ZBR_SONARQUBE_ENABLED -eq 1 ]]; then
+  replace ./nginx/conf.d/default.conf 'set $upstream_default default-proxy-server;' ""
+  replace ./nginx/conf.d/default.conf "proxy_set_header Host default-proxy-host;" ""
+  replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "rewrite / /sonarqube;"
+else
+  replace ./nginx/conf.d/default.conf 'proxy_pass http://$upstream_default;' "root   /usr/share/nginx/html;"
+fi
 
 # apply jenkins changes
 if [[ ! -f jenkins/.disabled ]] ; then
