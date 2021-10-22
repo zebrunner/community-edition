@@ -65,6 +65,13 @@ if [[ ! -f reporting/.disabled ]] ; then
   fi
 fi
 
+#apply mcloud changes
+cp mcloud/.env.original mcloud/.env
+ZBR_MCLOUD_PORT=8082
+stf_url="$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT"
+replace mcloud/.env "STF_URL=http://localhost:8082" "STF_URL=${stf_url}"
+replace mcloud/.env "STF_PORT=8082" "STF_PORT=$ZBR_MCLOUD_PORT"
+
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
 #remember successfully applied version in settings.env file
