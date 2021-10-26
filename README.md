@@ -21,9 +21,9 @@ Enjoy using Zebrunner Reporting in your testing process! Feel free to support th
 ## Initial setup
 Visit [Zebrunner Guide](https://zebrunner.github.io/community-edition) for detailed installation and configuration instructions.
 
-1. Clone [Zebrunner CE](https://github.com/zebrunner/zebrunner) recursively and launch setup procedure:
+1. Clone [Zebrunner CE](https://github.com/zebrunner/community-edition) recursively and launch setup procedure:
    ```
-   git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git && cd zebrunner && ./zebrunner.sh setup
+   git clone --recurse-submodule https://github.com/zebrunner/community-edition.git && cd community-edition && ./zebrunner.sh setup
    ```
    > Provide required details and start services.
 
