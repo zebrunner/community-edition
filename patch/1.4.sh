@@ -43,7 +43,7 @@ if [[ ! -f jenkins/.disabled ]] ; then
   # regenerage variables.env to register new ZEBRUNNER_VERSION var
   cp jenkins/variables.env.original jenkins/variables.env
   replace jenkins/variables.env "http://localhost:8080/jenkins" "$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT/jenkins"
-  replace jenkins/variables.env "INFRA_HOST=localhost:8080" "INFRA_HOST=${ZBR_INFRA_HOST}"
+  replace jenkins/variables.env "INFRA_HOST=localhost:8080" "INFRA_HOST=$ZBR_HOSTNAME:$ZBR_PORT"
 
   if [[ ! -z $ZBR_SONAR_URL ]]; then
     replace jenkins/variables.env "SONAR_URL=" "SONAR_URL=${ZBR_SONAR_URL}"

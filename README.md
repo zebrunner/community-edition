@@ -19,7 +19,7 @@ Enjoy using Zebrunner Reporting in your testing process! Feel free to support th
 </p>
 
 ## Initial setup
-Visit [Zebrunner Guide](https://zebrunner.github.io/zebrunner) for detailed installation and configuration instructions.
+Visit [Zebrunner Guide](https://zebrunner.github.io/community-edition) for detailed installation and configuration instructions.
 
 1. Clone [Zebrunner](https://github.com/zebrunner/zebrunner) recursive and launch setup procedure:
   ```
@@ -30,21 +30,21 @@ Visit [Zebrunner Guide](https://zebrunner.github.io/zebrunner) for detailed inst
 2. After the startup, the following components might be available:
   > Use your host address instead of `hostname`!  
   
-| Components          	| URL                                                                                    |
-|---------------------	|--------------------------------------------------------------------------------------- |
-| Zebrunner Reporting  	| [http://hostname](http://hostname)                                                     |
-| Jenkins             	| [http://hostname/jenkins](http://hostname/jenkins)                                 	   |
-| SonarQube           	| [http://hostname/sonarqube](http://hostname/sonarqube)                             	   |
-| Web Selenium Hub    	| [http://demo:demo@hostname/selenoid/wd/hub](http://demo:demo@hostname/selenoid/wd/hub) |
-| Mobile Selenium Hub 	| [http://demo:demo@hostname/mcloud/wd/hub](http://demo:demo@hostname/mcloud/wd/hub) 	   |
-| Mobile SmartTest Farm	| [http://hostname/stf](http://hostname/stf)                                         	   |
+| Components            | URL                                                                |
+|---------------------  | ------------------------------------------------------------------ |
+| Zebrunner Reporting   | [http://hostname](http://hostname)                                 |
+| Jenkins               | [http://hostname/jenkins](http://hostname/jenkins)                 |
+| SonarQube             | [http://hostname/sonarqube](http://hostname/sonarqube)             |
+| Web Selenium Hub      | [http://hostname/selenoid/wd/hub](http://hostname/selenoid/wd/hub) |
+| Mobile Selenium Hub   | [http://hostname/mcloud/wd/hub](http://hostname/mcloud/wd/hub)     |
+| Mobile SmartTest Farm | [http://hostname/stf](http://hostname/stf)                         |
 
 > admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
 
 
 ## Documentation and free support
 * [Zebrunner PRO](https://zebrunner.com)
-* [Zebrunner CE](https://zebrunner.github.io/zebrunner)
+* [Zebrunner CE](https://zebrunner.github.io/community-edition)
 * [Zebrunner Reporting](https://zebrunner.com/documentation)
 * [Carina Guide](http://zebrunner.github.io/carina)
 * [Demo Project](https://github.com/zebrunner/carina-demo)
