@@ -21,14 +21,14 @@ Enjoy using Zebrunner Reporting in your testing process! Feel free to support th
 ## Initial setup
 Visit [Zebrunner Guide](https://zebrunner.github.io/community-edition) for detailed installation and configuration instructions.
 
-1. Clone [Zebrunner](https://github.com/zebrunner/zebrunner) recursive and launch setup procedure:
-  ```
-  git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git && cd zebrunner && ./zebrunner.sh setup
-  ```
-  > Provide required details and start services.
+1. Clone [Zebrunner CE](https://github.com/zebrunner/zebrunner) recursively and launch setup procedure:
+   ```
+   git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git && cd zebrunner && ./zebrunner.sh setup
+   ```
+   > Provide required details and start services.
 
 2. After the startup, the following components might be available:
-  > Use your host address instead of `hostname`!  
+   > Use your host address instead of `hostname`!  
   
 | Components            | URL                                                                |
 |---------------------  | ------------------------------------------------------------------ |
@@ -39,7 +39,7 @@ Visit [Zebrunner Guide](https://zebrunner.github.io/community-edition) for detai
 | Mobile Selenium Hub   | [http://hostname/mcloud/wd/hub](http://hostname/mcloud/wd/hub)     |
 | Mobile SmartTest Farm | [http://hostname/stf](http://hostname/stf)                         |
 
-> admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
+  > admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
 
 
 ## Documentation and free support
