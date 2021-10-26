@@ -11,8 +11,8 @@ Zebrunner (Community Edition)
 Zebrunner (Community Edition) is a [Continuous configuration automation](https://en.wikipedia.org/wiki/Infrastructure_as_code#Continuous_configuration_automation) framework for continuous testing (running various kinds of tests on the code to gain successive levels of confidence in the quality of the code), and (optionally) continuous deployment. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
 > It is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
 
-* Zebrunner is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Reporting](https://zebrunner.github.io/documentation/) - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub(s), [MCloud](https://github.com/zebrunner/mcloud), [SonarQube](https://github.com/zebrunner/sonarqube), etc. 
-  > In additions it is easily intergated with 3rd party devices/browsers cloud providers like: [Zebrunner Engine](https://zebrunner.com/), [Browserstack](https://www.browserstack.com/), [SauceLabs](https://saucelabs.com/) etc
+* Zebrunner is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Reporting](https://zebrunner.github.io/zebrunner/) - former Zafira Reporting Tool, Jenkins Master/Slaves Nodes, Selenium Hub(s), [MCloud](https://github.com/zebrunner/mcloud), [SonarQube](https://github.com/zebrunner/sonarqube), etc. 
+  > In additions it is easily integrated with 3rd party devices/browsers cloud providers like: [Zebrunner Engine](https://zebrunner.com/), [Browserstack](https://www.browserstack.com/), [SauceLabs](https://saucelabs.com/) etc
 
 * All components are deployed under NGiNX WebServer which can be configured in a fully secured environment
 

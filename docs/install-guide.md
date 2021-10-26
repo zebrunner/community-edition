@@ -9,7 +9,7 @@
   > Provide required details to finish configuration and start services
   
 2. After startup, the following components might be available:
-  > Use your host domain address or IP.  
+  > Use your host domain address or IP instead of `hostname`.
   
 | Components            | URL                                                                |
 |---------------------	|------------------------------------------------------------------- |
