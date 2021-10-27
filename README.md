@@ -5,7 +5,7 @@
 Zebrunner CE (Community Edition) is a Test Automation Management Tool for continuous testing and continuous deployment. It allows you to run various kinds of tests and gain successive levels of confidence in the code quality. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
   > Zebrunner is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
 
-It is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Reporting](https://zebrunner.github.io/zebrunner/), Jenkins Master/Slaves Nodes, Selenium Hub, Mobile Device Farm (MCloud), SonarQube etc.
+It is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Reporting](https://zebrunner.com/documentation), Jenkins Master/Slaves Nodes, Selenium Hub, Mobile Device Farm (MCloud), SonarQube etc.
 
 All components are deployed under NGINX WebServer which can be configured in a fully secured environment
 
@@ -21,14 +21,14 @@ Enjoy using Zebrunner Reporting in your testing process! Feel free to support th
 ## Initial setup
 Visit [Zebrunner Guide](https://zebrunner.github.io/community-edition) for detailed installation and configuration instructions.
 
-1. Clone [Zebrunner](https://github.com/zebrunner/zebrunner) recursive and launch setup procedure:
-  ```
-  git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git && cd zebrunner && ./zebrunner.sh setup
-  ```
-  > Provide required details and start services.
+1. Clone [Zebrunner CE](https://github.com/zebrunner/community-edition) recursively and launch setup procedure:
+   ```
+   git clone --recurse-submodule https://github.com/zebrunner/community-edition.git && cd community-edition && ./zebrunner.sh setup
+   ```
+   > Provide required details and start services.
 
 2. After the startup, the following components might be available:
-  > Use your host address instead of `hostname`!  
+   > Use your host address instead of `hostname`!  
   
 | Components            | URL                                                                |
 |---------------------  | ------------------------------------------------------------------ |
@@ -39,7 +39,7 @@ Visit [Zebrunner Guide](https://zebrunner.github.io/community-edition) for detai
 | Mobile Selenium Hub   | [http://hostname/mcloud/wd/hub](http://hostname/mcloud/wd/hub)     |
 | Mobile SmartTest Farm | [http://hostname/stf](http://hostname/stf)                         |
 
-> admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
+  > admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.
 
 
 ## Documentation and free support
