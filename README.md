@@ -5,7 +5,7 @@
 Zebrunner CE (Community Edition) is a Test Automation Management Tool for continuous testing and continuous deployment. It allows you to run various kinds of tests and gain successive levels of confidence in the code quality. It is built in accordance with [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
   > Zebrunner is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
 
-It is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Reporting](https://zebrunner.github.io/zebrunner/), Jenkins Master/Slaves Nodes, Selenium Hub, Mobile Device Farm (MCloud), SonarQube etc.
+It is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Reporting](https://zebrunner.com/documentation), Jenkins Master/Slaves Nodes, Selenium Hub, Mobile Device Farm (MCloud), SonarQube etc.
 
 All components are deployed under NGINX WebServer which can be configured in a fully secured environment
 
