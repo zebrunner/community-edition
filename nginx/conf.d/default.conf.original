@@ -55,14 +55,14 @@ server {
     }
 
     location ~ /(stf|auth/mock|auth/ldap|auth/contact|auth/api|static/app|static/logo|app/api|api/v1|s/upload|s/image|s/blob|s/apk) {
-      set $upstream_stf stf-proxy:80;
-      proxy_pass http://$upstream_stf;
+      set $upstream_stf http://stf-proxy:80;
+      proxy_pass $upstream_stf;
       proxy_http_version 1.1;
     }
 
     location /d/ {
-      set $upstream_stf stf-proxy:80;
-      proxy_pass http://$upstream_stf;
+      set $upstream_stf http://stf-proxy:80;
+      proxy_pass $upstream_stf;
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection upgrade;
@@ -71,8 +71,8 @@ server {
     }
 
     location /socket.io {
-      set $upstream_stf stf-proxy:80;
-      proxy_pass http://$upstream_stf;
+      set $upstream_stf http://stf-proxy:80;
+      proxy_pass $upstream_stf;
       proxy_http_version 1.1;
 
       # two below headers to support websocket connection
