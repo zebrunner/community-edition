@@ -632,7 +632,6 @@ case "$1" in
         version
         ;;
     *)
-        echo "Invalid option detected: $1"
         echo_help
         exit 1
         ;;
