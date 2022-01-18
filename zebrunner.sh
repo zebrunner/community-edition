@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
-source patch/utility.sh
-source reporting/patch/settings.sh
-
   print_banner() {
   echo "
 ███████╗███████╗██████╗ ██████╗ ██╗   ██╗███╗   ██╗███╗   ██╗███████╗██████╗      ██████╗███████╗
@@ -599,6 +595,10 @@ source reporting/patch/settings.sh
 
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${BASEDIR}" || exit
+
+# shellcheck disable=SC1091
+source patch/utility.sh
+source reporting/patch/settings.sh
 
 case "$1" in
     setup)
