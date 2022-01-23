@@ -6,6 +6,9 @@ pages:
     - Installation Guide: install-guide.md
     - Configuration Guide: config-guide.md
     - User Guide: user-guide.md
+    - Integration:
+      - Source Code Manager: integration/scm.md
+      - SonarQube: integration/sonarqube.md
 
 theme:
   name: 'material'
