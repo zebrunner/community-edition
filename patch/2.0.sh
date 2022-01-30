@@ -84,6 +84,7 @@ if [[ ! -f mcloud/.disabled ]] ; then
   cp mcloud/variables.env  mcloud/variables.env_1.9
 
   url="$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT"
+  ZBR_MCLOUD_PORT=8082
   cp mcloud/.env.original mcloud/.env
   replace mcloud/.env "STF_URL=http://localhost:8082" "STF_URL=${url}"
   replace mcloud/.env "STF_PORT=8082" "STF_PORT=$ZBR_MCLOUD_PORT"
