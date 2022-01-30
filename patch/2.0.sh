@@ -3,10 +3,11 @@
 # shellcheck disable=SC1091
 source patch/utility.sh
 
-TARGET_VERSION=1.10
+TARGET_VERSION=2.0
 
 source backup/settings.env
 SOURCE_VERSION=${ZBR_VERSION}
+echo SOURCE_VERSION: $SOURCE_VERSION
 
 if ! [[ "${TARGET_VERSION}" > "${SOURCE_VERSION}" ]]; then
   #target Zebrunner version less or equal existing
