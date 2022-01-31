@@ -80,7 +80,6 @@ fi
 #apply mcloud changes
 if [[ ! -f mcloud/.disabled ]] ; then
   cp mcloud/.env mcloud/.env_1.9
-  cp mcloud/configuration/stf-proxy/nginx.conf mcloud/configuration/stf-proxy/nginx.conf_1.9
   cp mcloud/variables.env  mcloud/variables.env_1.9
 
   url="$ZBR_PROTOCOL://$ZBR_HOSTNAME:$ZBR_PORT"
