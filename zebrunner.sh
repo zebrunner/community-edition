@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
-source patch/utility.sh
-source reporting/patch/settings.sh
-
   print_banner() {
   echo "
 ███████╗███████╗██████╗ ██████╗ ██╗   ██╗███╗   ██╗███╗   ██╗███████╗██████╗      ██████╗███████╗
@@ -29,7 +25,7 @@ source reporting/patch/settings.sh
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=1.9
+    export ZBR_VERSION=2.0
     set_global_settings
 
     cp .env.original .env
@@ -48,6 +44,7 @@ source reporting/patch/settings.sh
       replace ./nginx/conf.d/default.conf "http://jenkins-master:8080;" "https://jenkins-master:8443;"
       replace ./nginx/conf.d/default.conf "upstream_sonar http://127.0.0.1:80;" "upstream_sonar https://127.0.0.1:80;"
       replace ./nginx/conf.d/default.conf "upstream_mcloud http://127.0.0.1:80;" "upstream_mcloud https://127.0.0.1:80;"
+      replace ./nginx/conf.d/default.conf "upstream_stf http://stf-proxy:80;" "upstream_stf https://stf-proxy:80;"
     fi
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
@@ -484,8 +481,15 @@ source reporting/patch/settings.sh
       exit -1
     fi
 
+    patch/2.0.sh
+    p2_0=$?
+    if [[ ${p2_0} -eq 1 ]]; then
+      echo "ERROR! 2.0 patchset was not applied correctly!"
+      exit -1
+    fi
+
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p1_9} -eq 2 ]]; then
+    if [[ ${p2_0} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
@@ -599,6 +603,10 @@ source reporting/patch/settings.sh
 BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${BASEDIR}" || exit
 
+# shellcheck disable=SC1091
+source patch/utility.sh
+source reporting/patch/settings.sh
+
 case "$1" in
     setup)
         setup
@@ -631,7 +639,6 @@ case "$1" in
         version
         ;;
     *)
-        echo "Invalid option detected: $1"
         echo_help
         exit 1
         ;;
