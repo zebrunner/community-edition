@@ -15,7 +15,7 @@
     
     
       
-        <title>SonarQube Integration - Zebrunner</title>
+        <title>SonarQube - Zebrunner</title>
       
     
     
@@ -76,7 +76,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              SonarQube Integration
+              SonarQube
             
           </span>
         </div>
@@ -234,10 +234,12 @@
       
       
 
+  
 
-  <li class="md-nav__item md-nav__item--nested">
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
     
     <label class="md-nav__link" for="nav-6">
       Integration
@@ -271,11 +273,128 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../sonarqube.md" title="SonarQube" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        SonarQube
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="SonarQube" class="md-nav__link md-nav__link--active">
       SonarQube
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#integrate-private-sonarqube-server" class="md-nav__link">
+    Integrate private sonarqube server
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-configuration" class="md-nav__link">
+    GitHub configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="GitHub configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-a-github-app" class="md-nav__link">
+    Create a GitHub App
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-your-app" class="md-nav__link">
+    Install your app
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-sonarqube-with-your-app" class="md-nav__link">
+    Configure sonarqube with your app
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-request-decoration-example" class="md-nav__link">
+    Pull Request decoration example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gitlab-configuration" class="md-nav__link">
+    Gitlab configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Gitlab configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#merge-request-decoration-exmaple" class="md-nav__link">
+    Merge request decoration exmaple
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-sonarqube-base-url" class="md-nav__link">
+    Configure sonarqube base URL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#support-channel" class="md-nav__link">
+    Support Channel
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -403,7 +522,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/zebrunner/zebrunner/edit/master/docs/integration/sonaqube.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/zebrunner/zebrunner/edit/master/docs/integration/sonarqube.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -547,6 +666,27 @@
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../scm/" title="Source Code Manager" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Source Code Manager
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
