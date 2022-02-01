@@ -235,8 +235,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#initial-setup" class="md-nav__link">
-    Initial setup
+  <a href="#clone-and-setup" class="md-nav__link">
+    Clone and setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-services" class="md-nav__link">
+    Start services
   </a>
   
 </li>
@@ -279,6 +286,60 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Integration
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Integration" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Integration
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../integration/scm/" title="Source Code Manager" class="md-nav__link">
+      Source Code Manager
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../integration/sonarqube.md" title="SonarQube" class="md-nav__link">
+      SonarQube
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -305,8 +366,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#initial-setup" class="md-nav__link">
-    Initial setup
+  <a href="#clone-and-setup" class="md-nav__link">
+    Clone and setup
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#start-services" class="md-nav__link">
+    Start services
   </a>
   
 </li>
@@ -339,59 +407,16 @@
                 
                 
                 <h1 id="installation-guide">Installation Guide</h1>
-<h2 id="initial-setup">Initial setup</h2>
-<ol>
-<li>
-<p>Clone <a href="https://github.com/zebrunner/zebrunner">Zebrunner</a> recursive and launch setup procedure
-  <code>git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git &amp;&amp; cd zebrunner &amp;&amp; ./zebrunner.sh setup</code></p>
+<h2 id="clone-and-setup">Clone and setup</h2>
+<p>Clone <a href="https://github.com/zebrunner/zebrunner">Zebrunner</a> recursive and launch setup procedure</p>
+<pre><code>git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git &amp;&amp; cd zebrunner &amp;&amp; ./zebrunner.sh setup
+</code></pre>
+
 <blockquote>
 <p>Provide required details to finish configuration and start services</p>
 </blockquote>
-</li>
-<li>
-<p>After startup, the following components might be available:</p>
-<blockquote>
-<p>Use your host domain address or IP instead of <code>hostname</code>.</p>
-</blockquote>
-</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>Components</th>
-<th>URL</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Zebrunner Reporting</td>
-<td><a href="http://hostname">http://hostname</a></td>
-</tr>
-<tr>
-<td>Jenkins</td>
-<td><a href="http://hostname/jenkins">http://hostname/jenkins</a></td>
-</tr>
-<tr>
-<td>SonarQube</td>
-<td><a href="http://hostname/sonarqube">http://hostname/sonarqube</a></td>
-</tr>
-<tr>
-<td>Web Selenium Hub</td>
-<td><a href="http://hostname/selenoid/wd/hub">http://hostname/selenoid/wd/hub</a></td>
-</tr>
-<tr>
-<td>Mobile Selenium Hub</td>
-<td><a href="http://hostname/mcloud/wd/hub">http://hostname/mcloud/wd/hub</a></td>
-</tr>
-<tr>
-<td>Mobile SmartTest Farm</td>
-<td><a href="http://hostname/stf">http://hostname/stf</a></td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.</p>
-</blockquote>
+<h2 id="start-services">Start services</h2>
+<p>Use <code>./zebrunner.sh</code> script to start/stop/restart etc Zebrunner Community Edition services</p>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
 <li>Join <a href="https://t.me/zebrunner">Telegram channel</a> in case of any question</li>

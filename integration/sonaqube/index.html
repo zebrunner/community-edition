@@ -10,16 +10,16 @@
       
       
       
-      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.2.2">
     
     
       
-        <title>Configuration Guide - Zebrunner</title>
+        <title>SonarQube Integration - Zebrunner</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.a2408e81.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a2408e81.min.css">
       
       
     
@@ -48,7 +48,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configuration-guide" class="md-skip">
+        <a href="#sonarqube-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -59,7 +59,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href=".." title="Zebrunner" class="md-header-nav__button md-logo" aria-label="Zebrunner">
+    <a href="../.." title="Zebrunner" class="md-header-nav__button md-logo" aria-label="Zebrunner">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -76,7 +76,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Configuration Guide
+              SonarQube Integration
             
           </span>
         </div>
@@ -146,7 +146,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="Zebrunner" class="md-nav__button md-logo" aria-label="Zebrunner">
+    <a href="../.." title="Zebrunner" class="md-nav__button md-logo" aria-label="Zebrunner">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -176,7 +176,7 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="Overview" class="md-nav__link">
+    <a href="../.." title="Overview" class="md-nav__link">
       Overview
     </a>
   </li>
@@ -188,7 +188,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../prerequisites/" title="Prerequisites" class="md-nav__link">
+    <a href="../../prerequisites/" title="Prerequisites" class="md-nav__link">
       Prerequisites
     </a>
   </li>
@@ -200,7 +200,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../install-guide/" title="Installation Guide" class="md-nav__link">
+    <a href="../../install-guide/" title="Installation Guide" class="md-nav__link">
       Installation Guide
     </a>
   </li>
@@ -210,94 +210,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Configuration Guide
-        <span class="md-nav__icon md-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
-        </span>
-      </label>
-    
-    <a href="./" title="Configuration Guide" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../../config-guide/" title="Configuration Guide" class="md-nav__link">
       Configuration Guide
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#components-details" class="md-nav__link">
-    Components details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#organization-setup" class="md-nav__link">
-    Organization Setup
-  </a>
-  
-    <nav class="md-nav" aria-label="Organization Setup">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#register-organization" class="md-nav__link">
-    Register Organization
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#register-repository" class="md-nav__link">
-    Register Repository
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-any-job" class="md-nav__link">
-    Run any Job
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#support-channel" class="md-nav__link">
-    Support Channel
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -307,7 +224,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../user-guide/" title="User Guide" class="md-nav__link">
+    <a href="../../user-guide/" title="User Guide" class="md-nav__link">
       User Guide
     </a>
   </li>
@@ -344,7 +261,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../integration/scm/" title="Source Code Manager" class="md-nav__link">
+    <a href="../scm/" title="Source Code Manager" class="md-nav__link">
       Source Code Manager
     </a>
   </li>
@@ -356,7 +273,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../integration/sonarqube.md" title="SonarQube" class="md-nav__link">
+    <a href="../sonarqube.md" title="SonarQube" class="md-nav__link">
       SonarQube
     </a>
   </li>
@@ -393,43 +310,77 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#components-details" class="md-nav__link">
-    Components details
+  <a href="#integrate-private-sonarqube-server" class="md-nav__link">
+    Integrate private sonarqube server
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#organization-setup" class="md-nav__link">
-    Organization Setup
+  <a href="#github-configuration" class="md-nav__link">
+    GitHub configuration
   </a>
   
-    <nav class="md-nav" aria-label="Organization Setup">
+    <nav class="md-nav" aria-label="GitHub configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#register-organization" class="md-nav__link">
-    Register Organization
+  <a href="#create-a-github-app" class="md-nav__link">
+    Create a GitHub App
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#register-repository" class="md-nav__link">
-    Register Repository
+  <a href="#install-your-app" class="md-nav__link">
+    Install your app
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#run-any-job" class="md-nav__link">
-    Run any Job
+  <a href="#configure-sonarqube-with-your-app" class="md-nav__link">
+    Configure sonarqube with your app
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pull-request-decoration-example" class="md-nav__link">
+    Pull Request decoration example
   </a>
   
 </li>
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gitlab-configuration" class="md-nav__link">
+    Gitlab configuration
+  </a>
+  
+    <nav class="md-nav" aria-label="Gitlab configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#merge-request-decoration-exmaple" class="md-nav__link">
+    Merge request decoration exmaple
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-sonarqube-base-url" class="md-nav__link">
+    Configure sonarqube base URL
+  </a>
   
 </li>
       
@@ -452,7 +403,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/zebrunner/zebrunner/edit/master/docs/config-guide.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/zebrunner/zebrunner/edit/master/docs/integration/sonaqube.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -460,75 +411,123 @@
                   
                 
                 
-                <h1 id="configuration-guide">Configuration Guide</h1>
-<h2 id="components-details">Components details</h2>
+                <h1 id="sonarqube-integration">SonarQube Integration</h1>
+<p>The sonarqube static analysis is invoked for each webhook event triggered on your target repository(pushes and/or pull/merge requests).</p>
+<p>If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysis will run for push events.</p>
 <blockquote>
-<p>Use your host domain address or IP instead of <code>hostname</code>.</p>
+<p>Note: default credentials for embedded sonarqube are: admin/admin, we recommend to change them after setting up zebrunner</p>
+<p>Note: Sonarqube pull request decoration is supported for <strong>Github</strong> and <strong>Gitlab</strong></p>
+<p>Note: if the sonarqube server is not available the analysis will be skipped</p>
 </blockquote>
+<h2 id="integrate-private-sonarqube-server">Integrate private sonarqube server</h2>
+<p>If you have a private sonarqube instance and you have decided to use it, please follow the steps bellow:</p>
+<ul>
+<li>Login to Jenkins, go to <strong>Manage Jenkins &gt; System Configuration &gt; Global Properties</strong></li>
+<li>Search for <strong>SONAR_URL</strong> and change the value with your private SonarQube instance url<blockquote>
+<p>Note: Compatible SonarQube version is 7.9.3 - 8.0</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="github-configuration">GitHub configuration</h2>
+<p>To enable <strong>pull reqeuest decoration</strong> on your github repository you need to create a <strong>GitHub App</strong>, his purpose is to publish the sonarqube reports generated on the webhook event being processed as <strong>checks</strong> into the pull request itself on github. </p>
+<h3 id="create-a-github-app">Create a <a href="https://developer.github.com/apps/about-apps/">GitHub App</a></h3>
+<ul>
+<li>Follow Steps 1–4 <a href="https://developer.github.com/apps/building-github-apps/creating-a-github-app/">here</a> to start creating your GitHub App</li>
+<li>Under <strong>GitHub App name</strong>, give your app a name, such as SonarQubePRDecorator.</li>
+<li>Add a <strong>Homepage URL</strong>. GitHub requires this, but it isn't important for Pull Request decoration. You can use any URL, such as https://zebrunner.com/.</li>
+<li>Enter your <strong>User authorization callback URL</strong>. Set this to your instance's base URL. For example, <code>https://your-zebrunner-domain/sonarqube/oauth2/callback</code></li>
+<li>Add <strong>Webhook URL</strong>. Set this to your instance's base URL. For example, https://zebrunner.com/.</li>
+<li>
+<p>Grant access for the following <strong>Permissions</strong>:</p>
 <table>
 <thead>
 <tr>
-<th>Components</th>
-<th>URL</th>
+<th align="center">Permission</th>
+<th>Access</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Zebrunner Reporting</td>
-<td><a href="http://hostname">http://hostname</a></td>
+<td align="center">Checks</td>
+<td>Read &amp; Write</td>
 </tr>
 <tr>
-<td>Jenkins</td>
-<td><a href="http://hostname/jenkins">http://hostname/jenkins</a></td>
+<td align="center">Metadata</td>
+<td>Read-Only</td>
 </tr>
 <tr>
-<td>SonarQube</td>
-<td><a href="http://hostname/sonarqube">http://hostname/sonarqube</a></td>
+<td align="center">Pull Requests</td>
+<td>Read &amp; Write</td>
 </tr>
 <tr>
-<td>Web Selenium Hub</td>
-<td><a href="http://hostname/selenoid/wd/hub">http://hostname/selenoid/wd/hub</a></td>
+<td align="center">Commit statuses</td>
+<td>Read-only</td>
 </tr>
 <tr>
-<td>Mobile Selenium Hub</td>
-<td><a href="http://hostname/mcloud/wd/hub">http://hostname/mcloud/wd/hub</a></td>
-</tr>
-<tr>
-<td>Mobile SmartTest Farm</td>
-<td><a href="http://hostname/stf">http://hostname/stf</a></td>
+<td align="center">&gt; Note: if your are using <strong>Github Enterprise</strong> the permission "Metadata" is renamed to "Repository Metadata"</td>
+<td></td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>admin/changeit crendetials should be used for Reporting and Jenkins, admin/admin for SonarQube.</p>
-</blockquote>
-<h2 id="organization-setup">Organization Setup</h2>
-<h3 id="register-organization">Register Organization</h3>
-<ul>
-<li>Open Jenkins-&gt;Management_Jobs folder.</li>
-<li>Run "RegisterOrganization" providing your organization name as folderName</li>
-<li>New folder is created with default content <br />
-<img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/develop/docs/img/Organization.png?raw=true" title="Organization" /></li>
-</ul>
-<h3 id="register-repository">Register Repository</h3>
-<ul>
-<li>Open your organization folder</li>
-<li>Open RegisterRepository Job</li>
-<li>Select the scm type of your repository (GitHub, Gitlab or BitBucket)</li>
-<li>Add your TestNG repository url (use https://github.com/qaprosoft/carina-demo.git as sample repo to scan)</li>
-<li>Click build
-  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true" title="Repository" /><blockquote>
-<p>Note: Repository is scanned and TestNG jobs created</p>
+</li>
+<li>
+<p>Under "Where can this GitHub App be installed?" select <strong>Any account.</strong></p>
+</li>
+<li>Click <strong>Create GitHub App</strong>. This will take you to your new GitHub App's page.</li>
+<li>Scroll down to the bottom of your app page and click <strong>Generate Private Key.</strong> This downloads a .pem file that you'll use in the <strong>Configure SonarQube server section.</strong><blockquote>
+<p>Tip: in order to acces the private key open the .pem file with your favorite text editor.</p>
 </blockquote>
 </li>
 </ul>
-<h3 id="run-any-job">Run any Job</h3>
+<h3 id="install-your-app">Install your app</h3>
+<p>Once the app is created, you need to install it in your target organization to <strong>grant acces</strong> to all of your repositories with the permissions specified in the <strong>Create a [GitHub App]</strong> section.</p>
+<p>Install your GitHub App from the app's settings page.</p>
 <ul>
-<li>Open generated repository folder</li>
-<li>Activate any TestNG job generated by RegisterRepository
-    &gt; if no TestNG suite xml files detected you can use default <code>build</code> job</li>
-<li>Build with parameters
-    &gt; Job is executed, results published to the reporting</li>
+<li>Go to your <strong>GitHub profile &gt; Developer settings &gt; GitHub Apps &gt; Your app name &gt; Install App</strong></li>
+<li>Select the organization to install the app</li>
+<li>Select <strong>All repositories</strong></li>
+<li>Click install<blockquote>
+<p>Note: You can select specific repositories, so the github application will have access <strong>only for those specified</strong></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="configure-sonarqube-with-your-app">Configure sonarqube with your app</h3>
+<ul>
+<li>Login into your sonarqube instance</li>
+<li>
+<p>Go to <strong>Administration &gt; Configuration &gt; GitHub</strong> add your GitHub App <strong>Client ID, Client Secret</strong>
+  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /></p>
+</li>
+<li>
+<p>In <strong>Administration &gt; Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key</strong>
+  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true" title="SonarPullRequestConfig" /></p>
+</li>
+</ul>
+<blockquote>
+<p>Note: make sure to copy all content from the .pem file generated in the <strong>Create GitHub App</strong> section</p>
+</blockquote>
+<h3 id="pull-request-decoration-example">Pull Request decoration example</h3>
+<p>When you create a pull and the sonar analysis reported issues, your pull request will be decorated with those issues and links to the sonarqube instance with your project.</p>
+<p><img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco1.png?raw=true" title="github-pr-deco1" />
+<img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco2.png?raw=true" title="github-pr-deco2" /></p>
+<h2 id="gitlab-configuration">Gitlab configuration</h2>
+<p>To enable <strong>merge requests decoration</strong> on your gitlab repository we are going to use the token generated in <strong>Gitlab access token</strong> step. The sonarqube report is published as pipeline status and comments into the merge request itself.</p>
+<ul>
+<li>Login into your sonarqube instance</li>
+<li>Go to <strong>Administration &gt; Configuration &gt; Pull Requests &gt; Integration with Gitlab</strong> and in the token input paste your gitlab acces token.</li>
+</ul>
+<h3 id="merge-request-decoration-exmaple">Merge request decoration exmaple</h3>
+<p>When you create a merge request and the sonar analysis reports issues, your merge request will be decorated with those issues and links to the sonarqube instance with your project.</p>
+<p><img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco1.png?raw=true" title="gitlab-mr-deco1" />
+<img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco2.png?raw=true" title="gitlab-mr-deco2" /></p>
+<h2 id="configure-sonarqube-base-url">Configure sonarqube base URL</h2>
+<p>This will serve static context(such as images, links, etc.) for pull/merge requests decoration. Follow the below steps to configure your server base URL:</p>
+<ul>
+<li>Add your SonarQube server under <strong>Administration &gt; Configuration &gt; General Settings &gt; Server base URL</strong>
+  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /><blockquote>
+<p>Tip: If you are missing images in your decorated pull/merge request it is probably due to configuration issues or the sonarqube server being unavailable at that moment.</p>
+</blockquote>
+</li>
 </ul>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
@@ -549,41 +548,6 @@
         
 <footer class="md-footer">
   
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-          <a href="../install-guide/" title="Installation Guide" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-            </div>
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Installation Guide
-              </div>
-            </div>
-          </a>
-        
-        
-          <a href="../user-guide/" title="User Guide" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                User Guide
-              </div>
-            </div>
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
-  
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
       <div class="md-footer-copyright">
@@ -600,15 +564,15 @@
       
     </div>
     
-      <script src="../assets/javascripts/vendor.d710d30a.min.js"></script>
-      <script src="../assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../../assets/javascripts/vendor.d710d30a.min.js"></script>
+      <script src="../../assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
-          base: "..",
+          base: "../..",
           features: [],
           search: Object.assign({
-            worker: "../assets/javascripts/worker/search.27c6a5e6.min.js"
+            worker: "../../assets/javascripts/worker/search.27c6a5e6.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
