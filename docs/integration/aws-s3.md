@@ -28,7 +28,8 @@ For case when embedded S3 compatible minio storage not used
 }
 ```
 > replacing _MYBUCKET_ with actual name and putting password instead of _MyStrongPassword_
-* Provide these settings as Bucket and UserAgent key during setup procedure
+
+* Provide _MYBUCKET_ as `Bucket` and _MyStrongPassword_ as `UserAgent key` during setup procedure
   
 ## Create user
 
@@ -58,4 +59,4 @@ For case when embedded S3 compatible minio storage not used
 * Goto IAM -> Users -> **Add User**
 * Specify username like zebrunner-s3-user -> Pick “Programmatic access” -> **Next: Permissions:** -> **Attach existing policies directly**
 * Choose previously created policy -> **Next: Tags** -> **Next: Review** -> **Create User**
-* Provide these settings as Acess and Secret keys during setup procedure
+* Provide user keys as `Access key` and `Secret key` during setup procedure
