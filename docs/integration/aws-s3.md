@@ -1,7 +1,5 @@
 #  AWS S3 Bucket
 
-For case when embedded S3 compatible minio storage not used
-
 ## Create bucket 
 
 * Create new bucket in AWS S3
