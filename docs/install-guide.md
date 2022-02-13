@@ -12,7 +12,7 @@ cd zebrunner
 ## Start services
 Use `./zebrunner.sh` script to start/stop/restart etc Zebrunner Community Edition services
 ```
-ubuntu@ip-172-31-22-237:~/tools/community-edition$ ./zebrunner.sh
+./zebrunner.sh
 
       Usage: ./zebrunner.sh [option]
       Flags:
