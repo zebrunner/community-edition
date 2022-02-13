@@ -21,16 +21,16 @@
   * Open "Account and Profile" menu in top right corner and generate token
   * Login to [Jenkins](http://hostname/jenkins), open "Management_Jobs" folder
   * Run "RegisterOrganization" job providing your organization name as folderName and Reporting url/token
-  > New organization folder is created with "RegisterRepository" job inside and registered reporting integration
   ![Alt text](https://github.com/zebrunner/zebrunner/blob/develop/docs/img/Organization.png?raw=true "Organization")
+  > New organization folder is created with "RegisterRepository" job inside and registered reporting integration  
 
 ### Register Repository
   * Open your organization folder
   * Run "RegisterRepository" job providing git args (use default https://github.com/zebrunner/carina-demo.git as sample repo to scan)
   > Repository is scanned, three SYSTEM jobs (build, onPullRequest, onPush) and testing jobs generated. Every single TestNG suite has it's own job
-  > Login to SonarQube to see static code analysis of your test repository sources
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")
   * [Optional] Setup [webhooks](https://zebrunner.github.io/community-edition/integration/scm/) to enable fully automatic repositories re-scan and jobs generation
+  > Login to SonarQube to see static code analysis of your test repository sources
 
 ### Run any Job
   * Open generated repository folder
