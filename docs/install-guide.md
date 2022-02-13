@@ -36,6 +36,7 @@ Use `./zebrunner.sh` script to start/stop/restart etc Zebrunner Community Editio
 
       For more help join telegram channel: https://t.me/zebrunner
 ```
+> To reconfigure services, disable/enable components etc execute again `./zebrunner.sh setup` and provide updated inputs
   
 ## Support Channel
 
