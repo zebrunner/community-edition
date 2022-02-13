@@ -7,7 +7,7 @@ git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git
 cd zebrunner
 ./zebrunner.sh setup
 ```
-> Provide required details to finish configuration and start services
+> Provide required details to finish configuration and start services. To use AWS S3 storage generate bucket according to the [steps](https://zebrunner.github.io/community-edition/integration/aws-s3/)
 
 ## Start services
 ```
