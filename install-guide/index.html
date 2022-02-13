@@ -409,7 +409,9 @@
                 <h1 id="installation-guide">Installation Guide</h1>
 <h2 id="clone-and-setup">Clone and setup</h2>
 <p>Clone <a href="https://github.com/zebrunner/zebrunner">Zebrunner</a> recursive and launch setup procedure</p>
-<pre><code>git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git &amp;&amp; cd zebrunner &amp;&amp; ./zebrunner.sh setup
+<pre><code>git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git
+cd zebrunner
+./zebrunner.sh setup
 </code></pre>
 
 <blockquote>
@@ -417,6 +419,26 @@
 </blockquote>
 <h2 id="start-services">Start services</h2>
 <p>Use <code>./zebrunner.sh</code> script to start/stop/restart etc Zebrunner Community Edition services</p>
+<pre><code>ubuntu@ip-172-31-22-237:~/tools/community-edition$ ./zebrunner.sh
+
+      Usage: ./zebrunner.sh [option]
+      Flags:
+          --help | -h    Print help
+      Arguments:
+          setup          Setup Zebrunner Community Edition
+          start          Start container
+          stop           Stop and keep container
+          restart        Restart container
+          down           Stop and remove container
+          shutdown       Stop and remove container, clear volumes
+          backup         Backup container
+          restore        Restore container
+          upgrade        Upgrade to the latest version of Zebrunner Community Edition
+          version        Version of components
+
+      For more help join telegram channel: https://t.me/zebrunner
+</code></pre>
+
 <h2 id="support-channel">Support Channel</h2>
 <ul>
 <li>Join <a href="https://t.me/zebrunner">Telegram channel</a> in case of any question</li>
