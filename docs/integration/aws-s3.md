@@ -5,9 +5,10 @@ For case when embedded S3 compatible minio storage not used
 ## Create bucket 
 
 * Create new bucket in AWS S3
-> choose region closer to your location
+  > choose region closer to your location
 * In bucket “Public Access Settings” uncheck all properties
-> Security will be configured via UserAgent token
+  > Security will be configured via UserAgent token
+
 ![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true "AWS S3 Bucket")
 * In "Bucket Policy" put below json:
 ```
