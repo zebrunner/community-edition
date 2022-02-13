@@ -16,20 +16,23 @@
    
 ## Organization Setup        
 ### Register Organization
-   
+  
+  * Login to Zebrunner Reporting
+  * Open "Account and Profile" menu from top right corner
+  * Generate Reporting token
   * Open Jenkins->Management_Jobs folder.
-  * Run "RegisterOrganization" providing your organization name as folderName
-  * New folder is created with default content   
+  * Run "RegisterOrganization" providing your organization name as folderName and Reporting url and token
+  > New organization folder is created with "RegisterRepository" job inside and registered reporting integration
   ![Alt text](https://github.com/zebrunner/zebrunner/blob/develop/docs/img/Organization.png?raw=true "Organization")
+  > Multiply organizations and reporting integrations are supported on single CI
 
 ### Register Repository
   * Open your organization folder
-  * Open RegisterRepository Job
-  * Select the scm type of your repository (GitHub, Gitlab or BitBucket)
-  * Add your TestNG repository url (use https://github.com/qaprosoft/carina-demo.git as sample repo to scan)
-  * Click build
+  * Run "RegisterRepository" Job providing git parameters
+  > Use default https://github.com/zebrunner/carina-demo.git as sample repo to scan
+  > Repository is scanned and TestNG jobs created. Every single TestNG suite has it's own job.
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")
-  > Note: Repository is scanned and TestNG jobs created
+  * Login to SonarQube to see static code analysis of your test repository sources
 
 ### Run any Job
   * Open generated repository folder
