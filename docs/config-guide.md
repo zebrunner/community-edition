@@ -18,8 +18,7 @@
 ### Register Organization
   
   * Login to [Zebrunner Reporting](http://hostname)
-  * Open "Account and Profile" menu from top right corner
-  * Generate Reporting token
+  * Open "Account and Profile" menu in top right corner and generate token
   * Login to [Jenkins](http://hostname/jenkins), open "Management_Jobs" folder
   * Run "RegisterOrganization" providing your organization name as folderName and Reporting url/token
   > New organization folder is created with "RegisterRepository" job inside and registered reporting integration
