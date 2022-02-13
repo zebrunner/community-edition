@@ -6,12 +6,12 @@
 
 |                         	| Requirements                                                     	|
 |:-----------------------:	|------------------------------------------------------------------	|
-| <b>Operating System</b> 	| Ubuntu 16.04, 18.04, 20.04<br>Linux CentOS 7+<br>Amazon Linux 2 	|
+| <b>Operating System</b> 	| Ubuntu 16.04 - 21.10<br>Linux CentOS 7+<br>Amazon Linux 2 	      |
 | <b>       CPU      </b> 	| 8+ Cores                                                         	|
 | <b>      Memory    </b> 	| 32 Gb RAM                                                        	|
 | <b>    Free space  </b> 	| SSD 128Gb+ of free space                                         	|
 
-> All in one standalone deployment supports up to 5 parallel executors for web and api tests. The most optimal EC2 instance type is t3.2xlarge with enabled "T2/T3 Unlimited" feature
+> All in one standalone deployment supports up to 5 parallel executors for web and api tests. The most optimal EC2 instance type is t3a.2xlarge with enabled "T2/T3 Unlimited" feature
 
 ### Software requirements
 
