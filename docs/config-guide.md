@@ -28,14 +28,14 @@
   * Open your organization folder
   * Run "RegisterRepository" job providing git args (use [carina-demo](https://github.com/zebrunner/carina-demo.git) as sample repo to scan)
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")
-  > Repository is scanned, three SYSTEM jobs (build, onPullRequest, onPush) and all testing jobs are generated, login to [SonarQube](http://hostname/sonarqube) to see static code analysis of your test repository sources 
+  > SYSTEM jobs (build, onPullRequest, onPush) and all testing jobs are generated, login to [SonarQube](http://hostname/sonarqube) to see static code analysis of your test repository sources 
   * Setup [Source Code Manager](https://zebrunner.github.io/community-edition/integration/scm/) and [SonarQube](https://zebrunner.github.io/community-edition/integration/sonarqube/) integrations to automate jobs generation and static code analysis for every pull request/merge operations.
 
 ### Run any Job
   * Open generated repository folder
-    > if no TestNG suite xml files detected you can use default `build` job
+  > if no TestNG suite xml files detected you can use default `build` job
   * Run any TestNG job
-    > Job is executed, results published to the reporting
+  > Job is executed, results published to the reporting
   * Follow [User Guide](https://zebrunner.github.io/community-edition/user-guide/) practices to manage your CI jobs via code
 
 ## Support Channel
