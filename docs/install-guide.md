@@ -10,6 +10,11 @@ cd zebrunner
 > Provide required details to finish configuration and start services
 
 ## Start services
+```
+./zebrunner.sh start
+``` 
+
+## Manage services
 Use `./zebrunner.sh` script to start/stop/restart etc Zebrunner Community Edition services
 ```
 ./zebrunner.sh
