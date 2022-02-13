@@ -410,10 +410,16 @@
 <p>For case when embedded S3 compatible minio storage not used</p>
 <h2 id="create-bucket">Create bucket</h2>
 <ul>
-<li>Create new bucket in AWS S3 (choose region closer to your location)</li>
-<li>In bucket “Public Access Settings” uncheck all properties (later security will be configured on other level)
-<img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true" title="AWS S3 Bucket" /></li>
-<li>In “Bucket Policy” put below json:</li>
+<li>Create new bucket in AWS S3<blockquote>
+<p>choose region closer to your location</p>
+</blockquote>
+</li>
+<li>In bucket “Public Access Settings” uncheck all properties<blockquote>
+<p>Security will be configured via UserAgent token
+<img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/s3.png?raw=true" title="AWS S3 Bucket" /></p>
+</blockquote>
+</li>
+<li>In "Bucket Policy" put below json:</li>
 </ul>
 <pre><code>{
     &quot;Version&quot;: &quot;2012-10-17&quot;,
