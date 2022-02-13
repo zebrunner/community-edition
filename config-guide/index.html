@@ -508,9 +508,9 @@
 <li>Login to <a href="http://hostname">Zebrunner Reporting</a></li>
 <li>Open "Account and Profile" menu in top right corner and generate token</li>
 <li>Login to <a href="http://hostname/jenkins">Jenkins</a>, open "Management_Jobs" folder</li>
-<li>Run "RegisterOrganization" job providing your organization name as folderName and Reporting url/token<blockquote>
-<p>New organization folder is created with "RegisterRepository" job inside and registered reporting integration
-  <img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/develop/docs/img/Organization.png?raw=true" title="Organization" /></p>
+<li>Run "RegisterOrganization" job providing your organization name as folderName and Reporting url/token
+  <img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/develop/docs/img/Organization.png?raw=true" title="Organization" /><blockquote>
+<p>New organization folder is created with "RegisterRepository" job inside and registered reporting integration  </p>
 </blockquote>
 </li>
 </ul>
@@ -519,11 +519,13 @@
 <li>Open your organization folder</li>
 <li>Run "RegisterRepository" job providing git args (use default https://github.com/zebrunner/carina-demo.git as sample repo to scan)<blockquote>
 <p>Repository is scanned, three SYSTEM jobs (build, onPullRequest, onPush) and testing jobs generated. Every single TestNG suite has it's own job
-Login to SonarQube to see static code analysis of your test repository sources
   <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true" title="Repository" /></p>
 </blockquote>
 </li>
-<li>[Optional] Setup <a href="https://zebrunner.github.io/community-edition/integration/scm/">webhooks</a> to enable fully automatic repositories re-scan and jobs generation</li>
+<li>[Optional] Setup <a href="https://zebrunner.github.io/community-edition/integration/scm/">webhooks</a> to enable fully automatic repositories re-scan and jobs generation<blockquote>
+<p>Login to SonarQube to see static code analysis of your test repository sources</p>
+</blockquote>
+</li>
 </ul>
 <h3 id="run-any-job">Run any Job</h3>
 <ul>
