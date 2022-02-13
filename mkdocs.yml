@@ -9,6 +9,7 @@ pages:
     - Integration:
       - Source Code Manager: integration/scm.md
       - SonarQube: integration/sonarqube.md
+      - S3 Storage: integration/aws-s3.md
 
 theme:
   name: 'material'
