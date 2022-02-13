@@ -28,9 +28,8 @@
   * Open your organization folder
   * Run "RegisterRepository" job providing git args (use [caina-demo](https://github.com/zebrunner/carina-demo.git) as sample repo to scan)
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/Repository.png?raw=true "Repository")
-  > Repository is scanned, three SYSTEM jobs (build, onPullRequest, onPush) and testing jobs generated. Every single TestNG suite has it's own job  
-  * [Optional] Setup [webhooks](https://zebrunner.github.io/community-edition/integration/scm/) to enable fully automatic repositories re-scan and jobs generation
-  > Login to SonarQube to see static code analysis of your test repository sources
+  > Repository is scanned, three SYSTEM jobs (build, onPullRequest, onPush) and all testing jobs are generated, login to [SonarQube](http://hostname/sonarqube) to see static code analysis of your test repository sources 
+  * Setup [Source Code Manager](https://zebrunner.github.io/community-edition/integration/scm/) and [SonarQube](https://zebrunner.github.io/community-edition/integration/sonarqube/) integrations to automate jobs generation and static code analysis for every pull request/merge operations.
 
 ### Run any Job
   * Open generated repository folder
