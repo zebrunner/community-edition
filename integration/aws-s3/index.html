@@ -435,9 +435,11 @@
 </code></pre>
 
 <blockquote>
-<p>replacing <em>MYBUCKET</em> with actual name and putting password instead of <em>MyStrongPassword</em>
-* Provide these settings as Bucket and UserAgent key during setup procedure</p>
+<p>replacing <em>MYBUCKET</em> with actual name and putting password instead of <em>MyStrongPassword</em></p>
 </blockquote>
+<ul>
+<li>Provide <em>MYBUCKET</em> as <code>Bucket</code> and <em>MyStrongPassword</em> as <code>UserAgent key</code> during setup procedure</li>
+</ul>
 <h2 id="create-user">Create user</h2>
 <ul>
 <li>Goto IAM -&gt; Policies -&gt; <strong>Create Policy</strong> -&gt; Active <strong>JSON</strong></li>
@@ -468,7 +470,7 @@
 <li>Goto IAM -&gt; Users -&gt; <strong>Add User</strong></li>
 <li>Specify username like zebrunner-s3-user -&gt; Pick “Programmatic access” -&gt; <strong>Next: Permissions:</strong> -&gt; <strong>Attach existing policies directly</strong></li>
 <li>Choose previously created policy -&gt; <strong>Next: Tags</strong> -&gt; <strong>Next: Review</strong> -&gt; <strong>Create User</strong></li>
-<li>Provide these settings as Acess and Secret keys during setup procedure</li>
+<li>Provide user keys as <code>Access key</code> and <code>Secret key</code> during setup procedure</li>
 </ul>
                 
               
