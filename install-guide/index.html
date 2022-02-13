@@ -235,15 +235,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#clone-and-setup" class="md-nav__link">
-    Clone and setup
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#start-services" class="md-nav__link">
-    Start services
+  <a href="#setup-services" class="md-nav__link">
+    Setup services
   </a>
   
 </li>
@@ -385,15 +378,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#clone-and-setup" class="md-nav__link">
-    Clone and setup
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#start-services" class="md-nav__link">
-    Start services
+  <a href="#setup-services" class="md-nav__link">
+    Setup services
   </a>
   
 </li>
@@ -433,18 +419,122 @@
                 
                 
                 <h1 id="installation-guide">Installation Guide</h1>
-<h2 id="clone-and-setup">Clone and setup</h2>
-<p>Clone <a href="https://github.com/zebrunner/community-edition">Zebrunner CE</a> recursive and launch setup procedure</p>
+<h2 id="setup-services">Setup services</h2>
+<ul>
+<li>Clone <a href="https://github.com/zebrunner/community-edition">Zebrunner CE</a> recursive and launch setup procedure</li>
+</ul>
 <pre><code>git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git
 cd zebrunner
 ./zebrunner.sh setup
 </code></pre>
 
+<ul>
+<li>Provide valid protocol, host address or fully qualified domain name and port:</li>
+</ul>
+<pre><code>Zebrunner General Settings
+Protocol [http]:
+Fully qualified domain name (ip) [3.236.66.54]:
+Port [80]:
+Zebrunner URL: http://3.236.66.54:80
+Continue? y/n [y]:
+</code></pre>
+
 <blockquote>
-<p>Provide required details to finish configuration and start services. To use AWS S3 storage generate bucket according to the <a href="https://zebrunner.github.io/community-edition/integration/aws-s3/">steps</a></p>
+<p>Press <code>Enter</code> to keep default values displayed in square brackets. </p>
 </blockquote>
-<h2 id="start-services">Start services</h2>
-<pre><code>./zebrunner.sh start
+<ul>
+<li>Choose S3 compatible storage service for video, screenshots and logs artifacts. By default embedded Minio storage is configured:</li>
+</ul>
+<pre><code>Use AWS S3 bucket for storing test artifacts (logs, video, screenshots etc)? Embedded Minio Storage can be configured if you don't have Amazon account.
+Use? y/n [n]:
+</code></pre>
+
+<blockquote>
+<p>To use AWS S3 storage generate bucket according to the <a href="https://zebrunner.github.io/community-edition/integration/aws-s3/">steps</a> and provide it's settings.</p>
+</blockquote>
+<ul>
+<li>Provide SMTP integration to be able to be able to send emailable reports:</li>
+</ul>
+<pre><code>Use SMTP for emailing test results?
+Use? y/n [n]:y
+Host [smtp.gmail.com]:
+Port [587]:
+Sender email []: myemail@gmail.com
+User []: myemail
+Password []: mypassword
+
+SMTP Integration
+host=smtp.gmail.com:587
+email=myemail@gmail.com
+user=myemail
+password=mypassword
+Continue? y/n [y]:y
+</code></pre>
+
+<ul>
+<li>Keep <a href="https://github.com/zebrunner/sonarqube">SonarQube</a> to organize continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities etc:</li>
+</ul>
+<pre><code>Use embedded SonarQube to organize static code analysis and guiding your team?
+Enable? y/n [y]:
+</code></pre>
+
+<ul>
+<li>Keep <a href="https://github.com/zebrunner/jenkins-master">Jenkins</a> to establish automation testing CI/CD in accordance with Infrastructure as Code processes:</li>
+</ul>
+<pre><code>Use embedded Jenkins as recommended CI tool?
+Enable? y/n [y]:
+</code></pre>
+
+<ul>
+<li>Keep light-weight <a href="(https://github.com/zebrunner/selenoid)">Selenium Hub</a> to be able to execute test automation on browsers:</li>
+</ul>
+<pre><code>Use embedded Web Selenium Hub for testing on chrome, firefox, opera and MicrosoftEdge browsers?
+Enable? y/n [y]:
+</code></pre>
+
+<ul>
+<li>Keep <a href="https://github.com/zebrunner/mcloud">MCloud</a> to be able to register your physical mobile devices and emulators and execute mative and mobile web testing. </li>
+</ul>
+<pre><code>Use embedded Mobile Device Farm and Selenium/Appium Hub for testing on Android, iOS, AppleTV etc devices?
+Enable? y/n [y]:
+</code></pre>
+
+<ul>
+<li>Review pre-generated credentials and components links. Later you can find them in <code>NOTICE.txt</code> file</li>
+</ul>
+<pre><code>Copy and save auto-generated crendentials. Detailes can be found also in NOTICE.txt
+
+ZEBRUNNER URL: http://3.236.66.54:80
+
+REPORTING SERVICE CREDENTIALS:
+USER: admin/changeit
+IAM POSTGRES: postgres/7GyFmdnsHQJEePeDQa1kYpknrgu7tUtVMGQ00p9ARP5qDBck
+REPORTING POSTGRES: postgres/m1lkBtdEKXqLzX48HA9gmvRrvlJbcWqM4jsayl0xTBheobij
+RABBITMQ: admin/CZrbcTBh0ACHoDYuiMmbNz9jmJ2o2OESKOjmCI9R50NxDOT2
+REDIS: rfdQgjU6JR4BlpflBxPSuECcyL8grjT38XmF8utyfl5RPzOn
+
+REPORTING SMTP INTEGRATIONS:
+SMTP HOST: smtp.gmail.com:587
+EMAIL: myemail@gmail.com
+USER: myemail/mypassword
+
+JENKINS URL: http://3.236.66.54:80/jenkins
+JENKINS USER: admin/changeit
+
+SONARQUBE URL: http://3.236.66.54:80/sonarqube
+SONARQUBE USER: admin/admin
+
+SELENIUM HUB URL: http://3.236.66.54:80/selenoid/wd/hub
+
+STF URL: http://3.236.66.54:80/stf
+APPIUM HUB URL: http://3.236.66.54:80/mcloud/wd/hub
+</code></pre>
+
+<ul>
+<li>Start Services:</li>
+</ul>
+<pre><code>      WARNING! Your services needs to be started after setup.
+      Start now? y/n [y]:
 </code></pre>
 
 <h2 id="manage-services">Manage services</h2>
@@ -470,7 +560,7 @@ cd zebrunner
 </code></pre>
 
 <blockquote>
-<p>To reconfigure services, disable/enable components re-execute again setup procedure and provide updated inputs</p>
+<p>To reconfigure services, disable/enable components, setup distributed environments re-execute again setup procedure and provide updated inputs</p>
 </blockquote>
 <h2 id="support-channel">Support Channel</h2>
 <ul>
