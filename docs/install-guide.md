@@ -16,14 +16,14 @@ Protocol [http]:
 Fully qualified domain name (ip) [3.236.66.54]:
 Port [80]:
 Zebrunner URL: http://3.236.66.54:80
-Continue? y/n [y]:
+Continue? y/n [y]:y
 ```
 > Press `Enter` to keep default values displayed in square brackets. 
 
 * Choose S3 compatible storage service for video, screenshots and logs artifacts. By default embedded Minio storage is configured:
 ```
 Use AWS S3 bucket for storing test artifacts (logs, video, screenshots etc)? Embedded Minio Storage can be configured if you don't have Amazon account.
-Use? y/n [n]:
+Use? y/n [n]:n
 ```
 > To use AWS S3 storage generate bucket according to the [steps](https://zebrunner.github.io/community-edition/integration/aws-s3/) and provide it's settings.
 
@@ -48,25 +48,25 @@ Continue? y/n [y]:y
 * Keep [SonarQube](https://github.com/zebrunner/sonarqube) to organize continuous inspection of code quality to perform automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities etc:
 ```
 Use embedded SonarQube to organize static code analysis and guiding your team?
-Enable? y/n [y]:
+Enable? y/n [y]:y
 ```
 
 * Keep [Jenkins](https://github.com/zebrunner/jenkins-master) to establish automation testing CI/CD in accordance with Infrastructure as Code processes:
 ```
 Use embedded Jenkins as recommended CI tool?
-Enable? y/n [y]:
+Enable? y/n [y]:y
 ```
 
 * Keep light-weight [Selenium Hub]((https://github.com/zebrunner/selenoid)) to be able to execute test automation on browsers:
 ```
 Use embedded Web Selenium Hub for testing on chrome, firefox, opera and MicrosoftEdge browsers?
-Enable? y/n [y]:
+Enable? y/n [y]:y
 ```
 
 * Keep [MCloud](https://github.com/zebrunner/mcloud) to be able to register your physical mobile devices and emulators and execute mative and mobile web testing. 
 ```
 Use embedded Mobile Device Farm and Selenium/Appium Hub for testing on Android, iOS, AppleTV etc devices?
-Enable? y/n [y]:
+Enable? y/n [y]:y
 ```
 
 * Review pre-generated credentials and components links. Later you can find them in `NOTICE.txt` file
@@ -102,7 +102,7 @@ APPIUM HUB URL: http://3.236.66.54:80/mcloud/wd/hub
 * Start Services:
 ```
       WARNING! Your services needs to be started after setup.
-      Start now? y/n [y]:
+      Start now? y/n [y]:y
 ```
 
 ## Manage services
