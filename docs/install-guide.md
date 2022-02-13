@@ -1,7 +1,7 @@
 # Installation Guide
 
 ## Clone and setup
-Clone [Zebrunner](https://github.com/zebrunner/zebrunner) recursive and launch setup procedure
+Clone [Zebrunner CE](https://github.com/zebrunner/community-edition) recursive and launch setup procedure
 ```
 git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git
 cd zebrunner
