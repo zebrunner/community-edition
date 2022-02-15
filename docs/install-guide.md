@@ -27,7 +27,7 @@ Use? y/n [n]:n
 ```
 > To use AWS S3 storage generate bucket according to the [steps](https://zebrunner.github.io/community-edition/integration/aws-s3/) and provide it's settings.
 
-* Provide SMTP integration to be able to be able to send emailable reports:
+* Provide SMTP integration to be able to send emailable reports:
 ```
 Use SMTP for emailing test results?
 Use? y/n [n]:y
@@ -57,13 +57,13 @@ Use embedded Jenkins as recommended CI tool?
 Enable? y/n [y]:y
 ```
 
-* Keep light-weight [Selenium Hub]((https://github.com/zebrunner/selenoid)) to be able to execute test automation on browsers:
+* Keep light-weight [Selenium Hub](https://github.com/zebrunner/selenoid) to be able to execute test automation on browsers:
 ```
 Use embedded Web Selenium Hub for testing on chrome, firefox, opera and MicrosoftEdge browsers?
 Enable? y/n [y]:y
 ```
 
-* Keep [MCloud](https://github.com/zebrunner/mcloud) to be able to register your physical mobile devices and emulators and execute mative and mobile web testing. 
+* Keep [MCloud](https://github.com/zebrunner/mcloud) to be able to register your physical mobile devices and emulators and execute native and mobile web testing. 
 ```
 Use embedded Mobile Device Farm and Selenium/Appium Hub for testing on Android, iOS, AppleTV etc devices?
 Enable? y/n [y]:y
