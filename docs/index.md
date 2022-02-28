@@ -6,7 +6,7 @@ Zebrunner (Community Edition) is a [Continuous configuration automation](https:/
 > It is integrated by default with [carina-core](http://www.carina-core.io) open source TestNG framework and uses Jenkins as a CI Tool.
 
 * Zebrunner is built on top of popular docker solutions, it includes Postgres database, [Zebrunner Reporting](https://zebrunner.com/), Jenkins with agent node(s), Selenium Hub(s), [MCloud](https://zebrunner.com/products/mobile-testing-farm/), [SonarQube](https://github.com/zebrunner/sonarqube), etc. 
-  > In additions it is easily integrated with 3rd party devices/browsers cloud providers like: [Zebrunner Engine](https://zebrunner.com/), [Browserstack](https://www.browserstack.com/), [SauceLabs](https://saucelabs.com/) etc
+  > In addition, it is easily integrated with 3rd party devices/browsers cloud providers like: [Zebrunner Engine](https://zebrunner.com/), [Browserstack](https://www.browserstack.com/), [SauceLabs](https://saucelabs.com/), etc.
 
 * All components are deployed under NGiNX WebServer which can be configured in a fully secured environment
 
