@@ -136,8 +136,6 @@ If value set to “android” – android native application test job.
 </br>
 <b>jenkinsEnvironments</b> - This property takes a comma separated string of the various environments that might be tested for that particular suite i.e. PROD, QA, DEV, STAGE, BETA, etc.
 </br>
-<b>jenkinsPipelineEnvironments</b> - This property takes a comma separated string of the various environments that will be tested for a particular suite in a particular pipeline (i.e. PROD,QA,DEV,STAGE) 
-</br>
 <b>jenkinsJobExecutionOrder</b> - This property takes a number value and allows for a pipeline to be generated which will run tests in a sequential synchronous manner, compared to the default asynchronous manner. 
 </br>
 <b>jenkinsJobExecutionMode</b> - This property is only consumed when a jenkinsJobExecutionOrder has been set on a pipeline which would put that pipeline into a synchronous mode and takes a value of "continue" or "abort". 
