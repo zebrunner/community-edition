@@ -18,9 +18,7 @@ Enjoy using Zebrunner Reporting in your testing process! Feel free to support th
   <a href="https://zebrunner.com/"><img alt="Zebrunner" src="https://github.com/zebrunner/zebrunner/raw/master/docs/img/zebrunner_intro.png"></a>
 </p>
 
-## System requirements 
-
-### Hardware requirements
+## Hardware requirements
 
 |                         	| Requirements                                                     	|
 |:-----------------------:	|------------------------------------------------------------------	|
@@ -29,7 +27,7 @@ Enjoy using Zebrunner Reporting in your testing process! Feel free to support th
 | <b>      Memory    </b> 	| 32 Gb RAM                                                        	|
 | <b>    Free space  </b> 	| SSD 128Gb+ of free space                                         	|
 
-### Software requirements
+## Software requirements
 
 * Install docker ([Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04), [Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-18-04), [Ubuntu 20.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04), [Amazon Linux 2](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-basics.html), [Redhat/Cent OS](https://www.cyberciti.biz/faq/install-use-setup-docker-on-rhel7-centos7-linux/))
   
