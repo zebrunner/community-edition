@@ -4,7 +4,7 @@
 
  In order to enable full CI/CD workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the CI component (Jenkins by default). 
  
- After each Push and Pull Request events, related Jenkins jobs will pull your repository, scan and generate new test jobs automatically and optionally execute the staic code analysis via the sonarqube.
+ After each Push and Pull Request events, related Jenkins jobs will pull your repository, scan and generate new test jobs automatically and optionally execute the static code analysis via the sonarqube.
  
 ### Configure required credentials
 
