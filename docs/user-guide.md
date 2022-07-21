@@ -29,7 +29,18 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <parameter name="jenkinsEnvironments" value="DEMO"/> 
 ```
 * Commit and merge.
-* After scan is finished (automatic or manual) "Job1" test job is created in Jenkins.
+* After scan is finished (automatic or manual execution of SYSTEM->onPush job) "Job1" test job is created in Jenkins.
+* Also you can register custom jenkins job fields if neccessary:
+```
+<!-- declaring custom string, boolean, hidden and static choice fields -->
+<parameter name="stringParam::stringArg::custom string desc" value="string value" />
+<parameter name="booleanParam::booleanArg::custom boolean desc" value="true" />
+<parameter name="hiddenParam::hiddenArg::custom hidden desc" value="hidden value" />
+<parameter name="choiceParam::choiceArg::custom choice desc" value="1, 2, 3" />
+
+<!-- declaring custom exstensible field with groovy script. Semicolon ";" should be used as lines break -->
+<parameter name="extensibleChoice::myExtensibleChoice::myDesc" value="import static java.util.Calendar.*;def date = new Date().format('MM/dd/yyy');return ['Release_date' + date]" />
+```
 
 ### Run a Job
 Steps:
