@@ -374,7 +374,15 @@
       exit -1
     fi
 
-    confirm "" "      Your services will be stopped and current data might be lost. Do you want to do a restore now?" "n"
+    if [ ! -f backup/settings.env.bak ]; then
+      echo_warning "You have to backup something in advance using: ./zebrunner.sh backup"
+      echo_telegram
+      exit -1
+
+    fi
+
+    echo "      Your services will be stopped and current data might be lost."
+    confirm "" "      Do you want to do a restore to \"`date -r backup/settings.env.bak`\" state?" "n"
     if [[ $? -eq 0 ]]; then
       exit
     fi
