@@ -48,7 +48,7 @@ Steps:
 * Login to Jenkins
 * Go to organization/repository and open a Job
 * Click Build with Parameters and run Build 
-* When Job is completed analyze published reports/logs (Carina reports/Zafira reports/TestNG reports)
+* When Job is completed analyze published reports/logs (ZafiraReport/Full TestNG HTML Report/TestNG Summary HTML Report)
 
 ### Schedule a Job
 * Open TestNG suite xml file
