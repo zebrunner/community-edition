@@ -49,6 +49,10 @@
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
     if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
+      # 411 There is ".disabled" present in minio-storage after setup all components
+      rm -f reporting/.disabled
+      rm -f reporting/minio-storage/.disabled
+
       set_reporting_settings
       reporting/zebrunner.sh setup
     else
