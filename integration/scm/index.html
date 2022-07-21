@@ -618,7 +618,7 @@
 <h1 id="source-code-manager-integration">Source Code Manager Integration</h1>
 <h2 id="setup-webhook-events-push-and-pull-requests">Setup webhook events (push and pull requests)</h2>
 <p>In order to enable full CI/CD workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the CI component (Jenkins by default). </p>
-<p>After each Push and Pull Request events, related Jenkins jobs will pull your repository, scan and generate new test jobs automatically and optionally execute the staic code analysis via the sonarqube.</p>
+<p>After each Push and Pull Request events, related Jenkins jobs will pull your repository, scan and generate new test jobs automatically and optionally execute the static code analysis via the sonarqube.</p>
 <h3 id="configure-required-credentials">Configure required credentials</h3>
 <p>After you register a repository a jenkins credential is generated with the format of <code>orgName-scmType-webhook-token</code>, this credential needs to be updated with a personal access token generated in your repository scm.</p>
 <blockquote>
