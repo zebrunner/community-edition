@@ -4,8 +4,8 @@
 
 * Clone [Zebrunner CE](https://github.com/zebrunner/community-edition) recursive and launch setup procedure
 ```
-git clone --recurse-submodule https://github.com/zebrunner/zebrunner.git
-cd zebrunner
+git clone --recurse-submodule https://github.com/zebrunner/community-edition.git
+cd community-edition
 ./zebrunner.sh setup
 ```
 
