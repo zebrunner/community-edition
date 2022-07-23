@@ -7,7 +7,7 @@ TARGET_VERSION=2.1
 
 source backup/settings.env
 SOURCE_VERSION=${ZBR_VERSION}
-echo SOURCE_VERSION: $SOURCE_VERSION
+#echo SOURCE_VERSION: $SOURCE_VERSION
 
 if ! [[ "${TARGET_VERSION}" > "${SOURCE_VERSION}" ]]; then
   #target Zebrunner version less or equal existing
