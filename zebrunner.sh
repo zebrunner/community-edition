@@ -25,7 +25,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=2.0
+    export ZBR_VERSION=2.1
     set_global_settings
 
     cp .env.original .env
@@ -49,6 +49,10 @@
 
     # Reporting is obligatory component now. But to be able to disable it we can register REPORTING_DISABLED=1 env variable before setup
     if [[ $ZBR_REPORTING_ENABLED -eq 1 && -z $REPORTING_DISABLED ]]; then
+      # 411 There is ".disabled" present in minio-storage after setup all components
+      rm -f reporting/.disabled
+      rm -f reporting/minio-storage/.disabled
+
       set_reporting_settings
       reporting/zebrunner.sh setup
     else
@@ -370,7 +374,15 @@
       exit -1
     fi
 
-    confirm "" "      Your services will be stopped and current data might be lost. Do you want to do a restore now?" "n"
+    if [ ! -f backup/settings.env.bak ]; then
+      echo_warning "You have to backup something in advance using: ./zebrunner.sh backup"
+      echo_telegram
+      exit -1
+
+    fi
+
+    echo "      Your services will be stopped and current data might be lost."
+    confirm "" "      Do you want to do a restore to \"`date -r backup/settings.env.bak`\" state?" "n"
     if [[ $? -eq 0 ]]; then
       exit
     fi
@@ -488,8 +500,16 @@
       exit -1
     fi
 
+    patch/2.1.sh
+    p2_1=$?
+    if [[ ${p2_1} -eq 1 ]]; then
+      echo "ERROR! 2.1 patchset was not applied correctly!"
+      exit -1
+    fi
+
+
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p2_0} -eq 2 ]]; then
+    if [[ ${p2_1} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
