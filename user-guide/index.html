@@ -689,9 +689,9 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 </code></pre>
 
 <blockquote>
-<p>Note: Provide regular Jenkins Cron expression as a value. To organize multiple schedules use "\n" as separator:</p>
+<p>Note: Provide regular Jenkins Cron expression as a value. To organize multiple schedules use "::" as separator:</p>
 </blockquote>
-<pre><code>&lt;parameter name=&quot;scheduling&quot; value=&quot;H 2 * * *\nH 10 * * *&quot; /&gt; 
+<pre><code>&lt;parameter name=&quot;scheduling&quot; value=&quot;H 2 * * *::H 10 * * *&quot; /&gt; 
 </code></pre>
 
 <ul>
