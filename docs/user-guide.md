@@ -56,9 +56,9 @@ Steps:
 ```
 <parameter name="scheduling" value="H 2 * * *" /> 
 ```
-> Note: Provide regular Jenkins Cron expression as a value. To organize multiple schedules use "\n" as separator:
+> Note: Provide regular Jenkins Cron expression as a value. To organize multiple schedules use "::" as separator:
 ```
-<parameter name="scheduling" value="H 2 * * *\nH 10 * * *" /> 
+<parameter name="scheduling" value="H 2 * * *::H 10 * * *" /> 
 ```
 * Commit and merge.
 
