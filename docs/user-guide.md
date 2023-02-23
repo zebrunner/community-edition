@@ -37,7 +37,7 @@ Steps:
 * Login to Jenkins
 * Go to organization/repository and open a Job
 * Click Build with Parameters and run Build 
-* When Job is completed analyze published reports/logs (Carina reports/Zafira reports/TestNG reports)
+* When Job is completed analyze published reports/logs (Zebrunner Report and TestNG reports)
 
 ### Schedule a Job
 * Open TestNG suite xml file
@@ -89,7 +89,7 @@ Steps:
 > Note: There is a "CRON" view for such kind of jobs
 * Click Build with Parameters and run Build 
 * Cron Job should trigger children jobs according to desired configuration matrix
-* When Cron and children jobs are finished analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)
+* When Cron and children jobs are finished analyze children jobs' reports/logs (Zebrunner Report and TestNG reports)
 
 ### Schedule a Cron
 * Open any child TestNG suite xml file 
