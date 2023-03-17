@@ -5,3 +5,4 @@ nginx/conf.d/default.conf
 backup/settings.env
 backup/*tar.gz
 NOTICE.txt
+setup.txt
