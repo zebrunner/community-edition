@@ -25,7 +25,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=2.1
+    export ZBR_VERSION=2.3
     set_global_settings
 
     cp .env.original .env
@@ -224,6 +224,8 @@
     if [[ $? -eq 0 ]]; then
       exit
     fi
+
+    export SHUTDOWN_CONFIRMED=1
 
     print_banner
 
