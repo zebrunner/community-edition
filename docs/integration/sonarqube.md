@@ -3,21 +3,14 @@
 The sonarqube static analysis is invoked for each webhook event triggered on your target repository(pushes and/or pull/merge requests).
 
 If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysis will run for push events.
-
 > Note: default credentials for embedded sonarqube are: admin/admin. Please, change them after 1st login
-  * Login to Sonarqube
+
+  * Login to SonarQube
   * Go to **My Account > Security**
-  * Generate new token using **Global Analysis Token** type
+  * Generate new token using **Global Analysis Token** type and **No expiration**
   * Login to the Jenkins, go to **Manage Jenkins > System Configuration > Global Properties**
   * Search for **SONAR_TOKEN** and put generated value
-
-## Integrate private sonarqube server
-
-If you have a private sonarqube instance and you have decided to use it, please follow the steps bellow:
-
-  * Login to Jenkins, go to **Manage Jenkins > System Configuration > Global Properties**
-  * Search for **SONAR_URL** and **SONAR_TOKEN** change the values with your private SonarQube instance
-  > Note: Compatible SonarQube version is 9.8+
+  > To integrate private sonarqube server update also **SONAR_URL** global env variable.
 
 ## GitHub configuration
 
@@ -68,7 +61,6 @@ Install your GitHub App from the app's settings page.
 
   * Login into your sonarqube instance
   * Go to **Administration > DevOps Platform Integrations > GitHub** add your GitHub App **Client ID, Client Secret**
-  TODO
   ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
    
   * Create new GitHub configuation. Add your GitHub **App ID, App Name, App Private Key**
