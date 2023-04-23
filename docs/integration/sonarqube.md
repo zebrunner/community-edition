@@ -10,7 +10,7 @@ If the event is a pull/merge request the reports from the sonarqube analysis wil
   * Generate new token using **Global Analysis Token** type and **No expiration**
   * Login to the Jenkins, go to **Manage Jenkins > System Configuration > Global Properties**
   * Search for **SONAR_TOKEN** and put generated value
-  > To integrate private sonarqube server update also **SONAR_URL** global env variable.
+    > To integrate private sonarqube server update also **SONAR_URL** global env variable.
 
 ## GitHub configuration
 
@@ -57,32 +57,26 @@ Install your GitHub App from the app's settings page.
   * Click install
   > Note: You can select specific repositories, so the github application will have access **only for those specified**
 
-### Configure sonarqube with your app
+### Configure SonarQube with your app
 
-  * Login into your sonarqube instance
-  * Go to **Administration > DevOps Platform Integrations > GitHub** add your GitHub App **Client ID, Client Secret**
-  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
-   
-  * Create new GitHub configuation. Add your GitHub **App ID, App Name, App Private Key**
-  TODO
-  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true "SonarPullRequestConfig")
-  
+  * Login into your SonarQube instance
+  * Go to **Administration > DevOps Platform Integrations > GitHub** create configuration using your GitHub App **ID, Client ID, Client Secret and Private Key**
+  ![Alt text](https://github.com/zebrunner/community-edition/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
   
 ### Configure DevOps Integration for your project
 
-  * Login into your sonarqube instance
+  * Login into your SonarQube instance
   * Go to your project **General Settings > DevOps Platform Integrations**
   * Choose **Configuration name**, specify **Repository name** and **Enable analysis summary under the GitHub Conversation tab**
-  TODO
-  ![Alt text](https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarProjectPullRequestConfig.png?raw=true "SonarProjectPullRequestConfig")
+  ![Alt text](https://github.com/zebrunner/community-edition/blob/develop/docs/img/SonarProjectDevOps.png?raw=true "SonarProjectDevOps")
 
 ### Pull Request decoration example
 
 When you create a pull and the sonar analysis reported issues, your pull request will be decorated with those issues and links to the sonarqube instance with your project.
 
-![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco1.png?raw=true "github-pr-deco1")
-![Alt text](https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco2.png?raw=true "github-pr-deco2")
+![Alt text](https://github.com/zebrunner/community-edition/blob/master/docs/img/github-pr-deco1.png?raw=true "github-pr-deco1")
+![Alt text](https://github.com/zebrunner/community-edition/blob/master/docs/img/github-pr-deco2.png?raw=true "github-pr-deco2")
   
 ## Gitlab, Bitbucket and Azure configuration
 
