@@ -38,12 +38,18 @@ if [[ ! -f jenkins/.disabled ]] ; then
   jenkins/zebrunner.sh setup
 fi
 
+# apply sonarqube changes
+if [[ ! -f sonarqube/.disabled ]] ; then
+  docker rm -f sonarqube
+  docker volume rm sonarqube_data-volume sonarqube_extensions-volume sonarqube_logs-volume
+  sonarqube/zebrunner.sh setup
+fi
+
 # apply selenoid changes
 if [[ ! -f selenoid/.disabled ]] ; then
   cp selenoid/.env selenoid/.env_2.2
   selenoid/zebrunner.sh setup
 fi
-
 
 echo "Upgrade to ${TARGET_VERSION} finished successfully"
 
