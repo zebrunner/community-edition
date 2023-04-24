@@ -509,9 +509,16 @@
       exit -1
     fi
 
+    patch/2.3.sh
+    p2_3=$?
+    if [[ ${p2_3} -eq 1 ]]; then
+      echo "ERROR! 2.3 patchset was not applied correctly!"
+      exit -1
+    fi
+
 
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p2_1} -eq 2 ]]; then
+    if [[ ${p2_3} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
