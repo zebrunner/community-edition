@@ -214,7 +214,7 @@
 
   shutdown() {
     if [ ! -f backup/settings.env ]; then
-      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_warning "Unable to erase as nothing is configured!"
       echo_telegram
       exit -1
     fi
