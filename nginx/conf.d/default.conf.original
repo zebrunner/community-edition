@@ -54,7 +54,7 @@ server {
         }
     }
 
-    location ~ /(stf|auth/mock|auth/ldap|auth/contact|auth/api|static/app|static/logo|app/api|api/v1|s/upload|s/image|s/blob|s/apk) {
+    location ~ /(stf|auth/mock|auth/ldap|auth/zebrunner|auth/contact|auth/api|static/app|static/logo|app/api|api/v1|s/upload|s/image|s/blob|s/apk) {
       set $upstream_stf http://stf-proxy:80;
       proxy_pass $upstream_stf;
       proxy_http_version 1.1;
