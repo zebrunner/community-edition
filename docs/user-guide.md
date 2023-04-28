@@ -29,7 +29,18 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <parameter name="jenkinsEnvironments" value="DEMO"/> 
 ```
 * Commit and merge.
-* After scan is finished (automatic or manual) "Job1" test job is created in Jenkins.
+* After scan is finished (automatic or manual execution of SYSTEM->onPush job) "Job1" test job is created in Jenkins.
+* Also you can register custom jenkins job fields if neccessary:
+```
+<!-- declaring custom string, boolean, hidden and static choice fields -->
+<parameter name="stringParam::stringArg::custom string desc" value="string value" />
+<parameter name="booleanParam::booleanArg::custom boolean desc" value="true" />
+<parameter name="hiddenParam::hiddenArg::custom hidden desc" value="hidden value" />
+<parameter name="choiceParam::choiceArg::custom choice desc" value="1, 2, 3" />
+
+<!-- declaring custom exstensible field with groovy script. Semicolon ";" should be used as lines break -->
+<parameter name="extensibleChoice::myExtensibleChoice::myDesc" value="import static java.util.Calendar.*;def date = new Date().format('MM/dd/yyy');return ['Release_date' + date]" />
+```
 
 ### Run a Job
 Steps:
@@ -45,9 +56,9 @@ Steps:
 ```
 <parameter name="scheduling" value="H 2 * * *" /> 
 ```
-> Note: Provide regular Jenkins Cron expression as a value. To organize multiple schedules use "\n" as separator:
+> Note: Provide regular Jenkins Cron expression as a value. To organize multiple schedules use "::" as separator:
 ```
-<parameter name="scheduling" value="H 2 * * *\nH 10 * * *" /> 
+<parameter name="scheduling" value="H 2 * * *::H 10 * * *" /> 
 ```
 * Commit and merge.
 
@@ -135,8 +146,6 @@ If value set to “android” – android native application test job.
 <b>jenkinsRegressionPipeline</b> - This property takes a comma separated string of the various pipelines that a specific Test Suite will be attached to. 
 </br>
 <b>jenkinsEnvironments</b> - This property takes a comma separated string of the various environments that might be tested for that particular suite i.e. PROD, QA, DEV, STAGE, BETA, etc.
-</br>
-<b>jenkinsPipelineEnvironments</b> - This property takes a comma separated string of the various environments that will be tested for a particular suite in a particular pipeline (i.e. PROD,QA,DEV,STAGE) 
 </br>
 <b>jenkinsJobExecutionOrder</b> - This property takes a number value and allows for a pipeline to be generated which will run tests in a sequential synchronous manner, compared to the default asynchronous manner. 
 </br>
