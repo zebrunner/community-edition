@@ -61,7 +61,7 @@ Install your GitHub App from the app's settings page.
 
   * Login into your SonarQube instance
   * Go to **Administration > DevOps Platform Integrations > GitHub** create configuration using your GitHub App **ID, Client ID, Client Secret and Private Key**
-  ![Alt text](https://github.com/zebrunner/community-edition/blob/develop/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
+  ![Alt text](https://github.com/zebrunner/community-edition/blob/master/docs/img/SonarGitHubConfig.png?raw=true "SonarGitHubConfig")
   > Note: make sure to copy all content from the .pem file generated in the **Create GitHub App** section
   
 ### Configure DevOps Integration for your project
@@ -69,7 +69,7 @@ Install your GitHub App from the app's settings page.
   * Login into your SonarQube instance
   * Go to your project **General Settings > DevOps Platform Integrations**
   * Choose **Configuration name**, specify **Repository name** and **Enable analysis summary under the GitHub Conversation tab**
-  ![Alt text](https://github.com/zebrunner/community-edition/blob/develop/docs/img/SonarProjectDevOps.png?raw=true "SonarProjectDevOps")
+  ![Alt text](https://github.com/zebrunner/community-edition/blob/master/docs/img/SonarProjectDevOps.png?raw=true "SonarProjectDevOps")
 
 ### Pull Request decoration example
 

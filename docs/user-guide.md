@@ -10,11 +10,11 @@
 
 All test jobs are created and maintained automatically according to [IaC](https://en.wikipedia.org/wiki/Infrastructure_as_code) processes. 
 For every TestNG [suite](https://www.toolsqa.com/testng/testng-test-suite/) dedicated job is created.
-> For example visit [carina suites](https://github.com/qaprosoft/carina-demo/tree/master/src/test/resources/testng_suites) 
+> For example visit [carina suites](https://github.com/zebrunner/carina-demo/tree/main/src/test/resources/testng_suites)
 
 ## Test Jobs (API/Web/Mobile)
 
-To generate special type of jobs, coverage matrix etc we have to use special annotations otherwise "api" job is generated using suite ["name"](https://github.com/qaprosoft/carina-demo/blob/14f7f7a7c426b1c6d86768abddf4c6467b32b016/src/test/resources/testng_suites/api.xml#L2). 
+Use [special annotations](https://zebrunner.github.io/community-edition/user-guide/#special-annotations) to define jobs name, ownership, schedule coverage matrix etc, for example [API-Demo-Test](https://github.com/zebrunner/carina-demo/blob/b64e76d5168ed5439c146d715e194294b2199b12/src/test/resources/testng_suites/api.xml#L5)
 Test Jobs can be executed on-demand, scheduled, included into different testing layers (Smoke, Regression, etc.).
 
 ### Create a Job
@@ -25,7 +25,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <parameter name="suiteOwner" value="qpsdemo"/>
 <parameter name="jenkinsJobName" value="Job1"/>
 <parameter name="jenkinsJobType" value="api"/>
-<parameter name="jenkinsEmail" value="test@qaprosoft.com"/>
+<parameter name="jenkinsEmail" value="user@zebrunner.com"/>
 <parameter name="jenkinsEnvironments" value="DEMO"/> 
 ```
 * Commit and merge.
