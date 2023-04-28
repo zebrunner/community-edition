@@ -315,13 +315,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#integrate-private-sonarqube-server" class="md-nav__link">
-    Integrate private sonarqube server
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#github-configuration" class="md-nav__link">
     GitHub configuration
   </a>
@@ -345,7 +338,14 @@
         
           <li class="md-nav__item">
   <a href="#configure-sonarqube-with-your-app" class="md-nav__link">
-    Configure sonarqube with your app
+    Configure SonarQube with your app
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-devops-integration-for-your-project" class="md-nav__link">
+    Configure DevOps Integration for your project
   </a>
   
 </li>
@@ -363,22 +363,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gitlab-configuration" class="md-nav__link">
-    Gitlab configuration
+  <a href="#gitlab-bitbucket-and-azure-configuration" class="md-nav__link">
+    Gitlab, Bitbucket and Azure configuration
   </a>
-  
-    <nav class="md-nav" aria-label="Gitlab configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#merge-request-decoration-exmaple" class="md-nav__link">
-    Merge request decoration exmaple
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -446,13 +433,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#integrate-private-sonarqube-server" class="md-nav__link">
-    Integrate private sonarqube server
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#github-configuration" class="md-nav__link">
     GitHub configuration
   </a>
@@ -476,7 +456,14 @@
         
           <li class="md-nav__item">
   <a href="#configure-sonarqube-with-your-app" class="md-nav__link">
-    Configure sonarqube with your app
+    Configure SonarQube with your app
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-devops-integration-for-your-project" class="md-nav__link">
+    Configure DevOps Integration for your project
   </a>
   
 </li>
@@ -494,22 +481,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gitlab-configuration" class="md-nav__link">
-    Gitlab configuration
+  <a href="#gitlab-bitbucket-and-azure-configuration" class="md-nav__link">
+    Gitlab, Bitbucket and Azure configuration
   </a>
-  
-    <nav class="md-nav" aria-label="Gitlab configuration">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#merge-request-decoration-exmaple" class="md-nav__link">
-    Merge request decoration exmaple
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -551,21 +525,21 @@
 <p>The sonarqube static analysis is invoked for each webhook event triggered on your target repository(pushes and/or pull/merge requests).</p>
 <p>If the event is a pull/merge request the reports from the sonarqube analysis will be decorated into the pull request itself for the correspondant scm system. On the contrary, only the analysis will run for push events.</p>
 <blockquote>
-<p>Note: default credentials for embedded sonarqube are: admin/admin, we recommend to change them after setting up zebrunner</p>
-<p>Note: Sonarqube pull request decoration is supported for <strong>Github</strong> and <strong>Gitlab</strong></p>
-<p>Note: if the sonarqube server is not available the analysis will be skipped</p>
+<p>Note: default credentials for embedded sonarqube are: admin/admin. Please, change them after 1st login</p>
 </blockquote>
-<h2 id="integrate-private-sonarqube-server">Integrate private sonarqube server</h2>
-<p>If you have a private sonarqube instance and you have decided to use it, please follow the steps bellow:</p>
 <ul>
-<li>Login to Jenkins, go to <strong>Manage Jenkins &gt; System Configuration &gt; Global Properties</strong></li>
-<li>Search for <strong>SONAR_URL</strong> and change the value with your private SonarQube instance url<blockquote>
-<p>Note: Compatible SonarQube version is 7.9.3 - 8.0</p>
-</blockquote>
-</li>
+<li>Login to SonarQube</li>
+<li>Go to <strong>My Account &gt; Security</strong></li>
+<li>Generate new token using <strong>Global Analysis Token</strong> type and <strong>No expiration</strong></li>
+<li>Login to the Jenkins, go to <strong>Manage Jenkins &gt; System Configuration &gt; Global Properties</strong></li>
+<li>Search for <strong>SONAR_TOKEN</strong> and put generated value
+    &gt; To integrate private sonarqube server update also <strong>SONAR_URL</strong> global env variable.</li>
 </ul>
 <h2 id="github-configuration">GitHub configuration</h2>
-<p>To enable <strong>pull reqeuest decoration</strong> on your github repository you need to create a <strong>GitHub App</strong>, his purpose is to publish the sonarqube reports generated on the webhook event being processed as <strong>checks</strong> into the pull request itself on github. </p>
+<p>To enable <strong>pull request decoration</strong> on your github repository you need to create a <strong>GitHub App</strong>, its purpose is to publish the sonarqube reports generated on the webhook event being processed as <strong>checks</strong> into the pull request itself on github.</p>
+<blockquote>
+<p>Steps were generated based on original Sonarqube <a href="https://docs.sonarqube.org/9.8/devops-platform-integration/github-integration/">article</a></p>
+</blockquote>
 <h3 id="create-a-github-app">Create a <a href="https://developer.github.com/apps/about-apps/">GitHub App</a></h3>
 <ul>
 <li>Follow Steps 1–4 <a href="https://developer.github.com/apps/building-github-apps/creating-a-github-app/">here</a> to start creating your GitHub App</li>
@@ -600,15 +574,30 @@
 <td>Read-only</td>
 </tr>
 <tr>
-<td align="center">&gt; Note: if your are using <strong>Github Enterprise</strong> the permission "Metadata" is renamed to "Repository Metadata"</td>
-<td></td>
+<td align="center">Contents</td>
+<td>Read-only</td>
+</tr>
+<tr>
+<td align="center">Email addresses</td>
+<td>Read-only</td>
+</tr>
+<tr>
+<td align="center">Members</td>
+<td>Read-only</td>
+</tr>
+<tr>
+<td align="center">Projects</td>
+<td>Read-only</td>
 </tr>
 </tbody>
 </table>
 </li>
-<li>
-<p>Under "Where can this GitHub App be installed?" select <strong>Any account.</strong></p>
-</li>
+</ul>
+<blockquote>
+<p>Note: if your are using <strong>Github Enterprise</strong> the permission "Metadata" is renamed to "Repository Metadata"</p>
+</blockquote>
+<ul>
+<li>Under "Where can this GitHub App be installed?" select <strong>Any account.</strong></li>
 <li>Click <strong>Create GitHub App</strong>. This will take you to your new GitHub App's page.</li>
 <li>Scroll down to the bottom of your app page and click <strong>Generate Private Key.</strong> This downloads a .pem file that you'll use in the <strong>Configure SonarQube server section.</strong><blockquote>
 <p>Tip: in order to acces the private key open the .pem file with your favorite text editor.</p>
@@ -627,40 +616,32 @@
 </blockquote>
 </li>
 </ul>
-<h3 id="configure-sonarqube-with-your-app">Configure sonarqube with your app</h3>
+<h3 id="configure-sonarqube-with-your-app">Configure SonarQube with your app</h3>
 <ul>
-<li>Login into your sonarqube instance</li>
-<li>
-<p>Go to <strong>Administration &gt; Configuration &gt; GitHub</strong> add your GitHub App <strong>Client ID, Client Secret</strong>
-  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /></p>
-</li>
-<li>
-<p>In <strong>Administration &gt; Configuration &gt; Pull Request</strong> add your GitHub <strong>App ID, App Name, App Private Key</strong>
-  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarPullRequestConfig.png?raw=true" title="SonarPullRequestConfig" /></p>
-</li>
-</ul>
-<blockquote>
+<li>Login into your SonarQube instance</li>
+<li>Go to <strong>Administration &gt; DevOps Platform Integrations &gt; GitHub</strong> create configuration using your GitHub App <strong>ID, Client ID, Client Secret and Private Key</strong>
+  <img alt="Alt text" src="https://github.com/zebrunner/community-edition/blob/master/docs/img/SonarGitHubConfig.png?raw=true" title="SonarGitHubConfig" /><blockquote>
 <p>Note: make sure to copy all content from the .pem file generated in the <strong>Create GitHub App</strong> section</p>
 </blockquote>
+</li>
+</ul>
+<h3 id="configure-devops-integration-for-your-project">Configure DevOps Integration for your project</h3>
+<ul>
+<li>Login into your SonarQube instance</li>
+<li>Go to your project <strong>General Settings &gt; DevOps Platform Integrations</strong></li>
+<li>Choose <strong>Configuration name</strong>, specify <strong>Repository name</strong> and <strong>Enable analysis summary under the GitHub Conversation tab</strong>
+  <img alt="Alt text" src="https://github.com/zebrunner/community-edition/blob/master/docs/img/SonarProjectDevOps.png?raw=true" title="SonarProjectDevOps" /></li>
+</ul>
 <h3 id="pull-request-decoration-example">Pull Request decoration example</h3>
 <p>When you create a pull and the sonar analysis reported issues, your pull request will be decorated with those issues and links to the sonarqube instance with your project.</p>
-<p><img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco1.png?raw=true" title="github-pr-deco1" />
-<img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/github-pr-deco2.png?raw=true" title="github-pr-deco2" /></p>
-<h2 id="gitlab-configuration">Gitlab configuration</h2>
-<p>To enable <strong>merge requests decoration</strong> on your gitlab repository we are going to use the token generated in <strong>Gitlab access token</strong> step. The sonarqube report is published as pipeline status and comments into the merge request itself.</p>
-<ul>
-<li>Login into your sonarqube instance</li>
-<li>Go to <strong>Administration &gt; Configuration &gt; Pull Requests &gt; Integration with Gitlab</strong> and in the token input paste your gitlab acces token.</li>
-</ul>
-<h3 id="merge-request-decoration-exmaple">Merge request decoration exmaple</h3>
-<p>When you create a merge request and the sonar analysis reports issues, your merge request will be decorated with those issues and links to the sonarqube instance with your project.</p>
-<p><img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco1.png?raw=true" title="gitlab-mr-deco1" />
-<img alt="Alt text" src="https://github.com/zebrunner/zebrunner/blob/master/docs/img/gitlab-mr-deco2.png?raw=true" title="gitlab-mr-deco2" /></p>
+<p><img alt="Alt text" src="https://github.com/zebrunner/community-edition/blob/master/docs/img/github-pr-deco1.png?raw=true" title="github-pr-deco1" />
+<img alt="Alt text" src="https://github.com/zebrunner/community-edition/blob/master/docs/img/github-pr-deco2.png?raw=true" title="github-pr-deco2" /></p>
+<h2 id="gitlab-bitbucket-and-azure-configuration">Gitlab, Bitbucket and Azure configuration</h2>
+<p>Visit original Sonarqube integration <a href="https://docs.sonarqube.org/latest/devops-platform-integration/github-integration/">guide</a></p>
 <h2 id="configure-sonarqube-base-url">Configure sonarqube base URL</h2>
 <p>This will serve static context(such as images, links, etc.) for pull/merge requests decoration. Follow the below steps to configure your server base URL:</p>
 <ul>
-<li>Add your SonarQube server under <strong>Administration &gt; Configuration &gt; General Settings &gt; Server base URL</strong>
-  <img alt="Alt text" src="https://github.com/qaprosoft/qps-infra/blob/develop/docs/img/SonarBaseUrlConfig.png?raw=true" title="SonarBaseUrlConfig" /><blockquote>
+<li>Add your SonarQube server under <strong>Administration &gt; Configuration &gt; General Settings &gt; Server base URL</strong><blockquote>
 <p>Tip: If you are missing images in your decorated pull/merge request it is probably due to configuration issues or the sonarqube server being unavailable at that moment.</p>
 </blockquote>
 </li>

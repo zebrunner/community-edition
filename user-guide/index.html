@@ -640,10 +640,10 @@
 <p>All test jobs are created and maintained automatically according to <a href="https://en.wikipedia.org/wiki/Infrastructure_as_code">IaC</a> processes. 
 For every TestNG <a href="https://www.toolsqa.com/testng/testng-test-suite/">suite</a> dedicated job is created.</p>
 <blockquote>
-<p>For example visit <a href="https://github.com/qaprosoft/carina-demo/tree/master/src/test/resources/testng_suites">carina suites</a> </p>
+<p>For example visit <a href="https://github.com/zebrunner/carina-demo/tree/main/src/test/resources/testng_suites">carina suites</a></p>
 </blockquote>
 <h2 id="test-jobs-apiwebmobile">Test Jobs (API/Web/Mobile)</h2>
-<p>To generate special type of jobs, coverage matrix etc we have to use special annotations otherwise "api" job is generated using suite <a href="https://github.com/qaprosoft/carina-demo/blob/14f7f7a7c426b1c6d86768abddf4c6467b32b016/src/test/resources/testng_suites/api.xml#L2">"name"</a>. 
+<p>Use <a href="https://zebrunner.github.io/community-edition/user-guide/#special-annotations">special annotations</a> to define jobs name, ownership, schedule coverage matrix etc, for example <a href="https://github.com/zebrunner/carina-demo/blob/b64e76d5168ed5439c146d715e194294b2199b12/src/test/resources/testng_suites/api.xml#L5">API-Demo-Test</a>
 Test Jobs can be executed on-demand, scheduled, included into different testing layers (Smoke, Regression, etc.).</p>
 <h3 id="create-a-job">Create a Job</h3>
 <ul>
@@ -653,7 +653,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <pre><code>&lt;parameter name=&quot;suiteOwner&quot; value=&quot;qpsdemo&quot;/&gt;
 &lt;parameter name=&quot;jenkinsJobName&quot; value=&quot;Job1&quot;/&gt;
 &lt;parameter name=&quot;jenkinsJobType&quot; value=&quot;api&quot;/&gt;
-&lt;parameter name=&quot;jenkinsEmail&quot; value=&quot;test@qaprosoft.com&quot;/&gt;
+&lt;parameter name=&quot;jenkinsEmail&quot; value=&quot;user@zebrunner.com&quot;/&gt;
 &lt;parameter name=&quot;jenkinsEnvironments&quot; value=&quot;DEMO&quot;/&gt; 
 </code></pre>
 
@@ -678,7 +678,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 <li>Login to Jenkins</li>
 <li>Go to organization/repository and open a Job</li>
 <li>Click Build with Parameters and run Build </li>
-<li>When Job is completed analyze published reports/logs (ZafiraReport/Full TestNG HTML Report/TestNG Summary HTML Report)</li>
+<li>When Job is completed analyze published reports/logs (Zebrunner Report and TestNG reports)</li>
 </ul>
 <h3 id="schedule-a-job">Schedule a Job</h3>
 <ul>
@@ -744,7 +744,7 @@ Test Jobs can be executed on-demand, scheduled, included into different testing 
 </li>
 <li>Click Build with Parameters and run Build </li>
 <li>Cron Job should trigger children jobs according to desired configuration matrix</li>
-<li>When Cron and children jobs are finished analyze children jobs' reports/logs (Carina reports/Zafira reports/TestNG reports)</li>
+<li>When Cron and children jobs are finished analyze children jobs' reports/logs (Zebrunner Report and TestNG reports)</li>
 </ul>
 <h3 id="schedule-a-cron">Schedule a Cron</h3>
 <ul>
