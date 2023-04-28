@@ -25,7 +25,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=2.1
+    export ZBR_VERSION=2.3
     set_global_settings
 
     cp .env.original .env
@@ -214,7 +214,7 @@
 
   shutdown() {
     if [ ! -f backup/settings.env ]; then
-      echo_warning "You have to setup services in advance using: ./zebrunner.sh setup"
+      echo_warning "Unable to erase as nothing is configured!"
       echo_telegram
       exit -1
     fi
@@ -224,6 +224,8 @@
     if [[ $? -eq 0 ]]; then
       exit
     fi
+
+    export SHUTDOWN_CONFIRMED=1
 
     print_banner
 
@@ -507,9 +509,16 @@
       exit -1
     fi
 
+    patch/2.3.sh
+    p2_3=$?
+    if [[ ${p2_3} -eq 1 ]]; then
+      echo "ERROR! 2.3 patchset was not applied correctly!"
+      exit -1
+    fi
+
 
     # IMPORTANT! Increment latest verification to new version, i.e. p1_3, p1_4 etc to verify latest upgrade status
-    if [[ ${p2_1} -eq 2 ]]; then
+    if [[ ${p2_3} -eq 2 ]]; then
       echo "No need to restart service as nothing was upgraded."
       exit -1
     fi
