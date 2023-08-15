@@ -319,27 +319,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#github-access-token" class="md-nav__link">
-    Github access token
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gitlab-access-token" class="md-nav__link">
-    Gitlab access token
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bitbucket-cloud-token" class="md-nav__link">
-    BitBucket Cloud token
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#update-jenkins-credentials" class="md-nav__link">
     Update Jenkins Credentials
   </a>
@@ -475,27 +454,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#github-access-token" class="md-nav__link">
-    Github access token
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gitlab-access-token" class="md-nav__link">
-    Gitlab access token
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#bitbucket-cloud-token" class="md-nav__link">
-    BitBucket Cloud token
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#update-jenkins-credentials" class="md-nav__link">
     Update Jenkins Credentials
   </a>
@@ -578,39 +536,22 @@
 <p>In order to enable full CI/CD workflow you need to add a webhook to your repository registered in Zebrunner, this webhook will trigger onPush and onPullRequests events on the CI component (Jenkins by default). </p>
 <p>After each Push and Pull Request events, related Jenkins jobs will pull your repository, scan and generate new test jobs automatically and optionally execute the static code analysis via the sonarqube.</p>
 <h3 id="configure-required-credentials">Configure required credentials</h3>
-<p>After you register a repository a jenkins credential is generated with the format of <code>orgName-scmType-webhook-token</code>, this credential needs to be updated with a personal access token generated in your repository scm.</p>
+<p>After you register a repository a jenkins credential is generated with the format of <code>orgName-scmType-webhook-token</code>, these credentials must be updated with the <code>new-token</code>.</p>
 <blockquote>
 <p>Note: this jenkins credentials are globally used for each repository of an organization registered in zebrunner.</p>
-</blockquote>
-<h4 id="github-access-token">Github access token</h4>
-<ul>
-<li>Follow steps 1-9 <a href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token">here</a> to create your GitHub personal access token.</li>
-<li>Grant access for the following permissions: <strong>repo and admin:repo_hook</strong>.</li>
-</ul>
-<h4 id="gitlab-access-token">Gitlab access token</h4>
-<ul>
-<li>Follow steps 1-7 <a href="https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#creating-a-personal-access-token">here</a> to create your Gitlab personal access token.</li>
-<li>In step <strong>5</strong> select the <strong>api, read_repository, write_repository</strong> scopes.</li>
-</ul>
-<h4 id="bitbucket-cloud-token">BitBucket Cloud token</h4>
-<ul>
-<li>Open your terminal and run the following command <code>echo -n username:password | base64</code> where username and password are your BitBucket credentials, this will return a token encoded in base64.</li>
-</ul>
-<blockquote>
-<p>Note: make sure to copy your token as your are going to need it in the <strong>Configure Webhooks</strong> and <strong>Update Jenkins Credentials</strong> sections.</p>
 </blockquote>
 <h4 id="update-jenkins-credentials">Update Jenkins Credentials</h4>
 <ul>
 <li>Go to <strong>Jenkins &gt; Manage Jenkins &gt; Manage credentials</strong>.</li>
 <li>Find your <code>orgName-scmType-webhook-token</code> credential and click on the ID.</li>
-<li>Update the <strong>Secret text</strong> with your correspondent scm token.</li>
+<li>Update the <strong>Secret text</strong> with your <code>new-token</code>.</li>
 <li>Click save.</li>
 </ul>
 <h3 id="configure-webhooks">Configure Webhooks</h3>
 <h4 id="github-configure-webhook-for-pushes-and-pull-requests">GitHub: Configure Webhook for Pushes and Pull Requests</h4>
 <ul>
 <li>Go to your <strong>GitHub repository page &gt; Settings &gt; Webhooks &gt; Add webhook</strong>.</li>
-<li>Add <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=github-token-here</code> into "Payload URL" field.</li>
+<li>Add <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=&lt;new-token&gt;</code> into "Payload URL" field.</li>
 <li>Select application/json in "Content Type" field.</li>
 <li>Click <strong>Let me select individual events</strong> and select <strong>Pushes, Pull Requests</strong>.</li>
 <li>Click <strong>Add webhook</strong>.</li>
@@ -618,7 +559,7 @@
 <h4 id="gitlab-configure-webhook-for-pushes-and-pull-requests">Gitlab: Configure Webhook for Pushes and Pull Requests</h4>
 <ul>
 <li>Go to your <strong>Gitlab repository page &gt; Settings &gt; Webhooks</strong>.</li>
-<li>Add <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=gitlab-token-here</code> into "Payload URL" field.</li>
+<li>Add <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=&lt;new-token&gt;</code> into "Payload URL" field.</li>
 <li>"Secret Token" is empty field.</li>
 <li>Select <strong>Push and Merge Requests events</strong>.</li>
 <li>Click <strong>Add webhook</strong>.</li>
@@ -626,7 +567,7 @@
 <h4 id="bitbucket-cloud-configure-webhook-for-pushes">BitBucket Cloud: Configure Webhook for Pushes</h4>
 <ul>
 <li>Go to your <strong>BitBucket repository page &gt; Repository Settings &gt; Webhooks &gt; add webhook</strong>.</li>
-<li>Enter <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=bitbucket-token-here</code> into <strong>URL</strong> field.</li>
+<li>Enter <code>http://your-zebrunner-domain.com/jenkins/generic-webhook-trigger/invoke?token=&lt;new-token&gt;</code> into <strong>URL</strong> field.</li>
 <li>Check that <strong>Repository push</strong> is selected.</li>
 <li>Click <strong>Save</strong>.</li>
 </ul>
