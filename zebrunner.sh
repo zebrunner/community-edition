@@ -25,7 +25,7 @@
     fi
 
     export ZBR_INSTALLER=1
-    export ZBR_VERSION=2.4
+    export ZBR_VERSION=2.5
     set_global_settings
 
     cp .env.original .env
