@@ -15,6 +15,10 @@
   setup() {
     print_banner
 
+    if [ "$1" == "-d" ]; then
+      set -x
+    fi
+
     # load default interactive installer settings
     # shellcheck disable=SC1091
     source backup/settings.env.original
@@ -621,7 +625,7 @@
       Flags:
           --help | -h    Print help
       Arguments:
-          setup          Setup Zebrunner Community Edition
+          setup [-d]     Setup Zebrunner Community Edition ('-d' - debug mode)
       	  start          Start container
       	  stop           Stop and keep container
       	  restart        Restart container
@@ -644,7 +648,7 @@ source reporting/patch/settings.sh
 
 case "$1" in
     setup)
-        setup
+        setup "$2"
         ;;
     start)
 	start
