@@ -1,8 +1,7 @@
-version: '3.7'
 networks:
   default:
-    external:
-      name: infra
+    name: infra
+    external: true
 services:
   nginx:
     image: "nginx:${TAG_NGINX}"
