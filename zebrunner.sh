@@ -15,6 +15,10 @@
   setup() {
     print_banner
 
+    if [ "$1" == "-d" ]; then
+      set -x
+    fi
+
     # load default interactive installer settings
     # shellcheck disable=SC1091
     source backup/settings.env.original
@@ -234,7 +238,7 @@
     sonarqube/zebrunner.sh shutdown
     mcloud/zebrunner.sh shutdown
     selenoid/zebrunner.sh shutdown
-    docker-compose down -v
+    docker compose down -v
 
     rm -f NOTICE.txt
     rm -f .env
@@ -281,7 +285,7 @@
     reporting/zebrunner.sh start
     sonarqube/zebrunner.sh start
 
-    docker-compose up -d
+    docker compose up -d
   }
 
   stop() {
@@ -296,7 +300,7 @@
     sonarqube/zebrunner.sh stop
     mcloud/zebrunner.sh stop
     selenoid/zebrunner.sh stop
-    docker-compose stop
+    docker compose stop
   }
 
   restart() {
@@ -322,7 +326,7 @@
     sonarqube/zebrunner.sh down
     mcloud/zebrunner.sh down
     selenoid/zebrunner.sh down
-    docker-compose down
+    docker compose down
   }
 
   backup() {
@@ -628,7 +632,7 @@
       Flags:
           --help | -h    Print help
       Arguments:
-          setup          Setup Zebrunner Community Edition
+          setup [-d]     Setup Zebrunner Community Edition ('-d' - debug mode)
       	  start          Start container
       	  stop           Stop and keep container
       	  restart        Restart container
@@ -651,7 +655,7 @@ source reporting/patch/settings.sh
 
 case "$1" in
     setup)
-        setup
+        setup "$2"
         ;;
     start)
 	start
