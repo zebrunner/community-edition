@@ -22,7 +22,7 @@ This guide is written for all levels of administrators, from those responsible f
 ## Assumed Knowledge
 Installation and Configuration guides are for administrators who install, deploy and Manage Zebrunner products. It assumes the following knowledge:
 
- * Docker platform and docker compose orchestration tool skills
+ * Docker platform and docker-compose orchestration tool skills
  * UNIX/Linux administration skills
  * Security and server administration skills
  * Understanding of your organization's security infrastructure, including authentication providers such as LDAP, and use of SSL
